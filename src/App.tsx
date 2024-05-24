@@ -1,12 +1,9 @@
-
 function App() {
-
-
-  return (
-    <>
-      <p>First Commit</p>
-    </>
-  )
+	return (
+		<>
+			<p>First Commit</p>
+		</>
+	);
 }
 
-export default App
+export default App;
