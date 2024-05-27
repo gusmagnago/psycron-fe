@@ -1,23 +1,23 @@
 export type ColorShades = {
-  hover?: string;
-  press?: string;
-  light?: string;
   disabled: string;
+  hover?: string;
+  light?: string;
+  press?: string;
 };
 
 export type ColorScheme = {
-  main: string;
-  light: string;
-  dark: string;
   access: string;
   action: ColorShades;
+  dark: string;
+  light: string;
+  main: string;
   surface: ColorShades;
 };
 
 export type TextColors = {
+  disabled: string;
   primary: string;
   secondary: string;
-  disabled: string;
 };
 
 export type GrayShades = {
@@ -33,17 +33,22 @@ export type GrayShades = {
   dark: string;
 };
 
+export type BackgroundShades = {
+  default: string;
+  paper: string;
+};
+
 export type Palette = {
-  primary: ColorScheme;
-  secondary: ColorScheme;
-  tertiary: ColorScheme;
-  text: TextColors;
-  success: ColorScheme;
-  info: ColorScheme;
   alert: ColorScheme;
-  error: ColorScheme;
-  background: string;
+  background: BackgroundShades;
   black: string;
   border: string;
+  error: ColorScheme;
   gray: GrayShades;
+  info: ColorScheme;
+  primary: ColorScheme;
+  secondary: ColorScheme;
+  success: ColorScheme;
+  tertiary: ColorScheme;
+  text: TextColors;
 };
