@@ -13,13 +13,17 @@ const selectStyles = ({ palette }: Theme): Record<string, CSSObject> => {
 				color: secondary.action.press,
 				filter: shadowDisabled,
 			},
-		}, icon: {
+		},
+		icon: {
 			color: success.main,
 			filter: shadowDisabled,
 			[`&.${selectClasses.iconOpen}`]: {
 				color: secondary.action.press,
 				filter: shadowDisabled,
-			}
+			},
+		},
+		label: {
+			color: 'red'
 		}
 	};
 };

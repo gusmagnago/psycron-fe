@@ -7,6 +7,8 @@ import checkboxStyles from './checkbox/checkbox.theme';
 import dividerStyles from './divider/divider.theme';
 import inputStyles from './input/input.theme';
 import labelStyles from './input/label/label.theme';
+import inputOutlinedStyles from './input/outlined/inputOutlined.theme';
+import paginationItemStyles from './pagination/pagination.theme';
 import { palette } from './palette/palette.theme';
 import paperStyles from './paper/paper.theme';
 import progressBarStyles from './progress-bar/progressBar.theme';
@@ -16,7 +18,6 @@ import selectStyles from './select/select.theme';
 import switchStyles from './swtich/switch.theme';
 import tooltipeStyles from './tooltip/tooltip.theme';
 
-
 const theme = createTheme({
 	palette: palette,
 	typography: {
@@ -24,47 +25,53 @@ const theme = createTheme({
 	},
 	components: {
 		MuiButton: {
-			styleOverrides: buttonStyles(createTheme({palette})), 
+			styleOverrides: buttonStyles(createTheme({ palette })),
 		},
 		MuiLink: {
-			styleOverrides: linkStyles(createTheme({palette}))
+			styleOverrides: linkStyles(createTheme({ palette })),
 		},
 		MuiCheckbox: {
-			styleOverrides: checkboxStyles(createTheme({palette})),
+			styleOverrides: checkboxStyles(createTheme({ palette })),
 		},
 		MuiSwitch: {
-			styleOverrides: switchStyles(createTheme({palette}))
+			styleOverrides: switchStyles(createTheme({ palette })),
 		},
 		MuiRadio: {
-			styleOverrides: radioStyles(createTheme({palette}))
+			styleOverrides: radioStyles(createTheme({ palette })),
 		},
 		MuiDivider: {
-			styleOverrides: dividerStyles(createTheme({palette}))
+			styleOverrides: dividerStyles(createTheme({ palette })),
 		},
 		MuiTooltip: {
-			styleOverrides: tooltipeStyles(createTheme({palette}))
+			styleOverrides: tooltipeStyles(createTheme({ palette })),
 		},
 		MuiLinearProgress: {
-			styleOverrides: progressBarStyles()
+			styleOverrides: progressBarStyles(),
 		},
 		MuiAlert: {
-			styleOverrides: alertStyles(createTheme({palette}))
+			styleOverrides: alertStyles(createTheme({ palette })),
 		},
 		MuiInputBase: {
-			styleOverrides: inputStyles(createTheme({palette}))
+			styleOverrides: inputStyles(createTheme({ palette })),
+		},
+		MuiOutlinedInput: {
+			styleOverrides: inputOutlinedStyles(createTheme({ palette })),
 		},
 		MuiInputLabel: {
-			styleOverrides: labelStyles(createTheme())
+			styleOverrides: labelStyles(createTheme({ palette })),
 		},
 		MuiSelect: {
-			styleOverrides: selectStyles(createTheme({palette})),
+			styleOverrides: selectStyles(createTheme({ palette })),
 		},
 		MuiMenuItem: {
-			styleOverrides: menuItemStyles(createTheme({palette}))
+			styleOverrides: menuItemStyles(createTheme({ palette })),
 		},
 		MuiPaper: {
-			styleOverrides: paperStyles(createTheme({palette}))
-		}
+			styleOverrides: paperStyles(createTheme({ palette })),
+		},
+		MuiPaginationItem: {
+			styleOverrides: paginationItemStyles(createTheme({ palette })),
+		},
 	},
 });
 

@@ -5,7 +5,7 @@ import type { Palette } from '@psycron/theme/palette/palette.types';
 
 const labelStyles = ({ palette }: Theme): Record<string, CSSObject> => {
 	const {
-		text,
+		text, gray
 	} = palette as unknown as Palette;
 
 	return {
@@ -15,6 +15,10 @@ const labelStyles = ({ palette }: Theme): Record<string, CSSObject> => {
 			[`&.${inputLabelClasses.focused}`]: {
 				marginTop: 0,
 				color: text.secondary
+			},
+			[`&.${inputLabelClasses.disabled}`]: {
+				color: gray['04'],
+				zIndex: '1'
 			}
 		},
 	};
