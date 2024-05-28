@@ -16,18 +16,10 @@
 
     /* Linting */
     "strict": true,
-    "noImplicitAny": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
-    "noFallthroughCasesInSwitch": true,
-    "baseUrl": ".",
-    "paths": {
-      "@psycron/*": ["./src/*"]
-    }
+    "noFallthroughCasesInSwitch": true
   },
   "include": ["src"],
-  "references": [{ "path": "./tsconfig.node.json" }],
-  "lint-staged": {
-    "**/*.ts": "tsc-files --noEmit"
-  }
+  "references": [{ "path": "./tsconfig.node.json" }]
 }
