@@ -1,6 +1,8 @@
 export { Address } from './Address';
 export { Alert } from './Alert';
 export { Appointment } from './Appointment';
+export { Brand } from './brand/Brand';
+export { Logo } from './brand/Logo';
 export { Calendar } from './Calendar';
 export { CheckFail } from './CheckFail';
 export { CheckSuccess } from './CheckSuccess';
@@ -15,7 +17,6 @@ export { HealthTracker } from './HealthTracker';
 export { Info } from './Info';
 export { Language } from './Language';
 export { Login } from './Login';
-export { Logo } from './Logo';
 export { Logout } from './Logout';
 export { Menu } from './Menu';
 export { NotVisible } from './NotVisible';

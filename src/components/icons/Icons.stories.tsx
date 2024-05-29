@@ -36,8 +36,8 @@ const ListItemWrapper = styled.div`
 
 const IconList = () => {
 	const iconsArray = Object.entries(Icons);
-	const logoIcon = iconsArray.filter(([name]) => name === 'Logo');
-	const otherIcons = iconsArray.filter(([name]) => name !== 'Logo');
+	const logoIcon = iconsArray.filter(([name]) => name === 'Logo' || name === 'Brand' );
+	const otherIcons = iconsArray.filter(([name]) => name !== 'Logo' && name !== 'Brand');
 
 	return (
 		<Wrapper>
