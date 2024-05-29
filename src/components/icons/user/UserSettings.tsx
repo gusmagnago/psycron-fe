@@ -1,4 +1,4 @@
-export const UserSetting: React.FC = (props) => (
+export const UserSettings: React.FC = (props) => (
 	<svg
 		xmlns='http://www.w3.org/2000/svg'
 		width='24'
