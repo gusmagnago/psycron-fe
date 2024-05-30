@@ -22,9 +22,6 @@ const selectStyles = ({ palette }: Theme): Record<string, CSSObject> => {
 				filter: shadowDisabled,
 			},
 		},
-		label: {
-			color: 'red'
-		}
 	};
 };
 

@@ -8,9 +8,8 @@ const globalStyles = (
         cursor: not-allowed !important;
       }
 
-        .disabled {
-            cursor: not-allowed !important;
-
+      .disabled {
+        cursor: not-allowed !important;
       }
     `}
 	/>

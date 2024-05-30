@@ -21,6 +21,8 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { CalendarDays, ChevronDown, X } from 'lucide-react';
 
+import { Card } from './components/card/Card';
+
 function App() {
 	return (
 		<>
@@ -120,6 +122,9 @@ function App() {
 			</Box>
 			<Box>
 				<Pagination count={10} />
+			</Box>
+			<Box>
+				<Card />
 			</Box>
 		</>
 	);
