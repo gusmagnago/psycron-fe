@@ -14,8 +14,8 @@ const IconsWrapper = styled.div`
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  justify-content: flex-start;
   width: 100%;
+  height: 100%;
   margin-bottom: 40px;
 `;
 
@@ -34,24 +34,31 @@ const ListItemWrapper = styled.div`
   }
 `;
 
+
+const BrandItemWrapper = styled.div`
+  margin: 10px;
+  text-align: center;
+  height: 60px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  & svg {
+    width: 100px;
+    height: auto;
+  }
+`;
+
+const iconsArray = Object.entries(Icons);
+
 const IconList = () => {
-	const iconsArray = Object.entries(Icons);
-	const logoIcon = iconsArray.filter(([name]) => name === 'Logo' || name === 'Brand' );
-	const otherIcons = iconsArray.filter(([name]) => name !== 'Logo' && name !== 'Brand');
+	const otherIcons = iconsArray.filter(
+		([name]) => name !== 'Logo' && name !== 'Brand'
+	);
 
 	return (
 		<Wrapper>
-			{logoIcon && (
-				<IconsWrapper>
-					{logoIcon.map(([name, Icon]) => (
-						<ListItemWrapper key={name}>
-							<Icon />
-							<div>{name}</div>
-						</ListItemWrapper>
-					))}
-				</IconsWrapper>
-				
-			)}
 			<IconsWrapper>
 				{otherIcons.map(([name, Icon]) => (
 					<ListItemWrapper key={name}>
@@ -61,6 +68,22 @@ const IconList = () => {
 				))}
 			</IconsWrapper>
 		</Wrapper>
+	);
+};
+
+const BrandIcons = () => {
+	const logoIcon = iconsArray.filter(
+		([name]) => name === 'Logo' || name === 'Brand'
+	);
+	return (
+		<IconsWrapper>
+			{logoIcon.map(([name, Icon]) => (
+				<BrandItemWrapper key={name}>
+					<Icon />
+					<div>{name}</div>
+				</BrandItemWrapper>
+			))}
+		</IconsWrapper>
 	);
 };
 
@@ -75,4 +98,8 @@ type Story = StoryObj;
 
 export const Default: Story = {
 	render: () => <IconList />,
+};
+
+export const Brand: Story = {
+	render: () => <BrandIcons />,
 };
