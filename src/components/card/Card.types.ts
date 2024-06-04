@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react'
 
-import type { CardActionsProps } from './card-actions/CardActions.types';
-import type { CardTitleProps } from './card-title/CardTitle.types';
+import type { CardActionsProps } from './CardActions/CardActions.types';
+import type { CardTitleProps } from './CardTitle/CardTitle.types';
 
 export type CardTypes = {
     cardTitle: boolean;

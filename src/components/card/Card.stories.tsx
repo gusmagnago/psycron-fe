@@ -1,11 +1,12 @@
 import type { Meta, StoryObj } from '@storybook/react';
 
-import { CardActions } from './card-actions/CardActions';
-import type { CardActionsProps } from './card-actions/CardActions.types';
-import { CardTitle } from './card-title/CardTitle';
-import type { CardTitleProps } from './card-title/CardTitle.types';
+import { CardActions } from './CardActions/CardActions';
+import type { CardActionsProps } from './CardActions/CardActions.types';
+import { CardTitle } from './CardTitle/CardTitle';
+import type { CardTitleProps } from './CardTitle/CardTitle.types';
 import { Card } from './Card';
 import type { CardProps } from './Card.types';
+
 
 const DefaultCardComponent = (args: CardProps) => <Card {...args} />;
 

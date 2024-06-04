@@ -19,8 +19,8 @@ const labelStyles = ({ palette }: Theme): Record<string, CSSObject> => {
 			[`&.${inputLabelClasses.disabled}`]: {
 				color: gray['04'],
 				zIndex: '1'
-			}
-		},
+			},
+		}
 	};
 };
 

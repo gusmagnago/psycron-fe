@@ -1,7 +1,7 @@
 import { Box, CardContent, Divider } from '@mui/material';
 
-import { CardActions } from './card-actions/CardActions';
-import { CardTitle } from './card-title/CardTitle';
+import { CardActions } from './CardActions/CardActions';
+import { CardTitle } from './CardTitle/CardTitle';
 import { CardWrapper } from './Card.styles';
 import type { CardProps } from './Card.types';
 
