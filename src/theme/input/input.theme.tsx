@@ -16,7 +16,6 @@ const inputStyles = ({ palette }: Theme): Record<string, CSSObject> => {
 			padding: `${spacing.mediumSmall}`,
 			boxShadow: shadowInnerPress,
 			color: text.primary,
-			margin: `${spacing.space} ${spacing.xs}`,
 			'::before': {
 				borderBottom: '0 !important',
 			},
@@ -25,7 +24,7 @@ const inputStyles = ({ palette }: Theme): Record<string, CSSObject> => {
 			},
 			[`&.${inputBaseClasses.disabled}`]: {
 				backgroundColor: gray['02']
-			}
+			},
 		},
 	};
 };

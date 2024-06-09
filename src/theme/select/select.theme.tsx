@@ -14,6 +14,7 @@ const selectStyles = ({ palette }: Theme): Record<string, CSSObject> => {
 				color: secondary.action.press,
 				filter: shadowDisabled,
 			},
+			marginBottom: '15px'
 		},
 		icon: {
 			color: success.main,

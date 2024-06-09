@@ -1,10 +1,12 @@
 import { createTheme } from '@mui/material';
 
 import alertStyles from './alert/alert.theme';
+import avatarStyles from './avatar/avatar.theme';
 import buttonStyles from './button/button.theme';
 import linkStyles from './button/link/link.theme';
 import checkboxStyles from './checkbox/checkbox.theme';
 import dividerStyles from './divider/divider.theme';
+import formLabel from './form/form-label/formLabel.theme';
 import inputStyles from './input/input.theme';
 import labelStyles from './input/label/label.theme';
 import inputOutlinedStyles from './input/outlined/inputOutlined.theme';
@@ -92,6 +94,12 @@ const theme = createTheme({
 		MuiPaginationItem: {
 			styleOverrides: paginationItemStyles(createTheme({ palette })),
 		},
+		MuiFormLabel: {
+			styleOverrides: formLabel(createTheme({palette}))
+		},
+		MuiAvatar: {
+			styleOverrides: avatarStyles()
+		}
 	},
 });
 

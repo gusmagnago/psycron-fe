@@ -21,8 +21,11 @@ const selectArgs = {
 		{ name: 'Item 2', value: 2 },
 		{ name: 'Item 3', value: 3 },
 	],
+	// eslint-disable-next-line no-console
 	onChangeSelect: (e: SelectChangeEvent<string>) => console.log('t', e.target),
-	selectLabel: 'Testing Select'
+	selectLabel: 'Testing Select',
+	required: true,
+	disabled: false
 };
 
 export const Default: Story = {

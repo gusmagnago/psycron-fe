@@ -1,9 +1,11 @@
 import type { SelectChangeEvent } from '@mui/material';
 
 export type SelectProps = {
-    items: {name: string, value: number}[],
+    items: {name: string, value: string | number}[],
     onChangeSelect: (e: SelectChangeEvent<string>) => void;
-    required?: boolean;
-    selectLabel: string; 
+    required?: boolean; 
+    selectLabel: string;
+    subtitle?: boolean;
     value?: string;
+    width?: string;
 }
