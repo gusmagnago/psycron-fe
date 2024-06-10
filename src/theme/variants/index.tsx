@@ -1,3 +1,3 @@
 export const generateBorder = (color?: string) => {
-	return `4px solid ${color}`
+	return `2px solid ${color}`
 }

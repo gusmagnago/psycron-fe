@@ -2,10 +2,13 @@ import type { Theme } from '@mui/material/styles';
 import type { CSSObject } from '@mui/system';
 import type { Palette } from '@psycron/theme/palette/palette.types';
 
-import { shadowDisabled,shadowMain, shadowPress } from '../shadow/shadow.theme';
+import {
+	shadowDisabled,
+	shadowMain,
+	shadowPress,
+} from '../shadow/shadow.theme';
+import { spacing } from '../spacing/spacing.theme';
 import { generateBorder } from '../variants';
-
-
 
 const buttonStyles = ({ palette }: Theme): Record<string, CSSObject> => {
 	const {
@@ -14,25 +17,29 @@ const buttonStyles = ({ palette }: Theme): Record<string, CSSObject> => {
 		text: { primary: textPrimary, disabled: textDisabled },
 	} = palette as unknown as Palette;
 
-
 	return {
 		root: {
-			borderRadius: '40px',
-			textTransform: 'none',
-			fontSize: '1.25em',
-			fontWeight: '300',
+			borderRadius: `calc(2 * ${spacing.mediumSmall})`,
+			fontSize: '1em',
+			fontWeight: '500',
 			color: textPrimary,
 			boxShadow: shadowMain,
-			margin: '4px 8px'
+			margin: `${spacing.space} 0`,
+			textTransform: 'capitalize',
+			height: '40px'
 		},
 		sizeLarge: {
-			padding: '8px 24px',
+			padding: `${spacing.xs} ${spacing.medium}`,
+			fontSize: '1.25em',
+			height: '50px'
 		},
 		sizeMedium: {
-			padding: '6px 20px',
+			padding: `${spacing.xxs} ${spacing.mediumSmall}`,
 		},
 		sizeSmall: {
-			padding: '4px 16px',
+			padding: `${spacing.space} ${spacing.small}`,
+			fontSize: '.75em',
+			height: '30px'
 		},
 		containedPrimary: {
 			backgroundColor: primary.main,
@@ -67,7 +74,8 @@ const buttonStyles = ({ palette }: Theme): Record<string, CSSObject> => {
 			},
 		},
 		outlinedPrimary: {
-			border: `4px solid ${primary.main}`,
+			border: `2px solid ${primary.main}`,
+			boxSizing: 'border-box',
 			backgroundColor: 'transparent',
 			'&:hover': {
 				border: generateBorder(primary.action.hover),
@@ -84,8 +92,9 @@ const buttonStyles = ({ palette }: Theme): Record<string, CSSObject> => {
 			},
 		},
 		outlinedSecondary: {
-			border: `4px solid ${secondary.main}`,
+			border: `2px solid ${secondary.main}`,
 			backgroundColor: 'transparent',
+			boxSizing: 'border-box',
 			'&:hover': {
 				border: generateBorder(secondary.action.hover),
 				boxShadow: shadowMain,
