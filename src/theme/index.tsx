@@ -6,6 +6,7 @@ import buttonStyles from './button/button.theme';
 import linkStyles from './button/link/link.theme';
 import checkboxStyles from './checkbox/checkbox.theme';
 import dividerStyles from './divider/divider.theme';
+import formControl from './form/form-control/formControl.theme';
 import formLabel from './form/form-label/formLabel.theme';
 import inputStyles from './input/input.theme';
 import labelStyles from './input/label/label.theme';
@@ -99,6 +100,9 @@ const theme = createTheme({
 		},
 		MuiAvatar: {
 			styleOverrides: avatarStyles()
+		},
+		MuiFormControl: {
+			styleOverrides: formControl()
 		}
 	},
 });

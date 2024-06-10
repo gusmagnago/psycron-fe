@@ -21,15 +21,17 @@ const buttonStyles = ({ palette }: Theme): Record<string, CSSObject> => {
 		root: {
 			borderRadius: `calc(2 * ${spacing.mediumSmall})`,
 			fontSize: '1em',
-			fontWeight: '300',
+			fontWeight: '500',
 			color: textPrimary,
 			boxShadow: shadowMain,
-			margin: `${spacing.space} ${spacing.xs}`,
-			textTransform: 'capitalize'
+			margin: `${spacing.space} 0`,
+			textTransform: 'capitalize',
+			height: '40px'
 		},
 		sizeLarge: {
 			padding: `${spacing.xs} ${spacing.medium}`,
 			fontSize: '1.25em',
+			height: '50px'
 		},
 		sizeMedium: {
 			padding: `${spacing.xxs} ${spacing.mediumSmall}`,
@@ -37,6 +39,7 @@ const buttonStyles = ({ palette }: Theme): Record<string, CSSObject> => {
 		sizeSmall: {
 			padding: `${spacing.space} ${spacing.small}`,
 			fontSize: '.75em',
+			height: '30px'
 		},
 		containedPrimary: {
 			backgroundColor: primary.main,

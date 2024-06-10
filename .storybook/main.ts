@@ -28,4 +28,5 @@ const config: StorybookConfig = {
     </style>
   `,
 };
+
 export default config;

@@ -12,8 +12,7 @@ const inputStyles = ({ palette }: Theme): Record<string, CSSObject> => {
 	return {
 		root: {
 			borderRadius: `calc(2 * ${spacing.mediumSmall})`,
-			height: '50px',
-			padding: `${spacing.mediumSmall}`,
+			minHeight: '50px',
 			boxShadow: shadowInnerPress,
 			color: text.primary,
 			'::before': {

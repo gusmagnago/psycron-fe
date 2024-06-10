@@ -2,11 +2,13 @@
 
 :root {
   --bg-color: #f7fafa;
-  --color-default: #060B0E;
+  --color-default: #060b0e;
   --font-family: 'Inter', sans-serif;
 }
 
-body, html, #root {
+body,
+html,
+#root {
   margin: 0;
   padding: 0;
   width: 100%;

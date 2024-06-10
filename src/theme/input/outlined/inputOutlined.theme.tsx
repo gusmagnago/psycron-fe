@@ -12,10 +12,8 @@ const inputOutlinedStyles = ({ palette }: Theme): Record<string, CSSObject> => {
 		root: {
 			borderRadius: `calc(2 * ${spacing.mediumSmall})`,
 			height: '50px',
-			padding: `${spacing.small}`,
 			boxShadow: shadowInnerPress,
 			color: text.primary,
-			margin: `${spacing.space} ${spacing.xs}`,
 			'::before': {
 				borderBottom: '0 !important',
 			},
@@ -28,6 +26,18 @@ const inputOutlinedStyles = ({ palette }: Theme): Record<string, CSSObject> => {
 		},
 		notchedOutline: {
 			border: 'none !important',
+		},
+		'&:-webkit-autofill': {
+			backgroundColor: 'red !important'
+		},
+		'&:-webkit-autofill:hover': {
+			backgroundColor: 'red !important'
+		},
+		'&:-webkit-autofill:focus': {
+			backgroundColor: 'red !important'
+		},
+		'&:-webkit-autofill:active': {
+			backgroundColor: 'red !important'
 		},
 	};
 };

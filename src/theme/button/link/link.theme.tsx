@@ -18,7 +18,8 @@ const linkStyles = ({ palette }: Theme): Record<string, CSSObject> => {
 			fontSize: '1.25em',
 			fontWeight: '500',
 			color: secondary.main,
-			textDecoration: 'none'
+			textDecoration: 'none',
+			cursor: 'pointer',
 		},
 		sizeLarge: {
 			padding: `${spacing.space} ${spacing.medium}`,

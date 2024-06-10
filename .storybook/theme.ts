@@ -4,7 +4,7 @@ export default create({
   base: 'light',
   brandTitle: 'Psycron',
   brandUrl: 'https://psycron.app',
-  brandImage: 'src/assets/psycron-logo.svg',
+  brandImage: '/psycron-icon.svg',
   brandTarget: '_self',
   textColor: '#060B0E',
 
