@@ -1,0 +1,24 @@
+{
+  "globals": {
+    "email": "email",
+    "password": "password"
+  },
+  "components": {
+    "form": {
+      "confirm-password": "confirm password",
+      "signup": {
+        "title": "sign up",
+        "firstName": "first name",
+        "lastName": "last name",
+        "already-have-acc": "already have an account?",
+        "signin-here-link": "sign in here"
+      }
+    },
+    "input": {
+      "phone-input": {
+        "select-label": "country",
+        "phone-num-label": "your phone number here"
+      }
+    }
+  }
+}
