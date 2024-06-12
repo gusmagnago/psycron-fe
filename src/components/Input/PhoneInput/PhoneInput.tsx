@@ -1,4 +1,5 @@
 import {  useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import type { SelectChangeEvent } from '@mui/material';
 import { Box, TextField } from '@mui/material';
 import countryList from '@psycron/assets/countries/countries.json';
@@ -11,6 +12,8 @@ import { CountryFlag } from './PhoneInput.styles';
 // import type { PhoneInputProps } from './PhoneInput.types';
 
 export const PhoneInput = () => {
+	const { t } = useTranslation();
+
 	const { countryData } = useUserGeolocation()
 
 	const [selectedCountry, setSelectedCountry] = useState<CountryDataSimple & {name?: string}>(countryData);
@@ -48,14 +51,14 @@ export const PhoneInput = () => {
 			<Select
 				items={countries}
 				required
-				selectLabel='Country'
+				selectLabel={t('components.input.phone-input.select-label')}
 				onChangeSelect={handlePhoneChange}
 				subtitle
 				value={selectedCountry.callingCode ?? ''}
 				name={selectedCountry.name ?? ''}
 				width='auto'
 			/>
-			<TextField type='number' label='Your Phone Number here' required />
+			<TextField type='number' label={t('components.input.phone-input.phone-num-label')} required />
 		</Box>
 	);
 };

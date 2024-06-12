@@ -1,5 +1,6 @@
 import type { SubmitHandler } from 'react-hook-form';
 import { useForm } from 'react-hook-form';
+import { useTranslation } from 'react-i18next';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { Box, Button, Link, Typography } from '@mui/material';
 import { Brand } from '@psycron/components/icons';
@@ -11,6 +12,8 @@ import { InputFields, LogoWrapper, SignUpWrapper } from './SignUp.styles';
 import type { ISignUpForm } from './SignUp.types';
 
 export const SignUp = () => {
+	const { t } = useTranslation();
+
 	const {
 		register,
 		handleSubmit,
@@ -24,13 +27,19 @@ export const SignUp = () => {
 	};
 
 	return (
-		<SignUpWrapper component='form' onSubmit={handleSubmit(onSubmit)} height={'100%'} borderRadius={10} boxShadow={shadowPress}>
+		<SignUpWrapper
+			component='form'
+			onSubmit={handleSubmit(onSubmit)}
+			height={'100%'}
+			borderRadius={10}
+			boxShadow={shadowPress}
+		>
 			<LogoWrapper display='flex' justifyContent='center'>
-				<Brand color={palette.primary.main}/>
+				<Brand color={palette.primary.main} />
 			</LogoWrapper>
 			<Box display='flex' flexDirection='row'>
 				<InputFields
-					label='first name'
+					label={t('components.form.signup.firstName')}
 					fullWidth
 					id='firstName'
 					{...register('firstName')}
@@ -38,7 +47,7 @@ export const SignUp = () => {
 					helperText={errors.firstName?.message}
 				/>
 				<InputFields
-					label='last name'
+					label={t('components.form.signup.lastName')}
 					fullWidth
 					id='lastName'
 					{...register('lastName')}
@@ -47,7 +56,7 @@ export const SignUp = () => {
 				/>
 			</Box>
 			<InputFields
-				label='email'
+				label={t('globals.email')}
 				fullWidth
 				id='email'
 				{...register('email')}
@@ -56,9 +65,9 @@ export const SignUp = () => {
 				helperText={errors.email?.message}
 			/>
 			<InputFields
-				fullWidth
+				label={t('globals.password')}
 				id='password'
-				label='Password'
+				fullWidth
 				type='password'
 				autoComplete='password'
 				{...register('password')}
@@ -66,9 +75,9 @@ export const SignUp = () => {
 				helperText={errors.password?.message}
 			/>
 			<InputFields
+				label={t('components.form.confirm-password')}
 				fullWidth
 				id='confirmPassword'
-				label='Confirm Password'
 				type='password'
 				autoComplete='password'
 				{...register('confirmPassword')}
@@ -77,12 +86,12 @@ export const SignUp = () => {
 			/>
 			<Box>
 				<Button type='submit' fullWidth color='primary' variant='contained'>
-          Sign Up
+					{t('components.form.signup.title')}
 				</Button>
 				<Box my={3} display='flex' justifyContent='center'>
-					
 					<Typography variant='caption'>
-            Already have an account? <Link> Sign in here</Link>
+						{t('components.form.signup.already-have-acc')}
+						<Link> {t('components.form.signup.signin-here-link')}</Link>
 					</Typography>
 				</Box>
 			</Box>
