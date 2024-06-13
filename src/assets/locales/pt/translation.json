@@ -6,12 +6,25 @@
   "components": {
     "form": {
       "confirm-password": "confirmar senha",
+      "keep-loggedin": "por favor, mantenha-me conectado",
       "signup": {
         "title": "cadastre-se",
         "firstName": "nome",
         "lastName": "sobrenome",
         "already-have-acc": "você já tem uma conta?",
         "signin-here-link": "clique aqui para entrar"
+      },
+      "signin": {
+        "title": "entrar",
+        "dont-have-acc": "você ainda não tem uma conta?",
+        "signup-here-link": "cadastre-se aqui"
+      },
+       "validation": {
+        "required": "{{name}} é um campo obrigatório",
+        "invalid": "{{name}} não é válido",
+        "characters": "senha deve conter no mínimo {{numChar}} caracteres",
+        "pass-rules": "sua senha deve conter ao menos uma letra maiúscula, uma letra minúscula, um número e um caractere especial (@€#$+...) ",
+        "match": "{{name}} precisa coincidir"
       }
     },
     "input": {

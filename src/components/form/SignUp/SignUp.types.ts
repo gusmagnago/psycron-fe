@@ -1,7 +1,7 @@
 export interface ISignUpForm {
-  confirmPassword: string;
+  confirmPassword?: string;
   email: string;
-  firstName: string;
-  lastName: string;
+  firstName?: string;
+  lastName?: string;
   password: string;
 }
