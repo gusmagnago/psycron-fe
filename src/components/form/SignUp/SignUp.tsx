@@ -1,30 +1,19 @@
-import type { Resolver, SubmitHandler } from 'react-hook-form';
-import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import { yupResolver } from '@hookform/resolvers/yup';
 import { Box, Button, Grid } from '@mui/material';
 
 import { PasswordInput } from '../components/password/PasswordInput';
 import { SignLayout } from '../components/shared/SignLayout';
 import { InputFields } from '../components/shared/styles';
 
-import { signUpSchema } from './schema/SignUpSchema';
-import type { ISignUpForm } from './SignUp.types';
+import type { SignUpFormTypes } from './SignUp.types';
 
-export const SignUp = () => {
+export const SignUp = ({
+	handleSubmit,
+	errors,
+	onSubmit,
+	register,
+}: SignUpFormTypes) => {
 	const { t } = useTranslation();
-
-	const {
-		register,
-		handleSubmit,
-		formState: { errors },
-	} = useForm<ISignUpForm>({
-		resolver: yupResolver(signUpSchema) as unknown as Resolver<ISignUpForm>,
-	});
-
-	const onSubmit: SubmitHandler<ISignUpForm> = (data) => {
-		console.log('data', data);
-	};
 
 	return (
 		<SignLayout>
