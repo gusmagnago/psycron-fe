@@ -1,5 +1,6 @@
 // .storybook/preview.tsx
 import React from 'react';
+import i18n from '../src/i18n.ts';
 import { ThemeProvider, CssBaseline } from '@mui/material';
 
 import theme from '../src/theme';
@@ -13,7 +14,15 @@ const preview = {
       </ThemeProvider>
     ),
   ],
+  globals: {
+    locale: 'en_US',
+    locales: {
+      en: 'English (US)',
+      pt: 'Português (BR)',
+    },
+  },
   parameters: {
+    i18n,
     controls: {
       expanded: true,
       matchers: {

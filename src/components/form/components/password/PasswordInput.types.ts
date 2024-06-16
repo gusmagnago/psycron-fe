@@ -1,11 +1,10 @@
+import type {
+	FieldErrors, FieldValues,
+	UseFormRegister,
+} from 'react-hook-form';
 
-import type { FieldErrors, UseFormRegister } from 'react-hook-form';
-
-import type { ISignInForm } from '../../SignIn/SignIn.types';
-import type { ISignUpForm } from '../../SignUp/SignUp.types';
-
-export interface PasswordInputProps {
-  errors: FieldErrors<ISignUpForm>;
+export interface PasswordInputProps<T extends FieldValues> {
+  errors: FieldErrors<T>;
   hasToConfirm?: boolean;
-  register: UseFormRegister<ISignUpForm | ISignInForm>;
+  register: UseFormRegister<T>;
 }
