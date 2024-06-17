@@ -1,5 +1,6 @@
 export type CardActionsProps = {
     actionName: string
+    hasSecondAction?: boolean;
     hasTertiary?: boolean;
     onClick: () => void,
     secondAction?: () => void,
