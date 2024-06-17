@@ -6,6 +6,7 @@ import { ChevronDown } from 'lucide-react';
 import { ControlledWrapper } from './Select.styles';
 import type { SelectProps } from './Select.types';
 
+
 export const Select = ({
 	items,
 	onChangeSelect,
