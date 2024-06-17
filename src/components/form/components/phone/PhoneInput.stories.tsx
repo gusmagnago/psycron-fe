@@ -21,6 +21,9 @@ const meta: Meta<typeof PhoneInput> = {
 			},
 		},
 	},
+	args: {
+		registerName: 'phone'
+	}
 };
 
 export default meta;
@@ -34,6 +37,6 @@ export const Default: Story = {
 			formState: { errors },
 		} = useForm();
 
-		return <PhoneInput errors={errors} register={register} />;
+		return <PhoneInput errors={errors} register={register} registerName='phone'/>;
 	},
 };

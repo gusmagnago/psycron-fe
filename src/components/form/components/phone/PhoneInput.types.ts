@@ -7,4 +7,5 @@ import type {
 export interface PhoneInputProps<T extends FieldValues> {
   errors: FieldErrors<T>;
   register: UseFormRegister<T>;
+  registerName: 'phone' | 'whatsapp'
 }

@@ -1,7 +1,9 @@
 {
   "globals": {
     "email": "email",
-    "password": "password"
+    "password": "password",
+    "phone": "phone",
+    "whatsapp": "whatsapp"
   },
   "components": {
     "form": {
@@ -43,7 +45,7 @@
     "input": {
       "phone-input": {
         "select-label": "country",
-        "phone-num-label": "your phone number here"
+        "phone-num-label": "{{registerName}} number here"
       }
     }
   }

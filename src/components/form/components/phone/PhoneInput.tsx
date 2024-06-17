@@ -14,6 +14,7 @@ import type { PhoneInputProps } from './PhoneInput.types';
 
 export const PhoneInput = <T extends FieldValues>({
 	register,
+	registerName,
 	errors,
 }: PhoneInputProps<T>) => {
 	const { t } = useTranslation();
@@ -46,15 +47,16 @@ export const PhoneInput = <T extends FieldValues>({
 		});
 	};
 
+	const inputRegisterName = t(`globals.${registerName}`)
+
 	return (
 		<Grid
 			container
 			columns={6}
 			direction='row'
-			justifyContent='center'
+			justifyContent='flex-end'
 			alignItems='center'
 			columnSpacing={3}
-			p={4}
 		>
 			<Grid item>
 				<CountryFlag>
@@ -70,18 +72,20 @@ export const PhoneInput = <T extends FieldValues>({
 					items={countries}
 					required
 					selectLabel={t('components.input.phone-input.select-label')}
-					onChangeSelect={handlePhoneChange}
+					{...register(registerName as Path<T>)}
 					subtitle
 					value={selectedCountry.callingCode ?? ''}
 					fullWidth
-					{...register('phone' as Path<T>)}
+					onChangeSelect={handlePhoneChange}
 					error={!!errors?.route}
 				/>
 			</Grid>
 			<Grid item xs={3}>
 				<TextField
 					type='number'
-					label={t('components.input.phone-input.phone-num-label')}
+					label={t('components.input.phone-input.phone-num-label', {
+						registerName: inputRegisterName,
+					})}
 					required
 					fullWidth
 				/>
