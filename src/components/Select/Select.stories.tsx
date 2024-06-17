@@ -9,6 +9,7 @@ const DefaultSelect = (args: SelectProps) => <Select {...args} />;
 const meta: Meta<typeof Select> = {
 	title: 'Select',
 	component: DefaultSelect,
+	tags: ['autodocs']
 };
 
 export default meta;

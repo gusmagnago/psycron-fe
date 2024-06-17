@@ -12,6 +12,15 @@ const DefaultPasswordInput = (args: PasswordInputProps<FieldValues>) => (
 const meta: Meta<typeof PasswordInput> = {
 	title: 'Form / Components / Password Input',
 	component: DefaultPasswordInput,
+	tags: ['autodocs'],
+	parameters: {
+		docs: {
+			description: {
+				component:
+          'This component should be used within a form tag as part of a group of inputs in a form. It handles password input scenarios, including visibility toggling, and ensures that both password and confirmation fields are managed and validated properly.',
+			},
+		},
+	},
 };
 
 export default meta;

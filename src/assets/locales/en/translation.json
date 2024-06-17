@@ -25,6 +25,19 @@
         "characters": "password must be at least {{numChar}} characters",
         "pass-rules": "password must contain at least one uppercase letter, one lowercase letter, one number, and one special character",
         "match": "{{name}} must match"
+      },
+      "address-form": {
+        "search": "search your address here",
+        "search-note": "You can start searching for your address, or type it in the below fields",
+        "street": "street",
+        "number": "nº",
+        "hood": "neighbourhood",
+        "more-info": "complementary info",
+        "city": "city",
+        "state": "state / province",
+        "zip": "zip code",
+        "country": "country",
+        "more-info-bttn": "add more info"
       }
     },
     "input": {

@@ -30,7 +30,6 @@ export const SignLayout: FC<{ children: ReactNode; isSignin?: boolean }> = ({
 						? t('components.form.signin.dont-have-acc')
 						: t('components.form.signup.already-have-acc')}
 					<Link>
-						{' '}
 						{isSignin
 							? t('components.form.signin.signup-here-link')
 							: t('components.form.signup.signin-here-link')}

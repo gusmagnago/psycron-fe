@@ -25,6 +25,19 @@
         "characters": "senha deve conter no mínimo {{numChar}} caracteres",
         "pass-rules": "sua senha deve conter ao menos uma letra maiúscula, uma letra minúscula, um número e um caractere especial (@€#$+...) ",
         "match": "{{name}} precisa coincidir"
+      },
+      "address-form": {
+        "search": "procure o seu endereço aqui",
+        "search-note": "Você pode começar pesquisando o seu indereço aqui, ou então preencher os campos abaixo",
+        "street": "rua",
+        "number": "nº",
+        "hood": "localidade / bairro",
+        "more-info": "complemento",
+        "city": "cidade",
+        "state": "estado",
+        "zip": "cep",
+        "country": "país",
+        "more-info-bttn": "adicione um complemento"
       }
     },
     "input": {

@@ -9,6 +9,7 @@ const DefaultSignIn = (args: SignInFormTypes) => <SignIn {...args} />;
 const meta: Meta<typeof SignIn> = {
 	title: 'Form / SignIn',
 	component: DefaultSignIn,
+	tags: ['autodocs']
 };
 
 export default meta;

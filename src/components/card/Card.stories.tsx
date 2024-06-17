@@ -19,6 +19,7 @@ const CardActionComponent = (args: CardActionsProps) => (
 const meta: Meta<typeof Card> = {
 	title: 'Card',
 	component: DefaultCardComponent,
+	tags: ['autodocs'],
 };
 
 export default meta;
