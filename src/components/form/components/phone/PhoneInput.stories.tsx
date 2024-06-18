@@ -16,14 +16,19 @@ const meta: Meta<typeof PhoneInput> = {
 	parameters: {
 		docs: {
 			description: {
-				component:
-          'This component should be used within a form tag as part of a group of inputs in a form. It handles the phone number input scenario by allowing users to select their country, automatically populating the country code, and providing validation feedback.',
+				component: `
+        This component should be used within a form tag as part of a group of inputs in a form. 
+        It handles the phone number input scenario by allowing users to select their country, 
+        automatically populating the country code, and providing validation feedback.
+        
+        Note: Phone number validation should be performed using libphonenumber-js library within Yup validations.
+      `,
 			},
 		},
 	},
 	args: {
-		registerName: 'phone'
-	}
+		registerName: 'phone',
+	},
 };
 
 export default meta;
@@ -37,6 +42,8 @@ export const Default: Story = {
 			formState: { errors },
 		} = useForm();
 
-		return <PhoneInput errors={errors} register={register} registerName='phone'/>;
+		return (
+			<PhoneInput errors={errors} register={register} registerName='phone' />
+		);
 	},
 };

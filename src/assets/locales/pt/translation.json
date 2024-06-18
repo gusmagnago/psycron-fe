@@ -45,7 +45,8 @@
     "input": {
       "phone-input": {
         "select-label": "país",
-        "phone-num-label": "número de {{registerName}}"
+        "phone-num-label": "número de {{registerName}}",
+        "phone-number-guide": "por favor, forneça seu número de telefone com o código da cidade"
       }
     }
   }

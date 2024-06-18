@@ -14,6 +14,7 @@ const tooltipeStyles = ({ palette }: Theme): Record<string, CSSObject> => {
 			filter:
         `drop-shadow(5px 5px 10px ${tertiary.main}) drop-shadow(-5px -5px 10px ${background.paper});`,
 			padding: `${spacing.xs} ${spacing.small}`,
+			borderRadius: spacing.mediumSmall,
 			[`${tooltipClasses.tooltipArrow}`]: {
 				backgroundColor: tertiary.surface.light,
 				color: 'red',

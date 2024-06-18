@@ -45,7 +45,8 @@
     "input": {
       "phone-input": {
         "select-label": "country",
-        "phone-num-label": "{{registerName}} number here"
+        "phone-num-label": "{{registerName}} number here",
+        "phone-number-guide": "please provide a phone number including the city code if applicable."
       }
     }
   }

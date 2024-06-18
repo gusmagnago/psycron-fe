@@ -2,14 +2,15 @@ import { useEffect, useState } from 'react';
 import type { FieldValues, Path } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import type { SelectChangeEvent } from '@mui/material';
-import { Grid, TextField } from '@mui/material';
+import { Box, Grid, IconButton, Tooltip } from '@mui/material';
 import countryList from '@psycron/assets/countries/countries.json';
-import { Logo } from '@psycron/components/icons';
+import { Info, Logo } from '@psycron/components/icons';
 import { Select } from '@psycron/components/Select/Select';
 import { useUserGeolocation } from '@psycron/context/CountryContext';
 import type { CountryDataSimple } from '@psycron/context/CountryContext.types';
+import { palette } from '@psycron/theme/palette/palette.theme';
 
-import { CountryFlag } from './PhoneInput.styles';
+import { CountryFlag, PhoneNumberField } from './PhoneInput.styles';
 import type { PhoneInputProps } from './PhoneInput.types';
 
 export const PhoneInput = <T extends FieldValues>({
@@ -47,7 +48,7 @@ export const PhoneInput = <T extends FieldValues>({
 		});
 	};
 
-	const inputRegisterName = t(`globals.${registerName}`)
+	const inputRegisterName = t(`globals.${registerName}`);
 
 	return (
 		<Grid
@@ -72,23 +73,37 @@ export const PhoneInput = <T extends FieldValues>({
 					items={countries}
 					required
 					selectLabel={t('components.input.phone-input.select-label')}
-					{...register(registerName as Path<T>)}
+					{...register('countryCode' as Path<T>)}
 					subtitle
 					value={selectedCountry.callingCode ?? ''}
 					fullWidth
 					onChangeSelect={handlePhoneChange}
-					error={!!errors?.route}
 				/>
 			</Grid>
-			<Grid item xs={3}>
-				<TextField
-					type='number'
+			<Grid item xs={3} display='flex' alignItems="center">
+				<PhoneNumberField
+					type='tel'
 					label={t('components.input.phone-input.phone-num-label', {
 						registerName: inputRegisterName,
 					})}
 					required
 					fullWidth
+					{...register(registerName as Path<T>)}
+					error={!!errors?.[registerName]}
+					helperText={errors?.[registerName]?.message as string}
 				/>
+				<Box marginLeft={2}>
+					<Tooltip
+						title={t('components.input.phone-input.phone-number-guide')}
+						arrow
+						
+					>
+						<IconButton>
+							<Info color={palette.info.main} />
+						</IconButton>
+					</Tooltip>
+
+				</Box>
 			</Grid>
 		</Grid>
 	);
