@@ -1,13 +1,13 @@
 import type { ReactNode } from 'react';
 import type { FieldValues, UseFormHandleSubmit } from 'react-hook-form';
 
-export interface FormField {
+export interface FormWrapperField {
   id: string;
   label: string;
   type: string;
 }
 
-export interface FormProps<T extends FieldValues> {
+export interface FormWrapperProps<T extends FieldValues> {
   children: ReactNode;
   formDescription: string;
   formTitle: string;

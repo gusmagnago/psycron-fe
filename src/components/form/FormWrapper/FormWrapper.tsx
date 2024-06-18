@@ -3,10 +3,10 @@ import { useTranslation } from 'react-i18next';
 import type { ModalProps } from '@mui/material';
 import { Box, Button, Modal } from '@mui/material';
 
-import { ModalContentWrapper } from './Form.styles';
-import type { FormProps } from './Form.types';
+import { ModalContentWrapper } from './FormWrapper.styles';
+import type { FormWrapperProps } from './FormWrapper.types';
 
-export const Form = <T extends FieldValues>({
+export const FormWrapper = <T extends FieldValues>({
 	handleSubmit,
 	onSubmit,
 	submitButtonLabel,
@@ -15,7 +15,7 @@ export const Form = <T extends FieldValues>({
 	formDescription,
 	open,
 	onClose,
-}: FormProps<T> & ModalProps) => {
+}: FormWrapperProps<T> & ModalProps) => {
 	const { t } = useTranslation();
 
 	return (
