@@ -1,5 +1,7 @@
 import { useTranslation } from 'react-i18next';
-import { Box, Button, Checkbox, FormControlLabel } from '@mui/material';
+import { Box } from '@mui/material';
+import { Button } from '@psycron/components/button/Button';
+import { Checkbox } from '@psycron/components/checkbox/Checkbox';
 
 import { PasswordInput } from '../components/password/PasswordInput';
 import { SignLayout } from '../components/shared/SignLayout';
@@ -29,13 +31,12 @@ export const SignIn = ({
 				/>
 				<PasswordInput errors={errors} register={register} />
 				<Box>
-					<Button type='submit' fullWidth color='primary' variant='contained'>
+					<Button type='submit' fullWidth>
 						{t('components.form.signin.title')}
 					</Button>
 					<Box>
-						<FormControlLabel
-							control={<Checkbox />}
-							label={t('components.form.keep-loggedin')}
+						<Checkbox
+							labelKey={t('components.form.keep-loggedin')}
 							{...register('stayConnected')}
 						/>
 					</Box>

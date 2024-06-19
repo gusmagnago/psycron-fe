@@ -2,13 +2,8 @@ import { useState } from 'react';
 import type { FieldValues, Path } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import type { TextFieldProps } from '@mui/material';
-import {
-	Checkbox,
-	FormControlLabel,
-	Grid,
-	TextField,
-	Typography,
-} from '@mui/material';
+import { Grid, TextField, Typography } from '@mui/material';
+import { Checkbox } from '@psycron/components/checkbox/Checkbox';
 import { GOOGLE_MAPS_API_KEY } from '@psycron/utils/variables';
 import type { Libraries } from '@react-google-maps/api';
 import { Autocomplete, useLoadScript } from '@react-google-maps/api';
@@ -240,14 +235,10 @@ export const AddressForm = <T extends FieldValues>({
 				/>
 			</Grid>
 			<Grid item xs={8} display='flex' alignItems='center'>
-				<FormControlLabel
-					control={
-						<Checkbox
-							onChange={() => setAddMoreInfo((prev) => !prev)}
-							value={addMoreInfo}
-						/>
-					}
-					label={t('components.form.address-form.more-info-bttn')}
+				<Checkbox
+					onChange={() => setAddMoreInfo((prev) => !prev)}
+					value={addMoreInfo}
+					labelKey={t('components.form.address-form.more-info-bttn')}
 				/>
 			</Grid>
 		</Grid>

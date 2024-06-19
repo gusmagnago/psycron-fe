@@ -1,7 +1,8 @@
 import type { FieldValues } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import type { ModalProps } from '@mui/material';
-import { Box, Button, Modal } from '@mui/material';
+import { Box, Modal } from '@mui/material';
+import { Button } from '@psycron/components/button/Button';
 
 import { ModalContentWrapper } from './FormWrapper.styles';
 import type { FormWrapperProps } from './FormWrapper.types';
@@ -28,7 +29,7 @@ export const FormWrapper = <T extends FieldValues>({
 			<ModalContentWrapper onSubmit={handleSubmit(onSubmit)}>
 				{children}
 				<Box>
-					<Button type='submit' fullWidth color='primary' variant='contained'>
+					<Button type='submit' fullWidth>
 						{t(submitButtonLabel)}
 					</Button>
 				</Box>

@@ -1,5 +1,6 @@
 import { useTranslation } from 'react-i18next';
-import { Box, Button } from '@mui/material';
+import { Box } from '@mui/material';
+import { Button } from '@psycron/components/button/Button';
 
 import { NameForm } from '../components/name/NameForm';
 import { PasswordInput } from '../components/password/PasswordInput';
@@ -31,7 +32,7 @@ export const SignUp = ({
 				/>
 				<PasswordInput errors={errors} register={register} hasToConfirm />
 				<Box>
-					<Button type='submit' fullWidth color='primary' variant='contained'>
+					<Button type='submit'fullWidth>
 						{t('components.form.signup.title')}
 					</Button>
 				</Box>

@@ -2,10 +2,11 @@ import { useEffect, useState } from 'react';
 import type { FieldValues, Path } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import type { SelectChangeEvent } from '@mui/material';
-import { Grid, IconButton, Tooltip } from '@mui/material';
+import { Grid } from '@mui/material';
 import countryList from '@psycron/assets/countries/countries.json';
 import { Info, Logo } from '@psycron/components/icons';
-import { Select } from '@psycron/components/Select/Select';
+import { Select } from '@psycron/components/select/Select';
+import { Tooltip } from '@psycron/components/tooltip/Tooltip';
 import { useUserGeolocation } from '@psycron/context/CountryContext';
 import type { CountryDataSimple } from '@psycron/context/CountryContext.types';
 import { palette } from '@psycron/theme/palette/palette.theme';
@@ -94,12 +95,8 @@ export const PhoneInput = <T extends FieldValues>({
 			</Grid>
 			<Grid item xs={1}>
 				<Tooltip
-					title={t('components.input.phone-input.phone-number-guide')}
-					arrow
-				>
-					<IconButton>
-						<Info color={palette.info.main} />
-					</IconButton>
+					title={t('components.input.phone-input.phone-number-guide')}			>
+					<Info color={palette.info.main} />
 				</Tooltip>
 
 			</Grid>
