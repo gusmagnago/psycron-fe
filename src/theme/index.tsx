@@ -11,6 +11,7 @@ import formLabel from './form/form-label/formLabel.theme';
 import inputStyles from './input/input.theme';
 import labelStyles from './input/label/label.theme';
 import inputOutlinedStyles from './input/outlined/inputOutlined.theme';
+import modalStyles from './modal/modal.theme';
 import paginationItemStyles from './pagination/pagination.theme';
 import { palette } from './palette/palette.theme';
 import type { GrayShades } from './palette/palette.types';
@@ -103,6 +104,9 @@ const theme = createTheme({
 		},
 		MuiFormControl: {
 			styleOverrides: formControl()
+		},
+		MuiModal: {
+			styleOverrides: modalStyles()
 		}
 	},
 });

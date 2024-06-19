@@ -1,23 +1,55 @@
 {
   "globals": {
     "email": "e-mail",
-    "password": "senha"
+    "password": "senha",
+    "phone": "telefone",
+    "whatsapp": "whatsapp"
   },
   "components": {
     "form": {
       "confirm-password": "confirmar senha",
+      "keep-loggedin": "por favor, mantenha-me conectado",
       "signup": {
         "title": "cadastre-se",
         "firstName": "nome",
         "lastName": "sobrenome",
         "already-have-acc": "você já tem uma conta?",
         "signin-here-link": "clique aqui para entrar"
+      },
+      "signin": {
+        "title": "entrar",
+        "dont-have-acc": "você ainda não tem uma conta?",
+        "signup-here-link": "cadastre-se aqui"
+      },
+      "validation": {
+        "required": "{{name}} é um campo obrigatório",
+        "invalid": "{{name}} não é válido",
+        "characters": "senha deve conter no mínimo {{numChar}} caracteres",
+        "pass-rules": "sua senha deve conter ao menos uma letra maiúscula, uma letra minúscula, um número e um caractere especial (@€#$+...) ",
+        "match": "{{name}} precisa coincidir"
+      },
+      "address-form": {
+        "search": "procure o endereço aqui",
+        "search-note": "Você pode começar pesquisando o indereço aqui, ou então preencher os campos abaixo",
+        "street": "rua",
+        "number": "nº",
+        "hood": "localidade / bairro",
+        "more-info": "complemento",
+        "city": "cidade",
+        "state": "estado",
+        "zip": "cep",
+        "country": "país",
+        "more-info-bttn": "adicione um complemento"
+      },
+      "add-patient": {
+        "name": "adicionar paciente"
       }
     },
     "input": {
       "phone-input": {
         "select-label": "país",
-        "phone-num-label": "seu número de telefone"
+        "phone-num-label": "número de {{registerName}}",
+        "phone-number-guide": "por favor, forneça seu número de telefone com o código da cidade"
       }
     }
   }

@@ -6,22 +6,21 @@ import type { Palette } from '../palette/palette.types';
 
 const checkboxStyles = ({ palette }: Theme): Record<string, CSSObject> => {
 	const {
-		tertiary
+		secondary
 	} = palette as unknown as Palette;
 
 	return {
 		'&.Mui-checked': {
-			color: tertiary.action.press,
+			color: secondary.action.press,
 		},
 		root: {
-			color: tertiary.main,
+			color: secondary.main,
 			[`&.${checkboxClasses.checked}`]: {
-				color: tertiary.action.press,
+				color: secondary.action.press,
 			},
 			[`&.${checkboxClasses.disabled}`]: {
-				color: tertiary.action.disabled,
+				color: secondary.action.disabled,
 			},
-
 		},
 	};
 };

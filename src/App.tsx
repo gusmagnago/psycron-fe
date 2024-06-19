@@ -1,9 +1,12 @@
-import { SignUp } from './components/form/SignUp/SignUp';
+import { AddPatientForm } from './components/form/AddPatient/AddPatientForm';
 
 function App() {
+
+
+
 	return (
 		<>
-			<SignUp />
+			<AddPatientForm shortButton={false} />
 		</>
 	);
 }

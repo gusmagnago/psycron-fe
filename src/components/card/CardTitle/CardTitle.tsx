@@ -1,4 +1,4 @@
-import { Button, Typography } from '@mui/material';
+import { Button, Grid, Typography } from '@mui/material';
 import { palette } from '@psycron/theme/palette/palette.theme';
 
 import { CardTitleWrapper, TitleWrapper } from './CardTitle.styles';
@@ -16,36 +16,47 @@ export const CardTitle = ({
 }: CardTitleProps) => {
 	return (
 		<CardTitleWrapper>
-			<TitleWrapper>
-				<Typography variant='h5'>{title}</Typography>
-				{subheader ? (
-					<Typography variant='subtitle1' color={palette.text.secondary}>
-						{subheader}
-					</Typography>
-				) : null}
-			</TitleWrapper>
-			{hasFirstChip ? (
-				<div>
-					<Button
-						color='primary'
-						onClick={firstChip}
-						size='small'
-						variant='contained'
-					>
-						{firstChipName}
-					</Button>
-					{hasSecondChip ? (
-						<Button
-							color='secondary'
-							onClick={secondChip}
-							size='small'
-							variant='outlined'
-						>
-							{secondChipName}
-						</Button>
+			<Grid
+				container
+				columns={12}
+				justifyContent="space-between"
+				alignItems='center'
+			>
+				<TitleWrapper>
+					<Typography variant='h5'>{title}</Typography>
+					{subheader?.length ? (
+						<Typography variant='subtitle1' color={palette.text.secondary}>
+							{subheader}
+						</Typography>
 					) : null}
-				</div>
-			) : null}
+				</TitleWrapper>
+				{hasFirstChip ? (
+					<Grid container xs={4} columnSpacing={2} justifyContent="flex-end" >
+						<Grid item>
+							<Button
+								color='primary'
+								onClick={firstChip}
+								size='small'
+								variant='contained'
+							>
+								{firstChipName}
+							</Button>
+						</Grid>
+						<Grid item>
+							{hasSecondChip ? (
+								<Button
+									color='secondary'
+									onClick={secondChip}
+									size='small'
+									variant='outlined'
+								>
+									{secondChipName}
+								</Button>
+							) : null}
+						</Grid>
+					</Grid>
+				) : null}
+			</Grid>
 		</CardTitleWrapper>
 	);
 };

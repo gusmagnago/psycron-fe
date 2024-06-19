@@ -90,6 +90,7 @@ const BrandIcons = () => {
 const meta: Meta = {
 	title: 'Icons',
 	component: IconList,
+	tags: ['autodocs']
 };
 
 export default meta;

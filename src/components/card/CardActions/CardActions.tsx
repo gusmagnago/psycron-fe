@@ -1,4 +1,4 @@
-import { Box, Button } from '@mui/material';
+import { Box, Button, Grid } from '@mui/material';
 
 import type { CardActionsProps } from './CardActions.types';
 
@@ -10,36 +10,42 @@ export const CardActions = ({
 	tertiaryAction,
 	tertiaryActionName,
 	hasTertiary,
+	hasSecondAction,
 }: CardActionsProps) => {
 	return (
-		<Box
-			width='100%'
-			display='flex'
-			flexDirection='column'
-			justifyContent='flex-end'
-		>
-			<Box
-				display='flex'
-				flexDirection='row'
+		<Grid container columns={12} justifyContent='flex-end'>
+			<Grid
+				container
 				justifyContent='flex-end'
 				marginBottom={2}
+				columnSpacing={3}
 			>
-				<Button color='secondary' onClick={onClick} variant='contained'>
-					{actionName}
-				</Button>
-				{secondAction ? (
-					<Button color='primary' onClick={secondAction} variant='outlined'>
-						{secondActionName}
+				<Grid item>
+					<Button color='secondary' onClick={onClick} variant='contained'>
+						{actionName}
 					</Button>
+				</Grid>
+				{hasSecondAction ? (
+					<Grid item>
+						<Button color='primary' onClick={secondAction} variant='outlined'>
+							{secondActionName}
+						</Button>
+					</Grid>
 				) : null}
-			</Box>
+			</Grid>
 			{hasTertiary ? (
-				<Box display='flex' flexDirection='row' justifyContent='flex-end'>
-					<Button color='tertiary' onClick={tertiaryAction} variant='contained'>
-						{tertiaryActionName}
-					</Button>
-				</Box>
+				<Grid item>
+					<Box display='flex' flexDirection='row' justifyContent='flex-end'>
+						<Button
+							color='tertiary'
+							onClick={tertiaryAction}
+							variant='contained'
+						>
+							{tertiaryActionName}
+						</Button>
+					</Box>
+				</Grid>
 			) : null}
-		</Box>
+		</Grid>
 	);
 };

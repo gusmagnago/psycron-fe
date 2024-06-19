@@ -1,23 +1,55 @@
 {
   "globals": {
     "email": "email",
-    "password": "password"
+    "password": "password",
+    "phone": "phone",
+    "whatsapp": "whatsapp"
   },
   "components": {
     "form": {
       "confirm-password": "confirm password",
+      "keep-loggedin": "please keep me logged in",
       "signup": {
         "title": "sign up",
         "firstName": "first name",
         "lastName": "last name",
         "already-have-acc": "already have an account?",
         "signin-here-link": "sign in here"
+      },
+      "signin": {
+        "title": "sign in",
+        "dont-have-acc": "you dont have an account yet?",
+        "signup-here-link": "sign up here"
+      },
+      "validation": {
+        "required": "{{name}} is required",
+        "invalid": "{{name}} is invalid",
+        "characters": "password must be at least {{numChar}} characters",
+        "pass-rules": "password must contain at least one uppercase letter, one lowercase letter, one number, and one special character",
+        "match": "{{name}} must match"
+      },
+      "address-form": {
+        "search": "search the address here",
+        "search-note": "You can start searching for the address, or type it in the below fields.",
+        "street": "street",
+        "number": "nº",
+        "hood": "neighbourhood",
+        "more-info": "complementary info",
+        "city": "city",
+        "state": "state / province",
+        "zip": "zip code",
+        "country": "country",
+        "more-info-bttn": "add more info"
+      },
+      "add-patient": {
+        "name": "add patient"
       }
     },
     "input": {
       "phone-input": {
         "select-label": "country",
-        "phone-num-label": "your phone number here"
+        "phone-num-label": "{{registerName}} number here",
+        "phone-number-guide": "please provide a phone number including the city code if applicable."
       }
     }
   }

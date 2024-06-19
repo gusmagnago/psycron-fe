@@ -2,13 +2,14 @@ import type { SelectChangeEvent } from '@mui/material';
 import type { Meta, StoryObj } from '@storybook/react';
 
 import { Select } from './Select';
-import type { SelectProps } from './Select.types';
+import type { SelectComponentProps } from './Select.types';
 
-const DefaultSelect = (args: SelectProps) => <Select {...args} />;
+const DefaultSelect = (args: SelectComponentProps) => <Select {...args}/>;
 
 const meta: Meta<typeof Select> = {
 	title: 'Select',
 	component: DefaultSelect,
+	tags: ['autodocs']
 };
 
 export default meta;
