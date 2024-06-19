@@ -22,6 +22,7 @@ import { Error as IconError } from './Error';
 import { HealthTracker as IconHealthTracker } from './HealthTracker';
 import { Info as IconInfo } from './Info';
 export { Language } from './Language';
+import { AddPatient as IconAddPatient } from './user/patient/AddPatient';
 import { Login as IconLogin } from './Login';
 import { Logout as IconLogout } from './Logout';
 import { Menu as IconMenu } from './Menu';
@@ -36,6 +37,7 @@ import { SendInvoice as IconSendInvoice } from './SendInvoice';
 import { Visible as IconVisible } from './Visible';
 
 export const Address = withIconColor(IconAddress);
+export const AddPatient = withIconColor(IconAddPatient);
 export const Alert = withIconColor(IconAlert);
 export const Appointment = withIconColor(IconAppointment);
 export const Brand = withIconColor(IconBrand);

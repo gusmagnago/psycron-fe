@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import type { FieldValues, Path } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import type { SelectChangeEvent } from '@mui/material';
-import { Box, Grid, IconButton, Tooltip } from '@mui/material';
+import { Grid, IconButton, Tooltip } from '@mui/material';
 import countryList from '@psycron/assets/countries/countries.json';
 import { Info, Logo } from '@psycron/components/icons';
 import { Select } from '@psycron/components/Select/Select';
@@ -53,13 +53,12 @@ export const PhoneInput = <T extends FieldValues>({
 	return (
 		<Grid
 			container
-			columns={6}
+			columns={12}
 			direction='row'
-			justifyContent='flex-end'
 			alignItems='center'
-			columnSpacing={3}
+			columnSpacing={2}
 		>
-			<Grid item>
+			<Grid item xs={2}>
 				<CountryFlag>
 					{countryData.callingCode === null ? (
 						<Logo />
@@ -68,7 +67,7 @@ export const PhoneInput = <T extends FieldValues>({
 					)}
 				</CountryFlag>
 			</Grid>
-			<Grid item xs={2}>
+			<Grid item xs={4}>
 				<Select
 					items={countries}
 					required
@@ -80,7 +79,7 @@ export const PhoneInput = <T extends FieldValues>({
 					onChangeSelect={handlePhoneChange}
 				/>
 			</Grid>
-			<Grid item xs={3} display='flex' alignItems="center">
+			<Grid item xs={5}>
 				<PhoneNumberField
 					type='tel'
 					label={t('components.input.phone-input.phone-num-label', {
@@ -92,18 +91,17 @@ export const PhoneInput = <T extends FieldValues>({
 					error={!!errors?.[registerName]}
 					helperText={errors?.[registerName]?.message as string}
 				/>
-				<Box marginLeft={2}>
-					<Tooltip
-						title={t('components.input.phone-input.phone-number-guide')}
-						arrow
-						
-					>
-						<IconButton>
-							<Info color={palette.info.main} />
-						</IconButton>
-					</Tooltip>
+			</Grid>
+			<Grid item xs={1}>
+				<Tooltip
+					title={t('components.input.phone-input.phone-number-guide')}
+					arrow
+				>
+					<IconButton>
+						<Info color={palette.info.main} />
+					</IconButton>
+				</Tooltip>
 
-				</Box>
 			</Grid>
 		</Grid>
 	);

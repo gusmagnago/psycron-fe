@@ -25,7 +25,7 @@ export const FormWrapper = <T extends FieldValues>({
 			aria-labelledby={`modal-form-${formTitle}`}
 			aria-describedby={`modal-form-${formDescription}`}
 		>
-			<ModalContentWrapper component='form' onSubmit={handleSubmit(onSubmit)}>
+			<ModalContentWrapper onSubmit={handleSubmit(onSubmit)}>
 				{children}
 				<Box>
 					<Button type='submit' fullWidth color='primary' variant='contained'>

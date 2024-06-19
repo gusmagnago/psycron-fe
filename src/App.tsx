@@ -1,3 +1,4 @@
+import { AddPatientForm } from './components/form/AddPatient/AddPatientForm';
 
 function App() {
 
@@ -5,6 +6,7 @@ function App() {
 
 	return (
 		<>
+			<AddPatientForm shortButton={false} />
 		</>
 	);
 }

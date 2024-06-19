@@ -19,13 +19,14 @@ import type {
 	AddressComponentProps,
 } from './AddressForm.types';
 
-const LIBRARIES: Libraries = ['places'];
+const libraries: Libraries = ['places'];
 
 export const AddressForm = <T extends FieldValues>({
 	errors,
 	register,
 }: AddressComponentProps<T> & TextFieldProps) => {
 	const { t } = useTranslation();
+	
 
 	const [addressComponents, setAddressComponents] = useState<AddressComponent>({
 		address: '',
@@ -40,14 +41,14 @@ export const AddressForm = <T extends FieldValues>({
 
 	const [addMoreInfo, setAddMoreInfo] = useState<boolean>(false);
 
-	const { isLoaded, loadError } = useLoadScript({
+	const { isLoaded } =  useLoadScript({
 		googleMapsApiKey: GOOGLE_MAPS_API_KEY,
-		libraries: LIBRARIES,
+		libraries: libraries
 	});
+
 
 	const handlePlaceSelect = (autocomplete: google.maps.places.Autocomplete) => {
 		const place = autocomplete.getPlace();
-
 		const updatedAddressComponents: Partial<AddressComponent> = {
 			address: place.formatted_address || '',
 		};
@@ -100,7 +101,8 @@ export const AddressForm = <T extends FieldValues>({
 
 	return (
 		<Grid container columnSpacing={5} rowSpacing={5} pt={2} pb={5}>
-			{isLoaded && !loadError ? (
+			{isLoaded ? 
+			
 				<Grid item xs={12}>
 					<Autocomplete
 						onLoad={(autocomplete) =>
@@ -113,21 +115,18 @@ export const AddressForm = <T extends FieldValues>({
 							id='addressSearch'
 							name='addressSearch'
 							label={t('components.form.address-form.search')}
-							// value={addressComponents.address}
+							value={addressComponents.address}
 							onChange={handleChange}
 							fullWidth
 						/>
 					</Autocomplete>
-					<Typography
-						variant='caption'
-						textAlign='center'
-						textTransform='initial'
-					>
+					<Typography variant='caption' textAlign='center' textTransform='initial'>
 						{t('components.form.address-form.search-note')}
 					</Typography>
 				</Grid>
-			) : null}
 
+            
+				: null}
 			<Grid item xs={12} md={8}>
 				<TextField
 					label={t('components.form.address-form.street')}

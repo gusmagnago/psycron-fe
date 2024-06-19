@@ -29,8 +29,8 @@
         "match": "{{name}} must match"
       },
       "address-form": {
-        "search": "search your address here",
-        "search-note": "You can start searching for your address, or type it in the below fields",
+        "search": "search the address here",
+        "search-note": "You can start searching for the address, or type it in the below fields.",
         "street": "street",
         "number": "nº",
         "hood": "neighbourhood",
@@ -40,6 +40,9 @@
         "zip": "zip code",
         "country": "country",
         "more-info-bttn": "add more info"
+      },
+      "add-patient": {
+        "name": "add patient"
       }
     },
     "input": {

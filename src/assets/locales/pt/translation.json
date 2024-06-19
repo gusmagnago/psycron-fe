@@ -21,7 +21,7 @@
         "dont-have-acc": "você ainda não tem uma conta?",
         "signup-here-link": "cadastre-se aqui"
       },
-       "validation": {
+      "validation": {
         "required": "{{name}} é um campo obrigatório",
         "invalid": "{{name}} não é válido",
         "characters": "senha deve conter no mínimo {{numChar}} caracteres",
@@ -29,8 +29,8 @@
         "match": "{{name}} precisa coincidir"
       },
       "address-form": {
-        "search": "procure o seu endereço aqui",
-        "search-note": "Você pode começar pesquisando o seu indereço aqui, ou então preencher os campos abaixo",
+        "search": "procure o endereço aqui",
+        "search-note": "Você pode começar pesquisando o indereço aqui, ou então preencher os campos abaixo",
         "street": "rua",
         "number": "nº",
         "hood": "localidade / bairro",
@@ -40,6 +40,9 @@
         "zip": "cep",
         "country": "país",
         "more-info-bttn": "adicione um complemento"
+      },
+      "add-patient": {
+        "name": "adicionar paciente"
       }
     },
     "input": {

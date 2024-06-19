@@ -19,6 +19,9 @@ const labelStyles = ({ palette }: Theme): Record<string, CSSObject> => {
 				color: gray['04'],
 				zIndex: '1'
 			},
+			'&::first-letter': {
+				textTransform: 'uppercase',
+			},
 		}
 	};
 };
