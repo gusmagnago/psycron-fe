@@ -131,6 +131,7 @@ export const Introduction = () => {
 					</ListItem>
 				))}
 			</Box>
+			<Divider />
 			<Box>
 				{designSystem.map((category, index) => (
 					<Box key={index} m={2}>
@@ -196,7 +197,7 @@ export const Introduction = () => {
 										) : null}
 
 										{item.components ? (
-											<>
+											<Box ml={7}>
 												<Typography variant='subtitle2' fontWeight={600} my={4}>
                           Components
 												</Typography>
@@ -207,14 +208,17 @@ export const Introduction = () => {
 															<StoryLink
 																href={`/?path=/docs/${category.title.toLowerCase()}-${item.name.toLowerCase()}-components-${component.name}--docs`}
 															>
-																<Typography variant='body2'>
-																	{component.name}
+																<Typography
+																	variant='body2'
+																	textTransform='capitalize'
+																>
+																	{component.name.replace('-', ' ')}
 																</Typography>
 															</StoryLink>
 														</Box>
 													</ListItem>
 												))}
-											</>
+											</Box>
 										) : null}
 									</Box>
 								))}
