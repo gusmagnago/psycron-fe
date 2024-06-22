@@ -2,16 +2,19 @@
 import React from 'react';
 import i18n from '../src/i18n.ts';
 import { ThemeProvider, CssBaseline } from '@mui/material';
+import { BrowserRouter } from 'react-router-dom';
 
 import theme from '../src/theme';
 
 const preview = {
   decorators: [
     (Story, context) => (
-      <ThemeProvider theme={theme}>
-        <CssBaseline />
-        <Story {...context} />
-      </ThemeProvider>
+      <BrowserRouter>
+        <ThemeProvider theme={theme}>
+          <CssBaseline />
+          <Story {...context} />
+        </ThemeProvider>
+      </BrowserRouter>
     ),
   ],
   globals: {
@@ -23,6 +26,12 @@ const preview = {
   },
   parameters: {
     i18n,
+    viewMode: 'story',
+    options: {
+      storySort: {
+        order: ['Introduction', 'Elements', 'Components'],
+      },
+    },
     controls: {
       expanded: true,
       matchers: {

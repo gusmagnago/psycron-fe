@@ -10,7 +10,7 @@ const DefaultContactsForm = (args: ContactsFormProps<FieldValues>) => (
 );
 
 const meta: Meta<typeof ContactsForm> = {
-	title: 'Form / Components / Contacts',
+	title: 'Components / Form / Components / Contacts',
 	component: DefaultContactsForm,
 	tags: ['autodocs'],
 	parameters: {

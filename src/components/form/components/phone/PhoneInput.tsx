@@ -94,11 +94,9 @@ export const PhoneInput = <T extends FieldValues>({
 				/>
 			</Grid>
 			<Grid item xs={1}>
-				<Tooltip
-					title={t('components.input.phone-input.phone-number-guide')}			>
+				<Tooltip title={t('components.input.phone-input.phone-number-guide')}>
 					<Info color={palette.info.main} />
 				</Tooltip>
-
 			</Grid>
 		</Grid>
 	);

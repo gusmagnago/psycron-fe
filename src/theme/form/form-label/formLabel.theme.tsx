@@ -3,12 +3,17 @@ import type { CSSObject } from '@mui/system';
 import type { Palette } from '@psycron/theme/palette/palette.types';
 
 const formLabel = ({ palette }: Theme): Record<string, CSSObject> => {
-	const { error } = palette as unknown as Palette;
+	const { secondary } = palette as unknown as Palette;
 
 	return {
 		asterisk: {
-			color: error.main,
+			color: secondary.main,
 		},
+		root: {
+			['&.Mui-focused']: {
+				color: secondary.action.hover,
+			},
+		}
 	};
 };
 

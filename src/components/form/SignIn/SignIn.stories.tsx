@@ -7,7 +7,7 @@ import type { ISignInForm, SignInFormTypes } from './SignIn.types';
 const DefaultSignIn = (args: SignInFormTypes) => <SignIn {...args} />;
 
 const meta: Meta<typeof SignIn> = {
-	title: 'Form / SignIn',
+	title: 'Components / Form / SignIn',
 	component: DefaultSignIn,
 	tags: ['autodocs']
 };

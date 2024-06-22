@@ -25,17 +25,17 @@ export const SignLayout: FC<{ children: ReactNode; isSignin?: boolean }> = ({
 				<Brand color={palette.primary.main} />
 			</LogoWrapper>
 			{children}
-			<Box my={3} display='flex' justifyContent='center'>
+			<Box my={3} display='flex' justifyContent='center' alignItems='center'>
 				<Typography variant='caption'>
 					{isSignin
 						? t('components.form.signin.dont-have-acc')
 						: t('components.form.signup.already-have-acc')}
-					<Link to={'/aaa'}>
-						{isSignin
-							? t('components.form.signin.signup-here-link')
-							: t('components.form.signup.signin-here-link')}
-					</Link>
 				</Typography>
+				<Link to={'/'} firstLetterUpper>
+					{isSignin
+						? t('components.form.signin.signup-here-link')
+						: t('components.form.signup.signin-here-link')}
+				</Link>
 			</Box>
 		</SignUpWrapper>
 	);

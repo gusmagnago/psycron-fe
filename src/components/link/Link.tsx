@@ -1,11 +1,9 @@
-import { palette } from '@psycron/theme/palette/palette.theme';
-
 import { StyledLink } from './Link.styles';
 import type { ILinkProps } from './Link.types';
 
-export const Link = ({ children, to }: ILinkProps) => {
+export const Link = ({ children, to, firstLetterUpper }: ILinkProps) => {
 	return (
-		<StyledLink to={to} color={palette.secondary.main}>
+		<StyledLink to={to} firstLetterUpper={firstLetterUpper}>
 			{children}
 		</StyledLink>
 	);

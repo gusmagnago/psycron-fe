@@ -10,7 +10,7 @@ const DefaultNameForm = (args: NameFormProps<FieldValues>) => (
 );
 
 const meta: Meta<typeof NameForm> = {
-	title: 'Form / Components / Name Form',
+	title: 'Components / Form / Components / Name Form',
 	component: DefaultNameForm,
 	tags: ['autodocs'],
 	parameters: {
