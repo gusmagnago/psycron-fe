@@ -1,7 +1,8 @@
 import type { FC, ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Box, Link, Typography } from '@mui/material';
+import { Box , Typography } from '@mui/material';
 import { Brand } from '@psycron/components/icons';
+import { Link } from '@psycron/components/link/Link';
 import { palette } from '@psycron/theme/palette/palette.theme';
 import { shadowPress } from '@psycron/theme/shadow/shadow.theme';
 
@@ -24,17 +25,17 @@ export const SignLayout: FC<{ children: ReactNode; isSignin?: boolean }> = ({
 				<Brand color={palette.primary.main} />
 			</LogoWrapper>
 			{children}
-			<Box my={3} display='flex' justifyContent='center'>
+			<Box my={3} display='flex' justifyContent='center' alignItems='center'>
 				<Typography variant='caption'>
 					{isSignin
 						? t('components.form.signin.dont-have-acc')
 						: t('components.form.signup.already-have-acc')}
-					<Link>
-						{isSignin
-							? t('components.form.signin.signup-here-link')
-							: t('components.form.signup.signin-here-link')}
-					</Link>
 				</Typography>
+				<Link to={'/'} firstLetterUpper>
+					{isSignin
+						? t('components.form.signin.signup-here-link')
+						: t('components.form.signup.signin-here-link')}
+				</Link>
 			</Box>
 		</SignUpWrapper>
 	);

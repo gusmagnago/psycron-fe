@@ -7,6 +7,7 @@ import type { CardTitleProps } from './CardTitle/CardTitle.types';
 import { Card } from './Card';
 import type { CardProps } from './Card.types';
 
+
 const DefaultCardComponent = (args: CardProps) => <Card {...args} />;
 
 const CardTitleComponent = (args: CardTitleProps) => <CardTitle {...args} />;
@@ -16,7 +17,7 @@ const CardActionComponent = (args: CardActionsProps) => (
 );
 
 const meta: Meta<typeof Card> = {
-	title: 'Card',
+	title: 'Components / Card',
 	component: DefaultCardComponent,
 	tags: ['autodocs'],
 };

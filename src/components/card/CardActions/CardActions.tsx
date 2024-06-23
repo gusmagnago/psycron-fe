@@ -1,4 +1,5 @@
-import { Box, Button, Grid } from '@mui/material';
+import { Box, Grid } from '@mui/material';
+import { Button } from '@psycron/components/button/Button';
 
 import type { CardActionsProps } from './CardActions.types';
 
@@ -21,13 +22,11 @@ export const CardActions = ({
 				columnSpacing={3}
 			>
 				<Grid item>
-					<Button color='secondary' onClick={onClick} variant='contained'>
-						{actionName}
-					</Button>
+					<Button onClick={onClick}>{actionName}</Button>
 				</Grid>
 				{hasSecondAction ? (
 					<Grid item>
-						<Button color='primary' onClick={secondAction} variant='outlined'>
+						<Button onClick={secondAction} secondary>
 							{secondActionName}
 						</Button>
 					</Grid>
@@ -36,13 +35,7 @@ export const CardActions = ({
 			{hasTertiary ? (
 				<Grid item>
 					<Box display='flex' flexDirection='row' justifyContent='flex-end'>
-						<Button
-							color='tertiary'
-							onClick={tertiaryAction}
-							variant='contained'
-						>
-							{tertiaryActionName}
-						</Button>
+						<Button onClick={tertiaryAction} tertiary>{tertiaryActionName}</Button>
 					</Box>
 				</Grid>
 			) : null}

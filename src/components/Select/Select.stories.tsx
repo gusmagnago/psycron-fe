@@ -7,7 +7,7 @@ import type { SelectComponentProps } from './Select.types';
 const DefaultSelect = (args: SelectComponentProps) => <Select {...args}/>;
 
 const meta: Meta<typeof Select> = {
-	title: 'Select',
+	title: 'Elements / Select',
 	component: DefaultSelect,
 	tags: ['autodocs']
 };

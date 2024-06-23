@@ -10,7 +10,7 @@ const DefaultPasswordInput = (args: PasswordInputProps<FieldValues>) => (
 );
 
 const meta: Meta<typeof PasswordInput> = {
-	title: 'Form / Components / Password Input',
+	title: 'Components / Form / Components / Password Input',
 	component: DefaultPasswordInput,
 	tags: ['autodocs'],
 	parameters: {

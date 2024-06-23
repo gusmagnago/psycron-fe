@@ -7,7 +7,7 @@ import type { ISignUpForm, SignUpFormTypes } from './SignUp.types';
 const DefaultSignUp = (args: SignUpFormTypes) => <SignUp {...args} />;
 
 const meta: Meta<typeof SignUp> = {
-	title: 'Form / SignUp',
+	title: 'Components / Form / SignUp',
 	component: DefaultSignUp,
 	tags: ['autodocs']
 };

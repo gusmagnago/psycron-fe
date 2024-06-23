@@ -10,7 +10,7 @@ const DefaultPhoneInput = (args: PhoneInputProps<FieldValues>) => (
 );
 
 const meta: Meta<typeof PhoneInput> = {
-	title: 'Form / Components / Phone Input',
+	title: 'Components / Form / Components / Phone Input',
 	component: DefaultPhoneInput,
 	tags: ['autodocs'],
 	parameters: {

@@ -1,4 +1,5 @@
-import { Button, Grid, Typography } from '@mui/material';
+import { Grid, Typography } from '@mui/material';
+import { Button } from '@psycron/components/button/Button';
 import { palette } from '@psycron/theme/palette/palette.theme';
 
 import { CardTitleWrapper, TitleWrapper } from './CardTitle.styles';
@@ -34,10 +35,8 @@ export const CardTitle = ({
 					<Grid container xs={4} columnSpacing={2} justifyContent="flex-end" >
 						<Grid item>
 							<Button
-								color='primary'
 								onClick={firstChip}
-								size='small'
-								variant='contained'
+								small
 							>
 								{firstChipName}
 							</Button>
@@ -45,10 +44,9 @@ export const CardTitle = ({
 						<Grid item>
 							{hasSecondChip ? (
 								<Button
-									color='secondary'
 									onClick={secondChip}
-									size='small'
-									variant='outlined'
+									small
+									secondary
 								>
 									{secondChipName}
 								</Button>

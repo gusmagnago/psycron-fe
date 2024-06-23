@@ -10,7 +10,7 @@ const DefaultAddressForm = (args: AddressComponentProps<FieldValues>) => (
 );
 
 const meta: Meta<typeof AddressForm> = {
-	title: 'Form / Components / Address Form',
+	title: 'Components / Form / Components / Address Form',
 	component: DefaultAddressForm,
 	tags: ['autodocs'],
 	parameters: {

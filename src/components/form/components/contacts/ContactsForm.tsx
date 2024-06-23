@@ -2,7 +2,8 @@ import { useEffect, useState } from 'react';
 import type { FieldValues, Path } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import type { TextFieldProps } from '@mui/material';
-import { Checkbox, FormControlLabel, Grid } from '@mui/material';
+import { Grid } from '@mui/material';
+import { Checkbox } from '@psycron/components/checkbox/Checkbox';
 
 import { PhoneInput } from '../phone/PhoneInput';
 import { InputFields } from '../shared/styles';
@@ -18,15 +19,14 @@ export const ContactsForm = <T extends FieldValues>({
 	const { t } = useTranslation();
 
 	const [hasWhatsApp, setHasWhatsApp] = useState<boolean>(false);
-	const [isPhoneWpp, setIsPhoneWpp] = useState<boolean>(false)
+	const [isPhoneWpp, setIsPhoneWpp] = useState<boolean>(false);
 
 	useEffect(() => {
 		if (isPhoneWpp) {
-			const phoneValue = getPhoneValue('phone' as Path<T>)
+			const phoneValue = getPhoneValue('phone' as Path<T>);
 			setPhoneValue('whatsapp' as Path<T>, phoneValue);
 		}
-	}, [getPhoneValue, isPhoneWpp, setPhoneValue])
-
+	}, [getPhoneValue, isPhoneWpp, setPhoneValue]);
 
 	return (
 		<Grid container>
@@ -43,34 +43,32 @@ export const ContactsForm = <T extends FieldValues>({
 				/>
 			</Grid>
 			<Grid item xs={12}>
-				<PhoneInput errors={errors} register={register} registerName='phone'/>
+				<PhoneInput errors={errors} register={register} registerName='phone' />
 			</Grid>
 			<Grid container>
 				<Grid item>
-					<FormControlLabel
-						control={
-							<Checkbox
-								onChange={() => setHasWhatsApp((prev) => !prev)}
-								value={hasWhatsApp}
-							/>
-						}
-						label={'contact via WhatsApp?'}
+					<Checkbox
+						onChange={() => setHasWhatsApp((prev) => !prev)}
+						value={hasWhatsApp}
+						labelKey={'contact via WhatsApp?'}
 					/>
 				</Grid>
 				{hasWhatsApp ? (
 					<>
-						<Grid item >
-							<FormControlLabel
-								control={
-									<Checkbox
-										onChange={() => setIsPhoneWpp((prev) => !prev)}
-										value={isPhoneWpp}
-									/>
-								}
-								label={'is phone number the same as whatsapp?'}
+						<Grid item>
+							<Checkbox
+								onChange={() => setIsPhoneWpp((prev) => !prev)}
+								value={isPhoneWpp}
+								labelKey={'is phone number the same as whatsapp?'}
 							/>
 						</Grid>
-						{!isPhoneWpp ? <PhoneInput errors={errors} register={register} registerName='whatsapp'/> : null}
+						{!isPhoneWpp ? (
+							<PhoneInput
+								errors={errors}
+								register={register}
+								registerName='whatsapp'
+							/>
+						) : null}
 					</>
 				) : null}
 			</Grid>

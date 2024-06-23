@@ -8,7 +8,7 @@ const DefaultAddPatient = (args: AddPatientProps) => (
 );
 
 const meta: Meta<typeof AddPatientForm> = {
-	title: 'Form / AddPatient',
+	title: 'Components / Form / AddPatient',
 	component: DefaultAddPatient,
 	tags: ['autodocs'],
 	args: {
