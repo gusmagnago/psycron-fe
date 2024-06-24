@@ -12,7 +12,7 @@ const dividerStyles = ({palette}: Theme): Record<string, CSSObject>  => {
 
 	return {
 		root: {
-			margin: `${spacing.mediumSmall}`,
+			// margin: `${spacing.mediumSmall}`,
 			color: gray['01'],
 			border: `4px solid ${gray['01']}`,
 			borderRadius: `calc(2 * ${spacing.mediumSmall})`, 

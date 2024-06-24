@@ -6,9 +6,9 @@ export const Alert: React.FC = (props) => (
 		viewBox='0 0 24 24'
 		fill='none'
 		stroke='currentColor'
-		stroke-width='2'
-		stroke-linecap='round'
-		stroke-linejoin='round'
+		strokeWidth='2'
+		strokeLinecap='round'
+		strokeLinejoin='round'
 		{...props}
 	>
 		<path d='M7 18v-6a5 5 0 1 1 10 0v6' />

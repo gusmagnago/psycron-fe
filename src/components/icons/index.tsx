@@ -22,7 +22,11 @@ import { Error as IconError } from './Error';
 import { HealthTracker as IconHealthTracker } from './HealthTracker';
 import { Info as IconInfo } from './Info';
 export { Language } from './Language';
+
 import { AddPatient as IconAddPatient } from './user/patient/AddPatient';
+import { PatientList as IconPatientList } from './user/patient/PatientList';
+import { RemovePatient as IconRemovePatient } from './user/patient/RemovePatient';
+import {HelpIcon as IconHelp } from  './Help';
 import { Login as IconLogin } from './Login';
 import { Logout as IconLogout } from './Logout';
 import { Menu as IconMenu } from './Menu';
@@ -36,7 +40,10 @@ import { PlanUnpaid as IconPlanUnpaid } from './PlanUnpaid';
 import { SendInvoice as IconSendInvoice } from './SendInvoice';
 import { Visible as IconVisible } from './Visible';
 
+export const Help = withIconColor(IconHelp)
 export const Address = withIconColor(IconAddress);
+export const PatientList = withIconColor(IconPatientList);
+export const RemovePatient = withIconColor(IconRemovePatient);
 export const AddPatient = withIconColor(IconAddPatient);
 export const Alert = withIconColor(IconAlert);
 export const Appointment = withIconColor(IconAppointment);
