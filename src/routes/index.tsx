@@ -8,6 +8,7 @@ import {
 } from 'react-router-dom';
 import { useParams } from 'react-router-dom';
 import App from '@psycron/App';
+import { AppLayout } from '@psycron/layouts/AppLayout/AppLayout';
 
 import i18n from '../i18n';
 
@@ -31,9 +32,9 @@ export const router = createBrowserRouter([
 	{
 		path: '/:lang',
 		element: (
-			<div>
+			<AppLayout>
 				<LanguageLayout />
-			</div>
+			</AppLayout>
 		),
 		children: [
 			{

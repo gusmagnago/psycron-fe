@@ -1,5 +1,4 @@
-import type { BaseSyntheticEvent } from 'react';
-import { type RegisterOptions, type SubmitErrorHandler, type SubmitHandler, useForm, type UseFormRegisterReturn } from 'react-hook-form';
+import { type SubmitHandler, useForm } from 'react-hook-form';
 
 import { AddPatientForm } from './components/form/AddPatient/AddPatientForm';
 import { SignIn } from './components/form/SignIn/SignIn';
