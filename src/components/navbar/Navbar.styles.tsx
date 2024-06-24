@@ -1,5 +1,4 @@
 import { Box, keyframes, styled } from '@mui/material';
-import { isBiggerThanMediumMedia } from '@psycron/theme/media-queries/mediaQueries';
 import { spacing } from '@psycron/theme/spacing/spacing.theme';
 
 const navbarHeight = '70px';
@@ -41,10 +40,6 @@ export const NavbarFooterIcons = styled(Box)`
 
   svg {
     height: 50px;
-
-    ${isBiggerThanMediumMedia} {
-      height: 25px;
-    }
   }
 `;
 

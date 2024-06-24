@@ -3,7 +3,19 @@
     "email": "e-mail",
     "password": "senha",
     "phone": "telefone",
-    "whatsapp": "whatsapp"
+    "whatsapp": "whatsapp",
+    "address": "endereço",
+    "patients": "pacientes",
+    "patient": "paciente",
+    "registered-patients": "pacientes registrados",
+    "patients-manager": "genrecie seus pacientes",
+    "billing-manager": "gerencie seus pagamentos",
+    "subscription-manager": "gerencie sua assinatura",
+    "appointments-manager": "gerencie seus atendimentos",
+    "change-language": "mude o idioma",
+    "help": "centro de ajuda",
+    "logout": "sair",
+    "plan": "plano"
   },
   "components": {
     "form": {
@@ -51,6 +63,13 @@
         "phone-num-label": "número de {{registerName}}",
         "phone-number-guide": "por favor, forneça seu número de telefone com o código da cidade"
       }
+    },
+    "navbar": {
+      "dashboard": "painel",
+      "user-settings": "configurações"
+    },
+    "user-details": {
+      "edit": "editar detalhes"
     }
   }
 }

@@ -66,6 +66,17 @@ export const Introduction = () => {
 						{ name: 'phone-input' },
 					],
 				},
+				{
+					name: 'navbar',
+					components: [{ name: 'menu-item' }],
+				},
+				{
+					name: 'user',
+					children: [{ name: '' }],
+					// http://localhost:6006/?path=/docs/components-user-details-components-user-details--docs
+					// http://localhost:6006/?path=/docs/components-user-components-user-details-card--docs
+					components: [{ name: 'user-details-card' }, { name: 'user-details' }],
+				},
 			],
 		},
 		{
@@ -73,6 +84,7 @@ export const Introduction = () => {
 			icon: <LayoutTemplate color={palette.tertiary.main} />,
 			description:
         'Frameworks that provide the skeleton for organizing components and creating...',
+			items: [{ name: 'app-layout' }],
 		},
 		{
 			title: 'Pages',
@@ -124,7 +136,7 @@ export const Introduction = () => {
 						<ListItemIcon>{item.icon}</ListItemIcon>
 						<ListItemText>
 							<Typography variant='h6' fontWeight={600}>
-								{item.title}
+								{item.title.replace('-', ' ')}
 							</Typography>
 							{item.description}
 						</ListItemText>
@@ -138,7 +150,7 @@ export const Introduction = () => {
 						<ListItem>
 							<ListItemText>
 								<Typography variant='h4' fontWeight={600}>
-									{category.title}
+									{category.title.replace('-', ' ')}
 								</Typography>
 							</ListItemText>
 						</ListItem>
@@ -155,7 +167,7 @@ export const Introduction = () => {
 														ml={2}
 														textTransform='capitalize'
 													>
-														{item.name}
+														{item.name.replace('-', ' ')}
 													</Typography>
 												) : (
 													<>
@@ -167,7 +179,7 @@ export const Introduction = () => {
 																variant='subtitle2'
 																textTransform='capitalize'
 															>
-																{item.name}
+																{item.name.replace('-', ' ')}
 															</Typography>
 														</StoryLink>
 													</>
@@ -187,7 +199,7 @@ export const Introduction = () => {
 																	variant='body2'
 																	textTransform='capitalize'
 																>
-																	{child.name}
+																	{child.name.replace('-', ' ')}
 																</Typography>
 															</StoryLink>
 														</Box>

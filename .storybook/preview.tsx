@@ -6,13 +6,20 @@ import { BrowserRouter } from 'react-router-dom';
 
 import theme from '../src/theme';
 
+import { UserDetailsProvider } from '../src/context/user/UserDetailsContext';
+import { UserGeoLocationProvider } from '../src/context/CountryContext';
+
 const preview = {
   decorators: [
     (Story, context) => (
       <BrowserRouter>
         <ThemeProvider theme={theme}>
           <CssBaseline />
-          <Story {...context} />
+          <UserDetailsProvider>
+            <UserGeoLocationProvider>
+              <Story {...context} />
+            </UserGeoLocationProvider>
+          </UserDetailsProvider>
         </ThemeProvider>
       </BrowserRouter>
     ),
@@ -29,7 +36,7 @@ const preview = {
     viewMode: 'story',
     options: {
       storySort: {
-        order: ['Introduction', 'Elements', 'Components'],
+        order: ['Introduction', 'Elements', 'Components', 'Layouts', 'Pages'],
       },
     },
     controls: {
