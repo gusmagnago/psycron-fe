@@ -66,6 +66,15 @@ export const Introduction = () => {
 						{ name: 'phone-input' },
 					],
 				},
+				{
+					name: 'navbar',
+					components: [{ name: 'menu-item' }],
+				},
+				{
+					name: 'user',
+					children: [{ name: 'edit-user' }],
+					components: [{ name: 'user-details-card' }, { name: 'user-details' }],
+				},
 			],
 		},
 		{
@@ -73,6 +82,7 @@ export const Introduction = () => {
 			icon: <LayoutTemplate color={palette.tertiary.main} />,
 			description:
         'Frameworks that provide the skeleton for organizing components and creating...',
+			items: [{ name: 'app-layout' }],
 		},
 		{
 			title: 'Pages',
@@ -124,7 +134,7 @@ export const Introduction = () => {
 						<ListItemIcon>{item.icon}</ListItemIcon>
 						<ListItemText>
 							<Typography variant='h6' fontWeight={600}>
-								{item.title}
+								{item.title.replace('-', ' ')}
 							</Typography>
 							{item.description}
 						</ListItemText>
@@ -138,7 +148,7 @@ export const Introduction = () => {
 						<ListItem>
 							<ListItemText>
 								<Typography variant='h4' fontWeight={600}>
-									{category.title}
+									{category.title.replace('-', ' ')}
 								</Typography>
 							</ListItemText>
 						</ListItem>
@@ -155,7 +165,7 @@ export const Introduction = () => {
 														ml={2}
 														textTransform='capitalize'
 													>
-														{item.name}
+														{item.name.replace('-', ' ')}
 													</Typography>
 												) : (
 													<>
@@ -167,7 +177,7 @@ export const Introduction = () => {
 																variant='subtitle2'
 																textTransform='capitalize'
 															>
-																{item.name}
+																{item.name.replace('-', ' ')}
 															</Typography>
 														</StoryLink>
 													</>
@@ -187,7 +197,7 @@ export const Introduction = () => {
 																	variant='body2'
 																	textTransform='capitalize'
 																>
-																	{child.name}
+																	{child.name.replace('-', ' ')}
 																</Typography>
 															</StoryLink>
 														</Box>
@@ -242,15 +252,29 @@ export const Introduction = () => {
 			<ImgCredits>
 				<Typography>
           Illustrations by
-					<a href='https://icons8.com/illustrations/author/zD2oqC8lLBBA'>
+					<a
+						href='https://icons8.com/illustrations/author/zD2oqC8lLBBA'
+						target='_blank'
+						rel='noreferrer'
+					>
             Icons 8
 					</a>
           from
-					<a href='https://icons8.com/illustrations'>Ouch!</a>
+					<a
+						href='https://icons8.com/illustrations'
+						target='_blank'
+						rel='noreferrer'
+					>
+            Ouch!
+					</a>
 				</Typography>
 				<Box>
 					<Typography variant='caption' fontWeight={700}>
-						<a href='https://icons8.com/illustrations/style--3d-casual-life'>
+						<a
+							href='https://icons8.com/illustrations/style--3d-casual-life'
+							target='_blank'
+							rel='noreferrer'
+						>
               Find more here
 						</a>
 					</Typography>

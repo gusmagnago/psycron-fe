@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import type { FieldValues, Path } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import type { TextFieldProps } from '@mui/material';
@@ -13,6 +13,8 @@ export const PasswordInput = <T extends FieldValues>({
 	hasToConfirm,
 	errors,
 	register,
+	defaultPasswordHash,
+	disabled
 }: PasswordInputProps<T> & TextFieldProps) => {
 	const { t } = useTranslation();
 
@@ -24,8 +26,16 @@ export const PasswordInput = <T extends FieldValues>({
 		[confirmPasswordInputId]: false,
 	});
 
-	const [passwordValue, setPasswordValue] = useState<string | undefined>();
-	const [confirmPasswordValue, setConfirmPasswordValue] = useState<string | undefined>();
+	const [passwordValue, setPasswordValue] = useState<string>('');
+	const [confirmPasswordValue, setConfirmPasswordValue] = useState<string>('');
+
+
+	useEffect(() => {
+		if (defaultPasswordHash) {
+			setPasswordValue(defaultPasswordHash); 
+		}
+	}, [defaultPasswordHash]);
+
 
 	const toggleVisibility = (id: Path<T>) => {
 		setIsVisible((prev) => ({
@@ -34,7 +44,7 @@ export const PasswordInput = <T extends FieldValues>({
 		}));
 	};
 
-	const handleInputChange = (id: Path<T>, value: string | undefined) => {
+	const handleInputChange = (id: Path<T>, value: string) => {
 		if (id === passwordInputId) {
 			setPasswordValue(value);
 		} else if (id === confirmPasswordInputId) {
@@ -49,13 +59,14 @@ export const PasswordInput = <T extends FieldValues>({
 				id={passwordInputId}
 				fullWidth
 				type={!isVisible[passwordInputId] ? 'password' : 'text'}
-				autoComplete="new-password"
 				{...register(passwordInputId)}
 				error={!!errors.password}
 				helperText={errors.password?.message as string}
+				value={passwordValue}
 				onChange={(e) => {
 					handleInputChange(passwordInputId, e.target.value);
 				}}
+				disabled={disabled}
 				InputProps={{
 					endAdornment: passwordValue?.length ? (
 						<InputAdornment position="end">
@@ -76,10 +87,10 @@ export const PasswordInput = <T extends FieldValues>({
 					fullWidth
 					id={confirmPasswordInputId}
 					type={!isVisible[confirmPasswordInputId] ? 'password' : 'text'}
-					autoComplete="new-password"
 					{...register(confirmPasswordInputId)}
 					error={!!errors.confirmPassword}
 					helperText={errors.confirmPassword?.message as string}
+					value={confirmPasswordValue}
 					onChange={(e) => {
 						handleInputChange(confirmPasswordInputId, e.target.value);
 					}}

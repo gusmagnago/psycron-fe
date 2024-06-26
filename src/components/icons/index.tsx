@@ -25,11 +25,13 @@ export { Language } from './Language';
 
 import { AddPatient as IconAddPatient } from './user/patient/AddPatient';
 import { PatientList as IconPatientList } from './user/patient/PatientList';
+import { PatientManager as IconPatientManager } from './user/patient/PatientManager';
 import { RemovePatient as IconRemovePatient } from './user/patient/RemovePatient';
-import {HelpIcon as IconHelp } from  './Help';
+import { HelpIcon as IconHelp } from './Help';
 import { Login as IconLogin } from './Login';
 import { Logout as IconLogout } from './Logout';
 import { Menu as IconMenu } from './Menu';
+import { Notifications as IconNotifications } from './Notifications';
 import { NotVisible as IconNotVisible } from './NotVisible';
 import { Password as IconPassword } from './Password';
 import { Payment as IconPayment } from './Payment';
@@ -40,7 +42,9 @@ import { PlanUnpaid as IconPlanUnpaid } from './PlanUnpaid';
 import { SendInvoice as IconSendInvoice } from './SendInvoice';
 import { Visible as IconVisible } from './Visible';
 
-export const Help = withIconColor(IconHelp)
+export const PatientManager = withIconColor(IconPatientManager);
+export const Notifications = withIconColor(IconNotifications);
+export const Help = withIconColor(IconHelp);
 export const Address = withIconColor(IconAddress);
 export const PatientList = withIconColor(IconPatientList);
 export const RemovePatient = withIconColor(IconRemovePatient);

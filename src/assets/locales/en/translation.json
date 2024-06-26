@@ -3,7 +3,20 @@
     "email": "email",
     "password": "password",
     "phone": "phone",
-    "whatsapp": "whatsapp"
+    "whatsapp": "whatsapp",
+    "address": "address",
+    "patients": "patients",
+    "patient": "patient",
+    "registered-patients": "registered patients",
+    "patients-manager": "patients manager",
+    "billing-manager": "billing manager",
+    "subscription-manager": "subscription manager",
+    "appointments-manager": "appointments manager",
+    "change-language": "change language",
+    "help": "help center",
+    "logout": "logout",
+    "plan": "plan",
+    "cancel": "cancel"
   },
   "components": {
     "form": {
@@ -43,6 +56,10 @@
       },
       "add-patient": {
         "name": "add patient"
+      },
+      "contacts-form": {
+        "contact-via": "contact via {{method}}?",
+        "contact-via-same": "is phone number the same as whatsapp?"
       }
     },
     "input": {
@@ -51,6 +68,16 @@
         "phone-num-label": "{{registerName}} number here",
         "phone-number-guide": "please provide a phone number including the city code if applicable."
       }
+    },
+    "navbar": {
+      "dashboard": "dashboard",
+      "user-settings": "user settings"
+    },
+    "user-details": {
+      "edit": "edit details",
+      "edit-contacts": "edit contacts",
+      "change": "change {{name}}",
+      "save": "save details"
     }
   }
 }

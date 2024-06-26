@@ -6,5 +6,6 @@ export interface ISwitchGroupProps {
 }
 
 export interface ISwitchProps extends SwitchProps {
+  label?: string,
   small?: boolean;
 }

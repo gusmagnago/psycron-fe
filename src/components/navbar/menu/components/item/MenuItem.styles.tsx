@@ -40,7 +40,12 @@ export const StyledMenuItem = styled(Tooltip, {
 `;
 
 export const MobileMenuItem = styled(Box)`
-display: flex;
-flex-direction: row;
-align-items: center;
-`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+
+  &:hover {
+    cursor: pointer;
+    color: ${palette.secondary.main};
+  }
+`;

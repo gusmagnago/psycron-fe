@@ -10,7 +10,7 @@ export const SwitchGroup = ({ items, small }: ISwitchGroupProps) => {
 			{items?.map(({ label, required, disabled, defaultChecked }, index) => (
 				<SwitchControlLabel
 					key={`switch-item-${index}`}
-					control={<Switch defaultChecked={defaultChecked} small={small} />}
+					control={<Switch defaultChecked={defaultChecked} small={small}/>}
 					label={label}
 					small={small}
 					required={required}

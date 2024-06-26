@@ -1,5 +1,7 @@
 import { useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Box, IconButton } from '@mui/material';
+import { useUserDetails } from '@psycron/context/user/UserDetailsContext';
 import useClickOutside from '@psycron/hooks/useClickoutside';
 import useViewport from '@psycron/hooks/useViewport';
 
@@ -28,10 +30,14 @@ import {
 } from './Navbar.styles';
 
 export const Navbar = () => {
+
+	const { t } = useTranslation();
+
 	const dropdownRef = useRef<HTMLDivElement>(null);
 	const { isMobile, isTablet } = useViewport();
 
 	const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
+	const { toggleUserDetails } = useUserDetails();
 
 	useClickOutside(dropdownRef, () => setIsMenuOpen(false));
 
@@ -39,20 +45,25 @@ export const Navbar = () => {
 		setIsMenuOpen((prevIsMenuOpen) => !prevIsMenuOpen);
 	};
 
-
 	const menuItems = [
-		{ name: 'dashboard', icon: <DashboardIcon />, path: '/dashboard' },
-		{ name: 'user settings', icon: <UserSettings />, path: '/user' },
-		{ name: 'patients', icon: <PatientList />, path: '/patients' },
-		{ name: 'billing manager', icon: <Payment />, path: '/payments' },
-		{ name: 'appointments manager', icon: <Calendar />, path: '/appointments' },
+		{ name: t('components.navbar.dashboard'), icon: <DashboardIcon />, path: '/dashboard' },
+		{
+			name: t('components.navbar.user-settings'),
+			icon: <UserSettings />,
+			path: '/user',
+			onClick: toggleUserDetails,
+		},
+		{ name: t('globals.patients'), icon: <PatientList />, path: '/patients' },
+		{ name: t('globals.billing-manager'),  icon: <Payment />, path: '/payments' },
+		{ name: t('globals.appointments-manager'), icon: <Calendar />, path: '/appointments' },
 	];
 
 	const footerItems = [
-		{ name: 'change language', icon: <Language />, path: '/change-language' },
-		{ name: 'help center', icon: <Help />, path: '/help-center' },
-		{ name: 'logout', icon: <Logout />, path: '/logout' },
+		{ name: t('globals.change-language'), icon: <Language />, path: '/change-language' },
+		{ name: t('globals.help'),  icon: <Help />, path: '/help-center' },
+		{ name: t('globals.logout'), icon: <Logout />, path: '/logout' },
 	];
+
 
 	return (
 		<>
@@ -74,6 +85,7 @@ export const Navbar = () => {
 								<Menu
 									items={menuItems}
 									closeMenu={() => setIsMenuOpen(false)}
+									isFullList
 								/>
 							</Box>
 							<MobileNavbarFooter>
@@ -81,6 +93,7 @@ export const Navbar = () => {
 									items={footerItems}
 									closeMenu={() => setIsMenuOpen(false)}
 									isFooterIcon
+									isFullList
 								/>
 							</MobileNavbarFooter>
 						</FloatingMobileNavbar>

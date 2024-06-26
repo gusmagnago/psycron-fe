@@ -3,7 +3,19 @@
     "email": "e-mail",
     "password": "senha",
     "phone": "telefone",
-    "whatsapp": "whatsapp"
+    "whatsapp": "whatsapp",
+    "address": "endereço",
+    "patients": "pacientes",
+    "patient": "paciente",
+    "registered-patients": "pacientes registrados",
+    "patients-manager": "genrecie seus pacientes",
+    "billing-manager": "gerencie seus pagamentos",
+    "subscription-manager": "gerencie sua assinatura",
+    "appointments-manager": "gerencie seus atendimentos",
+    "change-language": "mude o idioma",
+    "help": "centro de ajuda",
+    "logout": "sair",
+    "plan": "plano"
   },
   "components": {
     "form": {
@@ -43,6 +55,10 @@
       },
       "add-patient": {
         "name": "adicionar paciente"
+      },
+      "contacts-form": {
+        "contact-via": "entrar em contato via {{method}}?",
+        "contact-via-same": "o número é o mesmo para o Whatsapp?"
       }
     },
     "input": {
@@ -51,6 +67,15 @@
         "phone-num-label": "número de {{registerName}}",
         "phone-number-guide": "por favor, forneça seu número de telefone com o código da cidade"
       }
+    },
+    "navbar": {
+      "dashboard": "painel",
+      "user-settings": "configurações"
+    },
+    "user-details": {
+      "edit": "editar detalhes",
+       "edit-contacts": "editar contatos",
+      "change": "alterar {{name}}"
     }
   }
 }

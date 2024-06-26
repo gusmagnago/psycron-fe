@@ -3,7 +3,7 @@ import type { FieldValues, Path } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import type { TextFieldProps } from '@mui/material';
 import { Grid, TextField, Typography } from '@mui/material';
-import { Checkbox } from '@psycron/components/checkbox/Checkbox';
+import { Switch } from '@psycron/components/switch/components/item/Switch';
 import { GOOGLE_MAPS_API_KEY } from '@psycron/utils/variables';
 import type { Libraries } from '@react-google-maps/api';
 import { Autocomplete, useLoadScript } from '@react-google-maps/api';
@@ -19,10 +19,12 @@ const LIBRARIES: Libraries = ['places'];
 export const AddressForm = <T extends FieldValues>({
 	errors,
 	register,
+	defaultValues,
+	disabled
 }: AddressComponentProps<T> & TextFieldProps) => {
 	const { t } = useTranslation();
 
-	const [addressComponents, setAddressComponents] = useState<AddressComponent>({
+	const defaultAddressVal = {
 		address: '',
 		streetNumber: '',
 		route: '',
@@ -31,7 +33,11 @@ export const AddressForm = <T extends FieldValues>({
 		administrativeArea: '',
 		country: '',
 		postalCode: '',
-	});
+	};
+
+	const [addressComponents, setAddressComponents] = useState<
+    AddressComponent | undefined
+  >(defaultValues || defaultAddressVal);
 
 	const [addMoreInfo, setAddMoreInfo] = useState<boolean>(false);
 
@@ -80,7 +86,7 @@ export const AddressForm = <T extends FieldValues>({
 		});
 
 		setAddressComponents((prev) => ({
-			...prev,
+			...(prev ?? defaultAddressVal),
 			...updatedAddressComponents,
 		}));
 	};
@@ -88,14 +94,14 @@ export const AddressForm = <T extends FieldValues>({
 	const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		const { name, value } = e.target;
 		setAddressComponents((prev) => ({
-			...prev,
+			...(prev ?? defaultAddressVal),
 			[name]: value,
 		}));
 	};
 
 	return (
 		<Grid container columnSpacing={5} rowSpacing={5} pt={2} pb={5}>
-			{isLoaded && !loadError ? (
+			{!defaultValues && isLoaded && !loadError ? (
 				<Grid item xs={12}>
 					<Autocomplete
 						onLoad={(autocomplete) =>
@@ -127,7 +133,7 @@ export const AddressForm = <T extends FieldValues>({
 				<TextField
 					label={t('components.form.address-form.street')}
 					id='route'
-					value={addressComponents.route}
+					value={addressComponents?.route}
 					fullWidth
 					{...register('route' as Path<T>)}
 					error={!!errors?.route}
@@ -135,13 +141,14 @@ export const AddressForm = <T extends FieldValues>({
 					onChange={handleChange}
 					autoComplete='route'
 					required
+					disabled={disabled}
 				/>
 			</Grid>
 			<Grid item xs={4} md={4}>
 				<TextField
 					id='streetNumber'
 					label={t('components.form.address-form.number')}
-					value={addressComponents.streetNumber}
+					value={addressComponents?.streetNumber}
 					fullWidth
 					{...register('streetNumber' as Path<T>)}
 					error={!!errors?.route}
@@ -149,13 +156,14 @@ export const AddressForm = <T extends FieldValues>({
 					onChange={handleChange}
 					autoComplete='streetNumber'
 					required
+					disabled={disabled}
 				/>
 			</Grid>
 			<Grid item xs={8} md={6}>
 				<TextField
 					id='sublocality'
 					label={t('components.form.address-form.hood')}
-					value={addressComponents.sublocality}
+					value={addressComponents?.sublocality}
 					fullWidth
 					{...register('sublocality' as Path<T>)}
 					error={!!errors?.route}
@@ -163,6 +171,7 @@ export const AddressForm = <T extends FieldValues>({
 					onChange={handleChange}
 					autoComplete='sublocality'
 					required
+					disabled={disabled}
 				/>
 			</Grid>
 			{addMoreInfo ? (
@@ -170,7 +179,7 @@ export const AddressForm = <T extends FieldValues>({
 					<ComplementaryField
 						id='moreInfo'
 						label={t('components.form.address-form.more-info')}
-						value={addressComponents.administrativeArea}
+						value={addressComponents?.administrativeArea}
 						fullWidth
 						{...register('moreInfo' as Path<T>)}
 						error={!!errors?.route}
@@ -182,7 +191,7 @@ export const AddressForm = <T extends FieldValues>({
 				<TextField
 					id='political'
 					label={t('components.form.address-form.city')}
-					value={addressComponents.city}
+					value={addressComponents?.city}
 					fullWidth
 					{...register('city' as Path<T>)}
 					error={!!errors?.route}
@@ -190,13 +199,14 @@ export const AddressForm = <T extends FieldValues>({
 					onChange={handleChange}
 					autoComplete='political'
 					required
+					disabled={disabled}
 				/>
 			</Grid>
 			<Grid item xs={7} md={6}>
 				<TextField
 					id='administrativeArea'
 					label={t('components.form.address-form.state')}
-					value={addressComponents.administrativeArea}
+					value={addressComponents?.administrativeArea}
 					fullWidth
 					{...register('administrativeArea' as Path<T>)}
 					error={!!errors?.route}
@@ -204,13 +214,14 @@ export const AddressForm = <T extends FieldValues>({
 					onChange={handleChange}
 					autoComplete='administrativeArea'
 					required
+					disabled={disabled}
 				/>
 			</Grid>
 			<Grid item xs={4} md={6}>
 				<TextField
 					id='postalCode'
 					label={t('components.form.address-form.zip')}
-					value={addressComponents.postalCode}
+					value={addressComponents?.postalCode}
 					fullWidth
 					{...register('postalCode' as Path<T>)}
 					error={!!errors?.route}
@@ -218,13 +229,14 @@ export const AddressForm = <T extends FieldValues>({
 					onChange={handleChange}
 					autoComplete='pCode'
 					required
+					disabled={disabled}
 				/>
 			</Grid>
 			<Grid item xs={8} md={6}>
 				<TextField
 					id='country'
 					label={t('components.form.address-form.country')}
-					value={addressComponents.country}
+					value={addressComponents?.country}
 					fullWidth
 					{...register('country' as Path<T>)}
 					error={!!errors?.route}
@@ -232,13 +244,15 @@ export const AddressForm = <T extends FieldValues>({
 					onChange={handleChange}
 					autoComplete='count'
 					required
+					disabled={disabled}
 				/>
 			</Grid>
 			<Grid item xs={8} display='flex' alignItems='center'>
-				<Checkbox
+				<Switch
 					onChange={() => setAddMoreInfo((prev) => !prev)}
 					value={addMoreInfo}
-					labelKey={t('components.form.address-form.more-info-bttn')}
+					label={t('components.form.address-form.more-info-bttn')}
+					disabled={disabled}
 				/>
 			</Grid>
 		</Grid>

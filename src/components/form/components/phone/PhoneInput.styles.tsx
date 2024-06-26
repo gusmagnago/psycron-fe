@@ -9,7 +9,7 @@ export const CountryFlag = styled.div`
   justify-content: center;
 
   span {
-    font-size: 20px;
+    font-size: 2rem;
   }
   svg {
     color: ${palette.primary.main};

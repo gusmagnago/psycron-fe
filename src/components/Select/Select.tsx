@@ -38,6 +38,7 @@ export const Select = forwardRef<
 			<InputLabel>{selectLabel}</InputLabel>
 			<MuiSelect
 				variant='standard'
+				name={name}
 				value={value}
 				label={selectLabel}
 				defaultValue={name}
