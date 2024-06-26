@@ -75,6 +75,11 @@ export const Introduction = () => {
 					children: [{ name: 'edit-user' }],
 					components: [{ name: 'user-details-card' }, { name: 'user-details' }],
 				},
+				{
+					name: 'patients',
+					children: [{ name: 'edit-user' }],
+					components: [{ name: 'user-details-card' }, { name: 'user-details' }],
+				},
 			],
 		},
 		{
