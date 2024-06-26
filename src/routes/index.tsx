@@ -8,38 +8,47 @@ import {
 } from 'react-router-dom';
 import { useParams } from 'react-router-dom';
 import App from '@psycron/App';
-import { AppLayout } from '@psycron/layouts/AppLayout/AppLayout';
+import { UserGeoLocationProvider } from '@psycron/context/CountryContext';
+import { UserDetailsProvider } from '@psycron/context/user/UserDetailsContext';
+import AppLayout from '@psycron/layouts/AppLayout/AppLayout';
 
 import i18n from '../i18n';
 
 const LanguageLayout: FC = () => {
 	const { lang } = useParams<{ lang: string }>();
-    
+
 	useEffect(() => {
 		if (lang && i18n.language !== lang) {
 			i18n.changeLanguage(lang);
 		}
 	}, [lang]);
 
-	return <Outlet />;
+	return (
+		<>
+			<UserDetailsProvider>
+				<UserGeoLocationProvider>
+					<Outlet />
+				</UserGeoLocationProvider>
+			</UserDetailsProvider>
+		</>
+	);
 };
 
-export const router = createBrowserRouter([
+const router = createBrowserRouter([
 	{
 		path: '/',
 		element: <Navigate to={`/${i18n.resolvedLanguage}`} replace />,
 	},
 	{
 		path: '/:lang',
-		element: (
-			<AppLayout>
-				<LanguageLayout />
-			</AppLayout>
-		),
+		element: <LanguageLayout />,
 		children: [
 			{
-				index: true,
-				element: <App />,
+				element: <AppLayout />,
+				children: [
+					{ index: true, element: <App /> },
+					{ path: 'edit-user/:section', element: <App /> },
+				],
 			},
 		],
 	},

@@ -18,6 +18,8 @@ export const PhoneInput = <T extends FieldValues>({
 	register,
 	registerName,
 	errors,
+	defaultValue,
+	disabled
 }: PhoneInputProps<T>) => {
 	const { t } = useTranslation();
 
@@ -27,19 +29,45 @@ export const PhoneInput = <T extends FieldValues>({
     CountryDataSimple & { name?: string }
   >(countryData);
 
-	useEffect(() => {
-		setSelectedCountry({
-			callingCode: countryData.callingCode,
-			countryEmoji: countryData.countryEmoji,
-			name: countryList.find((c) => c.dialCode === countryData.callingCode)
-				?.name,
-		});
-	}, [countryData]);
+	const [defaultNumberVal, setDefaultNumberVal] = useState<string>('');
 
 	const countries = countryList.map((c) => ({
 		name: c.name,
 		value: c.dialCode,
 	}));
+
+	const findCountry = (
+		countries: { name: string; value: string }[],
+		value?: string
+	) => countries.find((country) => value?.includes(country.value));
+
+	const foundCountryCode = findCountry(countries, defaultValue);
+
+	const flag = countryList.find(
+		(c) => c.dialCode === foundCountryCode?.value
+	)?.flag;
+
+	useEffect(() => {
+		if (defaultValue) {
+			setDefaultNumberVal(
+				defaultValue?.replace(String(foundCountryCode?.value), '')
+			);
+			setSelectedCountry({
+				callingCode: foundCountryCode!.value,
+				countryEmoji: flag,
+				name: countryList.find((c) => c.dialCode === foundCountryCode?.value)
+					?.name,
+			});
+		} else {
+			setSelectedCountry({
+				callingCode: countryData.callingCode,
+				countryEmoji: countryData.countryEmoji,
+				name: countryList.find((c) => c.dialCode === countryData.callingCode)
+					?.name,
+			});
+		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [countryData]);
 
 	const handlePhoneChange = (e: SelectChangeEvent<string>) => {
 		setSelectedCountry({
@@ -47,6 +75,10 @@ export const PhoneInput = <T extends FieldValues>({
 			countryEmoji: countryList.find((c) => c.dialCode === e.target.value)
 				?.flag,
 		});
+	};
+
+	const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+		setDefaultNumberVal(e.target.value);
 	};
 
 	const inputRegisterName = t(`globals.${registerName}`);
@@ -59,7 +91,7 @@ export const PhoneInput = <T extends FieldValues>({
 			alignItems='center'
 			columnSpacing={2}
 		>
-			<Grid item xs={2}>
+			<Grid item xs={1}>
 				<CountryFlag>
 					{countryData.callingCode === null ? (
 						<Logo />
@@ -78,9 +110,10 @@ export const PhoneInput = <T extends FieldValues>({
 					value={selectedCountry.callingCode ?? ''}
 					fullWidth
 					onChangeSelect={handlePhoneChange}
+					disabled={disabled}
 				/>
 			</Grid>
-			<Grid item xs={5}>
+			<Grid item xs={6.5}>
 				<PhoneNumberField
 					type='tel'
 					label={t('components.input.phone-input.phone-num-label', {
@@ -88,12 +121,15 @@ export const PhoneInput = <T extends FieldValues>({
 					})}
 					required
 					fullWidth
+					value={defaultNumberVal}
 					{...register(registerName as Path<T>)}
 					error={!!errors?.[registerName]}
 					helperText={errors?.[registerName]?.message as string}
+					onChange={handleInputChange}
+					disabled={disabled}
 				/>
 			</Grid>
-			<Grid item xs={1}>
+			<Grid item xs={0.5}>
 				<Tooltip title={t('components.input.phone-input.phone-number-guide')}>
 					<Info color={palette.info.main} />
 				</Tooltip>

@@ -1,6 +1,7 @@
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Avatar, Box, Typography } from '@mui/material';
+import { Box, Typography } from '@mui/material';
+import { Avatar } from '@psycron/components/avatar/Avatar';
 import {
 	Address,
 	EditUser,
@@ -11,23 +12,37 @@ import {
 	PlanPaid,
 	PlanUnpaid,
 } from '@psycron/components/icons';
-import { Link } from '@psycron/components/link/Link';
 import { Tooltip } from '@psycron/components/tooltip/Tooltip';
 import { useUserDetails } from '@psycron/context/user/UserDetailsContext';
 import useClickOutside from '@psycron/hooks/useClickoutside';
+import useViewport from '@psycron/hooks/useViewport';
 
+import { AddressInfoItem } from '../address-info-item/AddressInfoItem';
+import { ContactInfoItem } from '../contact-info-item/ContactInfoItem';
 import type { IUserDetailsCardProps } from '../user-details-card/UserDetailsCard.types';
 
-import { AddressItem, ItemIcon, ItemLinkWrapper, NameEmailBox, UserDetailsItems, UserDetailsItemWrapper, UserDetailsTop } from './UserDetails.styles';
+import {
+	Item,
+	ItemWrapper,
+	NameEmailBox,
+	StyledUserDetailsLinks,
+	UserDetailsItems,
+	UserDetailsItemWrapper,
+	UserDetailsTop,
+} from './UserDetails.styles';
 
 export const UserDetails = ({ plan, user }: IUserDetailsCardProps) => {
 	const userDetailsCardRef = useRef<HTMLDivElement | null>(null);
+	const [isEditUser, setIsEditUser] = useState<boolean>(false);
+
 	const { t } = useTranslation();
-	const { toggleUserDetails } = useUserDetails();
+
+	const { toggleUserDetails, handleClickEditUser } = useUserDetails();
+	const { isMobile, isTablet } = useViewport();
 
 	const { name: planName, status: planStatus } = plan;
 	const {
-		contacts: { address, phone },
+		contacts: { address, phone, whatsapp },
 		firstName,
 		lastName,
 		patients,
@@ -38,35 +53,6 @@ export const UserDetails = ({ plan, user }: IUserDetailsCardProps) => {
 
 	useClickOutside(userDetailsCardRef, toggleUserDetails);
 
-	const stringToColor = (string: string) => {
-		let hash = 0;
-		let i;
-
-		/* eslint-disable no-bitwise */
-		for (i = 0; i < string.length; i += 1) {
-			hash = string.charCodeAt(i) + ((hash << 5) - hash);
-		}
-
-		let color = '#';
-		for (i = 0; i < 3; i += 1) {
-			const value = (hash >> (i * 8)) & 0xff;
-			color += `00${value.toString(16)}`.slice(-2);
-		}
-		/* eslint-enable no-bitwise */
-		return color;
-	};
-
-	const stringAvatar = (name: string) => {
-		return {
-			sx: {
-				bgcolor: stringToColor(name),
-				width: 56,
-				height: 56,
-			},
-			children: `${name.split(' ')[0][0]}${name.split(' ')[1][0]}`,
-		};
-	};
-
 	const planStatusInfo = (
 		<Box display='flex'>
 			<Typography px={2}>{planName}</Typography>
@@ -74,15 +60,37 @@ export const UserDetails = ({ plan, user }: IUserDetailsCardProps) => {
 		</Box>
 	);
 
+	const addressDetails = [
+		{ value: `${address.route} ${address.streetNumber}` },
+		{ value: address.moreInfo },
+		{ value: `${address.sublocality} ${address.city}` },
+		{ value: `${address.administrativeArea} ${address.postalCode}` },
+		{ value: address.country },
+	];
+
 	const addressInfo = (
 		<Box display='flex' flexDirection='column' alignItems='flex-end'>
-			<AddressItem variant='body1'>{`${address.route} ${address.streetNumber}`}</AddressItem>
-			{address.moreInfo ? (
-				<AddressItem variant='body1'>{address.moreInfo}</AddressItem>
-			) : null}
-			<AddressItem variant='body1'>{`${address.sublocality} ${address.city}`}</AddressItem>
-			<AddressItem variant='body1'>{`${address.administrativeArea} ${address.postalCode}`}</AddressItem>
-			<AddressItem variant='body1'>{address.country}</AddressItem>
+			{addressDetails.map((detail, index) => (
+				<AddressInfoItem key={index} value={detail.value} />
+			))}
+		</Box>
+	);
+
+	const contactDetails = [
+		{ label: 'globals.phone', value: phone },
+		{ label: 'globals.whatsapp', value: whatsapp },
+		{ label: 'globals.email', value: email },
+	];
+
+	const constactsInfo = (
+		<Box>
+			{contactDetails.map((detail, index) => (
+				<ContactInfoItem
+					key={index}
+					label={detail.label}
+					value={detail.value}
+				/>
+			))}
 		</Box>
 	);
 
@@ -91,13 +99,25 @@ export const UserDetails = ({ plan, user }: IUserDetailsCardProps) => {
 			name: t('globals.password'),
 			icon: <Password />,
 			value: <Typography variant='body1'>{pass}</Typography>,
+			edit: t('components.user-details.change', {
+				name: t('globals.password'),
+			}),
+			subPath: '/password',
 		},
 		{
-			name: t('globals.phone'),
+			name: 'Contacts',
 			icon: <Phone />,
-			value: <Typography variant='body1'>{phone}</Typography>,
+			value: constactsInfo,
+			edit: t('components.user-details.edit-contacts'),
+			subPath: '/contacts',
 		},
-		{ name: t('globals.address'), icon: <Address />, value: addressInfo },
+		{
+			name: t('globals.address'),
+			icon: <Address />,
+			value: addressInfo,
+			edit: t('components.user-details.change', { name: t('globals.address') }),
+			subPath: '/address',
+		},
 		{
 			name: t('globals.plan'),
 			icon: <Plan />,
@@ -120,35 +140,44 @@ export const UserDetails = ({ plan, user }: IUserDetailsCardProps) => {
 				<UserDetailsTop>
 					<Box display='flex'>
 						<Avatar
-							alt={`user-${firstName}-avatar`}
-							src={image! == undefined ? image : ''}
-							{...stringAvatar(`${firstName} ${lastName}`)}
+							src={image}
+							large
+							firstName={firstName}
+							lastName={lastName}
 						/>
-						<NameEmailBox>
-							<Typography
-								variant='subtitle1'
-								fontWeight={600}
-							>{`${firstName} ${lastName}`}</Typography>
-							<Typography variant='overline'>{email}</Typography>
-						</NameEmailBox>
+						<Box display='flex' flexDirection='column'>
+							<NameEmailBox>
+								<Typography
+									variant='subtitle1'
+									fontWeight={600}
+								>{`${firstName} ${lastName}`}</Typography>
+								<Typography variant='overline'>{email}</Typography>
+							</NameEmailBox>
+							<StyledUserDetailsLinks
+								onClick={() => handleClickEditUser('/name')}
+							>
+								<Typography variant='caption'>
+									{isEditUser ? t('components.user-details.edit') : null}
+								</Typography>
+							</StyledUserDetailsLinks>
+						</Box>
 					</Box>
-					<Box>
-						<Tooltip title={t('components.user-details.edit')} placement='left'>
+					<Box onClick={() => setIsEditUser((prev) => !prev)}>
+						<Tooltip
+							title={t('components.user-details.edit')}
+							placement={isMobile || isTablet ? 'left' : 'right'}
+						>
 							<EditUser />
 						</Tooltip>
 					</Box>
 				</UserDetailsTop>
 				<UserDetailsItems>
 					{userDetailsCardItems.map(
-						({ name, icon, value, sub, subPath }, index) => (
+						({ name, icon, value, sub, subPath, edit }, index) => (
 							<UserDetailsItemWrapper key={`item-${name}-${index}`}>
-								<ItemIcon>
-									<Box>{icon}</Box>
-									<ItemLinkWrapper
-										display='flex'
-										flexDirection='column'
-										alignItems='flex-start'
-									>
+								<ItemWrapper>
+									<Box height={40}>{icon}</Box>
+									<Item>
 										<Typography
 											variant='subtitle1'
 											fontWeight={600}
@@ -156,15 +185,15 @@ export const UserDetails = ({ plan, user }: IUserDetailsCardProps) => {
 										>
 											{name}
 										</Typography>
-										<>
-											{sub ? (
-												<Link to={subPath} firstLetterUpper>
-													<Typography variant='caption'>{sub}</Typography>
-												</Link>
-											) : null}
-										</>
-									</ItemLinkWrapper>
-								</ItemIcon>
+										<StyledUserDetailsLinks
+											onClick={() => handleClickEditUser(subPath)}
+										>
+											<Typography variant='caption'>
+												{isEditUser && edit?.length ? edit : sub}
+											</Typography>
+										</StyledUserDetailsLinks>
+									</Item>
+								</ItemWrapper>
 								<Box>{value}</Box>
 							</UserDetailsItemWrapper>
 						)

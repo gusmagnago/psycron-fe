@@ -32,7 +32,6 @@ const meta: Meta<typeof ContactsForm> = {
 			},
 		},
 	},
-
 };
 
 export default meta;
@@ -48,6 +47,13 @@ export const Default: Story = {
 			formState: { errors },
 		} = useForm();
 
-		return <ContactsForm errors={errors} register={register} getPhoneValue={getValues} setPhoneValue={setValue}/>;
+		return (
+			<ContactsForm
+				errors={errors}
+				register={register}
+				getPhoneValue={getValues}
+				setPhoneValue={setValue}
+			/>
+		);
 	},
 };

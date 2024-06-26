@@ -15,7 +15,8 @@
     "change-language": "change language",
     "help": "help center",
     "logout": "logout",
-    "plan": "plan"
+    "plan": "plan",
+    "cancel": "cancel"
   },
   "components": {
     "form": {
@@ -55,6 +56,10 @@
       },
       "add-patient": {
         "name": "add patient"
+      },
+      "contacts-form": {
+        "contact-via": "contact via {{method}}?",
+        "contact-via-same": "is phone number the same as whatsapp?"
       }
     },
     "input": {
@@ -69,7 +74,10 @@
       "user-settings": "user settings"
     },
     "user-details": {
-      "edit": "edit details"
+      "edit": "edit details",
+      "edit-contacts": "edit contacts",
+      "change": "change {{name}}",
+      "save": "save details"
     }
   }
 }

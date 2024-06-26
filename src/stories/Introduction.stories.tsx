@@ -72,9 +72,7 @@ export const Introduction = () => {
 				},
 				{
 					name: 'user',
-					children: [{ name: '' }],
-					// http://localhost:6006/?path=/docs/components-user-details-components-user-details--docs
-					// http://localhost:6006/?path=/docs/components-user-components-user-details-card--docs
+					children: [{ name: 'edit-user' }],
 					components: [{ name: 'user-details-card' }, { name: 'user-details' }],
 				},
 			],
@@ -254,15 +252,29 @@ export const Introduction = () => {
 			<ImgCredits>
 				<Typography>
           Illustrations by
-					<a href='https://icons8.com/illustrations/author/zD2oqC8lLBBA'>
+					<a
+						href='https://icons8.com/illustrations/author/zD2oqC8lLBBA'
+						target='_blank'
+						rel='noreferrer'
+					>
             Icons 8
 					</a>
           from
-					<a href='https://icons8.com/illustrations'>Ouch!</a>
+					<a
+						href='https://icons8.com/illustrations'
+						target='_blank'
+						rel='noreferrer'
+					>
+            Ouch!
+					</a>
 				</Typography>
 				<Box>
 					<Typography variant='caption' fontWeight={700}>
-						<a href='https://icons8.com/illustrations/style--3d-casual-life'>
+						<a
+							href='https://icons8.com/illustrations/style--3d-casual-life'
+							target='_blank'
+							rel='noreferrer'
+						>
               Find more here
 						</a>
 					</Typography>

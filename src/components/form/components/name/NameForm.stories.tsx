@@ -23,6 +23,10 @@ const meta: Meta<typeof NameForm> = {
 			},
 		},
 	},
+	args: {
+		placeholderFirstName: undefined,
+		placeholderLastName: undefined,
+	},
 };
 
 export default meta;
@@ -37,5 +41,23 @@ export const Default: Story = {
 		} = useForm();
 
 		return <NameForm errors={errors} register={register} />;
+	},
+};
+
+export const WithPlaceHolder: Story = {
+	render: () => {
+		const {
+			register,
+			formState: { errors },
+		} = useForm();
+
+		return (
+			<NameForm
+				errors={errors}
+				register={register}
+				placeholderFirstName='John'
+				placeholderLastName='Doe'
+			/>
+		);
 	},
 };

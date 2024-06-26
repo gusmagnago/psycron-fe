@@ -17,6 +17,8 @@ export interface AddressComponent {
 }
 
 export interface AddressComponentProps<T extends FieldValues> {
+  defaultValues?: AddressComponent,
+  disabled?:boolean,
   errors: FieldErrors<T>;
   register: UseFormRegister<T>;
 }

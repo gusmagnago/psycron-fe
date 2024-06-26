@@ -1,15 +1,15 @@
+import type { FC } from 'react';
+import { Outlet } from 'react-router-dom';
 import { Box, Divider } from '@mui/material';
 import { Navbar } from '@psycron/components/navbar/Navbar';
 import { UserDetailsCard } from '@psycron/components/user/components/user-details-card/UserDetailsCard';
 import { useUserDetails } from '@psycron/context/user/UserDetailsContext';
 import useViewport from '@psycron/hooks/useViewport';
 
-import { Content, LayoutWraper } from './AppLayout.styles';
-import type { IAppLayout } from './AppLayout.types';
+import { Content, LayoutWrapper } from './AppLayout.styles';
 
-export const AppLayout = ({ children }: IAppLayout) => {
+const AppLayout: FC = () => {
 	const { isMobile, isTablet } = useViewport();
-
 	const { isUserDetailsVisible } = useUserDetails();
 
 	const mockUserDetailsCardProps = {
@@ -42,28 +42,24 @@ export const AppLayout = ({ children }: IAppLayout) => {
 	};
 
 	return (
-		<>
-			<LayoutWraper>
-				<Box>
-					<Navbar />
-				</Box>
-				<Box>
-					<Divider
-						orientation={isMobile || isTablet ? 'horizontal' : 'vertical'}
+		<LayoutWrapper>
+			<Box>
+				<Navbar />
+			</Box>
+			<Box>
+				<Divider orientation={isMobile || isTablet ? 'horizontal' : 'vertical'} />
+			</Box>
+			<Content>
+				<Outlet />
+				{isUserDetailsVisible && (
+					<UserDetailsCard
+						plan={mockUserDetailsCardProps.plan}
+						user={mockUserDetailsCardProps.user}
 					/>
-				</Box>
-				<Box height={'100%'} width={'100%'}>
-					<Content>
-						{children}
-						{isUserDetailsVisible ? (
-							<UserDetailsCard
-								plan={mockUserDetailsCardProps.plan}
-								user={mockUserDetailsCardProps.user}
-							/>
-						) : null}
-					</Content>
-				</Box>
-			</LayoutWraper>
-		</>
+				)}
+			</Content>
+		</LayoutWrapper>
 	);
 };
+
+export default AppLayout;

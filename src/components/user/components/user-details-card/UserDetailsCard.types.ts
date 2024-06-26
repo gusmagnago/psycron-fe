@@ -10,6 +10,7 @@ export interface IUserDetailsCardProps {
       contacts: {
         address: AddressComponent;
         phone: string;
+        whatsapp?: string;
     },
     email: string;
     firstName: string;

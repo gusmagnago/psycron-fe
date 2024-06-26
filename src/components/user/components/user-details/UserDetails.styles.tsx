@@ -1,4 +1,5 @@
-import { Box, styled, Typography } from '@mui/material';
+import { Box, styled } from '@mui/material';
+import { palette } from '@psycron/theme/palette/palette.theme';
 import { spacing } from '@psycron/theme/spacing/spacing.theme';
 
 export const UserDetailsTop = styled(Box)`
@@ -13,7 +14,6 @@ export const NameEmailBox = styled(Box)`
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  padding: 0 ${spacing.mediumSmall};
 `;
 
 export const UserDetailsItems = styled(Box)`
@@ -28,24 +28,38 @@ export const UserDetailsItemWrapper = styled(Box)`
   justify-content: space-between;
 `;
 
-export const ItemIcon = styled(Box)`
-  display: flex;
-  align-items: center;
-  svg {
-    margin-right: ${spacing.small};
-  }
-`;
-
-export const ItemLinkWrapper = styled(Box)`
+export const Item = styled(Box)`
   display: flex;
   flex-direction: column;
+  align-items: flex-start;
+`;
+
+export const ItemWrapper = styled(Box)`
+  display: flex;
   align-items: flex-start;
 
   a {
     margin: 0;
   }
+  svg {
+    margin-right: ${spacing.small};
+  }
 `;
 
-export const AddressItem = styled(Typography)`
-  padding-bottom: ${spacing.xs};
+export const StyledUserDetailsLinks = styled(Box)`
+  display: flex;
+
+  height: ${spacing.small};
+  color: ${palette.secondary.main};
+
+  span {
+    font-weight: 500;
+    &::first-letter {
+      text-transform: uppercase;
+    }
+  }
+
+  &:hover {
+    cursor: pointer;
+  }
 `;

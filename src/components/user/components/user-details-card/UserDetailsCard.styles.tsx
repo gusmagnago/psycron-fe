@@ -1,5 +1,4 @@
 import { Box, css, keyframes, styled } from '@mui/material';
-import { isBiggerThanMediumMedia } from '@psycron/theme/media-queries/mediaQueries';
 import { shadowMain } from '@psycron/theme/shadow/shadow.theme';
 import { spacing } from '@psycron/theme/spacing/spacing.theme';
 
@@ -21,7 +20,7 @@ export const UserDetailsCardWrapper = styled(Box, {
   padding: ${spacing.medium} ${spacing.mediumLarge};
   border-radius: calc(2 * ${spacing.medium});
   box-shadow: ${shadowMain};
-  backdrop-filter: blur(30px);
+  backdrop-filter: blur(10px);
   position: absolute;
   z-index: 100;
   width: 50%;
@@ -29,13 +28,11 @@ export const UserDetailsCardWrapper = styled(Box, {
   flex-direction: column;
   justify-content: space-between;
 
+  border: 2px solid rgba(170, 170, 204, 0.1);
+
   ${({ isVisible }) =>
 		isVisible &&
     css`
       animation: ${blurIn} 0.09s linear both;
     `}
-
-  ${isBiggerThanMediumMedia} {
-    width: 50%;
-  }
 `;
