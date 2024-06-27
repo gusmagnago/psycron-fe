@@ -1,9 +1,13 @@
 import { useNavigate } from 'react-router-dom';
-import { Box, Typography } from '@mui/material';
+import { Box, Grid, Typography } from '@mui/material';
 import { Payment } from '@psycron/components/icons';
 import { Tooltip } from '@psycron/components/tooltip/Tooltip';
 
-import { PatientCardItemWrapper, SmallDivider } from './PatientCardItem.styles';
+import {
+	GridDivider,
+	PatientCardItemWrapper,
+	SmallDivider,
+} from './PatientCardItem.styles';
 import type { IPatientCardItemProps } from './PatientCardItem.types';
 
 export const PatientCardItem = ({
@@ -19,27 +23,54 @@ export const PatientCardItem = ({
 			width={'100%'}
 			onClick={() => navigate(`patient/${patientId}`)}
 		>
-			<Box width={200} p={2}>
-				<Typography variant='subtitle1' textAlign='left'>{`${firstName} ${lastName}`}</Typography>
-			</Box>
-			<SmallDivider orientation='vertical' flexItem />
-			<Box width={220} px={2}>
-				<Typography variant='body2' textAlign='left'>{appointNamentInfo.next}</Typography>
-			</Box>
-			<SmallDivider orientation='vertical' flexItem />
-			<Box width={40}>
-				<Tooltip
-					title={`appointment value: ${appointNamentInfo.value} ${appointNamentInfo.currency}`}
-				>
-					<Payment />
-				</Tooltip>
-			</Box>
-			<SmallDivider orientation='vertical' flexItem />
-			<Box width={40} pl={2}>
-				<Typography variant='body2'>
-					{appointNamentInfo.appointments}
-				</Typography>
-			</Box>
+			<Grid
+				container
+				columns={8}
+				justifyContent='space-between'
+				alignItems='center'
+				width={'100%'}
+			>
+				<Grid item xs={2.5}>
+					<Box display='flex' justifyContent='center' p={2}>
+						<Typography
+							variant='subtitle1'
+							textAlign='left'
+						>{`${firstName} ${lastName}`}</Typography>
+					</Box>
+				</Grid>
+				<GridDivider item xs={0.2}>
+					<SmallDivider orientation='vertical' flexItem />
+				</GridDivider>
+				<Grid item xs={2.5}>
+					<Box p={2}>
+						<Typography variant='body2' textAlign='left'>
+							{appointNamentInfo.next}
+						</Typography>
+					</Box>
+				</Grid>
+				<GridDivider item xs={0.2}>
+					<SmallDivider orientation='vertical' flexItem />
+				</GridDivider>
+				<Grid item xs={1}>
+					<Box>
+						<Tooltip
+							title={`appointment value: ${appointNamentInfo.value} ${appointNamentInfo.currency}`}
+						>
+							<Payment />
+						</Tooltip>
+					</Box>
+				</Grid>
+				<GridDivider item xs={0.2}>
+					<SmallDivider orientation='vertical' flexItem />
+				</GridDivider>
+				<Grid item xs={1}>
+					<Box>
+						<Typography variant='body2'>
+							{appointNamentInfo.appointments}
+						</Typography>
+					</Box>
+				</Grid>
+			</Grid>
 		</PatientCardItemWrapper>
 	);
 };
