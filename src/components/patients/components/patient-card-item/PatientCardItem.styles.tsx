@@ -1,4 +1,4 @@
-import { Box, Divider, styled } from '@mui/material';
+import { Box, Divider, Grid, styled } from '@mui/material';
 import { isBiggerThanTabletMedia } from '@psycron/theme/media-queries/mediaQueries';
 import { palette } from '@psycron/theme/palette/palette.theme';
 import { shadowMain } from '@psycron/theme/shadow/shadow.theme';
@@ -8,7 +8,7 @@ export const PatientCardItemWrapper = styled(Box)`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: ${spacing.small} 0;
+  padding: ${spacing.space} 0;
 
   &:hover {
     box-shadow: ${shadowMain};
@@ -18,8 +18,10 @@ export const PatientCardItemWrapper = styled(Box)`
 
     color: ${palette.secondary.access};
     svg {
-         color: ${palette.secondary.access};
+      color: ${palette.secondary.access};
     }
+
+    transform: scale(1.03);
   }
 `;
 
@@ -29,4 +31,9 @@ export const SmallDivider = styled(Divider)`
   ${isBiggerThanTabletMedia} {
     border-width: 4px;
   }
+`;
+
+export const GridDivider = styled(Grid)`
+  display: flex;
+  height: 2rem;
 `;
