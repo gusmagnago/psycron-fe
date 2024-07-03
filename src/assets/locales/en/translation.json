@@ -16,7 +16,14 @@
     "help": "help center",
     "logout": "logout",
     "plan": "plan",
-    "cancel": "cancel"
+    "cancel": "cancel",
+     "date-time-format": "{{format}}",
+    "time-remaining": {
+      "days": "in {{count}} day(s)",
+      "hours": "in {{count}} hour(s)",
+      "minutes": "in {{count}} minute(s)",
+      "less-than-a-minute": "session happening"
+    }
   },
   "components": {
     "form": {

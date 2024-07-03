@@ -14,10 +14,10 @@ export const PatientsCard = () => {
 		{
 			firstName: 'John',
 			lastName: 'Doe',
-			appointNamentInfo: {
+			appointmentInfo: {
 				appointments: 5,
 				currency: 'USD',
-				next: 'June 27, 2024 17:45pm',
+				next: '2024-07-01T17:15:00',
 				value: '200',
 			},
 			patientId: '23456543213456743211',
@@ -25,10 +25,10 @@ export const PatientsCard = () => {
 		{
 			firstName: 'Jane',
 			lastName: 'Smith',
-			appointNamentInfo: {
+			appointmentInfo: {
 				appointments: 3,
 				currency: 'EUR',
-				next: 'July 14, 2024 17:45pm',
+				next: '2024-07-01T18:20:00',
 				value: '150',
 			},
 			patientId: '2345654321klbhjvgjhbnlm43211',
@@ -52,11 +52,11 @@ export const PatientsCard = () => {
 				<Divider />
 				<Box>
 					{patients.map(
-						({ firstName, lastName, appointNamentInfo, patientId }, index) => (
+						({ firstName, lastName, appointmentInfo, patientId }, index) => (
 							<>
 								<PatientCardItem
 									key={index}
-									appointNamentInfo={appointNamentInfo}
+									appointmentInfo={appointmentInfo}
 									firstName={firstName}
 									lastName={lastName}
 									patientId={patientId}

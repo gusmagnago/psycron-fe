@@ -5,7 +5,7 @@ import type { CardTitleProps } from './CardTitle/CardTitle.types';
 
 export type CardTypes = {
     cardTitle: boolean;
-    content: ReactNode;
+    children: ReactNode;
 }
 
 export interface CardProps extends CardTypes {
