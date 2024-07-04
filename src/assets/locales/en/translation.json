@@ -17,13 +17,17 @@
     "logout": "logout",
     "plan": "plan",
     "cancel": "cancel",
-     "date-time-format": "{{format}}",
+    "date-time-format": "{{format}}",
     "time-remaining": {
       "days": "in {{count}} day(s)",
       "hours": "in {{count}} hour(s)",
       "minutes": "in {{count}} minute(s)",
-      "less-than-a-minute": "session happening"
-    }
+      "less-than-a-minute": "session {{status}}"
+    },
+    "in-progress": "in progress",
+    "paused": "paused",
+    "proceed": "proceed",
+    "resume": "resume"
   },
   "components": {
     "form": {
@@ -85,6 +89,18 @@
       "edit-contacts": "edit contacts",
       "change": "change {{name}}",
       "save": "save details"
+    },
+    "dashboard": {
+      "card": {
+        "delay-notification": "Pausing the timer will delay all your remaining appointments for today by the duration of this pause.",
+        "delay-confirmation": "Are you sure you want to pause the timer?",
+        "pause": "pause timer",
+        "session-progress": "session progress:"
+      }
+    },
+    "appointments": {
+        "card-title": "appointments of the day",
+        "manager": "appointments manager" 
     }
   }
 }

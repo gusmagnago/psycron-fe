@@ -15,7 +15,19 @@
     "change-language": "mude o idioma",
     "help": "centro de ajuda",
     "logout": "sair",
-    "plan": "plano"
+    "plan": "plano",
+    "cancel": "cancelar",
+    "date-time-format": "{{format}}",
+    "time-remaining": {
+      "days": "em {{count}} dia(s)",
+      "hours": "em {{count}} horas(s)",
+      "minutes": "em {{count}} minuto(s)",
+      "less-than-a-minute": "sessão {{status}}"
+    },
+    "in-progress": "em andamento",
+    "paused": "pausada",
+    "proceed": "continuar",
+    "resume": "retomar"
   },
   "components": {
     "form": {
@@ -74,8 +86,20 @@
     },
     "user-details": {
       "edit": "editar detalhes",
-       "edit-contacts": "editar contatos",
+      "edit-contacts": "editar contatos",
       "change": "alterar {{name}}"
+    },
+    "dashboard": {
+      "card": {
+        "delay-notification": "Pausar o cronômetro vai atrasar todos os seus compromissos de hoje pelo tempo da pausa.",
+        "delay-confirmation": "Você tem certeza que quer pausar o cronômetro?",
+        "pause": "pausar cronômetro",
+        "session-progress": "progresso da sessão:"
+      }
+    },
+    "appointments": {
+      "card-title": "consultas do dia",
+      "manager": "gerenciador de consultas"
     }
   }
 }

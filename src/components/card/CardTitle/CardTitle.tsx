@@ -1,5 +1,6 @@
-import { Grid, Typography } from '@mui/material';
+import { Grid } from '@mui/material';
 import { Button } from '@psycron/components/button/Button';
+import { Text } from '@psycron/components/text/Text';
 import { palette } from '@psycron/theme/palette/palette.theme';
 
 import { CardTitleWrapper, TitleWrapper } from './CardTitle.styles';
@@ -24,11 +25,11 @@ export const CardTitle = ({
 				alignItems='center'
 			>
 				<TitleWrapper>
-					<Typography variant='h5'>{title}</Typography>
+					<Text variant='h5' isFirstUpper>{title}</Text>
 					{subheader?.length ? (
-						<Typography variant='subtitle1' color={palette.text.secondary}>
+						<Text variant='subtitle1' color={palette.text.secondary} isFirstUpper>
 							{subheader}
-						</Typography>
+						</Text>
 					) : null}
 				</TitleWrapper>
 				{hasFirstChip ? (

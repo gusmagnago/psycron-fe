@@ -1,7 +1,10 @@
+import { useTranslation } from 'react-i18next';
 import { DashboardCard } from '@psycron/components/dashboard/components/dashboard-card/DashboardCard';
 import { Appointment } from '@psycron/components/icons';
 
 export const AppointmentsCard = () => {
+	const { t } = useTranslation();
+
 	const items = [
 		{
 			firstName: 'John',
@@ -9,9 +12,9 @@ export const AppointmentsCard = () => {
 			appointmentInfo: {
 				appointments: 5,
 				currency: 'USD',
-				next: '2024-07-03T15:00:00',
+				next: '2024-07-04T13:00:00',
 				value: '200',
-				duration: 60
+				duration: 60,
 			},
 			patientId: '23456543213456743211',
 		},
@@ -21,9 +24,9 @@ export const AppointmentsCard = () => {
 			appointmentInfo: {
 				appointments: 3,
 				currency: 'EUR',
-				next: '2024-07-03T16:00:00',
+				next: '2024-07-04T14:00:00',
 				value: '150',
-				duration: 60
+				duration: 60,
 			},
 			patientId: '2345654321klbhjvgjhbnlm43211',
 		},
@@ -33,9 +36,9 @@ export const AppointmentsCard = () => {
 			appointmentInfo: {
 				appointments: 3,
 				currency: 'EUR',
-				next: '2024-07-03T17:00:00',
+				next: '2024-07-04T20:00:00',
 				value: '150',
-				duration: 60
+				duration: 60,
 			},
 			patientId: '2345654321klbhjvgjhbnlm43211',
 		},
@@ -45,23 +48,23 @@ export const AppointmentsCard = () => {
 			appointmentInfo: {
 				appointments: 3,
 				currency: 'EUR',
-				next: '2024-07-05T18:00:00',
+				next: '2024-07-05T21:00:00',
 				value: '150',
-				duration: 60
+				duration: 60,
 			},
 			patientId: '2345654321klbhjvgjhbnlm43211',
 		},
 	];
 
-
 	return (
 		<DashboardCard
 			icon={<Appointment />}
-			iconTitleKey={'Appointments manager'}
+			iconTitleKey={t('components.appointments.manager')}
+			// provide correct page url
 			navigateToURL={'/'}
 			// the items should come from a context provider
 			items={items}
-			titleKey={'Appointments'}
+			titleKey={t('components.appointments.card-title')}
 		/>
 	);
 };

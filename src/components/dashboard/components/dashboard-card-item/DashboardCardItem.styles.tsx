@@ -7,8 +7,8 @@ import { spacing } from '@psycron/theme/spacing/spacing.theme';
 
 export const DashboardCardItemWrapper = styled(Box, {
 	shouldForwardProp: (props) =>
-		props !== 'isPatientCard' && props !== 'lessThanThirtyMinutes',
-})<{ isPatientCard?: boolean; lessThanThirtyMinutes?: boolean }>`
+		props !== 'isPatientCard' && props !== 'lessThanThirtyMinutes' && props !== 'isNow',
+})<{ isNow?: boolean, isPatientCard?: boolean; lessThanThirtyMinutes?: boolean }>`
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -17,18 +17,21 @@ export const DashboardCardItemWrapper = styled(Box, {
 
   border: 3px solid transparent;
 
-  ${({ lessThanThirtyMinutes }) =>
-		lessThanThirtyMinutes
+  ${({ lessThanThirtyMinutes , isNow}) =>
+		isNow
 			? css`
-          background-color: ${palette.alert.main};
+          background-color: ${palette.alert.surface.light};
           box-shadow: ${shadowPress};
         `
-			: 'transparent'};
+			: lessThanThirtyMinutes ? css`
+              background-color: ${palette.info.surface.light};
+             box-shadow: ${shadowPress};
+            `: 'transparent'};
 
   &:hover {
     box-shadow: ${shadowMain};
 
-    ${({ isPatientCard, lessThanThirtyMinutes }) =>
+    ${({ isPatientCard, isNow }) =>
 		isPatientCard
 			? css`
             background-color: ${palette.secondary.surface.light};
@@ -37,12 +40,9 @@ export const DashboardCardItemWrapper = styled(Box, {
               color: ${palette.secondary.access};
             }
           `
-			: lessThanThirtyMinutes
+			: isNow
 				? css`
-              border: 3px solid ${palette.alert.action.hover};
-              svg {
-                color: ${palette.alert.action.hover};
-              }
+              border: 3px solid ${palette.alert.main};
             `
 				: css`
               border: 3px solid ${palette.tertiary.action.hover};
@@ -66,10 +66,8 @@ export const GridDivider = styled(Grid)`
   height: 2rem;
 `;
 
-
 export const DashboardCardTooltip = styled(Tooltip)`
-
   &:hover {
     border-radius: ${spacing.mediumSmall};
   }
-`
+`;

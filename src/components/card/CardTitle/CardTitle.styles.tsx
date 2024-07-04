@@ -1,5 +1,6 @@
 import styled from '@emotion/styled';
 import { Box } from '@mui/material';
+import { spacing } from '@psycron/theme/spacing/spacing.theme';
 
 export const TitleWrapper = styled(Box)`
   display: flex;
@@ -10,4 +11,5 @@ export const TitleWrapper = styled(Box)`
 export const CardTitleWrapper = styled(Box)`
   display: flex;
   justify-content: space-between;
+  padding: ${spacing.small}
 `;

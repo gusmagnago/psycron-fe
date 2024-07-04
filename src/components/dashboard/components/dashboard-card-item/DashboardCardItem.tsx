@@ -2,6 +2,7 @@ import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { Box, Grid, Typography } from '@mui/material';
 import { Edit, Payment } from '@psycron/components/icons';
+import { Text } from '@psycron/components/text/Text';
 import { Tooltip } from '@psycron/components/tooltip/Tooltip';
 import {
 	checkAppointmentTimes,
@@ -23,10 +24,14 @@ export const DashboardCardItem = ({
 	patientId,
 	appointmentInfo,
 	isPatientCard,
+	paused,
 }: IDashboarcCardItemProps) => {
 	const navigate = useNavigate();
 
-	const { lessThanThirtyMinutes } = checkAppointmentTimes(appointmentInfo.next)
+	const { lessThanThirtyMinutes, isNow } = checkAppointmentTimes(
+		appointmentInfo.next,
+		appointmentInfo.duration
+	);
 
 	const { t } = useTranslation();
 
@@ -37,6 +42,7 @@ export const DashboardCardItem = ({
 				onClick={() => navigate(`patient/${patientId}`)}
 				isPatientCard={isPatientCard}
 				lessThanThirtyMinutes={!isPatientCard && lessThanThirtyMinutes}
+				isNow={isNow}
 			>
 				<Grid
 					container
@@ -78,9 +84,9 @@ export const DashboardCardItem = ({
 							</Box>
 						) : (
 							<Box p={2}>
-								<Typography variant='body2' textAlign='left'>
-									{getTimeRemaining(appointmentInfo.next, t)}
-								</Typography>
+								<Text variant='body2' textAlign='left' isFirstUpper>
+									{getTimeRemaining(appointmentInfo.next, t, !paused)}
+								</Text>
 							</Box>
 						)}
 					</Grid>

@@ -11,4 +11,5 @@ export interface IDashboarcCardItemProps {
     isPatientCard?: boolean,
     lastName: string;
     patientId: string;
+    paused?: boolean
 }

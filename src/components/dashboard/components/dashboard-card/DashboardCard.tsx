@@ -1,10 +1,11 @@
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-import { Box, Divider, Modal, Typography } from '@mui/material';
+import { Box, Divider, Modal } from '@mui/material';
 import { Card } from '@psycron/components/card/Card';
 import { Pause, Play } from '@psycron/components/icons';
 import { Progress } from '@psycron/components/progress/Progress';
+import { Text } from '@psycron/components/text/Text';
 import { Tooltip } from '@psycron/components/tooltip/Tooltip';
 import {
 	addMilliseconds,
@@ -22,10 +23,12 @@ import {
 
 import { DashboardCardItem } from '../dashboard-card-item/DashboardCardItem';
 import type { IDashboarcCardItemProps } from '../dashboard-card-item/DashboardCardItem.types';
+import { EmptyState } from '../empty-state/EmptyState';
 
 import {
 	DashboardCardTitle,
 	DashboardCardWrapper,
+	ModalContent,
 	ModalPauseTimerContent,
 	Timer,
 } from './DashboardCard.styles';
@@ -130,8 +133,10 @@ export const DashboardCard = ({
 
 		return isHappening && !isPatientCard ? (
 			<Timer>
-				<Box width={'135px'} pr={1}>
-					<Typography variant='caption'>session duration: </Typography>
+				<Box width={150} pr={1}>
+					<Text variant='body2' isFirstUpper>
+						{t('components.dashboard.card.session-progress')}
+					</Text>
 				</Box>
 				<Progress
 					showLabel
@@ -141,7 +146,11 @@ export const DashboardCard = ({
 				/>
 				<Box>
 					<Tooltip
-						title={shouldProceed ? 'pause' : 'resume'}
+						title={
+							shouldProceed
+								? t('components.dashboard.card.pause')
+								: t('globals.resume')
+						}
 						onClick={handleTooltipClick}
 					>
 						{shouldProceed ? <Pause /> : <Play />}
@@ -175,9 +184,9 @@ export const DashboardCard = ({
 		<Box p={5}>
 			<DashboardCardWrapper>
 				<DashboardCardTitle>
-					<Typography variant='h5' fontWeight={600}>
+					<Text variant='h5' fontWeight={600} isFirstUpper>
 						{t(titleKey)}
-					</Typography>
+					</Text>
 					<Tooltip
 						title={t(iconTitleKey)}
 						onClick={() => navigate(navigateToURL)}
@@ -186,9 +195,16 @@ export const DashboardCard = ({
 					</Tooltip>
 				</DashboardCardTitle>
 				<Divider />
-				<Box>
-					{sortedItems.length === 0 ? (
-						<>{isPatientCard ? <div>aaaaaa</div> : <div>bbbbb</div>}</>
+				<Box pt={2}>
+					{items.length === 0 || sortedItems.length === 0 ? (
+						<>
+							<EmptyState
+								ariaLabel={isPatientCard ? 'patients' : 'appointments'}
+								img={isPatientCard ? './images/relax.png' : './images/empty-appointments.png'}
+								isAppointment={!isPatientCard}
+								today={items.length > 0 && sortedItems.length === 0}
+							/>
+						</>
 					) : (
 						<>
 							{sortedItems.map(
@@ -205,6 +221,7 @@ export const DashboardCard = ({
 											lastName={lastName}
 											patientId={patientId}
 											isPatientCard={isPatientCard}
+											paused={shouldProceed}
 										/>
 										<>
 											{isSessionHappening(
@@ -220,31 +237,30 @@ export const DashboardCard = ({
 				</Box>
 			</DashboardCardWrapper>
 			<Modal open={openModal}>
-				<Box>
+				<ModalContent>
 					<Card
 						cardActionsProps={{
-							actionName: 'Proceed',
+							actionName: t('globals.proceed'),
 							hasSecondAction: true,
 							onClick: handleProceed,
 							secondAction: () => setOpenModal(false),
-							secondActionName: 'Cancel',
+							secondActionName: t('globals.cancel'),
 						}}
 						cardTitleProps={{
-							title: 'Pause Timer',
+							title: t('components.dashboard.card.pause'),
 						}}
 						cardTitle
 					>
 						<ModalPauseTimerContent>
-							<Typography variant='subtitle1'>
-                Pausing the timer will delay all your remaining appointments for
-                today by the duration of this pause.
-							</Typography>
-							<Typography variant='subtitle1'>
-                Are you sure you want to pause the timer?
-							</Typography>
+							<Text variant='subtitle1' textAlign='left'>
+								{t('components.dashboard.card.delay-notification')}
+							</Text>
+							<Text variant='subtitle1'>
+								{t('components.dashboard.card.delay-confirmation')}
+							</Text>
 						</ModalPauseTimerContent>
 					</Card>
-				</Box>
+				</ModalContent>
 			</Modal>
 		</Box>
 	);

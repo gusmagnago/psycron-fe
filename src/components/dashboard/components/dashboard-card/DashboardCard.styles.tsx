@@ -42,3 +42,11 @@ export const Timer = styled(Box)`
 export const ModalPauseTimerContent = styled(Box)`
   padding: ${spacing.mediumLarge};
 `;
+
+
+export const ModalContent = styled(Box)`
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+`

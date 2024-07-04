@@ -1,3 +1,5 @@
+import { Box } from '@mui/material';
+import mockAppointments from '@psycron/assets/mock/appointments/mockAppointments.json'
 import { Appointment, PatientManager } from '@psycron/components/icons';
 import type { Meta, StoryObj } from '@storybook/react';
 
@@ -8,56 +10,7 @@ const DefaultDashboardCard = (args: IDashboardCardProps) => (
 	<DashboardCard {...args} />
 );
 
-const items = [
-	{
-		firstName: 'John',
-		lastName: 'Doe',
-		appointmentInfo: {
-			appointments: 5,
-			currency: 'USD',
-			next: '2024-07-01T18:00:00',
-			value: '200',
-			duration: 60
-		},
-		patientId: '23456543213456743211',
-	},
-	{
-		firstName: 'Jane',
-		lastName: 'Dona',
-		appointmentInfo: {
-			appointments: 3,
-			currency: 'EUR',
-			next: '2024-07-01T19:00:00',
-			value: '150',
-			duration: 60
-		},
-		patientId: '2345654321klbhjvgjhbnlm43211',
-	},
-	{
-		firstName: 'Johan',
-		lastName: 'Smthing',
-		appointmentInfo: {
-			appointments: 3,
-			currency: 'EUR',
-			next: '2024-07-01T20:00:00',
-			value: '150',
-			duration: 60
-		},
-		patientId: '2345654321klbhjvgjhbnlm43211',
-	},
-	{
-		firstName: 'Jupi',
-		lastName: 'Ferraz',
-		appointmentInfo: {
-			appointments: 3,
-			currency: 'EUR',
-			next: '2024-07-01T21:00:00',
-			value: '150',
-			duration: 60
-		},
-		patientId: '2345654321klbhjvgjhbnlm43211',
-	},
-];
+const items = mockAppointments
 
 const meta: Meta<typeof DashboardCard> = {
 	title: 'Components / Dashboard / Components / Dashbard Card',
@@ -66,8 +19,8 @@ const meta: Meta<typeof DashboardCard> = {
 	parameters: {
 		docs: {
 			description: {
-				component: `
-      `,
+				component: `The DashboardCard component displays a list of appointments or patients within a dashboard interface.
+                It provides real-time updates and session management features, enhancing user interaction and experience.`,
 			},
 		},
 	},
@@ -99,11 +52,39 @@ export const PatientsCard: Story = {
 	},
 };
 
+export const EmptyPatientsCard: Story = {
+	render: (args) => <DashboardCard {...args} />,
+	args: {
+		titleKey: 'Patients',
+		items: [],
+		iconTitleKey: 'Patients manager',
+		icon: <PatientManager />,
+	},
+};
+
 export const AppointmentsCard: Story = {
 	render: (args) => <DashboardCard {...args} />,
 	args: {
 		titleKey: 'Appointments',
 		items: items,
+		iconTitleKey: 'Appointments manager',
+		icon: <Appointment />,
+		isPatientCard: false,
+	},
+};
+
+export const EmptyAppointmentsCard: Story = {
+	render: (args) => (
+		<Box height={'100%'}>
+			<Box height={200}>
+
+				<DashboardCard {...args} />
+			</Box>
+		</Box>
+	),
+	args: {
+		titleKey: 'Appointments',
+		items: [],
 		iconTitleKey: 'Appointments manager',
 		icon: <Appointment />,
 		isPatientCard: false,

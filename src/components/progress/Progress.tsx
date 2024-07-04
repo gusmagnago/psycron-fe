@@ -25,7 +25,7 @@ export const Progress = ({
 			);
 
 			setProgress((initialElapsedSeconds / (duration * 60)) * 100);
-			const intervalTime = 1000; // Update every second
+			const intervalTime = 1000;
 
 			intervalRef.current = window.setInterval(() => {
 				const elapsedSeconds = differenceInSeconds(
