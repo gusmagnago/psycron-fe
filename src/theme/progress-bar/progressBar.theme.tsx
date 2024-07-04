@@ -1,22 +1,28 @@
+import { linearProgressClasses } from '@mui/material';
+import type {  Theme } from '@mui/material/styles';
 import type { CSSObject } from '@mui/system';
 
-import { shadowDisabled, shadowInnerPress } from '../shadow/shadow.theme';
+import type { Palette } from '../palette/palette.types';
+import { shadowDisabled } from '../shadow/shadow.theme';
 import { spacing } from '../spacing/spacing.theme';
 
-const progressBarStyles = (): Record<string, CSSObject> => {
+const progressBarStyles = ({ palette }: Theme): Record<string, CSSObject> => {
+	const { secondary } = palette as unknown as Palette;
 
 	return {
 		root: {
-			padding: `${spacing.xs} ${spacing.small}`,
-			height: `${spacing.mediumSmall}`,
-			boxShadow: shadowInnerPress,
+			height: `${spacing.xs}`,
 			filter: shadowDisabled,
-			margin: `${spacing.mediumSmall}`,
-			borderRadius: `calc(2 * ${spacing.mediumSmall})`
+			margin: `${spacing.small} 0`,
+			borderRadius: `calc(2 * ${spacing.mediumSmall})`,
+			backgroundColor: secondary.surface.light,
+			[`& .${linearProgressClasses.bar}`]: {
+				backgroundColor: secondary.main,
+				borderRadius: `calc(2 * ${spacing.mediumSmall})`,
+			}
+         
 		},
 	};
 };
 
 export default progressBarStyles;
-
-

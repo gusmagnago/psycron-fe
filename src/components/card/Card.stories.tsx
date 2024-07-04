@@ -54,7 +54,7 @@ export const Default: Story = {
 	args: {
 		cardTitleProps: { hasSecondChip: false, ...cardTitleMock },
 		cardActionsProps: { hasSecondAction: true, hasTertiary: false, ...cardActionsMock },
-		content: <p>This is default content</p>,
+		children: <p>This is default content</p>,
 		cardTitle: true,
 	},
 };
@@ -64,7 +64,7 @@ export const WithSecondChip: Story = {
 	args: {
 		cardTitleProps: { hasSecondChip: true, ...cardTitleMock },
 		cardActionsProps: { hasTertiary: false, hasSecondAction: true, ...cardActionsMock },
-		content: <p>This is content with a second chip</p>,
+		children: <p>This is content with a second chip</p>,
 		cardTitle: true,
 	},
 };
@@ -74,7 +74,7 @@ export const WithTertiaryAction: Story = {
 	args: {
 		cardTitleProps: cardTitleMock,
 		cardActionsProps: { hasSecondAction:true, hasTertiary: true, ...cardActionsMock },
-		content: <p>This is content with a tertiary action</p>,
+		children: <p>This is content with a tertiary action</p>,
 		cardTitle: true,
 	},
 };

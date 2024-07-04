@@ -70,7 +70,7 @@ const theme = createTheme({
 			styleOverrides: tooltipeStyles(createTheme({ palette })),
 		},
 		MuiLinearProgress: {
-			styleOverrides: progressBarStyles(),
+			styleOverrides: progressBarStyles(createTheme({ palette })),
 		},
 		MuiAlert: {
 			styleOverrides: alertStyles(createTheme({ palette })),

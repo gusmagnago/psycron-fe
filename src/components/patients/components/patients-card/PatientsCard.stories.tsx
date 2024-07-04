@@ -19,10 +19,10 @@ const meta: Meta<typeof PatientsCard> = {
 	args: {
 		firstName: 'Jane',
 		lastName: 'Smith',
-		appointNamentInfo: {
+		appointmentInfo: {
 			appointments: 3,
 			currency: 'EUR',
-			next: 'July 14, 2024 17:45pm',
+			next: '2024-07-01T17:15:00',
 			value: '150',
 		},
 		patientId: '2345654321klbhjvgjhbnlm43211',

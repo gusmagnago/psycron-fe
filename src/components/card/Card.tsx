@@ -6,7 +6,7 @@ import { CardWrapper } from './Card.styles';
 import type { CardProps } from './Card.types';
 
 export const Card = ({
-	content,
+	children,
 	cardTitle,
 	cardTitleProps,
 	cardActionsProps,
@@ -20,7 +20,7 @@ export const Card = ({
 						<Divider />
 					</>
 				) : null}
-				<Box>{content}</Box>
+				<Box>{children}</Box>
 				<CardActions {...cardActionsProps} />
 			</CardContent>
 		</CardWrapper>
