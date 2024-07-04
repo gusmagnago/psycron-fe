@@ -12,7 +12,7 @@ export const AppointmentsCard = () => {
 			appointmentInfo: {
 				appointments: 5,
 				currency: 'USD',
-				next: '2024-07-04T13:00:00',
+				next: '2024-07-04T15:00:00',
 				value: '200',
 				duration: 60,
 			},
@@ -24,7 +24,7 @@ export const AppointmentsCard = () => {
 			appointmentInfo: {
 				appointments: 3,
 				currency: 'EUR',
-				next: '2024-07-04T14:00:00',
+				next: '2024-07-04T16:00:00',
 				value: '150',
 				duration: 60,
 			},
@@ -48,7 +48,43 @@ export const AppointmentsCard = () => {
 			appointmentInfo: {
 				appointments: 3,
 				currency: 'EUR',
-				next: '2024-07-05T21:00:00',
+				next: '2024-07-04T21:00:00',
+				value: '150',
+				duration: 60,
+			},
+			patientId: '2345654321klbhjvgjhbnlm43211',
+		},
+		{
+			firstName: 'Jupi',
+			lastName: 'Ferraz',
+			appointmentInfo: {
+				appointments: 3,
+				currency: 'EUR',
+				next: '2024-07-04T22:00:00',
+				value: '150',
+				duration: 60,
+			},
+			patientId: '2345654321klbhjvgjhbnlm43211',
+		},
+		{
+			firstName: 'Jupi',
+			lastName: 'Ferraz',
+			appointmentInfo: {
+				appointments: 3,
+				currency: 'EUR',
+				next: '2024-07-04T23:00:00',
+				value: '150',
+				duration: 60,
+			},
+			patientId: '2345654321klbhjvgjhbnlm43211',
+		},
+		{
+			firstName: 'Jupi',
+			lastName: 'Ferraz',
+			appointmentInfo: {
+				appointments: 3,
+				currency: 'EUR',
+				next: '2024-07-04T24:00:00',
 				value: '150',
 				duration: 60,
 			},

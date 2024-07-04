@@ -32,6 +32,13 @@ export const DashboardCardTitle = styled(Box)`
   }
 `;
 
+export const ScrollBox = styled(Box)`
+    overflow-y: scroll;
+    overflow-x: hidden;
+    padding: ${spacing.small};
+    max-height: 300px;
+`
+
 export const Timer = styled(Box)`
   display: flex;
   align-items: center;

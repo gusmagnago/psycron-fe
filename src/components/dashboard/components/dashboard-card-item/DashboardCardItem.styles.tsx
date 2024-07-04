@@ -49,7 +49,6 @@ export const DashboardCardItemWrapper = styled(Box, {
             `}
 
     cursor: pointer;
-    transform: scale(1.03);
   }
 `;
 

@@ -30,6 +30,7 @@ import {
 	DashboardCardWrapper,
 	ModalContent,
 	ModalPauseTimerContent,
+	ScrollBox,
 	Timer,
 } from './DashboardCard.styles';
 import type { IDashboardCardProps } from './DashboardCard.types';
@@ -195,7 +196,7 @@ export const DashboardCard = ({
 					</Tooltip>
 				</DashboardCardTitle>
 				<Divider />
-				<Box pt={2}>
+				<ScrollBox>
 					{items.length === 0 || sortedItems.length === 0 ? (
 						<>
 							<EmptyState
@@ -212,9 +213,7 @@ export const DashboardCard = ({
 									{ firstName, lastName, appointmentInfo, patientId },
 									index
 								) => (
-									<div
-										key={`dashboard-card-${isPatientCard ? 'patient' : 'appointment'}-item-${index}`}
-									>
+									<>
 										<DashboardCardItem
 											appointmentInfo={appointmentInfo}
 											firstName={firstName}
@@ -222,6 +221,7 @@ export const DashboardCard = ({
 											patientId={patientId}
 											isPatientCard={isPatientCard}
 											paused={shouldProceed}
+											key={`dashboard-card-${isPatientCard ? 'patient' : 'appointment'}-item-${index}`}
 										/>
 										<>
 											{isSessionHappening(
@@ -229,12 +229,12 @@ export const DashboardCard = ({
 												appointmentInfo.duration
 											)}
 										</>
-									</div>
+									</>
 								)
 							)}
 						</>
 					)}
-				</Box>
+				</ScrollBox>
 			</DashboardCardWrapper>
 			<Modal open={openModal}>
 				<ModalContent>
