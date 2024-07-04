@@ -10,7 +10,7 @@ import { useParams } from 'react-router-dom';
 import App from '@psycron/App';
 import { UserGeoLocationProvider } from '@psycron/context/CountryContext';
 import { UserDetailsProvider } from '@psycron/context/user/UserDetailsContext';
-import AppLayout from '@psycron/layouts/AppLayout/AppLayout';
+import { AppLayout } from '@psycron/layouts/app-layout/AppLayout';
 
 import i18n from '../i18n';
 

@@ -8,7 +8,7 @@ import useViewport from '@psycron/hooks/useViewport';
 
 import { Content, LayoutWrapper } from './AppLayout.styles';
 
-const AppLayout: FC = () => {
+export const AppLayout: FC = () => {
 	const { isMobile, isTablet } = useViewport();
 	const { isUserDetailsVisible } = useUserDetails();
 
@@ -62,4 +62,3 @@ const AppLayout: FC = () => {
 	);
 };
 
-export default AppLayout;

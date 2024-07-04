@@ -2,9 +2,8 @@ import { Box } from '@mui/material';
 import type { Meta, StoryObj } from '@storybook/react';
 
 import { AppLayout } from './AppLayout';
-import type { IAppLayout } from './AppLayout.types';
 
-const AppLayoutStory = (args: IAppLayout) => <AppLayout {...args} />;
+const AppLayoutStory = () => <AppLayout />;
 
 const meta: Meta<typeof AppLayout> = {
 	title: 'Layouts / App Layout',
@@ -24,8 +23,8 @@ const layoutArgs = {
 	)
 };
 
-export const Primary: Story = {
-	render: (args) => <AppLayout {...args} />,
+export const Default: Story = {
+	render: () => <AppLayout  />,
 	args: layoutArgs,
 };
 
