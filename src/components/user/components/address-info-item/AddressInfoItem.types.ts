@@ -1,3 +1,3 @@
 export interface IAddressInfoItemProps {
-  value: string | null | undefined;
+    value: string | null | undefined;
 }

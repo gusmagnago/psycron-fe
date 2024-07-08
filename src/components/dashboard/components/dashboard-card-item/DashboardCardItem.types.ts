@@ -1,6 +1,6 @@
 export interface IDashboarcCardItemProps {
     appointmentInfo: {
-        appointmentId?: string,
+        appointmentId?: string;
         appointments?: number;
         currency?: string;
         duration: number;
@@ -8,8 +8,8 @@ export interface IDashboarcCardItemProps {
         value?: string;
     };
     firstName: string;
-    isPatientCard?: boolean,
+    isPatientCard?: boolean;
     lastName: string;
     patientId: string;
-    paused?: boolean
+    paused?: boolean;
 }

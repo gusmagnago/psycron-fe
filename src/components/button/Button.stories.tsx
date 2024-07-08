@@ -17,7 +17,8 @@ type Story = StoryObj<typeof DefaultButton>;
 
 const buttonArgs = {
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	onClick: (e: any) => alert(`${e.target.parentNode.dataset.name} button clicked`),
+	onClick: (e: any) =>
+		alert(`${e.target.parentNode.dataset.name} button clicked`),
 	children: 'button text',
 };
 
@@ -35,5 +36,3 @@ export const Tertiary: Story = {
 	render: (args) => <Button {...args} />,
 	args: { tertiary: true, ...buttonArgs },
 };
-
-

@@ -10,7 +10,6 @@ export const Button = ({
 	small,
 	fullWidth,
 }: IButtonProps) => {
-    
 	const bttnColor = () => {
 		switch (true) {
 		case secondary:

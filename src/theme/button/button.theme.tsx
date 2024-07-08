@@ -26,12 +26,12 @@ const buttonStyles = ({ palette }: Theme): Record<string, CSSObject> => {
 			boxShadow: shadowMain,
 			margin: `${spacing.space} 0`,
 			textTransform: 'capitalize',
-			height: '40px'
+			height: '40px',
 		},
 		sizeLarge: {
 			padding: `${spacing.xs} ${spacing.medium}`,
 			fontSize: '1.25em',
-			height: '50px'
+			height: '50px',
 		},
 		sizeMedium: {
 			padding: `${spacing.xxs} ${spacing.mediumSmall}`,
@@ -39,7 +39,7 @@ const buttonStyles = ({ palette }: Theme): Record<string, CSSObject> => {
 		sizeSmall: {
 			padding: `${spacing.space} ${spacing.small}`,
 			fontSize: '.75em',
-			height: '30px'
+			height: '30px',
 		},
 		containedPrimary: {
 			backgroundColor: primary.main,

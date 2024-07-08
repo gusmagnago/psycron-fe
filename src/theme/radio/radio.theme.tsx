@@ -5,11 +5,8 @@ import type { Palette } from '../palette/palette.types';
 import { shadowPress } from '../shadow/shadow.theme';
 // import { spacing } from '../spacing/spacing.theme';
 
-
-const radioStyles = ({palette}: Theme): Record<string, CSSObject>  => {
-	const {
-		secondary,
-	} = palette as unknown as Palette;
+const radioStyles = ({ palette }: Theme): Record<string, CSSObject> => {
+	const { secondary } = palette as unknown as Palette;
 
 	return {
 		root: {
@@ -21,18 +18,16 @@ const radioStyles = ({palette}: Theme): Record<string, CSSObject>  => {
 			},
 			'&:focus': {
 				color: secondary.light,
-				backgroundColor: secondary.action.hover
+				backgroundColor: secondary.action.hover,
 			},
 			[`&.${radioClasses.checked}`]: {
 				color: secondary.action.press,
 			},
 			[`&.${radioClasses.disabled}`]: {
 				color: secondary.light,
-			}
-		}
-
-	}
-    
+			},
+		},
+	};
 };
 
 export default radioStyles;

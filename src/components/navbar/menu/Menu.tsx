@@ -36,7 +36,9 @@ export const Menu = ({
 						isFooterIcon={isFooterIcon}
 						isFullList={isFullList}
 					/>
-					{isFullList ? <>{index < items.length - 1 && <Divider />}</> : null}
+					{isFullList ? (
+						<>{index < items.length - 1 && <Divider />}</>
+					) : null}
 				</Box>
 			))}
 		</>

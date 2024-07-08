@@ -31,8 +31,8 @@ const meta: Meta<typeof Avatar> = {
 			control: 'boolean',
 		},
 		src: {
-			control: 'text'
-		}
+			control: 'text',
+		},
 	},
 };
 
@@ -57,6 +57,6 @@ export const Large: Story = {
 };
 
 export const WithImage: Story = {
-	render: (args) => <Avatar {...args} large src='/images/avatar.png'/>,
+	render: (args) => <Avatar {...args} large src='/images/avatar.png' />,
 	args: { ...avatarArgs },
 };

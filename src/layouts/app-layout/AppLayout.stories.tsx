@@ -17,15 +17,13 @@ type Story = StoryObj<typeof AppLayoutStory>;
 
 const layoutArgs = {
 	children: (
-		<Box sx={{backgroundColor: 'pink'}} m={5}>
+		<Box sx={{ backgroundColor: 'pink' }} m={5}>
             this is a children
 		</Box>
-	)
+	),
 };
 
 export const Default: Story = {
-	render: () => <AppLayout  />,
+	render: () => <AppLayout />,
 	args: layoutArgs,
 };
-
-

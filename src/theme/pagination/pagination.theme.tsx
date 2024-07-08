@@ -5,7 +5,9 @@ import type { Palette } from '@psycron/theme/palette/palette.types';
 
 import { shadowDisabled, shadowMain } from '../shadow/shadow.theme';
 
-const paginationItemStyles = ({ palette }: Theme): Record<string, CSSObject> => {
+const paginationItemStyles = ({
+	palette,
+}: Theme): Record<string, CSSObject> => {
 	const { secondary, background } = palette as unknown as Palette;
 	return {
 		root: {
@@ -15,8 +17,8 @@ const paginationItemStyles = ({ palette }: Theme): Record<string, CSSObject> => 
 			},
 			[`&.${paginationItemClasses.selected}`]: {
 				boxShadow: shadowMain,
-				backgroundColor: background.default
-			}
+				backgroundColor: background.default,
+			},
 		},
 	};
 };

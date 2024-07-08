@@ -16,7 +16,7 @@ export const ContactsForm = <T extends FieldValues>({
 	setPhoneValue,
 	register,
 	defaultValues,
-	disabled
+	disabled,
 }: ContactsFormProps<T> & TextFieldProps) => {
 	const { t } = useTranslation();
 
@@ -60,7 +60,9 @@ export const ContactsForm = <T extends FieldValues>({
 					<Switch
 						onChange={() => setHasWhatsApp((prev) => !prev)}
 						value={hasWhatsApp}
-						label={t('components.form.contacts-form.contact-via', {method: 'Whatsapp'})}
+						label={t('components.form.contacts-form.contact-via', {
+							method: 'Whatsapp',
+						})}
 						disabled={disabled}
 					/>
 				</Grid>
@@ -70,7 +72,9 @@ export const ContactsForm = <T extends FieldValues>({
 							onChange={() => setIsPhoneWpp((prev) => !prev)}
 							value={isPhoneWpp}
 							defaultChecked
-							label={t('components.form.contacts-form.contact-via-same')}
+							label={t(
+								'components.form.contacts-form.contact-via-same',
+							)}
 						/>
 					</Grid>
 				) : null}

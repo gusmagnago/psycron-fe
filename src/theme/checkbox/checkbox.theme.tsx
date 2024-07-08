@@ -5,9 +5,7 @@ import type { CSSObject } from '@mui/system';
 import type { Palette } from '../palette/palette.types';
 
 const checkboxStyles = ({ palette }: Theme): Record<string, CSSObject> => {
-	const {
-		secondary
-	} = palette as unknown as Palette;
+	const { secondary } = palette as unknown as Palette;
 
 	return {
 		'&.Mui-checked': {

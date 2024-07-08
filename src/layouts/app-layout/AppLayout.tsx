@@ -47,7 +47,11 @@ export const AppLayout: FC = () => {
 				<Navbar />
 			</Box>
 			<Box>
-				<Divider orientation={isMobile || isTablet ? 'horizontal' : 'vertical'} />
+				<Divider
+					orientation={
+						isMobile || isTablet ? 'horizontal' : 'vertical'
+					}
+				/>
 			</Box>
 			<Content>
 				<Outlet />
@@ -61,4 +65,3 @@ export const AppLayout: FC = () => {
 		</LayoutWrapper>
 	);
 };
-

@@ -7,7 +7,6 @@ import type { CardTitleProps } from './CardTitle/CardTitle.types';
 import { Card } from './Card';
 import type { CardProps } from './Card.types';
 
-
 const DefaultCardComponent = (args: CardProps) => <Card {...args} />;
 
 const CardTitleComponent = (args: CardTitleProps) => <CardTitle {...args} />;
@@ -53,7 +52,11 @@ export const Default: Story = {
 	render: (args) => <DefaultCardComponent {...args} />,
 	args: {
 		cardTitleProps: { hasSecondChip: false, ...cardTitleMock },
-		cardActionsProps: { hasSecondAction: true, hasTertiary: false, ...cardActionsMock },
+		cardActionsProps: {
+			hasSecondAction: true,
+			hasTertiary: false,
+			...cardActionsMock,
+		},
 		children: <p>This is default content</p>,
 		cardTitle: true,
 	},
@@ -63,7 +66,11 @@ export const WithSecondChip: Story = {
 	render: (args) => <DefaultCardComponent {...args} />,
 	args: {
 		cardTitleProps: { hasSecondChip: true, ...cardTitleMock },
-		cardActionsProps: { hasTertiary: false, hasSecondAction: true, ...cardActionsMock },
+		cardActionsProps: {
+			hasTertiary: false,
+			hasSecondAction: true,
+			...cardActionsMock,
+		},
 		children: <p>This is content with a second chip</p>,
 		cardTitle: true,
 	},
@@ -73,7 +80,11 @@ export const WithTertiaryAction: Story = {
 	render: (args) => <DefaultCardComponent {...args} />,
 	args: {
 		cardTitleProps: cardTitleMock,
-		cardActionsProps: { hasSecondAction:true, hasTertiary: true, ...cardActionsMock },
+		cardActionsProps: {
+			hasSecondAction: true,
+			hasTertiary: true,
+			...cardActionsMock,
+		},
 		children: <p>This is content with a tertiary action</p>,
 		cardTitle: true,
 	},

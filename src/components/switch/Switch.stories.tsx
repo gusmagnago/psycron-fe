@@ -19,8 +19,12 @@ export default meta;
 type Story = StoryObj<typeof DefaultSwitchGroup>;
 
 const switchArgs = {
-	items: [{ label: 'switch 1' }, { label: 'switch 2' }, { label: 'switch 3' }],
-	small: false
+	items: [
+		{ label: 'switch 1' },
+		{ label: 'switch 2' },
+		{ label: 'switch 3' },
+	],
+	small: false,
 };
 
 export const Default: Story = {
@@ -32,7 +36,7 @@ export const DefaultChecked: Story = {
 	render: (args) => <SwitchGroup {...args} />,
 	args: {
 		items: switchArgs.items.map((item, index) =>
-			index === 0 ? { ...item, defaultChecked: true } : item
+			index === 0 ? { ...item, defaultChecked: true } : item,
 		),
 	},
 };
@@ -41,7 +45,7 @@ export const Required: Story = {
 	render: (args) => <SwitchGroup {...args} />,
 	args: {
 		items: switchArgs.items.map((item, index) =>
-			index === 0 ? { ...item, required: true } : item
+			index === 0 ? { ...item, required: true } : item,
 		),
 	},
 };
@@ -50,7 +54,7 @@ export const Disabled: Story = {
 	render: (args) => <SwitchGroup {...args} />,
 	args: {
 		items: switchArgs.items.map((item, index) =>
-			index === 0 ? { ...item, disabled: true } : item
+			index === 0 ? { ...item, disabled: true } : item,
 		),
 	},
 };

@@ -2,11 +2,7 @@ import { useState } from 'react';
 import type { FieldValues, Path } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import type { TextFieldProps } from '@mui/material';
-import {
-	Grid,
-	TextField,
-	Typography,
-} from '@mui/material';
+import { Grid, TextField, Typography } from '@mui/material';
 import { Checkbox } from '@psycron/components/checkbox/Checkbox';
 import { GOOGLE_MAPS_API_KEY } from '@psycron/utils/variables';
 import type { Libraries } from '@react-google-maps/api';
@@ -25,28 +21,29 @@ export const AddressForm = <T extends FieldValues>({
 	register,
 }: AddressComponentProps<T> & TextFieldProps) => {
 	const { t } = useTranslation();
-	
 
-	const [addressComponents, setAddressComponents] = useState<AddressComponent>({
-		address: '',
-		streetNumber: '',
-		route: '',
-		sublocality: '',
-		city: '',
-		administrativeArea: '',
-		country: '',
-		postalCode: '',
-	});
+	const [addressComponents, setAddressComponents] =
+        useState<AddressComponent>({
+        	address: '',
+        	streetNumber: '',
+        	route: '',
+        	sublocality: '',
+        	city: '',
+        	administrativeArea: '',
+        	country: '',
+        	postalCode: '',
+        });
 
 	const [addMoreInfo, setAddMoreInfo] = useState<boolean>(false);
 
-	const { isLoaded } =  useLoadScript({
+	const { isLoaded } = useLoadScript({
 		googleMapsApiKey: GOOGLE_MAPS_API_KEY,
-		libraries: libraries
+		libraries: libraries,
 	});
 
-
-	const handlePlaceSelect = (autocomplete: google.maps.places.Autocomplete) => {
+	const handlePlaceSelect = (
+		autocomplete: google.maps.places.Autocomplete,
+	) => {
 		const place = autocomplete.getPlace();
 		const updatedAddressComponents: Partial<AddressComponent> = {
 			address: place.formatted_address || '',
@@ -71,7 +68,8 @@ export const AddressForm = <T extends FieldValues>({
 				updatedAddressComponents.city = component.long_name;
 				break;
 			case 'administrative_area_level_1':
-				updatedAddressComponents.administrativeArea = component.long_name;
+				updatedAddressComponents.administrativeArea =
+                        component.long_name;
 				break;
 			case 'country':
 				updatedAddressComponents.country = component.long_name;
@@ -100,13 +98,12 @@ export const AddressForm = <T extends FieldValues>({
 
 	return (
 		<Grid container columnSpacing={5} rowSpacing={5} pt={2} pb={5}>
-			{isLoaded ? 
-			
+			{isLoaded ? (
 				<Grid item xs={12}>
 					<Autocomplete
 						onLoad={(autocomplete) =>
 							autocomplete.addListener('place_changed', () =>
-								handlePlaceSelect(autocomplete)
+								handlePlaceSelect(autocomplete),
 							)
 						}
 					>
@@ -119,13 +116,15 @@ export const AddressForm = <T extends FieldValues>({
 							fullWidth
 						/>
 					</Autocomplete>
-					<Typography variant='caption' textAlign='center' textTransform='initial'>
+					<Typography
+						variant='caption'
+						textAlign='center'
+						textTransform='initial'
+					>
 						{t('components.form.address-form.search-note')}
 					</Typography>
 				</Grid>
-
-            
-				: null}
+			) : null}
 			<Grid item xs={12} md={8}>
 				<TextField
 					label={t('components.form.address-form.street')}

@@ -25,7 +25,7 @@ const radioButtonArgs = {
 		{ label: 'radio 3', value: 'radi3' },
 		{ label: 'radio 4', value: 'radi4' },
 	],
-	row: false
+	row: false,
 };
 
 export const Default: Story = {
@@ -35,10 +35,10 @@ export const Default: Story = {
 
 export const Checked: Story = {
 	render: (args) => <RadioButtonGroup {...args} />,
-	args: { defaultValue: 'radi2', ...radioButtonArgs},
+	args: { defaultValue: 'radi2', ...radioButtonArgs },
 };
 
 export const Row: Story = {
-	render: (args) => <RadioButtonGroup {...args} row/>,
-	args: { ...radioButtonArgs},
+	render: (args) => <RadioButtonGroup {...args} row />,
+	args: { ...radioButtonArgs },
 };

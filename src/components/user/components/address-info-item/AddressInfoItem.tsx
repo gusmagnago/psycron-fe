@@ -1,6 +1,6 @@
 import { Typography } from '@mui/material';
 
-import type { IAddressInfoItemProps } from './AddressInfoItem.types'
+import type { IAddressInfoItemProps } from './AddressInfoItem.types';
 
 export const AddressInfoItem = ({ value }: IAddressInfoItemProps) => {
 	if (!value) return null;
@@ -9,5 +9,5 @@ export const AddressInfoItem = ({ value }: IAddressInfoItemProps) => {
 		<Typography variant='body1' pb={1}>
 			{value}
 		</Typography>
-	)
-}
+	);
+};

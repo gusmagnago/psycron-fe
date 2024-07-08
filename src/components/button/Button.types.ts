@@ -3,7 +3,7 @@ import type { ButtonProps } from '@mui/material';
 
 export interface IButtonProps extends ButtonProps {
     children: ReactNode;
-    fullWidth?:boolean;
+    fullWidth?: boolean;
     onClick?: MouseEventHandler<HTMLButtonElement> | undefined;
     secondary?: boolean;
     small?: boolean;

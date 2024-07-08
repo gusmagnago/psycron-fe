@@ -4,7 +4,6 @@ import type { Meta, StoryObj } from '@storybook/react';
 import { MenuItem } from './MenuItem';
 import type { IMenuItem } from './MenuItem.types';
 
-
 const DefaultMenuItem = (args: IMenuItem) => <MenuItem {...args} />;
 
 const meta: Meta<typeof MenuItem> = {
@@ -21,12 +20,10 @@ const menuItemArgs = {
 	icon: <DashboardIcon />,
 	isFooterIcon: false,
 	name: 'dashboard',
-	path: ''
+	path: '',
 };
 
 export const Default: Story = {
 	render: (args) => <MenuItem {...args} />,
 	args: menuItemArgs,
 };
-
-

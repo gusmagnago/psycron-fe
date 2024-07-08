@@ -106,5 +106,3 @@ export const Language: React.FC = (props) => (
 		</defs>
 	</svg>
 );
-
-

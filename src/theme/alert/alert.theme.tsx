@@ -6,7 +6,7 @@ import { shadowMain } from '../shadow/shadow.theme';
 import { spacing } from '../spacing/spacing.theme';
 
 const alertStyles = ({ palette }: Theme): Record<string, CSSObject> => {
-	const { success , error, info, alert} = palette as unknown as Palette;
+	const { success, error, info, alert } = palette as unknown as Palette;
 
 	return {
 		root: {
@@ -20,15 +20,15 @@ const alertStyles = ({ palette }: Theme): Record<string, CSSObject> => {
 		},
 		standardInfo: {
 			backgroundColor: info.surface.light,
-			color: info.dark
+			color: info.dark,
 		},
 		standardError: {
 			backgroundColor: error.surface.light,
-			color: error.dark
+			color: error.dark,
 		},
 		standardWarning: {
 			backgroundColor: alert.surface.light,
-			color: alert.dark
+			color: alert.dark,
 		},
 	};
 };

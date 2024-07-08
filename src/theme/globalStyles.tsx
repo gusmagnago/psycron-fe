@@ -4,14 +4,14 @@ import { GlobalStyles } from '@mui/material';
 const globalStyles = (
 	<GlobalStyles
 		styles={css`
-      .Mui-disabled {
-        cursor: not-allowed !important;
-      }
+            .Mui-disabled {
+                cursor: not-allowed !important;
+            }
 
-      .disabled {
-        cursor: not-allowed !important;
-      }
-    `}
+            .disabled {
+                cursor: not-allowed !important;
+            }
+        `}
 	/>
 );
 

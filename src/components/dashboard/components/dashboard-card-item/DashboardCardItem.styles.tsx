@@ -7,66 +7,74 @@ import { spacing } from '@psycron/theme/spacing/spacing.theme';
 
 export const DashboardCardItemWrapper = styled(Box, {
 	shouldForwardProp: (props) =>
-		props !== 'isPatientCard' && props !== 'lessThanThirtyMinutes' && props !== 'isNow',
-})<{ isNow?: boolean, isPatientCard?: boolean; lessThanThirtyMinutes?: boolean }>`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: ${spacing.space} 0;
-  border-radius: ${spacing.mediumSmall};
+		props !== 'isPatientCard' &&
+        props !== 'lessThanThirtyMinutes' &&
+        props !== 'isNow',
+})<{
+    isNow?: boolean;
+    isPatientCard?: boolean;
+    lessThanThirtyMinutes?: boolean;
+}>`
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: ${spacing.space} 0;
+    border-radius: ${spacing.mediumSmall};
 
-  border: 3px solid transparent;
+    border: 3px solid transparent;
 
-  ${({ lessThanThirtyMinutes , isNow}) =>
+    ${({ lessThanThirtyMinutes, isNow }) =>
 		isNow
 			? css`
-          background-color: ${palette.alert.surface.light};
-          box-shadow: ${shadowPress};
-        `
-			: lessThanThirtyMinutes ? css`
-              background-color: ${palette.info.surface.light};
-             box-shadow: ${shadowPress};
-            `: 'transparent'};
+                  background-color: ${palette.alert.surface.light};
+                  box-shadow: ${shadowPress};
+              `
+			: lessThanThirtyMinutes
+				? css`
+                    background-color: ${palette.info.surface.light};
+                    box-shadow: ${shadowPress};
+                `
+				: 'transparent'};
 
-  &:hover {
-    box-shadow: ${shadowMain};
+    &:hover {
+        box-shadow: ${shadowMain};
 
-    ${({ isPatientCard, isNow }) =>
+        ${({ isPatientCard, isNow }) =>
 		isPatientCard
 			? css`
-            background-color: ${palette.secondary.surface.light};
-            color: ${palette.secondary.access};
-            svg {
-              color: ${palette.secondary.access};
-            }
-          `
+                      background-color: ${palette.secondary.surface.light};
+                      color: ${palette.secondary.access};
+                      svg {
+                          color: ${palette.secondary.access};
+                      }
+                  `
 			: isNow
 				? css`
-              border: 3px solid ${palette.alert.main};
-            `
+                        border: 3px solid ${palette.alert.main};
+                    `
 				: css`
-              border: 3px solid ${palette.tertiary.action.hover};
-            `}
+                        border: 3px solid ${palette.tertiary.action.hover};
+                    `}
 
-    cursor: pointer;
-  }
+        cursor: pointer;
+    }
 `;
 
 export const SmallDivider = styled(Divider)`
-  border-width: 2px;
+    border-width: 2px;
 
-  ${isBiggerThanTabletMedia} {
-    border-width: 4px;
-  }
+    ${isBiggerThanTabletMedia} {
+        border-width: 4px;
+    }
 `;
 
 export const GridDivider = styled(Grid)`
-  display: flex;
-  height: 2rem;
+    display: flex;
+    height: 2rem;
 `;
 
 export const DashboardCardTooltip = styled(Tooltip)`
-  &:hover {
-    border-radius: ${spacing.mediumSmall};
-  }
+    &:hover {
+        border-radius: ${spacing.mediumSmall};
+    }
 `;

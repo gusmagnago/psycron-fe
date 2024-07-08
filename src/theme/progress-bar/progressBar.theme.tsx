@@ -1,5 +1,5 @@
 import { linearProgressClasses } from '@mui/material';
-import type {  Theme } from '@mui/material/styles';
+import type { Theme } from '@mui/material/styles';
 import type { CSSObject } from '@mui/system';
 
 import type { Palette } from '../palette/palette.types';
@@ -19,8 +19,7 @@ const progressBarStyles = ({ palette }: Theme): Record<string, CSSObject> => {
 			[`& .${linearProgressClasses.bar}`]: {
 				backgroundColor: secondary.main,
 				borderRadius: `calc(2 * ${spacing.mediumSmall})`,
-			}
-         
+			},
 		},
 	};
 };

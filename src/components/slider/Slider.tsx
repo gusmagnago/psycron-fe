@@ -13,9 +13,7 @@ export const Slider = ({
 	return (
 		<Box>
 			{label !== undefined ? (
-				<Typography gutterBottom>
-					{label}
-				</Typography>
+				<Typography gutterBottom>{label}</Typography>
 			) : null}
 			<Stack spacing={4} direction='row' alignItems='center'>
 				{startIcon ? startIcon : null}

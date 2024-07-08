@@ -15,7 +15,7 @@ export const palette: Palette = {
 			hover: '#C3D1DA',
 			press: '#7BA8BE',
 			light: '#E6F6FF',
-			disabled: 'rgba(223, 231, 236, 0.6)'
+			disabled: 'rgba(223, 231, 236, 0.6)',
 		},
 	},
 	secondary: {
@@ -125,7 +125,7 @@ export const palette: Palette = {
 	},
 	background: {
 		default: '#F7FAFA',
-		paper: '#F1F7FB'
+		paper: '#F1F7FB',
 	},
 	black: '#060B0E',
 	border: '#',
@@ -139,6 +139,6 @@ export const palette: Palette = {
 		'07': '#6E7375',
 		'08': '#5A5F61',
 		'09': '#484C4E',
-		dark: '#363A3B'
+		dark: '#363A3B',
 	},
 };

@@ -12,7 +12,7 @@ export const NameForm = <T extends FieldValues>({
 	register,
 	placeholderFirstName,
 	placeholderLastName,
-	disabled
+	disabled,
 }: NameFormProps<T> & TextFieldProps) => {
 	const { t } = useTranslation();
 

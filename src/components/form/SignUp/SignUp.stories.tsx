@@ -9,7 +9,7 @@ const DefaultSignUp = (args: SignUpFormTypes) => <SignUp {...args} />;
 const meta: Meta<typeof SignUp> = {
 	title: 'Components / Form / SignUp',
 	component: DefaultSignUp,
-	tags: ['autodocs']
+	tags: ['autodocs'],
 };
 
 export default meta;

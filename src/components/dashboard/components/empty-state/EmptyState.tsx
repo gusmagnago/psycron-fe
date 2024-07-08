@@ -19,15 +19,21 @@ export const EmptyState = ({
 						{`You don't have any ${isAppointment ? 'appointments' : 'patients'} ${today ? 'for today' : 'yet'}.`}
 					</Text>
 					<Text isFirstUpper>
-            please,
-						<Link to={isAppointment ? '/appointments/create' : '/patients/add'}>
-              click here
+                        please,
+						<Link
+							to={
+								isAppointment
+									? '/appointments/create'
+									: '/patients/add'
+							}
+						>
+                            click here
 						</Link>
-            to{' '}
+                        to{' '}
 						{isAppointment
 							? 'share your availability and create appointments'
 							: 'add patients'}
-            .
+                        .
 					</Text>
 				</Box>
 				<img

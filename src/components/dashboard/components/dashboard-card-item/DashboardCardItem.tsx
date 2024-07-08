@@ -30,7 +30,7 @@ export const DashboardCardItem = ({
 
 	const { lessThanThirtyMinutes, isNow } = checkAppointmentTimes(
 		appointmentInfo.next,
-		appointmentInfo.duration
+		appointmentInfo.duration,
 	);
 
 	const { t } = useTranslation();
@@ -84,8 +84,16 @@ export const DashboardCardItem = ({
 							</Box>
 						) : (
 							<Box p={2}>
-								<Text variant='body2' textAlign='left' isFirstUpper>
-									{getTimeRemaining(appointmentInfo.next, t, !paused)}
+								<Text
+									variant='body2'
+									textAlign='left'
+									isFirstUpper
+								>
+									{getTimeRemaining(
+										appointmentInfo.next,
+										t,
+										!paused,
+									)}
 								</Text>
 							</Box>
 						)}
@@ -96,7 +104,9 @@ export const DashboardCardItem = ({
 					<Grid item xs={1} display='flex' justifyContent='center'>
 						<Box display='flex' justifyContent='center'>
 							{isPatientCard ? (
-								<DashboardCardTooltip title={'monthly appointments'}>
+								<DashboardCardTooltip
+									title={'monthly appointments'}
+								>
 									<Typography variant='body2'>
 										{appointmentInfo.appointments}
 									</Typography>
@@ -105,7 +115,9 @@ export const DashboardCardItem = ({
 								<Tooltip
 									title={'edit appointment'}
 									onClick={() =>
-										navigate(`/${appointmentInfo.appointmentId}/edit`)
+										navigate(
+											`/${appointmentInfo.appointmentId}/edit`,
+										)
 									}
 								>
 									<Edit />

@@ -7,4 +7,4 @@ export type CardTitleProps = {
     secondChipName?: string;
     subheader?: string;
     title: string;
-}
+};

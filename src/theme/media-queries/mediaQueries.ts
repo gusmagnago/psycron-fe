@@ -1,8 +1,8 @@
 export const breakpoints = {
-	mobile: 767,    // Extra small devices (phones)
-	tablet: 1023,   // Small devices (tablets)
-	medium: 1439,   // Medium devices (small laptops)
-	large: 1440,    // Large devices (desktops)
+	mobile: 767, // Extra small devices (phones)
+	tablet: 1023, // Small devices (tablets)
+	medium: 1439, // Medium devices (small laptops)
+	large: 1440, // Large devices (desktops)
 };
 
 export const mediaQueries = {

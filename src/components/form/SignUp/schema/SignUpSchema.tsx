@@ -8,23 +8,26 @@ export const signUpSchema = object({
 	firstName: string().required(
 		yupLocalizedErrorMessage('components.form.validation.required', {
 			name: i18n.t('components.form.signup.firstName'),
-		})
+		}),
 	),
 	lastName: string().required(
 		yupLocalizedErrorMessage('components.form.validation.required', {
 			name: i18n.t('components.form.signup.lastName'),
-		})
+		}),
 	),
 	email: string()
 		.trim()
-		.matches(emailRegexValidation, yupLocalizedErrorMessage('components.form.validation.invalid', {
-			name: i18n.t('globals.email'),
-		}))
+		.matches(
+			emailRegexValidation,
+			yupLocalizedErrorMessage('components.form.validation.invalid', {
+				name: i18n.t('globals.email'),
+			}),
+		)
 		.email()
 		.required(
 			yupLocalizedErrorMessage('components.form.validation.required', {
 				name: i18n.t('globals.email'),
-			})
+			}),
 		),
 	password: string()
 		.trim()
@@ -32,16 +35,16 @@ export const signUpSchema = object({
 			9,
 			yupLocalizedErrorMessage('components.form.validation.characters', {
 				numChar: 9,
-			})
+			}),
 		)
 		.matches(
 			passwordRegexValidation,
-			yupLocalizedErrorMessage('components.form.validation.pass-rules')
+			yupLocalizedErrorMessage('components.form.validation.pass-rules'),
 		)
 		.required(
 			yupLocalizedErrorMessage('components.form.validation.required', {
 				name: i18n.t('globals.password'),
-			})
+			}),
 		),
 	confirmPassword: string()
 		.trim()
@@ -49,11 +52,11 @@ export const signUpSchema = object({
 			[ref('password')],
 			yupLocalizedErrorMessage('components.form.validation.match', {
 				name: i18n.t('globals.password'),
-			})
+			}),
 		)
 		.required(
 			yupLocalizedErrorMessage('components.form.validation.required', {
 				name: i18n.t('components.form.confirm-password'),
-			})
+			}),
 		),
 });

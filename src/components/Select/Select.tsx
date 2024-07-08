@@ -12,8 +12,8 @@ import { ControlledWrapper } from './Select.styles';
 import type { SelectComponentProps } from './Select.types';
 
 export const Select = forwardRef<
-  HTMLSelectElement,
-  SelectComponentProps & SelectProps
+    HTMLSelectElement,
+    SelectComponentProps & SelectProps
 >(
 	(
 		{
@@ -27,7 +27,7 @@ export const Select = forwardRef<
 			width,
 			name,
 		},
-		ref
+		ref,
 	) => (
 		<ControlledWrapper
 			required={required}
@@ -43,7 +43,9 @@ export const Select = forwardRef<
 				label={selectLabel}
 				defaultValue={name}
 				onChange={
-          onChangeSelect as (event: SelectChangeEvent<string | number>) => void
+                    onChangeSelect as (
+                        event: SelectChangeEvent<string | number>,
+                    ) => void
 				}
 				IconComponent={ChevronDown}
 				fullWidth
@@ -63,7 +65,7 @@ export const Select = forwardRef<
 				))}
 			</MuiSelect>
 		</ControlledWrapper>
-	)
+	),
 );
 
 Select.displayName = 'Select';

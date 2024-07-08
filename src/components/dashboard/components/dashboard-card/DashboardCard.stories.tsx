@@ -1,5 +1,5 @@
 import { Box } from '@mui/material';
-import mockAppointments from '@psycron/assets/mock/appointments/mockAppointments.json'
+import mockAppointments from '@psycron/assets/mock/appointments/mockAppointments.json';
 import { Appointment, PatientManager } from '@psycron/components/icons';
 import type { Meta, StoryObj } from '@storybook/react';
 
@@ -10,7 +10,7 @@ const DefaultDashboardCard = (args: IDashboardCardProps) => (
 	<DashboardCard {...args} />
 );
 
-const items = mockAppointments
+const items = mockAppointments;
 
 const meta: Meta<typeof DashboardCard> = {
 	title: 'Components / Dashboard / Components / Dashbard Card',
@@ -30,7 +30,7 @@ const meta: Meta<typeof DashboardCard> = {
 		iconTitleKey: 'This is the Icon title key',
 		icon: <PatientManager />,
 		isPatientCard: true,
-		navigateToURL: ''
+		navigateToURL: '',
 	},
 };
 
@@ -77,7 +77,6 @@ export const EmptyAppointmentsCard: Story = {
 	render: (args) => (
 		<Box height={'100%'}>
 			<Box height={200}>
-
 				<DashboardCard {...args} />
 			</Box>
 		</Box>
