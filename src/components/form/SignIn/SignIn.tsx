@@ -30,7 +30,12 @@ export const SignIn = ({
 					helperText={errors.email?.message}
 				/>
 				<PasswordInput errors={errors} register={register} />
-				<Box display='flex' flexDirection='column' justifyContent='center' alignItems='center'>
+				<Box
+					display='flex'
+					flexDirection='column'
+					justifyContent='center'
+					alignItems='center'
+				>
 					<Button type='submit' fullWidth>
 						{t('components.form.signin.title')}
 					</Button>

@@ -7,7 +7,7 @@ import { shadowInnerPress } from '../shadow/shadow.theme';
 import { spacing } from '../spacing/spacing.theme';
 
 const inputStyles = ({ palette }: Theme): Record<string, CSSObject> => {
-	const { text , gray} = palette as unknown as Palette;
+	const { text, gray } = palette as unknown as Palette;
 
 	return {
 		root: {
@@ -22,7 +22,7 @@ const inputStyles = ({ palette }: Theme): Record<string, CSSObject> => {
 				borderBottom: '0 !important',
 			},
 			[`&.${inputBaseClasses.disabled}`]: {
-				backgroundColor: gray['02']
+				backgroundColor: gray['02'],
 			},
 		},
 	};

@@ -5,9 +5,7 @@ import { UserDetailsCard } from './UserDetailsCard';
 import type { IUserDetailsCardProps } from './UserDetailsCard.types';
 
 const DefaultUserDetailsCard = (args: IUserDetailsCardProps) => (
-
 	<UserDetailsCard {...args} />
-
 );
 
 const meta: Meta<typeof UserDetailsCard> = {

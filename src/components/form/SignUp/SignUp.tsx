@@ -30,9 +30,13 @@ export const SignUp = ({
 					error={!!errors.email}
 					helperText={errors.email?.message}
 				/>
-				<PasswordInput errors={errors} register={register} hasToConfirm />
+				<PasswordInput
+					errors={errors}
+					register={register}
+					hasToConfirm
+				/>
 				<Box>
-					<Button type='submit'fullWidth>
+					<Button type='submit' fullWidth>
 						{t('components.form.signup.title')}
 					</Button>
 				</Box>

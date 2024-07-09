@@ -40,7 +40,7 @@ export const PatientsCard = () => {
 			<PatientsCardWrapper>
 				<PatientsCardTitle>
 					<Typography variant='h5' fontWeight={600}>
-            Patients
+                        Patients
 					</Typography>
 					<Tooltip
 						title='Patients Manager'
@@ -52,7 +52,10 @@ export const PatientsCard = () => {
 				<Divider />
 				<Box>
 					{patients.map(
-						({ firstName, lastName, appointmentInfo, patientId }, index) => (
+						(
+							{ firstName, lastName, appointmentInfo, patientId },
+							index,
+						) => (
 							<>
 								<PatientCardItem
 									key={index}
@@ -62,7 +65,7 @@ export const PatientsCard = () => {
 									patientId={patientId}
 								/>
 							</>
-						)
+						),
 					)}
 				</Box>
 			</PatientsCardWrapper>

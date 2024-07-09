@@ -21,7 +21,7 @@ export const Progress = ({
 			const now = new Date();
 			const initialElapsedSeconds = differenceInSeconds(
 				now,
-				appointmentStartTime
+				appointmentStartTime,
 			);
 
 			setProgress((initialElapsedSeconds / (duration * 60)) * 100);
@@ -30,7 +30,7 @@ export const Progress = ({
 			intervalRef.current = window.setInterval(() => {
 				const elapsedSeconds = differenceInSeconds(
 					new Date(),
-					appointmentStartTime
+					appointmentStartTime,
 				);
 				setProgress((elapsedSeconds / (duration * 60)) * 100);
 			}, intervalTime);
@@ -90,7 +90,9 @@ export const Progress = ({
 			{showLabel ? (
 				<Box width={'auto'}>
 					<Typography variant='caption' color='text.secondary'>
-						{duration ? renderTime(duration) : `${progress.toFixed()} %`}
+						{duration
+							? renderTime(duration)
+							: `${progress.toFixed()} %`}
 					</Typography>
 				</Box>
 			) : null}

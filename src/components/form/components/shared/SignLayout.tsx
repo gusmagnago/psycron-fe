@@ -1,6 +1,6 @@
 import type { FC, ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Box , Typography } from '@mui/material';
+import { Box, Typography } from '@mui/material';
 import { Brand } from '@psycron/components/icons';
 import { Link } from '@psycron/components/link/Link';
 import { palette } from '@psycron/theme/palette/palette.theme';
@@ -25,7 +25,12 @@ export const SignLayout: FC<{ children: ReactNode; isSignin?: boolean }> = ({
 				<Brand color={palette.primary.main} />
 			</LogoWrapper>
 			{children}
-			<Box my={3} display='flex' justifyContent='center' alignItems='center'>
+			<Box
+				my={3}
+				display='flex'
+				justifyContent='center'
+				alignItems='center'
+			>
 				<Typography variant='caption'>
 					{isSignin
 						? t('components.form.signin.dont-have-acc')

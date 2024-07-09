@@ -13,7 +13,7 @@ const formLabel = ({ palette }: Theme): Record<string, CSSObject> => {
 			['&.Mui-focused']: {
 				color: secondary.action.hover,
 			},
-		}
+		},
 	};
 };
 

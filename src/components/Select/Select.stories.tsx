@@ -4,12 +4,12 @@ import type { Meta, StoryObj } from '@storybook/react';
 import { Select } from './Select';
 import type { SelectComponentProps } from './Select.types';
 
-const DefaultSelect = (args: SelectComponentProps) => <Select {...args}/>;
+const DefaultSelect = (args: SelectComponentProps) => <Select {...args} />;
 
 const meta: Meta<typeof Select> = {
 	title: 'Elements / Select',
 	component: DefaultSelect,
-	tags: ['autodocs']
+	tags: ['autodocs'],
 };
 
 export default meta;
@@ -22,14 +22,15 @@ const selectArgs = {
 		{ name: 'Item 2', value: 2 },
 		{ name: 'Item 3', value: 3 },
 	],
-	// eslint-disable-next-line no-console
-	onChangeSelect: (e: SelectChangeEvent<string>) => console.log('t', e.target),
+
+	onChangeSelect: (e: SelectChangeEvent<string>) =>
+		alert(`e: ${e.target.value}`),
 	selectLabel: 'Testing Select',
 	required: true,
-	disabled: false
+	disabled: false,
 };
 
 export const Default: Story = {
 	render: (args) => <Select {...args} />,
-	args: selectArgs
+	args: selectArgs,
 };

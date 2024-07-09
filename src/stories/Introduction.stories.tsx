@@ -48,7 +48,7 @@ export const Introduction = () => {
 			title: 'Components',
 			icon: <Component color={palette.primary.main} />,
 			description:
-        'Multiple elements working harmoniously to craft visually stunning, reusable pieces!',
+                'Multiple elements working harmoniously to craft visually stunning, reusable pieces!',
 			items: [
 				{ name: 'card' },
 				{
@@ -73,12 +73,18 @@ export const Introduction = () => {
 				{
 					name: 'user',
 					children: [{ name: 'edit-user' }],
-					components: [{ name: 'user-details-card' }, { name: 'user-details' }],
+					components: [
+						{ name: 'user-details-card' },
+						{ name: 'user-details' },
+					],
 				},
 				{
 					name: 'patients',
 					children: [{ name: 'edit-user' }],
-					components: [{ name: 'user-details-card' }, { name: 'user-details' }],
+					components: [
+						{ name: 'user-details-card' },
+						{ name: 'user-details' },
+					],
 				},
 			],
 		},
@@ -86,14 +92,14 @@ export const Introduction = () => {
 			title: 'Layouts',
 			icon: <LayoutTemplate color={palette.tertiary.main} />,
 			description:
-        'Frameworks that provide the skeleton for organizing components and creating...',
+                'Frameworks that provide the skeleton for organizing components and creating...',
 			items: [{ name: 'app-layout' }],
 		},
 		{
 			title: 'Pages',
 			icon: <AppWindow color={palette.info.main} />,
 			description:
-        'Complete compositions of elements, components, and structures.',
+                'Complete compositions of elements, components, and structures.',
 		},
 	];
 
@@ -102,14 +108,20 @@ export const Introduction = () => {
 			<Box display='flex' alignItems='center' px={4} mb={5}>
 				<img src='/images/img4.png' height={150} loading='lazy' />
 				<Box>
-					<Typography variant='h4' fontWeight={700} textAlign='center'>
-            Welcome to the<Link to={'http://psycron.app'}>psycron.app</Link>
-            Design System
+					<Typography
+						variant='h4'
+						fontWeight={700}
+						textAlign='center'
+					>
+                        Welcome to the
+						<Link to={'http://psycron.app'}>psycron.app</Link>
+                        Design System
 					</Typography>
 					<Box p={6}>
 						<Typography variant='subtitle1' textAlign='left'>
-              Here you can find the list of all elements, components and pages
-              that might help you to create the most beautiful UI you can
+                            Here you can find the list of all elements,
+                            components and pages that might help you to create
+                            the most beautiful UI you can
 						</Typography>
 					</Box>
 				</Box>
@@ -117,22 +129,24 @@ export const Introduction = () => {
 			</Box>
 			<Box>
 				<Typography variant='h6' fontWeight={600} gutterBottom>
-          Getting Started
+                    Getting Started
 				</Typography>
 				<Typography variant='body1'>
-          To get started, select a component from the sidebar. You can select
-          the one you need to debug and get ready to have fun!
+                    To get started, select a component from the sidebar. You can
+                    select the one you need to debug and get ready to have fun!
 				</Typography>
 			</Box>
 			<NoteCard>
 				<Typography textAlign='center' variant='subtitle1'>
-          We've crafted our UI library around fundamental web principles. Keep
-          it simple, readable, scalable, and reusable.
+                    We've crafted our UI library around fundamental web
+                    principles. Keep it simple, readable, scalable, and
+                    reusable.
 				</Typography>
 			</NoteCard>
 			<Box mt={5}>
 				<Typography variant='subtitle2' py={5}>
-          This translates into our design system being divided into 4 key items:
+                    This translates into our design system being divided into 4
+                    key items:
 				</Typography>
 				{designSystem.map((item, index) => (
 					<ListItem key={index}>
@@ -162,7 +176,10 @@ export const Introduction = () => {
 								{category.items.map((item, itemIndex) => (
 									<Box key={itemIndex}>
 										<ListItem>
-											<Box display='flex' alignItems='center'>
+											<Box
+												display='flex'
+												alignItems='center'
+											>
 												{item.children ? (
 													<Typography
 														variant='subtitle1'
@@ -170,7 +187,10 @@ export const Introduction = () => {
 														ml={2}
 														textTransform='capitalize'
 													>
-														{item.name.replace('-', ' ')}
+														{item.name.replace(
+															'-',
+															' ',
+														)}
 													</Typography>
 												) : (
 													<>
@@ -182,7 +202,10 @@ export const Introduction = () => {
 																variant='subtitle2'
 																textTransform='capitalize'
 															>
-																{item.name.replace('-', ' ')}
+																{item.name.replace(
+																	'-',
+																	' ',
+																)}
 															</Typography>
 														</StoryLink>
 													</>
@@ -191,48 +214,76 @@ export const Introduction = () => {
 										</ListItem>
 										{item.children ? (
 											<>
-												{item?.children?.map((child, childIndex) => (
-													<ListItem key={`item-children-${childIndex}`}>
-														<Box ml={4} display='flex' alignItems='center'>
-															<BoxesIcon />
-															<StoryLink
-																href={`/?path=/docs/${category.title.toLowerCase()}-${item.name.toLowerCase()}-${child.name}--docs`}
+												{item?.children?.map(
+													(child, childIndex) => (
+														<ListItem
+															key={`item-children-${childIndex}`}
+														>
+															<Box
+																ml={4}
+																display='flex'
+																alignItems='center'
 															>
-																<Typography
-																	variant='body2'
-																	textTransform='capitalize'
+																<BoxesIcon />
+																<StoryLink
+																	href={`/?path=/docs/${category.title.toLowerCase()}-${item.name.toLowerCase()}-${child.name}--docs`}
 																>
-																	{child.name.replace('-', ' ')}
-																</Typography>
-															</StoryLink>
-														</Box>
-													</ListItem>
-												))}
+																	<Typography
+																		variant='body2'
+																		textTransform='capitalize'
+																	>
+																		{child.name.replace(
+																			'-',
+																			' ',
+																		)}
+																	</Typography>
+																</StoryLink>
+															</Box>
+														</ListItem>
+													),
+												)}
 											</>
 										) : null}
 
 										{item.components ? (
 											<Box ml={7}>
-												<Typography variant='subtitle2' fontWeight={600} my={4}>
-                          Components
+												<Typography
+													variant='subtitle2'
+													fontWeight={600}
+													my={4}
+												>
+                                                    Components
 												</Typography>
-												{item.components.map((component, componentIndex) => (
-													<ListItem key={componentIndex}>
-														<Box ml={4} display='flex'>
-															<Package />
-															<StoryLink
-																href={`/?path=/docs/${category.title.toLowerCase()}-${item.name.toLowerCase()}-components-${component.name}--docs`}
+												{item.components.map(
+													(
+														component,
+														componentIndex,
+													) => (
+														<ListItem
+															key={componentIndex}
+														>
+															<Box
+																ml={4}
+																display='flex'
 															>
-																<Typography
-																	variant='body2'
-																	textTransform='capitalize'
+																<Package />
+																<StoryLink
+																	href={`/?path=/docs/${category.title.toLowerCase()}-${item.name.toLowerCase()}-components-${component.name}--docs`}
 																>
-																	{component.name.replace('-', ' ')}
-																</Typography>
-															</StoryLink>
-														</Box>
-													</ListItem>
-												))}
+																	<Typography
+																		variant='body2'
+																		textTransform='capitalize'
+																	>
+																		{component.name.replace(
+																			'-',
+																			' ',
+																		)}
+																	</Typography>
+																</StoryLink>
+															</Box>
+														</ListItem>
+													),
+												)}
 											</Box>
 										) : null}
 									</Box>
@@ -250,27 +301,27 @@ export const Introduction = () => {
 				my={6}
 			>
 				<Typography variant='h4' fontWeight={600}>
-          Thank you for being part of it!
+                    Thank you for being part of it!
 				</Typography>
 				<img src='/images/img6.png' height={150} loading='lazy' />
 			</Box>
 			<ImgCredits>
 				<Typography>
-          Illustrations by
+                    Illustrations by
 					<a
 						href='https://icons8.com/illustrations/author/zD2oqC8lLBBA'
 						target='_blank'
 						rel='noreferrer'
 					>
-            Icons 8
+                        Icons 8
 					</a>
-          from
+                    from
 					<a
 						href='https://icons8.com/illustrations'
 						target='_blank'
 						rel='noreferrer'
 					>
-            Ouch!
+                        Ouch!
 					</a>
 				</Typography>
 				<Box>
@@ -280,7 +331,7 @@ export const Introduction = () => {
 							target='_blank'
 							rel='noreferrer'
 						>
-              Find more here
+                            Find more here
 						</a>
 					</Typography>
 				</Box>

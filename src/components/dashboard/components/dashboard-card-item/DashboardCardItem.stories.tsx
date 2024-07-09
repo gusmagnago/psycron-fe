@@ -3,7 +3,6 @@ import type { Meta, StoryObj } from '@storybook/react';
 import { DashboardCardItem } from './DashboardCardItem';
 import type { IDashboarcCardItemProps } from './DashboardCardItem.types';
 
-
 const DefaultDashboardCardItem = (args: IDashboarcCardItemProps) => (
 	<DashboardCardItem {...args} />
 );
@@ -28,10 +27,10 @@ const meta: Meta<typeof DashboardCardItem> = {
 			currency: '€',
 			appointments: 20,
 			value: '20',
-			duration: 60
+			duration: 60,
 		},
 		patientId: '2345654321klbhjvgjhbnlm43211',
-		isPatientCard: true
+		isPatientCard: true,
 	},
 };
 
@@ -48,5 +47,5 @@ export const PatientsCard: Story = {
 };
 
 export const AppointmentsCard: Story = {
-	render: (args) => <DashboardCardItem {...args} isPatientCard={false}/>,
+	render: (args) => <DashboardCardItem {...args} isPatientCard={false} />,
 };

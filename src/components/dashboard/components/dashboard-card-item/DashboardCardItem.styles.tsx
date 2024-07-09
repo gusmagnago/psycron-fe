@@ -1,14 +1,19 @@
-import { Box, css, Divider, Grid, styled } from '@mui/material';
+import { Box, css, Grid, styled } from '@mui/material';
 import { Tooltip } from '@psycron/components/tooltip/Tooltip';
-import { isBiggerThanTabletMedia } from '@psycron/theme/media-queries/mediaQueries';
 import { palette } from '@psycron/theme/palette/palette.theme';
 import { shadowMain, shadowPress } from '@psycron/theme/shadow/shadow.theme';
 import { spacing } from '@psycron/theme/spacing/spacing.theme';
 
 export const DashboardCardItemWrapper = styled(Box, {
 	shouldForwardProp: (props) =>
-		props !== 'isPatientCard' && props !== 'lessThanThirtyMinutes' && props !== 'isNow',
-})<{ isNow?: boolean, isPatientCard?: boolean; lessThanThirtyMinutes?: boolean }>`
+		props !== 'isPatientCard' &&
+    props !== 'lessThanThirtyMinutes' &&
+    props !== 'isNow',
+})<{
+  isNow?: boolean;
+  isPatientCard?: boolean;
+  lessThanThirtyMinutes?: boolean;
+}>`
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -17,16 +22,18 @@ export const DashboardCardItemWrapper = styled(Box, {
 
   border: 3px solid transparent;
 
-  ${({ lessThanThirtyMinutes , isNow}) =>
+  ${({ lessThanThirtyMinutes, isNow }) =>
 		isNow
 			? css`
           background-color: ${palette.alert.surface.light};
           box-shadow: ${shadowPress};
         `
-			: lessThanThirtyMinutes ? css`
-              background-color: ${palette.info.surface.light};
-             box-shadow: ${shadowPress};
-            `: 'transparent'};
+			: lessThanThirtyMinutes
+				? css`
+            background-color: ${palette.info.surface.light};
+            box-shadow: ${shadowPress};
+          `
+				: 'transparent'};
 
   &:hover {
     box-shadow: ${shadowMain};
@@ -49,14 +56,6 @@ export const DashboardCardItemWrapper = styled(Box, {
             `}
 
     cursor: pointer;
-  }
-`;
-
-export const SmallDivider = styled(Divider)`
-  border-width: 2px;
-
-  ${isBiggerThanTabletMedia} {
-    border-width: 4px;
   }
 `;
 

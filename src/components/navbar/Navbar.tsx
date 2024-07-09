@@ -30,7 +30,6 @@ import {
 } from './Navbar.styles';
 
 export const Navbar = () => {
-
 	const { t } = useTranslation();
 
 	const dropdownRef = useRef<HTMLDivElement>(null);
@@ -46,24 +45,43 @@ export const Navbar = () => {
 	};
 
 	const menuItems = [
-		{ name: t('components.navbar.dashboard'), icon: <DashboardIcon />, path: '/dashboard' },
+		{
+			name: t('components.navbar.dashboard'),
+			icon: <DashboardIcon />,
+			path: '/dashboard',
+		},
 		{
 			name: t('components.navbar.user-settings'),
 			icon: <UserSettings />,
 			path: '/user',
 			onClick: toggleUserDetails,
 		},
-		{ name: t('globals.patients'), icon: <PatientList />, path: '/patients' },
-		{ name: t('globals.billing-manager'),  icon: <Payment />, path: '/payments' },
-		{ name: t('globals.appointments-manager'), icon: <Calendar />, path: '/appointments' },
+		{
+			name: t('globals.patients'),
+			icon: <PatientList />,
+			path: '/patients',
+		},
+		{
+			name: t('globals.billing-manager'),
+			icon: <Payment />,
+			path: '/payments',
+		},
+		{
+			name: t('globals.appointments-manager'),
+			icon: <Calendar />,
+			path: '/appointments',
+		},
 	];
 
 	const footerItems = [
-		{ name: t('globals.change-language'), icon: <Language />, path: '/change-language' },
-		{ name: t('globals.help'),  icon: <Help />, path: '/help-center' },
+		{
+			name: t('globals.change-language'),
+			icon: <Language />,
+			path: '/change-language',
+		},
+		{ name: t('globals.help'), icon: <Help />, path: '/help-center' },
 		{ name: t('globals.logout'), icon: <Logout />, path: '/logout' },
 	];
-
 
 	return (
 		<>

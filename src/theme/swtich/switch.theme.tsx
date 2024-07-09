@@ -4,25 +4,22 @@ import type { CSSObject, Theme } from '@mui/material/styles';
 import type { Palette } from '../palette/palette.types';
 import { shadowDisabled } from '../shadow/shadow.theme';
 
-
-const switchStyles = ({palette}: Theme): Record<string, CSSObject>  => {
-	const {
-		error, success
-	} = palette as unknown as Palette;
+const switchStyles = ({ palette }: Theme): Record<string, CSSObject> => {
+	const { error, success } = palette as unknown as Palette;
 
 	return {
 		switchBase: {
-			color: error.main, 
+			color: error.main,
 			'&:hover': {
 				backgroundColor: error.main,
-				color: error.action.hover
+				color: error.action.hover,
 			},
 			'&:focus': {
 				backgroundColor: error.action.hover,
-				color: error.main
+				color: error.main,
 			},
 			'&:disabled': {
-				color: error.action.disabled
+				color: error.action.disabled,
 			},
 			[`&.${switchClasses.checked}`]: {
 				color: success.main,
@@ -32,12 +29,12 @@ const switchStyles = ({palette}: Theme): Record<string, CSSObject>  => {
 				},
 				'&:focus': {
 					backgroundColor: success.action.hover,
-					color: success.main
+					color: success.main,
 				},
 				'&:disabled': {
 					color: success.action.disabled,
 				},
-			}
+			},
 		},
 		track: {
 			opacity: 0.5,
@@ -46,11 +43,9 @@ const switchStyles = ({palette}: Theme): Record<string, CSSObject>  => {
 			'.Mui-checked.Mui-checked + &': {
 				opacity: 0.5,
 				backgroundColor: success.main,
-			}
-		}
-
-	}
-    
+			},
+		},
+	};
 };
 
 export default switchStyles;

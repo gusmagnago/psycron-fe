@@ -21,7 +21,7 @@ type Story = StoryObj<typeof DefaultTooltip>;
 const tooltipArgs: TooltipProps = {
 	children: <Info color={palette.info.main} />,
 	title: 'should show something after hovering',
-	placement: 'bottom'
+	placement: 'bottom',
 };
 
 export const Default: Story = {

@@ -28,16 +28,16 @@ const inputOutlinedStyles = ({ palette }: Theme): Record<string, CSSObject> => {
 			border: 'none !important',
 		},
 		'&:-webkit-autofill': {
-			backgroundColor: 'red !important'
+			backgroundColor: 'red !important',
 		},
 		'&:-webkit-autofill:hover': {
-			backgroundColor: 'red !important'
+			backgroundColor: 'red !important',
 		},
 		'&:-webkit-autofill:focus': {
-			backgroundColor: 'red !important'
+			backgroundColor: 'red !important',
 		},
 		'&:-webkit-autofill:active': {
-			backgroundColor: 'red !important'
+			backgroundColor: 'red !important',
 		},
 	};
 };

@@ -34,8 +34,14 @@ export const CardActions = ({
 			</Grid>
 			{hasTertiary ? (
 				<Grid item>
-					<Box display='flex' flexDirection='row' justifyContent='flex-end'>
-						<Button onClick={tertiaryAction} tertiary>{tertiaryActionName}</Button>
+					<Box
+						display='flex'
+						flexDirection='row'
+						justifyContent='flex-end'
+					>
+						<Button onClick={tertiaryAction} tertiary>
+							{tertiaryActionName}
+						</Button>
 					</Box>
 				</Grid>
 			) : null}

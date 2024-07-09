@@ -12,19 +12,19 @@ export * from './urls';
 
 export const formatDateTime = (
 	dateTimeString: string,
-	t: TFunction
+	t: TFunction,
 ): string => {
 	const date = new Date(dateTimeString);
 	return format(
 		date,
-		t('globals.date-time-format', { format: 'MMMM d, yyyy h:mmaaa' })
+		t('globals.date-time-format', { format: 'MMMM d, yyyy h:mmaaa' }),
 	);
 };
 
 export const getTimeRemaining = (
 	targetDateTime: string,
 	t: TFunction,
-	paused: boolean
+	paused: boolean,
 ): string => {
 	const targetDate = new Date(targetDateTime);
 	const currentDate = new Date();
@@ -43,12 +43,17 @@ export const getTimeRemaining = (
 	} else if (minutes > 0) {
 		result = t('globals.time-remaining.minutes', { count: minutes });
 	} else {
-		result = t('globals.time-remaining.less-than-a-minute', { status: status });
+		result = t('globals.time-remaining.less-than-a-minute', {
+			status: status,
+		});
 	}
 
 	return result.trim();
 };
-export const checkAppointmentTimes = (targetDateTime: string, appointmentDuration: number) => {
+export const checkAppointmentTimes = (
+	targetDateTime: string,
+	appointmentDuration: number,
+) => {
 	const targetDate = new Date(targetDateTime);
 	const currentDate = new Date();
 

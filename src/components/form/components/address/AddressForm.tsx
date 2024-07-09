@@ -20,7 +20,7 @@ export const AddressForm = <T extends FieldValues>({
 	errors,
 	register,
 	defaultValues,
-	disabled
+	disabled,
 }: AddressComponentProps<T> & TextFieldProps) => {
 	const { t } = useTranslation();
 
@@ -36,8 +36,8 @@ export const AddressForm = <T extends FieldValues>({
 	};
 
 	const [addressComponents, setAddressComponents] = useState<
-    AddressComponent | undefined
-  >(defaultValues || defaultAddressVal);
+        AddressComponent | undefined
+    >(defaultValues || defaultAddressVal);
 
 	const [addMoreInfo, setAddMoreInfo] = useState<boolean>(false);
 
@@ -46,7 +46,9 @@ export const AddressForm = <T extends FieldValues>({
 		libraries: LIBRARIES,
 	});
 
-	const handlePlaceSelect = (autocomplete: google.maps.places.Autocomplete) => {
+	const handlePlaceSelect = (
+		autocomplete: google.maps.places.Autocomplete,
+	) => {
 		const place = autocomplete.getPlace();
 
 		const updatedAddressComponents: Partial<AddressComponent> = {
@@ -72,7 +74,8 @@ export const AddressForm = <T extends FieldValues>({
 				updatedAddressComponents.city = component.long_name;
 				break;
 			case 'administrative_area_level_1':
-				updatedAddressComponents.administrativeArea = component.long_name;
+				updatedAddressComponents.administrativeArea =
+                        component.long_name;
 				break;
 			case 'country':
 				updatedAddressComponents.country = component.long_name;
@@ -106,7 +109,7 @@ export const AddressForm = <T extends FieldValues>({
 					<Autocomplete
 						onLoad={(autocomplete) =>
 							autocomplete.addListener('place_changed', () =>
-								handlePlaceSelect(autocomplete)
+								handlePlaceSelect(autocomplete),
 							)
 						}
 					>

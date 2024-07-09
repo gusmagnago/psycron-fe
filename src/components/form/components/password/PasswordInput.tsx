@@ -14,7 +14,7 @@ export const PasswordInput = <T extends FieldValues>({
 	errors,
 	register,
 	defaultPasswordHash,
-	disabled
+	disabled,
 }: PasswordInputProps<T> & TextFieldProps) => {
 	const { t } = useTranslation();
 
@@ -27,15 +27,14 @@ export const PasswordInput = <T extends FieldValues>({
 	});
 
 	const [passwordValue, setPasswordValue] = useState<string>('');
-	const [confirmPasswordValue, setConfirmPasswordValue] = useState<string>('');
-
+	const [confirmPasswordValue, setConfirmPasswordValue] =
+        useState<string>('');
 
 	useEffect(() => {
 		if (defaultPasswordHash) {
-			setPasswordValue(defaultPasswordHash); 
+			setPasswordValue(defaultPasswordHash);
 		}
 	}, [defaultPasswordHash]);
-
 
 	const toggleVisibility = (id: Path<T>) => {
 		setIsVisible((prev) => ({
@@ -69,13 +68,21 @@ export const PasswordInput = <T extends FieldValues>({
 				disabled={disabled}
 				InputProps={{
 					endAdornment: passwordValue?.length ? (
-						<InputAdornment position="end">
+						<InputAdornment position='end'>
 							<IconButton
-								onMouseEnter={() => toggleVisibility(passwordInputId)}
-								onMouseLeave={() => toggleVisibility(passwordInputId)}
-								edge="end"
+								onMouseEnter={() =>
+									toggleVisibility(passwordInputId)
+								}
+								onMouseLeave={() =>
+									toggleVisibility(passwordInputId)
+								}
+								edge='end'
 							>
-								{!isVisible[passwordInputId] ? <NotVisible /> : <Visible />}
+								{!isVisible[passwordInputId] ? (
+									<NotVisible />
+								) : (
+									<Visible />
+								)}
 							</IconButton>
 						</InputAdornment>
 					) : null,
@@ -86,23 +93,36 @@ export const PasswordInput = <T extends FieldValues>({
 					label={t('components.form.confirm-password')}
 					fullWidth
 					id={confirmPasswordInputId}
-					type={!isVisible[confirmPasswordInputId] ? 'password' : 'text'}
+					type={
+						!isVisible[confirmPasswordInputId] ? 'password' : 'text'
+					}
 					{...register(confirmPasswordInputId)}
 					error={!!errors.confirmPassword}
 					helperText={errors.confirmPassword?.message as string}
 					value={confirmPasswordValue}
 					onChange={(e) => {
-						handleInputChange(confirmPasswordInputId, e.target.value);
+						handleInputChange(
+							confirmPasswordInputId,
+							e.target.value,
+						);
 					}}
 					InputProps={{
 						endAdornment: confirmPasswordValue?.length ? (
-							<InputAdornment position="end">
+							<InputAdornment position='end'>
 								<IconButton
-									onMouseEnter={() => toggleVisibility(confirmPasswordInputId)}
-									onMouseLeave={() => toggleVisibility(confirmPasswordInputId)}
-									edge="end"
+									onMouseEnter={() =>
+										toggleVisibility(confirmPasswordInputId)
+									}
+									onMouseLeave={() =>
+										toggleVisibility(confirmPasswordInputId)
+									}
+									edge='end'
 								>
-									{!isVisible[confirmPasswordInputId] ? <NotVisible /> : <Visible />}
+									{!isVisible[confirmPasswordInputId] ? (
+										<NotVisible />
+									) : (
+										<Visible />
+									)}
 								</IconButton>
 							</InputAdornment>
 						) : null,

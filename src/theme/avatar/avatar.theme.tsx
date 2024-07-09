@@ -8,9 +8,8 @@ const avatarStyles = (): Record<string, CSSObject> => {
 			boxShadow: shadowMain,
 		},
 		img: {
-			objectFit: 'contain'
-
-		}
+			objectFit: 'contain',
+		},
 	};
 };
 

@@ -1,6 +1,7 @@
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { Box, Grid, Typography } from '@mui/material';
+import { Divider } from '@psycron/components/divider/Divider';
 import { Edit, Payment } from '@psycron/components/icons';
 import { Text } from '@psycron/components/text/Text';
 import { Tooltip } from '@psycron/components/tooltip/Tooltip';
@@ -14,7 +15,6 @@ import {
 	DashboardCardItemWrapper,
 	DashboardCardTooltip,
 	GridDivider,
-	SmallDivider,
 } from './DashboardCardItem.styles';
 import type { IDashboarcCardItemProps } from './DashboardCardItem.types';
 
@@ -59,7 +59,7 @@ export const DashboardCardItem = ({
 						</Box>
 					</Grid>
 					<GridDivider item xs={0.2}>
-						<SmallDivider orientation='vertical' flexItem />
+						<Divider small orientation='vertical' flexItem />
 					</GridDivider>
 					<Grid item xs={2.5}>
 						<Box p={2}>
@@ -71,7 +71,7 @@ export const DashboardCardItem = ({
 						</Box>
 					</Grid>
 					<GridDivider item xs={0.2}>
-						<SmallDivider orientation='vertical' flexItem />
+						<Divider small orientation='vertical' flexItem />
 					</GridDivider>
 					<Grid item xs={1} display='flex' justifyContent='center'>
 						{isPatientCard ? (
@@ -91,7 +91,7 @@ export const DashboardCardItem = ({
 						)}
 					</Grid>
 					<GridDivider item xs={0.2}>
-						<SmallDivider orientation='vertical' flexItem />
+						<Divider small orientation='vertical' flexItem />
 					</GridDivider>
 					<Grid item xs={1} display='flex' justifyContent='center'>
 						<Box display='flex' justifyContent='center'>

@@ -4,57 +4,56 @@ import type { Meta, StoryObj } from '@storybook/react';
 import * as Icons from './index';
 
 const Wrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
 `;
 
 const IconsWrapper = styled.div`
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  width: 100%;
-  height: 100%;
-  margin-bottom: 40px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    margin-bottom: 40px;
 `;
 
 const ListItemWrapper = styled.div`
-  margin: 10px;
-  text-align: center;
-  height: 60px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: space-between;
+    margin: 10px;
+    text-align: center;
+    height: 60px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
 
-  & svg {
-    width: 30px;
-    height: auto;
-  }
+    & svg {
+        width: 30px;
+        height: auto;
+    }
 `;
 
-
 const BrandItemWrapper = styled.div`
-  margin: 10px;
-  text-align: center;
-  height: 60px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
+    margin: 10px;
+    text-align: center;
+    height: 60px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
 
-  & svg {
-    width: 100px;
-    height: auto;
-  }
+    & svg {
+        width: 100px;
+        height: auto;
+    }
 `;
 
 const iconsArray = Object.entries(Icons);
 
 const IconList = () => {
 	const otherIcons = iconsArray.filter(
-		([name]) => name !== 'Logo' && name !== 'Brand'
+		([name]) => name !== 'Logo' && name !== 'Brand',
 	);
 
 	return (
@@ -73,7 +72,7 @@ const IconList = () => {
 
 const BrandIcons = () => {
 	const logoIcon = iconsArray.filter(
-		([name]) => name === 'Logo' || name === 'Brand'
+		([name]) => name === 'Logo' || name === 'Brand',
 	);
 	return (
 		<IconsWrapper>
@@ -90,7 +89,7 @@ const BrandIcons = () => {
 const meta: Meta = {
 	title: 'Elements / Icons',
 	component: IconList,
-	tags: ['autodocs']
+	tags: ['autodocs'],
 };
 
 export default meta;

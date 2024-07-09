@@ -9,20 +9,20 @@ import type { ILinkStyledProps } from './Link.types';
 export const StyledLink = styled(RRDLink, {
 	shouldForwardProp: (prop) => prop !== 'firstLetterUpper',
 })<ILinkStyledProps>`
-  margin: 0 ${spacing.xs} 0;
-  text-decoration: none;
-  color: ${palette.secondary.main};
-  transition: color 0.2s ease-out;
-  &:hover {
-    color: ${palette.secondary.action.press};
-    transform: scale(1.1);
-    transition: transform 0.2s ease-out;
-  }
-  ${({ firstLetterUpper }) =>
+    margin: 0 ${spacing.xs} 0;
+    text-decoration: none;
+    color: ${palette.secondary.main};
+    transition: color 0.2s ease-out;
+    &:hover {
+        color: ${palette.secondary.action.press};
+        transform: scale(1.1);
+        transition: transform 0.2s ease-out;
+    }
+    ${({ firstLetterUpper }) =>
 		firstLetterUpper &&
-    css`
-      &::first-letter {
-        text-transform: uppercase;
-      }
-    `}
+        css`
+            &::first-letter {
+                text-transform: uppercase;
+            }
+        `}
 `;

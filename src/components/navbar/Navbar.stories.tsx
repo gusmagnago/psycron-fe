@@ -16,7 +16,4 @@ type Story = StoryObj<typeof DefaultNavbar>;
 
 export const Default: Story = {
 	render: () => <Navbar />,
-
 };
-
-

@@ -16,23 +16,23 @@ const blurIn = keyframes`
 export const UserDetailsCardWrapper = styled(Box, {
 	shouldForwardProp: (props) => props !== 'isVisible',
 })<{ isVisible?: boolean }>`
-  height: auto;
-  padding: ${spacing.medium} ${spacing.mediumLarge};
-  border-radius: calc(2 * ${spacing.medium});
-  box-shadow: ${shadowMain};
-  backdrop-filter: blur(10px);
-  position: absolute;
-  z-index: 100;
-  width: 50%;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
+    height: auto;
+    padding: ${spacing.medium} ${spacing.mediumLarge};
+    border-radius: calc(2 * ${spacing.medium});
+    box-shadow: ${shadowMain};
+    backdrop-filter: blur(10px);
+    position: absolute;
+    z-index: 100;
+    width: 50%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
 
-  border: 2px solid rgba(170, 170, 204, 0.1);
+    border: 2px solid rgba(170, 170, 204, 0.1);
 
-  ${({ isVisible }) =>
+    ${({ isVisible }) =>
 		isVisible &&
-    css`
-      animation: ${blurIn} 0.09s linear both;
-    `}
+        css`
+            animation: ${blurIn} 0.09s linear both;
+        `}
 `;

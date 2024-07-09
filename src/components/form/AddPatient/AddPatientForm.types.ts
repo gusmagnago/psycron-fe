@@ -1,3 +1,3 @@
 export interface AddPatientProps {
-    shortButton: boolean
+    shortButton: boolean;
 }

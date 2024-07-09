@@ -43,7 +43,11 @@ export const Default: Story = {
 		} = useForm();
 
 		return (
-			<PhoneInput errors={errors} register={register} registerName='phone' />
+			<PhoneInput
+				errors={errors}
+				register={register}
+				registerName='phone'
+			/>
 		);
 	},
 };

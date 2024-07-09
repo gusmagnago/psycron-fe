@@ -25,20 +25,20 @@ import switchStyles from './swtich/switch.theme';
 import tooltipeStyles from './tooltip/tooltip.theme';
 
 declare module '@mui/material/styles' {
-  interface Palette {
-    gray: GrayShades,
-    tertiary: Palette['primary'];
-  }
+    interface Palette {
+        gray: GrayShades;
+        tertiary: Palette['primary'];
+    }
 
-  interface PaletteOptions {
-    gray?: GrayShades,
-    tertiary?: PaletteOptions['primary'];
-  }
+    interface PaletteOptions {
+        gray?: GrayShades;
+        tertiary?: PaletteOptions['primary'];
+    }
 }
 declare module '@mui/material/Button' {
-  interface ButtonPropsColorOverrides {
-    tertiary: true;
-  }
+    interface ButtonPropsColorOverrides {
+        tertiary: true;
+    }
 }
 
 const theme = createTheme({
@@ -97,17 +97,17 @@ const theme = createTheme({
 			styleOverrides: paginationItemStyles(createTheme({ palette })),
 		},
 		MuiFormLabel: {
-			styleOverrides: formLabel(createTheme({palette}))
+			styleOverrides: formLabel(createTheme({ palette })),
 		},
 		MuiAvatar: {
-			styleOverrides: avatarStyles()
+			styleOverrides: avatarStyles(),
 		},
 		MuiFormControl: {
-			styleOverrides: formControl()
+			styleOverrides: formControl(),
 		},
 		MuiModal: {
-			styleOverrides: modalStyles()
-		}
+			styleOverrides: modalStyles(),
+		},
 	},
 });
 

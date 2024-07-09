@@ -4,7 +4,9 @@ import type { Meta, StoryObj } from '@storybook/react';
 import { Checkbox } from './Checkbox';
 import type { ICheckboxProps } from './Checkbox.types';
 
-const DefaultCheckbox = (args: ICheckboxProps<FieldValues>) => <Checkbox {...args} />;
+const DefaultCheckbox = (args: ICheckboxProps<FieldValues>) => (
+	<Checkbox {...args} />
+);
 
 const meta: Meta<typeof Checkbox> = {
 	title: 'Elements / Checkbox',
@@ -17,7 +19,7 @@ export default meta;
 type Story = StoryObj<typeof DefaultCheckbox>;
 
 const checkboxArgs = {
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any, no-console
+	// eslint-disable-next-line no-console
 	onChange: () => console.log('check'),
 	labelKey: 'check text',
 };
@@ -26,6 +28,3 @@ export const Default: Story = {
 	render: (args) => <Checkbox {...args} />,
 	args: checkboxArgs,
 };
-
-
-

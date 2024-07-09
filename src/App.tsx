@@ -1,11 +1,9 @@
-import { AppointmentsCard } from './components/appointments/components/appointments-card/AppointmentsCard';
-
-
+import { PatientsTable } from './components/table/patients/PatientsTable';
 
 function App() {
 	return (
 		<>
-			<AppointmentsCard />
+			<PatientsTable />
 		</>
 	);
 }

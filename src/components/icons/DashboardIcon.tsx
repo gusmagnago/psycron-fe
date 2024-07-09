@@ -17,4 +17,3 @@ export const DashboardIcon: React.FC = (props) => (
 		<rect width='7' height='5' x='3' y='16' rx='1' />
 	</svg>
 );
-

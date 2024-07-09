@@ -1,7 +1,7 @@
 export interface IProgressProps {
-  appointmentStart?: string,
-  duration?: number,
-  shouldProceed?: boolean,
-  showLabel?:boolean,
-  size?: number
+    appointmentStart?: string;
+    duration?: number;
+    shouldProceed?: boolean;
+    showLabel?: boolean;
+    size?: number;
 }
