@@ -9,12 +9,9 @@ import type { ITableHeadProps } from './TableHead.types';
 export const TableHead = ({ headItems }: ITableHeadProps) => {
 	return (
 		<Box mb={5}>
-			<Grid container columns={headItems.length}>
+			<Grid container columns={headItems.length} pr={4}>
 				{headItems.map(
-					(
-						{ icon, numeric, label, action, isPatients, id },
-						index,
-					) => (
+					({ icon, numeric, label, action, isPatients, id }, index) => (
 						<TabledHeadRow
 							item
 							key={`table-head-cell-${id}-pos-${index}`}
@@ -30,7 +27,7 @@ export const TableHead = ({ headItems }: ITableHeadProps) => {
 								isHead
 							/>
 						</TabledHeadRow>
-					),
+					)
 				)}
 			</Grid>
 		</Box>

@@ -1,23 +1,42 @@
-import { Box, Divider, Paper } from '@mui/material';
+import { useState } from 'react';
+import { Box, Divider } from '@mui/material';
 
-import type { ITableBodydProps } from './components/table-body/TableBody';
+import { Pagination } from './components/pagination/Pagination';
 import { TableBody } from './components/table-body/TableBody';
 import { TableHead } from './components/table-head/TableHead';
-import type { ITableHeadProps } from './components/table-head/TableHead.types';
+import { StyledPaper } from './Table.styles';
+import type { ITableProps } from './Table.types';
 
-export interface ITableProps {}
+export const Table = ({ headItems, bodyItems }: ITableProps) => {
+	const [currentPage, setCurrentPage] = useState<number>(1);
+	const rowsPerPage = 5;
+	const totalPages = Math.ceil(bodyItems.length / rowsPerPage);
 
-export const Table = ({
-	headItems,
-	bodyItems,
-}: ITableHeadProps & ITableBodydProps) => {
+	const handlePageChange = (
+		event: React.ChangeEvent<unknown>,
+		page: number
+	) => {
+		event.preventDefault();
+		setCurrentPage(page);
+	};
+
+	const displayedItems = bodyItems.slice(
+		(currentPage - 1) * rowsPerPage,
+		currentPage * rowsPerPage
+	);
+
 	return (
-		<Box sx={{ width: '100%' }}>
-			<Paper sx={{ width: '100%', p: '24px', borderRadius: '40px' }}>
+		<Box width='100%'>
+			<StyledPaper>
 				<TableHead headItems={headItems} />
 				<Divider />
-				<TableBody bodyItems={bodyItems} />
-			</Paper>
+				<TableBody bodyItems={displayedItems} />
+				<Pagination
+					totalPages={totalPages}
+					currentPage={currentPage}
+					onPageChange={handlePageChange}
+				/>
+			</StyledPaper>
 		</Box>
 	);
 };

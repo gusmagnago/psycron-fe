@@ -5,8 +5,8 @@ import { shadowMain, shadowPress } from '@psycron/theme/shadow/shadow.theme';
 import { spacing } from '@psycron/theme/spacing/spacing.theme';
 
 export const DashboardCardItemWrapper = styled(Box, {
-  shouldForwardProp: (props) =>
-    props !== 'isPatientCard' &&
+	shouldForwardProp: (props) =>
+		props !== 'isPatientCard' &&
     props !== 'lessThanThirtyMinutes' &&
     props !== 'isNow',
 })<{
@@ -23,35 +23,35 @@ export const DashboardCardItemWrapper = styled(Box, {
   border: 3px solid transparent;
 
   ${({ lessThanThirtyMinutes, isNow }) =>
-    isNow
-      ? css`
+		isNow
+			? css`
           background-color: ${palette.alert.surface.light};
           box-shadow: ${shadowPress};
         `
-      : lessThanThirtyMinutes
-        ? css`
+			: lessThanThirtyMinutes
+				? css`
             background-color: ${palette.info.surface.light};
             box-shadow: ${shadowPress};
           `
-        : 'transparent'};
+				: 'transparent'};
 
   &:hover {
     box-shadow: ${shadowMain};
 
     ${({ isPatientCard, isNow }) =>
-      isPatientCard
-        ? css`
+		isPatientCard
+			? css`
             background-color: ${palette.secondary.surface.light};
             color: ${palette.secondary.access};
             svg {
               color: ${palette.secondary.access};
             }
           `
-        : isNow
-          ? css`
+			: isNow
+				? css`
               border: 3px solid ${palette.alert.main};
             `
-          : css`
+				: css`
               border: 3px solid ${palette.tertiary.action.hover};
             `}
 

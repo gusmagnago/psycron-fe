@@ -24,7 +24,7 @@ const selectArgs = {
 	],
 
 	onChangeSelect: (e: SelectChangeEvent<string>) =>
-		console.log('t', e.target),
+		alert(`e: ${e.target.value}`),
 	selectLabel: 'Testing Select',
 	required: true,
 	disabled: false,

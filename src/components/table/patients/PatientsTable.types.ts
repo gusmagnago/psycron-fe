@@ -5,7 +5,7 @@ export interface IPatientsTableData {
     fullAmount: number;
     fullName: string;
     hasDiscount: boolean;
-    id: string;
+    itemId: string;
     latestPayment: string;
     nextSession: string;
     paymentStatus: string;
