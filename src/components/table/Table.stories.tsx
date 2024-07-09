@@ -7,21 +7,32 @@ import type { ITableProps } from './Table.types';
 
 const DefaultTable = (args: ITableProps) => <Table {...args} />;
 
+const columnsToHideTablet = [
+  'fullAmount',
+  'hasDiscount',
+  'discountVal',
+  'latestPayment',
+  'actions',
+];
+const columnsToHideMobile = ['paymentStatus', 'currency', 'action'];
+
 const meta: Meta<typeof Table> = {
-	title: 'Components / Table ',
-	component: DefaultTable,
-	tags: ['autodocs'],
-	parameters: {
-		docs: {
-			description: {
-				component: '',
-			},
-		},
-	},
-	args: {
-		headItems: headCell,
-		bodyItems: bodyCells,
-	},
+  title: 'Components / Table ',
+  component: DefaultTable,
+  tags: ['autodocs'],
+  parameters: {
+    docs: {
+      description: {
+        component: '',
+      },
+    },
+  },
+  args: {
+    headItems: headCell,
+    bodyItems: bodyCells,
+    columnsToHideTablet,
+    columnsToHideMobile,
+  },
 };
 
 export default meta;
@@ -29,5 +40,5 @@ export default meta;
 type Story = StoryObj<typeof DefaultTable>;
 
 export const Default: Story = {
-	render: (args) => <Table {...args} />,
+  render: (args) => <Table {...args} />,
 };
