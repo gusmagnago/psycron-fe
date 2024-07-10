@@ -1,4 +1,4 @@
-import { Box } from '@mui/material';
+import { Box, Grid } from '@mui/material';
 import { Divider } from '@psycron/components/divider/Divider';
 
 import { tableBones } from '../../utils';
@@ -14,7 +14,7 @@ import type { ITableBodyProps } from './TableBody.types';
 import useViewport from '@psycron/hooks/useViewport';
 import { useNavigate } from 'react-router-dom';
 
-export const TableBody = ({ bodyItems }: ITableBodyProps) => {
+export const TableBody = ({ bodyItems, hoveredColumn }: ITableBodyProps) => {
   const navigate = useNavigate();
   const { isTablet, isMobile } = useViewport();
 
@@ -35,26 +35,29 @@ export const TableBody = ({ bodyItems }: ITableBodyProps) => {
             <StyledRow>
               {row.map(
                 ({ icon, numeric, label, action, isPatients, id }, index) => (
-                  <TableBodyRowItem
+                  <Grid
                     key={`table-cell-${rowIndex}-${index}`}
                     item
                     xs={tableBones(action, index, isTablet || isMobile)}
                     onClick={handleMobileClick}
+                    display='flex'
                   >
-                    <TableBodyRow>
-                      <TableCell
-                        icon={icon}
-                        label={label}
-                        numeric={numeric}
-                        action={action}
-                        isPatients={isPatients}
-                        id={id}
-                      />
-                      {index !== row.length - 1 && !(isTablet || isMobile) ? (
-                        <Divider small />
-                      ) : null}
-                    </TableBodyRow>
-                  </TableBodyRowItem>
+                    <TableBodyRowItem isHovered={hoveredColumn === id}>
+                      <TableBodyRow>
+                        <TableCell
+                          icon={icon}
+                          label={label}
+                          numeric={numeric}
+                          action={action}
+                          isPatients={isPatients}
+                          id={id}
+                        />
+                      </TableBodyRow>
+                    </TableBodyRowItem>
+                    {index !== row.length - 1 && !(isTablet || isMobile) ? (
+                      <Divider small />
+                    ) : null}
+                  </Grid>
                 )
               )}
             </StyledRow>

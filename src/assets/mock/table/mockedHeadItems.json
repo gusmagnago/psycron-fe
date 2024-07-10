@@ -60,7 +60,7 @@
     "label": "Latest Payment"
   },
   {
-    "id": "actions",
+    "id": "action",
     "numeric": false,
     "icon": true,
     "action": true,

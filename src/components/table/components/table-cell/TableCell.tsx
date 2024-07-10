@@ -92,6 +92,7 @@ export const TableCell = ({
             textAlign={align(icon, numeric)}
             variant='body2'
             fontSize='0.8rem'
+            p={2}
           >
             {label}
           </Typography>
@@ -100,7 +101,7 @@ export const TableCell = ({
   };
 
   return (
-    <StyledCellWrapper id={id}>
+    <StyledCellWrapper>
       {action ? (
         !isHead ? (
           <Box p={2}>

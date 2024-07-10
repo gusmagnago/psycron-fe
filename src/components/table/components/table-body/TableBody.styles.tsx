@@ -1,4 +1,4 @@
-import { Box, Grid, styled } from '@mui/material';
+import { Box, css, Grid, styled } from '@mui/material';
 import { palette } from '@psycron/theme/palette/palette.theme';
 import { shadowMain, shadowPress } from '@psycron/theme/shadow/shadow.theme';
 import { spacing } from '@psycron/theme/spacing/spacing.theme';
@@ -12,7 +12,22 @@ export const TableBodyRow = styled(Box)`
   height: 50px;
 `;
 
-export const TableBodyRowItem = styled(Grid)``;
+export const TableBodyRowItem = styled(Box, {
+  shouldForwardProp: (props) => props !== 'isHovered',
+})<{ isHovered?: boolean }>`
+  display: flex;
+  width: 100%;
+
+  padding: ${spacing.xs};
+  justify-content: center;
+
+  ${({ isHovered }) =>
+    isHovered &&
+    css`
+      scale: 1.1;
+      color: ${palette.primary.dark};
+    `}
+`;
 
 export const StyledRow = styled(Box)`
   display: flex;
@@ -21,7 +36,6 @@ export const StyledRow = styled(Box)`
   border-radius: 30px;
   background-color: ${palette.background.paper};
   box-shadow: ${shadowMain};
-  padding: ${spacing.small};
 
   &:hover {
     background-color: ${palette.secondary.surface.light};

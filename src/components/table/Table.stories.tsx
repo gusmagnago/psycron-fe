@@ -12,7 +12,6 @@ const columnsToHideTablet = [
   'hasDiscount',
   'discountVal',
   'latestPayment',
-  'actions',
 ];
 const columnsToHideMobile = ['paymentStatus', 'currency', 'action'];
 

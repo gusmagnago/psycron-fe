@@ -69,7 +69,7 @@ export const PatientsTable = () => {
       label: 'Latest Payment',
     },
     {
-      id: 'actions',
+      id: 'action',
       numeric: false,
       icon: true,
       action: true,
@@ -87,7 +87,6 @@ export const PatientsTable = () => {
     'hasDiscount',
     'discountVal',
     'latestPayment',
-    'actions',
   ];
   const columnsToHideMobile = ['paymentStatus', 'currency', 'action'];
 
