@@ -13,7 +13,7 @@ export const TableBodyRow = styled(Box)`
 `;
 
 export const TableBodyRowItem = styled(Box, {
-  shouldForwardProp: (props) => props !== 'isHovered',
+	shouldForwardProp: (props) => props !== 'isHovered',
 })<{ isHovered?: boolean }>`
   display: flex;
   width: 100%;
@@ -22,7 +22,7 @@ export const TableBodyRowItem = styled(Box, {
   justify-content: center;
 
   ${({ isHovered }) =>
-    isHovered &&
+		isHovered &&
     css`
       scale: 1.1;
       color: ${palette.primary.dark};

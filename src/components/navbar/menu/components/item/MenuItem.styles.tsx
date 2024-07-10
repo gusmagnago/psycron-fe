@@ -7,17 +7,17 @@ import { spacing } from '@psycron/theme/spacing/spacing.theme';
 import type { IMenuItem } from './MenuItem.types';
 
 export const StyledMenuItem = styled(Tooltip, {
-  shouldForwardProp: (props) => props !== 'isFooterIcon',
+	shouldForwardProp: (props) => props !== 'isFooterIcon',
 })<Pick<IMenuItem, 'isFooterIcon'>>`
   border-radius: 50%;
 
   padding: ${({ isFooterIcon }) =>
-    !isFooterIcon ? spacing.xs : spacing.small};
+		!isFooterIcon ? spacing.xs : spacing.small};
 
   &:hover {
     ${({ isFooterIcon }) =>
-      isFooterIcon
-        ? css`
+		isFooterIcon
+			? css`
             box-shadow: ${shadowMain};
             background-color: ${palette.secondary.surface.light};
             color: ${palette.secondary.main};
@@ -26,7 +26,7 @@ export const StyledMenuItem = styled(Tooltip, {
               color: ${palette.secondary.main};
             }
           `
-        : css`
+			: css`
             background-color: transparent;
           `}
   }

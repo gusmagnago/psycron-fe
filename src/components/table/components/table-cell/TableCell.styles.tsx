@@ -18,7 +18,7 @@ export const FullAmountItem = styled(Box)`
 `;
 
 export const HasDiscountCell = styled(Box, {
-  shouldForwardProp: (props) => props !== 'label',
+	shouldForwardProp: (props) => props !== 'label',
 })<{ label: string }>`
   display: flex;
   border: 1px solid ${palette.error.main};
@@ -27,25 +27,25 @@ export const HasDiscountCell = styled(Box, {
   padding: ${spacing.xs};
 
   ${({ label }) =>
-    label.includes('Yes')
-      ? css`
+		label.includes('Yes')
+			? css`
           border: 1px solid ${palette.success.main};
           background-color: ${palette.success.surface.light};
         `
-      : css`
+			: css`
           border: 1px solid ${palette.error.main};
           background-color: ${palette.error.surface.light};
         `};
 `;
 
 export const DateCell = styled(Box, {
-  shouldForwardProp: (props) => props !== 'id',
+	shouldForwardProp: (props) => props !== 'id',
 })<{ id: string }>`
   font-size: 0.7rem;
 
   ${({ id }) =>
-    id === 'nextSession'
-      ? css`
+		id === 'nextSession'
+			? css`
           border: 1px solid ${palette.tertiary.main};
           background-color: ${palette.tertiary.surface.light};
           padding: ${spacing.xs};
@@ -54,5 +54,5 @@ export const DateCell = styled(Box, {
             font-weight: 500;
           }
         `
-      : css``};
+			: css``};
 `;

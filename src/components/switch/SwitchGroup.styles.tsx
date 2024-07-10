@@ -5,14 +5,14 @@ import { palette } from '@psycron/theme/palette/palette.theme';
 import type { ISwitchGroupProps } from './SwitchGroup.types';
 
 export const SwitchControlLabel = styled(FormControlLabel, {
-  shouldForwardProp: (props) => props !== 'small',
+	shouldForwardProp: (props) => props !== 'small',
 })<Pick<ISwitchGroupProps, 'small'>>`
   .MuiFormControlLabel-asterisk {
     color: ${palette.secondary.main};
   }
   .MuiFormControlLabel-label {
     ${({ small }) =>
-      small &&
+		small &&
       css`
         font-size: 0.9em;
       `}
