@@ -100,6 +100,19 @@
     "appointments": {
       "card-title": "consultas do dia",
       "manager": "gerenciador de consultas"
+    },
+    "patients-table": {
+      "name": "nome do paciente",
+      "next-session": "próxima sessão",
+      "payment-status": "status de pagamento",
+      "sessions-month": "sessões por mês",
+      "value": "valor por sessão",
+      "discount": "desconto?",
+      "discount-val": "valor do desconto",
+      "amount": "valor total",
+      "currency": "moeda",
+      "latest-payment": "último pagamento",
+			"manage": "veja paciente"
     }
   }
 }

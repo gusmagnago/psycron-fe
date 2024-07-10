@@ -36,6 +36,7 @@ export const TableCell = ({
           textAlign={align(icon, numeric)}
           variant='subtitle2'
           fontSize='0.8rem'
+          textTransform='capitalize'
           m={1}
         >
           {label}
@@ -105,7 +106,9 @@ export const TableCell = ({
       {action ? (
         !isHead ? (
           <Box p={2}>
-            <Tooltip title={isPatients ? 'manage patient' : ''}>
+            <Tooltip
+              title={isPatients ? t('components.patients-table.manage') : ''}
+            >
               {isPatients ? <EditUser /> : <div>ICON</div>}
             </Tooltip>
           </Box>

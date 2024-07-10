@@ -17,8 +17,8 @@ export const TableHead = ({ headItems, onSort, onHover }: ITableHeadProps) => {
               key={`table-head-cell-${id}-pos-${index}`}
               xs={tableBones(action, index)}
               onClick={() => onSort?.(id)}
-              onMouseEnter={() => onHover(id)}
-              onMouseLeave={() => onHover(null)}
+              onMouseEnter={() => onHover?.(id)}
+              onMouseLeave={() => onHover?.(null)}
             >
               <TableCell
                 icon={icon}
