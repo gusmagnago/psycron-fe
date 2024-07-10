@@ -2,29 +2,19 @@ import { Box, css, styled } from '@mui/material';
 import { palette } from '@psycron/theme/palette/palette.theme';
 import { spacing } from '@psycron/theme/spacing/spacing.theme';
 
-export const StyledCellWrapper = styled(Box, {
-	shouldForwardProp: (props) => props !== 'id',
-})<{ id: string }>`
+export const StyledCellWrapper = styled(Box)`
   height: 100%;
   width: 100%;
 
   display: flex;
   align-items: center;
-
-  padding: 0 ${spacing.xs};
-
-  ${({ id }) =>
-		['fullAmount', 'hasDiscount', 'paymentStatus', 'currency'].includes(id)
-			? css`
-          justify-content: center;
-        `
-			: css``};
+  justify-content: center;
 `;
 
 export const FullAmountItem = styled(Box)`
   background-color: ${palette.success.surface.light};
   border-radius: 15px;
-  padding: ${spacing.extraSmall};
+  padding: ${spacing.xs};
 `;
 
 export const HasDiscountCell = styled(Box, {

@@ -1,4 +1,5 @@
 import { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import type { ITableCellProps } from '../components/table-cell/TableCell.types';
 import { Table } from '../Table';
@@ -6,70 +7,72 @@ import { Table } from '../Table';
 import { patientsTablerowsData, transformPatientsData } from './row/rows';
 
 export const PatientsTable = () => {
+	const { t } = useTranslation();
+
 	// all info should come from the row
 	const headCells: ITableCellProps[] = [
 		{
 			id: 'fullName',
 			numeric: false,
 			icon: false,
-			label: 'Patient Name',
+			label: t('components.patients-table.name'),
 		},
 		{
 			id: 'nextSession',
 			numeric: false,
 			icon: false,
-			label: 'Next Session',
+			label: t('components.patients-table.next-session'),
 		},
 		{
 			id: 'paymentStatus',
 			numeric: false,
 			icon: true,
-			label: 'Payment Status',
+			label: t('components.patients-table.payment-status'),
 		},
 		{
 			id: 'sessionsPerMonth',
 			numeric: true,
 			icon: false,
-			label: 'Sessions Per Month',
+			label: t('components.patients-table.sessions-month'),
 		},
 		{
 			id: 'sessionVal',
 			numeric: false,
 			icon: false,
-			label: 'Value Per Session',
+			label: t('components.patients-table.value'),
 		},
 		{
 			id: 'hasDiscount',
 			numeric: false,
 			icon: true,
-			label: 'Discount?',
+			label: t('components.patients-table.discount'),
 		},
 		{
 			id: 'discountVal',
 			numeric: true,
 			icon: false,
-			label: 'Discount value',
+			label: t('components.patients-table.discount-val'),
 		},
 		{
 			id: 'fullAmount',
 			numeric: true,
 			icon: false,
-			label: 'Full amount',
+			label: t('components.patients-table.amount'),
 		},
 		{
 			id: 'currency',
 			numeric: true,
 			icon: false,
-			label: 'Currency',
+			label: t('components.patients-table.currency'),
 		},
 		{
 			id: 'latestPayment',
 			numeric: true,
 			icon: false,
-			label: 'Latest Payment',
+			label: t('components.patients-table.latest-payment'),
 		},
 		{
-			id: 'actions',
+			id: 'action',
 			numeric: false,
 			icon: true,
 			action: true,
@@ -82,9 +85,22 @@ export const PatientsTable = () => {
 		[]
 	);
 
+	const columnsToHideTablet = [
+		'fullAmount',
+		'hasDiscount',
+		'discountVal',
+		'latestPayment',
+	];
+	const columnsToHideMobile = ['paymentStatus', 'currency', 'action'];
+
 	return (
 		<>
-			<Table headItems={headCells} bodyItems={transformedRows} />
+			<Table
+				headItems={headCells}
+				bodyItems={transformedRows}
+				columnsToHideTablet={columnsToHideTablet}
+				columnsToHideMobile={columnsToHideMobile}
+			/>
 		</>
 	);
 };

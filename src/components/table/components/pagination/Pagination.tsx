@@ -1,4 +1,5 @@
 import { Box, Pagination as MUIPagination } from '@mui/material';
+import useViewport from '@psycron/hooks/useViewport';
 
 import type { IPaginationProps } from './Pagination.types';
 
@@ -8,9 +9,12 @@ export const Pagination = ({
 	onPageChange,
 	...props
 }: IPaginationProps) => {
+	const { isMobile } = useViewport();
+
 	return (
 		<Box
-			pt={2}
+			pt={5}
+			pb={isMobile ? 5 : 2}
 			display='flex'
 			justifyContent='center'
 			alignItems='center'

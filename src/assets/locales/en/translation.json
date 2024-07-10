@@ -101,6 +101,19 @@
     "appointments": {
         "card-title": "appointments of the day",
         "manager": "appointments manager" 
-    }
+    },
+		"patients-table": {
+			"name": "patient name",
+			"next-session": "next session",
+			"payment-status": "payment status",
+			"sessions-month": "sessions per Month",
+			"value": "value per session",
+			"discount": "discount?",
+			"discount-val": "discount value",
+			"amount": "full amount",
+			"currency": "currency",
+			"latest-payment": "latest payment",
+			"manage": "manage patient"
+		}
   }
 }

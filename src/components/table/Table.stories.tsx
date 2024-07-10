@@ -7,6 +7,14 @@ import type { ITableProps } from './Table.types';
 
 const DefaultTable = (args: ITableProps) => <Table {...args} />;
 
+const columnsToHideTablet = [
+	'fullAmount',
+	'hasDiscount',
+	'discountVal',
+	'latestPayment',
+];
+const columnsToHideMobile = ['paymentStatus', 'currency', 'action'];
+
 const meta: Meta<typeof Table> = {
 	title: 'Components / Table ',
 	component: DefaultTable,
@@ -21,6 +29,8 @@ const meta: Meta<typeof Table> = {
 	args: {
 		headItems: headCell,
 		bodyItems: bodyCells,
+		columnsToHideTablet,
+		columnsToHideMobile,
 	},
 };
 
