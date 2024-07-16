@@ -14,7 +14,8 @@ import {
 import { CircularProgress } from '@psycron/components/progress/circular/CircularProgress';
 
 export const PaymentsCard = () => {
-  const data = [100, 0];
+  // progress should come from a context provider with the values from the therapist user
+  const mockProgressData = 70;
 
   return (
     <Paper>
@@ -32,7 +33,9 @@ export const PaymentsCard = () => {
             <StyledInnerRound />
           </StyledInner>
         </StyledBox>
-        <CircularProgress progress={data} />
+        <CircularProgress
+          progress={[mockProgressData, 100 - mockProgressData]}
+        />
       </Box>
     </Paper>
   );

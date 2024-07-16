@@ -21,7 +21,7 @@ import {
 } from 'lucide-react';
 
 import { ImgCredits, NoteCard, StoryLink } from './Introduction.styles';
-import type { DesignSystem } from './Introduction.types';
+import type { DesignSystem, NestedItem } from './Introduction.types';
 
 export default {
   title: 'Getting Started',
@@ -37,11 +37,15 @@ export const Introduction = () => {
         { name: 'button' },
         { name: 'checkbox' },
         { name: 'link' },
-        { name: 'radio' },
+        { name: 'radio-button' },
         { name: 'select' },
         { name: 'slider' },
         { name: 'switch' },
         { name: 'tooltip' },
+        { name: 'progress' },
+        { name: 'circularProgress' },
+        { name: 'avatar' },
+        { name: 'icons' },
       ],
     },
     {
@@ -80,6 +84,32 @@ export const Introduction = () => {
           children: [{ name: 'edit-user' }],
           components: [{ name: 'user-details-card' }, { name: 'user-details' }],
         },
+        {
+          name: 'patients',
+          children: [{ name: 'edit-user' }],
+          components: [{ name: 'user-details-card' }, { name: 'user-details' }],
+        },
+        {
+          name: 'dashboard',
+          components: [
+            { name: 'dashboard-card-item' },
+            { name: 'dashbard-card' },
+          ],
+        },
+        {
+          name: 'table',
+          children: [{ name: 'table' }],
+          components: [
+            { name: 'pagination' },
+            { name: 'tableBody' },
+            { name: 'tableCell' },
+            { name: 'tableHead' },
+          ],
+        },
+        {
+          name: 'payments',
+          components: [{ name: 'payments-card' }],
+        },
       ],
     },
     {
@@ -96,6 +126,10 @@ export const Introduction = () => {
         'Complete compositions of elements, components, and structures.',
     },
   ];
+
+  const sortItemsByName = (items: NestedItem[] = []) => {
+    return items.slice().sort((a, b) => a.name.localeCompare(b.name));
+  };
 
   return (
     <Box style={{ padding: '20px' }}>
@@ -160,7 +194,7 @@ export const Introduction = () => {
             </ListItem>
             {category.items ? (
               <>
-                {category.items.map((item, itemIndex) => (
+                {sortItemsByName(category.items).map((item, itemIndex) => (
                   <Box key={itemIndex}>
                     <ListItem>
                       <Box display='flex' alignItems='center'>
