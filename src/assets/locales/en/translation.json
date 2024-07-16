@@ -99,21 +99,27 @@
       }
     },
     "appointments": {
-        "card-title": "appointments of the day",
-        "manager": "appointments manager" 
+      "card-title": "appointments of the day",
+      "manager": "appointments manager"
     },
-		"patients-table": {
-			"name": "patient name",
-			"next-session": "next session",
-			"payment-status": "payment status",
-			"sessions-month": "sessions per Month",
-			"value": "value per session",
-			"discount": "discount?",
-			"discount-val": "discount value",
-			"amount": "full amount",
-			"currency": "currency",
-			"latest-payment": "latest payment",
-			"manage": "manage patient"
-		}
+    "patients-table": {
+      "name": "patient name",
+      "next-session": "next session",
+      "payment-status": "payment status",
+      "sessions-month": "sessions per Month",
+      "value": "value per session",
+      "discount": "discount?",
+      "discount-val": "discount value",
+      "amount": "full amount",
+      "currency": "currency",
+      "latest-payment": "latest payment",
+      "manage": "manage patient"
+    },
+    "progress": {
+      "received": "You have already received {{progress}}% of your payments 🥳",
+      "missing": "You are missing {{progress}}% of your payments",
+      "not-received": "You haven't received any payments yet",
+      "received-all": "You have received 100% of your payments for this period 🥳 😎"
+    }
   }
 }

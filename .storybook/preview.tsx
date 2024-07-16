@@ -24,13 +24,6 @@ const preview = {
       </BrowserRouter>
     ),
   ],
-  globals: {
-    locale: 'en_US',
-    locales: {
-      en: 'English (US)',
-      pt: 'Português (BR)',
-    },
-  },
   parameters: {
     i18n,
     viewMode: 'story',
@@ -45,6 +38,13 @@ const preview = {
         color: /(background|color)$/i,
         date: /Date$/,
       },
+    },
+  },
+  initialGlobals: {
+    locale: 'en_US',
+    locales: {
+      en: 'English (US)',
+      pt: 'Português (BR)',
     },
   },
 };

@@ -9,9 +9,8 @@ const config: StorybookConfig = {
     '@storybook/addon-interactions',
     '@storybook/addon-themes',
     'storybook-react-i18next',
-    '@emotion/babel-plugin'
   ],
-  docs: { autodocs: 'tag' },
+  docs: {},
   framework: {
     name: '@storybook/react-vite',
     options: {},

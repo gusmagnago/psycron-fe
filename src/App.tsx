@@ -1,11 +1,11 @@
-import { PatientsTable } from './components/table/patients/PatientsTable';
+import { PaymentsCard } from './components/payments/payments-card/PaymentsCard';
 
 function App() {
-	return (
-		<>
-			<PatientsTable />
-		</>
-	);
+  return (
+    <>
+      <PaymentsCard />
+    </>
+  );
 }
 
 export default App;

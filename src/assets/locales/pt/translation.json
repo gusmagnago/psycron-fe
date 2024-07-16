@@ -112,7 +112,13 @@
       "amount": "valor total",
       "currency": "moeda",
       "latest-payment": "último pagamento",
-			"manage": "veja paciente"
+      "manage": "veja paciente"
+    },
+    "progress": {
+      "received": "Você já recebeu {{progress}}% dos seus pagamentos 🥳",
+      "missing": "Faltam {{progress}}% dos seus pagamentos",
+      "not-received": "Você não recebeu nenhum pagamento ainda",
+      "received-all": "Você recebeu 100% dos seus pagamentos para este período 🥳 😎"
     }
   }
 }
