@@ -8,42 +8,42 @@ import { InputFields } from '../shared/styles';
 import type { NameFormProps } from './NameForm.types';
 
 export const NameForm = <T extends FieldValues>({
-	errors,
-	register,
-	placeholderFirstName,
-	placeholderLastName,
-	disabled,
+  errors,
+  register,
+  placeholderFirstName,
+  placeholderLastName,
+  disabled,
 }: NameFormProps<T> & TextFieldProps) => {
-	const { t } = useTranslation();
+  const { t } = useTranslation();
 
-	return (
-		<Grid container columnSpacing={4}>
-			<Grid item xs={12} sm={6} md={6}>
-				<InputFields
-					label={t('components.form.signup.firstName')}
-					fullWidth
-					id='firstName'
-					defaultValue={placeholderFirstName}
-					{...register('firstName' as Path<T>)}
-					error={!!errors.firstName}
-					helperText={errors.firstName?.message as string}
-					required
-					disabled={disabled}
-				/>
-			</Grid>
-			<Grid item xs={12} sm={6} md={6}>
-				<InputFields
-					label={t('components.form.signup.lastName')}
-					fullWidth
-					id='lastName'
-					defaultValue={placeholderLastName}
-					{...register('lastName' as Path<T>)}
-					error={!!errors?.lastName}
-					helperText={errors?.lastName?.message as string}
-					required
-					disabled={disabled}
-				/>
-			</Grid>
-		</Grid>
-	);
+  return (
+    <Grid container>
+      <Grid item xs={12}>
+        <InputFields
+          label={t('components.form.signup.firstName')}
+          fullWidth
+          id='firstName'
+          defaultValue={placeholderFirstName}
+          {...register('firstName' as Path<T>)}
+          error={!!errors.firstName}
+          helperText={errors.firstName?.message as string}
+          required
+          disabled={disabled}
+        />
+      </Grid>
+      <Grid item xs={12}>
+        <InputFields
+          label={t('components.form.signup.lastName')}
+          fullWidth
+          id='lastName'
+          defaultValue={placeholderLastName}
+          {...register('lastName' as Path<T>)}
+          error={!!errors?.lastName}
+          helperText={errors?.lastName?.message as string}
+          required
+          disabled={disabled}
+        />
+      </Grid>
+    </Grid>
+  );
 };

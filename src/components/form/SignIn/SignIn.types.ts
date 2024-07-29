@@ -16,3 +16,12 @@ export type SignInFormTypes = {
     onSubmit: (data: ISignInForm) => void;
     register: UseFormRegister<ISignInForm>;
 };
+
+
+export interface ISignInResponse {
+  token: string;
+  user: {
+    id: string;
+    email: string;
+  };
+}
