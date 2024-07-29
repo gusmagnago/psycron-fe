@@ -9,6 +9,7 @@ export const Button = ({
   children,
   small,
   fullWidth,
+  type,
 }: IButtonProps) => {
   const bttnColor = () => {
     switch (true) {
@@ -26,8 +27,9 @@ export const Button = ({
       color={bttnColor()}
       variant={secondary ? 'outlined' : 'contained'}
       size={small ? 'small' : 'medium'}
-      onClick={onClick}
+      onClick={type === 'submit' ? undefined : onClick}
       fullWidth={fullWidth}
+      type={type}
     >
       {children}
     </MUIButton>
