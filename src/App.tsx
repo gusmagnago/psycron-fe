@@ -1,9 +1,9 @@
-import { PaymentsCard } from './components/payments/payments-card/PaymentsCard';
+import { Home } from './pages/home';
 
 function App() {
   return (
     <>
-      <PaymentsCard />
+      <Home />
     </>
   );
 }

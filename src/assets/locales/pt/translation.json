@@ -119,6 +119,11 @@
       "missing": "Faltam {{progress}}% dos seus pagamentos",
       "not-received": "Você não recebeu nenhum pagamento ainda",
       "received-all": "Você recebeu 100% dos seus pagamentos para este período 🥳 😎"
+    },
+    "c2-action": {
+      "join-waitlist": "Junte-se à nossa <strong>lista de espera</strong> para simplificar sua prática de terapia e focar mais em seus pacientes.",
+      "email": "seu email",
+      "join-now": "inscreva-se"
     }
   }
 }

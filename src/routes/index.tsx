@@ -17,6 +17,8 @@ import { HOMEPAGE, LOCALISATION, SIGNIN, SIGNUP } from '@psycron/pages/urls';
 
 import { AuthPage } from '@psycron/pages/auth';
 import { AuthProvider } from '@psycron/context/user/UserAuthenticationContext';
+import { PublicLayout } from '@psycron/layouts/public-layout/PublicLayout';
+import { HelmetProvider } from 'react-helmet-async';
 
 const LanguageLayout: FC = () => {
   const { lang } = useParams<{ lang: string }>();
@@ -50,19 +52,29 @@ const router = createBrowserRouter([
     element: <LanguageLayout />,
     children: [
       {
-        element: <AppLayout />,
+        path: '',
+        element: <PublicLayout />,
         children: [
           { index: true, element: <App /> },
           { path: SIGNIN, element: <AuthPage /> },
           { path: SIGNUP, element: <AuthPage /> },
         ],
       },
+      {
+        path: 'dashboard',
+        element: <AppLayout />,
+        children: [{ index: true, element: <div>Dashboard Homepage</div> }],
+      },
     ],
   },
 ]);
 
 const AppRouter: FC = () => {
-  return <RouterProvider router={router} />;
+  return (
+    <HelmetProvider>
+      <RouterProvider router={router} />
+    </HelmetProvider>
+  );
 };
 
 export default AppRouter;

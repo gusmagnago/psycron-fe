@@ -120,6 +120,11 @@
       "missing": "You are missing {{progress}}% of your payments",
       "not-received": "You haven't received any payments yet",
       "received-all": "You have received 100% of your payments for this period 🥳 😎"
-    }
+    },
+		"c2-action": {
+			"join-waitlist": "join our <strong>waitlist</strong> today to streamline your therapy practice and focus more on your patients.",
+			"email": "your email",
+			"join-now": "join now"
+		}
   }
 }

@@ -10,6 +10,7 @@ export const Button = ({
   small,
   fullWidth,
   type,
+  ...props
 }: IButtonProps) => {
   const bttnColor = () => {
     switch (true) {
@@ -30,6 +31,7 @@ export const Button = ({
       onClick={type === 'submit' ? undefined : onClick}
       fullWidth={fullWidth}
       type={type}
+      {...props}
     >
       {children}
     </MUIButton>

@@ -1,3 +1,4 @@
+export const DOMAIN = 'https://www.psycron.app';
 export const HOMEPAGE = '/';
 export const LOCALISATION = '/:lang';
 export const SIGNIN = 'sign-in';

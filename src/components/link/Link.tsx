@@ -6,13 +6,19 @@ export const Link = ({
   children,
   to,
   firstLetterUpper,
+  isHeader,
   ...props
 }: ILinkProps) => {
   const { lang } = useParams<{ lang: string }>();
 
   const prefixedTo = `/${lang}${to}`;
   return (
-    <StyledLink to={prefixedTo} firstLetterUpper={firstLetterUpper} {...props}>
+    <StyledLink
+      to={prefixedTo}
+      firstLetterUpper={firstLetterUpper}
+      isHeader={isHeader}
+      {...props}
+    >
       {children}
     </StyledLink>
   );

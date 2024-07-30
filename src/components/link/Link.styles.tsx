@@ -7,7 +7,7 @@ import { spacing } from '@psycron/theme/spacing/spacing.theme';
 import type { ILinkStyledProps } from './Link.types';
 
 export const StyledLink = styled(RRDLink, {
-	shouldForwardProp: (props) => props !== 'firstLetterUpper',
+  shouldForwardProp: (props) => props !== 'firstLetterUpper',
 })<ILinkStyledProps>`
   margin: 0 ${spacing.xs} 0;
   text-decoration: none;
@@ -19,10 +19,17 @@ export const StyledLink = styled(RRDLink, {
     transition: transform 0.2s ease-out;
   }
   ${({ firstLetterUpper }) =>
-		firstLetterUpper &&
+    firstLetterUpper &&
     css`
       &::first-letter {
         text-transform: uppercase;
       }
+    `}
+
+  ${({ isHeader }) =>
+    isHeader &&
+    css`
+      font-size: 24px;
+      font-weight: 500;
     `}
 `;
