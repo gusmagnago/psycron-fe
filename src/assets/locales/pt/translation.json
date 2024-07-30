@@ -124,6 +124,46 @@
       "join-waitlist": "Junte-se à nossa <strong>lista de espera</strong> para simplificar sua prática de terapia e focar mais em seus pacientes.",
       "email": "seu email",
       "join-now": "inscreva-se"
+    },
+    "hero": {
+      "heading": "Transforme sua prática de terapia com essa solução completa",
+      "helper": "Gerencie facilmente seus agendamentos, pagamentos, prontuários, faturamento e muito mais."
+    },
+    "header": {
+      "join": "inscreva-se",
+      "benefits": "utilidades",
+			"about": "sobre nós"
+    }
+  },
+  "page": {
+    "landing": {
+      "values": {
+        "all-in-one": "solução completa",
+        "text": "Do agendamento de consultas ao processamento de pagamentos, manutenção de prontuários e faturamento, ajudamos você nas tarefas diárias para que tenha muito mais tempo para cuidar dos seus pacientes. Nossa solução pode transformar a gestão da sua prática, integrando tudo em uma única plataforma intuitiva.",
+        "text-focus": "Agora você pode focar no que realmente importa e deixar o resto com a gente."
+      },
+			"benefits": {
+				"increased-efficiency": {
+					"name": "Mais Eficiência",
+					"description": "Perca menos tempo em tarefas administrativas. Automatize lembretes, agendamento de consultas e gerencie seus prontuários de forma integrada. Foque mais nos seus pacientes, não nos processos"
+				},
+				"better-patient-management": {
+					"name": "Maior Gestão de Pacientes",
+					"description": "Acompanhe facilmente o histórico e as consultas dos pacientes. Auxilie seu atendimento com registros organizados e atualizados."
+				},
+				"reduced-administrative-burden": {
+					"name": "Elimine a Carga Administrativa",
+					"description": "Simplificamos o fluxo do trabalho para você"
+				},
+				"enhanced-financial-control": {
+					"name": "Maior Controle Financeiro",
+					"description": "Assuma o controle das suas finanças com faturamento seguro e eficiente"
+				}
+			},
+			"ct-action": {
+				"heading": "você quer revolucionar a sua prática de trabalho?",
+				"join-waitlist": "<strong>Junte-se à nossa lista de espera</strong> hoje e <strong>seja o primeirx</strong> a <strong>experimentar</strong> uma gestão de prática terapêutica <strong>inovadora</strong>. <strong>Desbloqueie</strong> <strong>novos níveis</strong> de <strong>eficiência</strong> e <strong>cuidado ao paciente</strong> com nossas <strong>ferramentas inovadoras</strong>."
+			}
     }
   }
 }

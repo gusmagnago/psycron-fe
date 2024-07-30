@@ -8,7 +8,7 @@ export const Hero = ({ headingText, imgSrc, helperText, c2Action }: IHero) => {
     <HeroWrapper>
       <Heading>
         <H2 variant='h1'>{headingText}</H2>
-        <Image src={imgSrc} loading='lazy' />
+        <Image src={imgSrc} alt='hero-image' loading='lazy' />
       </Heading>
       <Box my={5}>
         <H6 variant='h6'>{helperText}</H6>

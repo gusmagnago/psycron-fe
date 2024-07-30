@@ -12,13 +12,13 @@ import { UserGeoLocationProvider } from '@psycron/context/CountryContext';
 import { UserDetailsProvider } from '@psycron/context/user/UserDetailsContext';
 import { AppLayout } from '@psycron/layouts/app-layout/AppLayout';
 
-import i18n from '../i18n';
 import { HOMEPAGE, LOCALISATION, SIGNIN, SIGNUP } from '@psycron/pages/urls';
 
 import { AuthPage } from '@psycron/pages/auth';
 import { AuthProvider } from '@psycron/context/user/UserAuthenticationContext';
 import { PublicLayout } from '@psycron/layouts/public-layout/PublicLayout';
 import { HelmetProvider } from 'react-helmet-async';
+import i18n from '@psycron/i18n';
 
 const LanguageLayout: FC = () => {
   const { lang } = useParams<{ lang: string }>();

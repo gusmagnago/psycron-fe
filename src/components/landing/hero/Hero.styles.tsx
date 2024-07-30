@@ -1,12 +1,22 @@
 import { styled, Box } from '@mui/material';
 import { Text } from '@psycron/components/text/Text';
-import { isBiggerThanTabletMedia } from '@psycron/theme/media-queries/mediaQueries';
+import {
+  isBiggerThanMediumMedia,
+  isBiggerThanTabletMedia,
+} from '@psycron/theme/media-queries/mediaQueries';
 import { spacing } from '@psycron/theme/spacing/spacing.theme';
 
 export const HeroWrapper = styled(Box)`
   display: flex;
   flex-direction: column;
+  justify-content: center;
+  height: auto;
+
   margin-bottom: ${spacing.largeXl};
+
+  ${isBiggerThanMediumMedia} {
+    height: 43.75rem;
+  }
 `;
 
 export const Heading = styled(Box)`

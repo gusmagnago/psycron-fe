@@ -13,6 +13,8 @@ export const C2ActionWrapper = styled(Box)`
   border-radius: ${spacing.medium};
   box-shadow: ${shadowMain};
   border: 1px solid rgba(255, 255, 255, 0.3);
+
+  background-color: ${palette.background.paper};
 `;
 
 export const C2ActionBox = styled(Box)`

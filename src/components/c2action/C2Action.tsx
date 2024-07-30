@@ -22,9 +22,14 @@ export const C2Action = <T extends FieldValues>({
 }: IC2ActionProps<T>) => {
   return (
     <C2ActionWrapper>
-      <C2ActionText variant='subtitle1'>
-        <Trans i18nKey={i18nKey} components={{ strong: <HighlightedText /> }} />
-      </C2ActionText>
+      {i18nKey !== undefined ? (
+        <C2ActionText variant='subtitle1'>
+          <Trans
+            i18nKey={i18nKey}
+            components={{ strong: <HighlightedText /> }}
+          />
+        </C2ActionText>
+      ) : null}
       <C2ActionBox component='form' onSubmit={handleSubmit(onSubmit)}>
         <TextField
           label={label}
