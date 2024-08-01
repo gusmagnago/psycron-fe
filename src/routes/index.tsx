@@ -19,6 +19,7 @@ import { AuthProvider } from '@psycron/context/user/UserAuthenticationContext';
 import { PublicLayout } from '@psycron/layouts/public-layout/PublicLayout';
 import { HelmetProvider } from 'react-helmet-async';
 import i18n from '@psycron/i18n';
+import { useAnalytics } from '@psycron/hooks/useAnalytics';
 
 const LanguageLayout: FC = () => {
   const { lang } = useParams<{ lang: string }>();
@@ -70,6 +71,7 @@ const router = createBrowserRouter([
 ]);
 
 const AppRouter: FC = () => {
+  useAnalytics();
   return (
     <HelmetProvider>
       <RouterProvider router={router} />
