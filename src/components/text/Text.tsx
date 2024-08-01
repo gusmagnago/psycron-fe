@@ -1,12 +1,16 @@
-import type { FC } from 'react';
+import { forwardRef } from 'react';
 
 import { StyledTypography } from './Text.styles';
 import type { ITextProps } from './Text.types';
 
-export const Text: FC<ITextProps> = ({ children, isFirstUpper, ...rest }) => {
-	return (
-		<StyledTypography isFirstUpper={isFirstUpper} {...rest}>
-			{children}
-		</StyledTypography>
-	);
-};
+export const Text = forwardRef<HTMLSpanElement, ITextProps>(
+  ({ children, isFirstUpper, ...rest }, ref) => {
+    return (
+      <StyledTypography ref={ref} isFirstUpper={isFirstUpper} {...rest}>
+        {children}
+      </StyledTypography>
+    );
+  }
+);
+
+Text.displayName = 'Text';

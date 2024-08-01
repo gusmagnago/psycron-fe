@@ -4,6 +4,7 @@
   --bg-color: #f7fafa;
   --color-default: #060b0e;
   --font-family: "Inter", sans-serif;
+	--header-big-height: 9.0625rem;
 }
 
 body,
@@ -21,6 +22,7 @@ html,
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+
 }
 
 body {

@@ -1,4 +1,3 @@
-import { TextField } from '@mui/material';
 import type { FieldValues, Path } from 'react-hook-form';
 
 import {
@@ -7,6 +6,7 @@ import {
   C2ActionText,
   C2ActionWrapper,
   HighlightedText,
+  StyledTextField,
 } from './C2Action.styles';
 import { IC2ActionProps } from './C2Action.types';
 import { Trans } from 'react-i18next';
@@ -31,7 +31,7 @@ export const C2Action = <T extends FieldValues>({
         </C2ActionText>
       ) : null}
       <C2ActionBox component='form' onSubmit={handleSubmit(onSubmit)}>
-        <TextField
+        <StyledTextField
           label={label}
           fullWidth
           id='email'

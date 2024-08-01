@@ -5,32 +5,36 @@ import { Brand } from '@psycron/components/icons';
 import { Link } from '@psycron/components/link/Link';
 import { scrollToSection } from '@psycron/utils/variables';
 import { Localization } from '@psycron/components/localization/Localization';
+import { HeaderWrapper } from './Header.styles';
+import useViewport from '@psycron/hooks/useViewport';
 
 export const Header = () => {
   const { t } = useTranslation();
+
+  const { isMobile } = useViewport();
+
   return (
-    <Box
-      p={5}
-      display='flex'
-      alignItems='center'
-      justifyContent='space-between'
-    >
+    <HeaderWrapper>
       <Box height={'50px'} width={'150px'}>
         <Brand />
       </Box>
       <Box display='flex' alignItems='center'>
-        <Text isFirstUpper>
-          <Link to='#' isHeader onClick={() => scrollToSection('benefits')}>
-            {t('components.header.benefits')}
-          </Link>
-        </Text>
-        <Text isFirstUpper>
-          <Link to='#' isHeader onClick={() => scrollToSection('join-now')}>
-            {t('components.header.join')}
-          </Link>
-        </Text>
+        {!isMobile ? (
+          <>
+            <Text isFirstUpper>
+              <Link to='#' isHeader onClick={() => scrollToSection('benefits')}>
+                {t('components.header.benefits')}
+              </Link>
+            </Text>
+            <Text isFirstUpper>
+              <Link to='#' isHeader onClick={() => scrollToSection('join-now')}>
+                {t('components.header.join')}
+              </Link>
+            </Text>
+          </>
+        ) : null}
         <Localization />
       </Box>
-    </Box>
+    </HeaderWrapper>
   );
 };

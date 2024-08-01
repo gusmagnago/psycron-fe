@@ -10,12 +10,15 @@ export const HeroWrapper = styled(Box)`
   display: flex;
   flex-direction: column;
   justify-content: center;
+  align-items: center;
+  padding: ${spacing.largeXl};
   height: auto;
 
-  margin-bottom: ${spacing.largeXl};
+  margin-bottom: ${spacing.mediumLarge};
 
   ${isBiggerThanMediumMedia} {
-    height: 43.75rem;
+    height: calc(100vh - var(--header-big-height));
+    padding: ${spacing.largeXl};
   }
 `;
 
@@ -44,15 +47,25 @@ export const H2 = styled(Text)`
     font-size: 3rem;
     text-align: left;
     padding-bottom: 0;
+    margin-right: ${spacing.mediumLarge};
   }
 `;
 
 export const H6 = styled(Text)`
   font-weight: 500;
   font-size: 1rem;
-  text-align: center;
+  text-align: left;
+  width: 100%;
 
   ${isBiggerThanTabletMedia} {
     font-size: 1.2rem;
+    width: 80%;
   }
+`;
+
+export const H6Wrapper = styled(Box)`
+  display: flex;
+
+  justify-content: center;
+  margin: ${spacing.largeXl} 0;
 `;

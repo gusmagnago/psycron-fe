@@ -1,15 +1,15 @@
 import type { FC } from 'react';
 
-interface WithIconColorProps {
-    color?: string;
+export interface WithIconColorProps {
+  color?: string;
 }
 const withIconColor = <P extends object>(Component: FC<P>) => {
-	const WrappedComponent: FC<P & WithIconColorProps> = ({
-		color,
-		...props
-	}) => <Component {...(props as P)} style={{ color }} />;
+  const WrappedComponent: FC<P & WithIconColorProps> = ({
+    color,
+    ...props
+  }) => <Component {...(props as P)} style={{ color }} />;
 
-	return WrappedComponent;
+  return WrappedComponent;
 };
 
 export default withIconColor;

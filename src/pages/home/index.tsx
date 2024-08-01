@@ -11,6 +11,7 @@ import { useTranslation } from 'react-i18next';
 import { Values } from '@psycron/components/landing/values/Values';
 import { Benefits } from '@psycron/components/landing/benefits/Benefits';
 import { Call2ActionSection } from '@psycron/components/landing/call-to-action/Call2Action';
+import { AnimatedBackground } from '@psycron/components/animated-background/AnimatedBackground';
 
 const homepageSEO: ISEOProps = {
   title: 'Psycron - Therapist management app',
@@ -34,12 +35,12 @@ export const Home = () => {
   const onSubmit = (data: FieldValues) => {
     // eslint-disable-next-line no-console
     console.log('🚀 ~ onSubmit ~ data:', data);
-    // add correct http method
   };
 
   return (
     <SEOProvider seo={homepageSEO}>
-      <Box display='flex' justifyContent='center'>
+      <AnimatedBackground />
+      <Box zIndex={10}>
         <Hero
           headingText={t('components.hero.heading')}
           imgSrc={'/images/img-hero2.png'}
@@ -56,32 +57,28 @@ export const Home = () => {
             />
           }
         />
-      </Box>
-      <Divider />
-      {/* values of the product */}
-      <Values />
-      {/* values of the product */}
-      <Divider />
-      {/* benefits */}
-      <Benefits />
-      {/* benefits */}
-      <Divider />
-      {/* call 2 action */}
-      <Call2ActionSection
-        headingText={t('page.landing.ct-action.heading')}
-        i18nextTrans={'page.landing.ct-action.join-waitlist'}
-        c2Action={
-          <C2Action
-            label={t('components.c2-action.email')}
-            handleSubmit={handleSubmit}
-            onSubmit={onSubmit}
-            register={register}
-            errors={errors}
-            bttnText={t('components.c2-action.join-now')}
+        <Divider />
+        <Values />
+        <Divider />
+        <Benefits />
+        <Divider />
+        <Box p={10} display='flex' justifyContent='center'>
+          <Call2ActionSection
+            headingText={t('page.landing.ct-action.heading')}
+            i18nextTrans={'page.landing.ct-action.join-waitlist'}
+            c2Action={
+              <C2Action
+                label={t('components.c2-action.email')}
+                handleSubmit={handleSubmit}
+                onSubmit={onSubmit}
+                register={register}
+                errors={errors}
+                bttnText={t('components.c2-action.join-now')}
+              />
+            }
           />
-        }
-      />
-      {/* call 2 action */}
+        </Box>
+      </Box>
     </SEOProvider>
   );
 };

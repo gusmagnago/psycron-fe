@@ -18,7 +18,7 @@ export const SEOProvider: FC<ISEOContextProps> = ({ seo, children }) => (
       {seo.ogUrl && <meta property='og:url' content={seo.ogUrl} />}
       {seo.ogType && <meta property='og:type' content={seo.ogType} />}
     </Helmet>
-    <Box display='flex' flexDirection='column' p={5}>
+    <Box display='flex' flexDirection='column'>
       {children}
     </Box>
   </SEOContext.Provider>

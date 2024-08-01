@@ -17,7 +17,7 @@ export const PublicLayout = () => {
           <Outlet />
         </PublicLayoutContent>
       </PublicLayoutWrapper>
-      <Box>
+      <Box p={8}>
         <Text mb={3} id='about'>
           Would you like to get in touch?
           <Link to='https://www.linkedin.com/in/gustavo-magnago/'>

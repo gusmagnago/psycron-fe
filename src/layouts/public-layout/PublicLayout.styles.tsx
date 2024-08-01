@@ -1,13 +1,10 @@
 import { Box, styled } from '@mui/material';
 
-import { spacing } from '@psycron/theme/spacing/spacing.theme';
-
 export const PublicLayoutWrapper = styled(Box)`
   display: flex;
   flex-direction: column;
   width: 100%;
   justify-content: flex-start;
-  padding: ${spacing.medium} ${spacing.small};
 `;
 
 export const PublicLayoutContent = styled(Box)`
