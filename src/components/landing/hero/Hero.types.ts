@@ -1,8 +1,8 @@
-import { ReactNode } from 'react';
+import type { ReactNode } from 'react';
 
 export interface IHero {
-  headingText: string;
-  imgSrc: string;
-  helperText: string;
   c2Action: ReactNode;
+  headingText: string;
+  helperText: string;
+  imgSrc: string;
 }

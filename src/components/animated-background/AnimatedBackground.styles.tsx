@@ -1,6 +1,6 @@
-import { motion } from 'framer-motion';
-import { palette } from '@psycron/theme/palette/palette.theme';
 import { Box, css, styled } from '@mui/material';
+import { palette } from '@psycron/theme/palette/palette.theme';
+import { motion } from 'framer-motion';
 
 export const primaryGradient = css`
   background: conic-gradient(
@@ -42,7 +42,7 @@ export const GradientBackground = styled(motion.div)`
 `;
 
 export const GradientBlob = styled(motion.div, {
-  shouldForwardProp: (props) => props !== 'gradient',
+	shouldForwardProp: (props) => props !== 'gradient',
 })<{ gradient: 'primary' | 'secondary' }>`
   position: absolute;
   border-radius: 50%;
@@ -50,15 +50,15 @@ export const GradientBlob = styled(motion.div, {
   opacity: 0.8;
 
   ${({ gradient }) =>
-    gradient === 'primary'
-      ? css`
+		gradient === 'primary'
+			? css`
           width: 100%;
           height: 100%;
           left: 0;
           top: 0;
           ${primaryGradient};
         `
-      : css`
+			: css`
           width: 100%;
           height: 100%;
           left: 0;

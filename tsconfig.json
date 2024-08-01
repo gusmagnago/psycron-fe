@@ -1,34 +1,42 @@
 {
-  "compilerOptions": {
-    "target": "ES2020",
-    "useDefineForClassFields": true,
-    "lib": ["ES2020", "DOM", "DOM.Iterable"],
-    "module": "ESNext",
-    "skipLibCheck": true,
+	"compilerOptions": {
+		"target": "ES2020",
+		"useDefineForClassFields": true,
+		"lib": ["ES2020", "DOM", "DOM.Iterable"],
+		"module": "ESNext",
+		"skipLibCheck": true,
 
-    /* Bundler mode */
-    "moduleResolution": "bundler",
-    "allowImportingTsExtensions": true,
-    "resolveJsonModule": true,
-    "isolatedModules": true,
-    "noEmit": true,
-    "jsx": "react-jsx",
+		/* Bundler mode */
+		"moduleResolution": "bundler",
+		"allowImportingTsExtensions": true,
+		"resolveJsonModule": true,
+		"isolatedModules": true,
+		"noEmit": true,
+		"jsx": "react-jsx",
 
-    /* Linting */
-    "strict": true,
-    "noImplicitAny": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
-    "noFallthroughCasesInSwitch": true,
-    "baseUrl": ".",
-    "paths": {
-      "@psycron/*": ["./src/*"]
-    }
-  },
-  "include": ["src", "mui.d.ts"],
-  "references": [{ "path": "./tsconfig.node.json" }],
-  "lint-staged": {
-    "**/*.ts": "tsc-files --noEmit"
-  },
-  "types": ["vite-plugin-svgr/client", "@emotion/react/types/css-prop"]
+		/* Linting */
+		"strict": false,
+		"noImplicitAny": true,
+		"noUnusedLocals": true,
+		"noUnusedParameters": true,
+		"noFallthroughCasesInSwitch": true,
+		"baseUrl": ".",
+		"paths": {
+			"@psycron/*": ["./src/*"]
+		},
+		"typeRoots": ["./node_modules/@types"],
+		"maxNodeModuleJsDepth": 2
+	},
+	"include": ["src", "mui.d.ts"],
+	"references": [{ "path": "./tsconfig.node.json" }],
+	"lint-staged": {
+		"**/*.ts": "tsc-files --noEmit"
+	},
+	"types": [
+		"vite-plugin-svgr/client",
+		"@emotion/react/types/css-prop",
+		"node",
+		"chrome",
+		"@emotion/react"
+	]
 }

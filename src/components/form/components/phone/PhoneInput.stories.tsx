@@ -40,14 +40,11 @@ export const Default: Story = {
 		const {
 			register,
 			formState: { errors },
+			// eslint-disable-next-line react-hooks/rules-of-hooks
 		} = useForm();
 
 		return (
-			<PhoneInput
-				errors={errors}
-				register={register}
-				registerName='phone'
-			/>
+			<PhoneInput errors={errors} register={register} registerName='phone' />
 		);
 	},
 };

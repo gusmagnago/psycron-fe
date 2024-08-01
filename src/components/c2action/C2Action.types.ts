@@ -1,16 +1,16 @@
 import type {
-  FieldValues,
-  UseFormHandleSubmit,
-  UseFormRegister,
-  FieldErrors,
+	FieldErrors,
+	FieldValues,
+	UseFormHandleSubmit,
+	UseFormRegister,
 } from 'react-hook-form';
 
 export interface IC2ActionProps<T extends FieldValues> {
-  i18nKey?: string;
+  bttnText: string;
+  errors: FieldErrors<T>;
   handleSubmit: UseFormHandleSubmit<T, undefined>;
+  i18nKey?: string;
+  label: string;
   onSubmit: (data: T) => void;
   register: UseFormRegister<T>;
-  errors: FieldErrors<T>;
-  label: string;
-  bttnText: string;
 }

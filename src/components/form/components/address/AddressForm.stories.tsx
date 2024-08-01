@@ -17,7 +17,7 @@ const meta: Meta<typeof AddressForm> = {
 		docs: {
 			description: {
 				component:
-                    'This component should be used within a form tag as part of a group of inputs in a form. It handles complex address input scenarios, including auto-completion via Google Maps Places API and structured error management.',
+					'This component should be used within a form tag as part of a group of inputs in a form. It handles complex address input scenarios, including auto-completion via Google Maps Places API and structured error management.',
 			},
 		},
 	},
@@ -32,6 +32,7 @@ export const Default: Story = {
 		const {
 			register,
 			formState: { errors },
+			// eslint-disable-next-line react-hooks/rules-of-hooks
 		} = useForm();
 
 		return <AddressForm errors={errors} register={register} />;

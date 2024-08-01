@@ -21,7 +21,7 @@ export type SignInFormTypes = {
 export interface ISignInResponse {
   token: string;
   user: {
-    id: string;
     email: string;
+    id: string;
   };
 }

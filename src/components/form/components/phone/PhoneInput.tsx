@@ -1,10 +1,10 @@
-import type { Path } from 'react';
 import { useEffect, useState } from 'react';
-import type { FieldValues } from 'react-hook-form';
+import type { FieldValues, Path } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import { Grid, Select, type SelectChangeEvent, Tooltip } from '@mui/material';
+import { Grid, type SelectChangeEvent, Tooltip } from '@mui/material';
 import countryList from '@psycron/assets/countries/countries.json';
 import { Info, Logo } from '@psycron/components/icons';
+import { Select } from '@psycron/components/Select/Select';
 import { useUserGeolocation } from '@psycron/context/CountryContext';
 import type { CountryDataSimple } from '@psycron/context/CountryContext.types';
 import { palette } from '@psycron/theme/palette/palette.theme';
@@ -24,8 +24,8 @@ export const PhoneInput = <T extends FieldValues>({
 	const { countryData } = useUserGeolocation();
 
 	const [selectedCountry, setSelectedCountry] = useState<
-    CountryDataSimple & { name?: string }
-  >(countryData);
+		CountryDataSimple & { name?: string }
+	>(countryData);
 
 	const [defaultNumberVal, setDefaultNumberVal] = useState<string>('');
 

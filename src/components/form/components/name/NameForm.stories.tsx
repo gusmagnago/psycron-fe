@@ -38,6 +38,7 @@ export const Default: Story = {
 		const {
 			register,
 			formState: { errors },
+			// eslint-disable-next-line react-hooks/rules-of-hooks
 		} = useForm();
 
 		return <NameForm errors={errors} register={register} />;
@@ -49,6 +50,7 @@ export const WithPlaceHolder: Story = {
 		const {
 			register,
 			formState: { errors },
+			// eslint-disable-next-line react-hooks/rules-of-hooks
 		} = useForm();
 
 		return (

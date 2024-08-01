@@ -1,17 +1,15 @@
 import { Box, styled } from '@mui/material';
-
 import { Text } from '@psycron/components/text/Text';
 import {
-  isBiggerThanMediumMedia,
-  isBiggerThanTabletMedia,
-  isMobileMedia,
+	isBiggerThanMediumMedia,
+	isBiggerThanTabletMedia,
+	isMobileMedia,
 } from '@psycron/theme/media-queries/mediaQueries';
 import { palette } from '@psycron/theme/palette/palette.theme';
-
 import { spacing } from '@psycron/theme/spacing/spacing.theme';
 
 export const BGWrapper = styled(Box, {
-  shouldForwardProp: (props) => props !== 'bgColor',
+	shouldForwardProp: (props) => props !== 'bgColor',
 })<{ bgColor?: string }>`
   margin: ${spacing.medium} 0 0;
   border-radius: calc(2 * ${spacing.mediumLarge});
@@ -19,7 +17,7 @@ export const BGWrapper = styled(Box, {
   padding: ${spacing.medium} ${spacing.small};
 
   background-color: ${({ bgColor }) =>
-    bgColor ? bgColor : palette.secondary.light};
+		bgColor ? bgColor : palette.secondary.light};
 
   ${isBiggerThanTabletMedia} {
     margin: ${spacing.largeXl};
