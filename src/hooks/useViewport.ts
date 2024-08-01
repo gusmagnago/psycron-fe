@@ -1,53 +1,41 @@
-import { useEffect, useState } from 'react';
-import { breakpoints } from '@psycron/theme/media-queries/mediaQueries';
-
-const getDeviceConfig = (width: number) => {
-	if (width <= breakpoints.mobile) {
-		return {
-			isMobile: true,
-			isTablet: false,
-			isMedium: false,
-			isLarge: false,
-		};
-	} else if (width > breakpoints.mobile && width <= breakpoints.tablet) {
-		return {
-			isMobile: false,
-			isTablet: true,
-			isMedium: false,
-			isLarge: false,
-		};
-	} else if (width > breakpoints.tablet && width <= breakpoints.medium) {
-		return {
-			isMobile: false,
-			isTablet: false,
-			isMedium: true,
-			isLarge: false,
-		};
-	} else {
-		return {
-			isMobile: false,
-			isTablet: false,
-			isMedium: false,
-			isLarge: true,
-		};
-	}
-};
+import { pixBreakpoints } from '@psycron/theme/media-queries/mediaQueries';
+import { useMediaQuery } from 'react-responsive';
 
 const useViewport = () => {
-	const [viewport, setViewport] = useState(
-		getDeviceConfig(window.innerWidth),
-	);
+  const isMobile = useMediaQuery({ maxWidth: pixBreakpoints.mobile }); // Up to 767px
+  const isTablet = useMediaQuery({
+    minWidth: pixBreakpoints.mobile + 1,
+    maxWidth: pixBreakpoints.tablet,
+  }); // 768px to 1023px
+  const isMedium = useMediaQuery({
+    minWidth: pixBreakpoints.tablet + 1,
+    maxWidth: pixBreakpoints.medium,
+  }); // 1024px to 1439px
+  const isLarge = useMediaQuery({ minWidth: pixBreakpoints.large }); // 1440px and above
 
-	useEffect(() => {
-		const handleResize = () => {
-			setViewport(getDeviceConfig(window.innerWidth));
-		};
+  const isSmallerThanTablet = useMediaQuery({
+    maxWidth: pixBreakpoints.tablet,
+  }); // Up to 1023px
+  const isSmallerThanMedium = useMediaQuery({
+    maxWidth: pixBreakpoints.medium,
+  }); // Up to 1439px
+  const isBiggerThanTablet = useMediaQuery({
+    minWidth: pixBreakpoints.mobile + 1,
+  }); // 768px and above
+  const isBiggerThanMedium = useMediaQuery({
+    minWidth: pixBreakpoints.tablet + 1,
+  }); // 1024px and above
 
-		window.addEventListener('resize', handleResize);
-		return () => window.removeEventListener('resize', handleResize);
-	}, []);
-
-	return viewport;
+  return {
+    isMobile,
+    isTablet,
+    isMedium,
+    isLarge,
+    isSmallerThanTablet,
+    isSmallerThanMedium,
+    isBiggerThanTablet,
+    isBiggerThanMedium,
+  };
 };
 
 export default useViewport;

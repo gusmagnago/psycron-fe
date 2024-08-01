@@ -120,6 +120,51 @@
       "missing": "You are missing {{progress}}% of your payments",
       "not-received": "You haven't received any payments yet",
       "received-all": "You have received 100% of your payments for this period 🥳 😎"
+    },
+    "c2-action": {
+      "join-waitlist": "join our <strong>waitlist</strong> today to streamline your therapy practice and focus more on your patients.",
+      "email": "your email",
+      "join-now": "join now"
+    },
+    "hero": {
+      "heading": "Revolutionize your therapy practice with a seamless all-in-one solution",
+      "helper": "Easily manage your appointments, payments, patient records, billing, and more."
+    },
+    "header": {
+      "join": "join now",
+      "benefits": "benefits",
+			"about": "about"
+    }
+  },
+  "page": {
+    "landing": {
+      "values": {
+        "all-in-one": "all-in-one solution",
+        "text": "From scheduling appointments to processing payments, maintaining patient records, and handling billing, we help you with your daily tasks, and you will have much more time to take care of your patients. Our solution can transform your practice management, integrating everything into a single, intuitive platform.",
+        "text-focus": "Now you can focus on what truly matters and let us handle the rest for you."
+      },
+      "benefits": {
+        "increased-efficiency": {
+          "name": "Increased Efficiency",
+          "description": "Spend less time on admin tasks. Automate reminders, schedule appointments, and manage patient records seamlessly. Focus more on your patients, not paperwork"
+        },
+        "better-patient-management": {
+          "name": "Better Patient Management",
+          "description": "Easily track patient history and appointments. Enhance care with organized, up-to-date records."
+        },
+        "reduced-administrative-burden": {
+          "name": "Reduced Administrative Burden",
+          "description": "We simplified your workflow"
+        },
+        "enhanced-financial-control": {
+          "name": "Enhanced Financial Control",
+          "description": "Take control of your finances with secure and efficient billing"
+        }
+      },
+      "ct-action": {
+        "heading": "ready to revolutionize your practice?",
+        "join-waitlist": "<strong>Join our waitlist</strong> today and <strong>be the first</strong> to <strong>experience</strong> <strong>cutting-edge</strong> therapy practice management. <strong>Unlock</strong> <strong>new levels</strong> of <strong>efficiency</strong> and <strong>patient care</strong> with our <strong>innovative tools</strong>."
+      }
     }
   }
 }
