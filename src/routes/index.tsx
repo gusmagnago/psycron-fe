@@ -5,8 +5,10 @@ import {
   Navigate,
   Outlet,
   RouterProvider,
+  useLocation,
 } from 'react-router-dom';
 import { useParams } from 'react-router-dom';
+import ReactGA from 'react-ga4';
 import App from '@psycron/App';
 import { UserGeoLocationProvider } from '@psycron/context/CountryContext';
 import { UserDetailsProvider } from '@psycron/context/user/UserDetailsContext';
@@ -19,7 +21,20 @@ import { AuthProvider } from '@psycron/context/user/UserAuthenticationContext';
 import { PublicLayout } from '@psycron/layouts/public-layout/PublicLayout';
 import { HelmetProvider } from 'react-helmet-async';
 import i18n from '@psycron/i18n';
-import { useAnalytics } from '@psycron/hooks/useAnalytics';
+
+const AnalyticsTracker: FC = () => {
+  const location = useLocation();
+
+  useEffect(() => {
+    ReactGA.send({
+      hitType: 'pageview',
+      page: location.pathname + location.search,
+    });
+    console.log(`Tracked page view: ${location.pathname}${location.search}`);
+  }, [location]);
+
+  return null;
+};
 
 const LanguageLayout: FC = () => {
   const { lang } = useParams<{ lang: string }>();
@@ -31,15 +46,14 @@ const LanguageLayout: FC = () => {
   }, [lang]);
 
   return (
-    <>
-      <AuthProvider>
-        <UserDetailsProvider>
-          <UserGeoLocationProvider>
-            <Outlet />
-          </UserGeoLocationProvider>
-        </UserDetailsProvider>
-      </AuthProvider>
-    </>
+    <AuthProvider>
+      <UserDetailsProvider>
+        <UserGeoLocationProvider>
+          <AnalyticsTracker />
+          <Outlet />
+        </UserGeoLocationProvider>
+      </UserDetailsProvider>
+    </AuthProvider>
   );
 };
 
@@ -71,7 +85,6 @@ const router = createBrowserRouter([
 ]);
 
 const AppRouter: FC = () => {
-  useAnalytics();
   return (
     <HelmetProvider>
       <RouterProvider router={router} />
