@@ -27,7 +27,6 @@ export const ScrollReveal = () => {
   useEffect(() => {
     const handleScroll = () => {
       if (containerRef.current) {
-        console.log('🚀 ~ handleScroll ~ containerRef:', containerRef);
         const { scrollTop, scrollHeight, clientHeight } = containerRef.current;
         const progress = scrollTop / (scrollHeight - clientHeight);
         scrollYProgress.set(progress);
