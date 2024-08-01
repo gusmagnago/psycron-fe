@@ -1,8 +1,7 @@
-import { motion } from 'framer-motion';
-
 import { styled } from '@mui/material';
-import { spacing } from '@psycron/theme/spacing/spacing.theme';
 import { isSmallerThanMediumMedia } from '@psycron/theme/media-queries/mediaQueries';
+import { spacing } from '@psycron/theme/spacing/spacing.theme';
+import { motion } from 'framer-motion';
 
 export const StyledMotionDiv = styled(motion.div)`
   display: flex;

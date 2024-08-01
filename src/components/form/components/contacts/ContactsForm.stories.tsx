@@ -45,6 +45,7 @@ export const Default: Story = {
 			getValues,
 			setValue,
 			formState: { errors },
+			// eslint-disable-next-line react-hooks/rules-of-hooks
 		} = useForm();
 
 		return (

@@ -1,16 +1,16 @@
-import { ReactNode } from 'react';
+import type { ReactNode } from 'react';
 
 export interface ISEOProps {
-  title: string;
-  description: string;
   canonicalUrl: string;
-  ogTitle?: string;
+  description: string;
   ogDescription?: string;
-  ogUrl?: string;
+  ogTitle?: string;
   ogType?: string;
+  ogUrl?: string;
+  title: string;
 }
 
 export interface ISEOContextProps {
-  seo: ISEOProps;
   children: ReactNode;
+  seo: ISEOProps;
 }

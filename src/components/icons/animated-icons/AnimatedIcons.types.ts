@@ -1,7 +1,7 @@
-import { FC } from 'react';
-import { WithIconColorProps } from '@psycron/hoc/withIconColor';
+import type { FC } from 'react';
+import type { WithIconColorProps } from '@psycron/hoc/withIconColor';
 
 export interface IAnimatedIconsProps {
-  icons: FC<WithIconColorProps>[];
   colors: (string | undefined)[];
+  icons: FC<WithIconColorProps>[];
 }

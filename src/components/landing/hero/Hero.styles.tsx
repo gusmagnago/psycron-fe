@@ -1,8 +1,8 @@
-import { styled, Box } from '@mui/material';
+import { Box,styled } from '@mui/material';
 import { Text } from '@psycron/components/text/Text';
 import {
-  isBiggerThanMediumMedia,
-  isBiggerThanTabletMedia,
+	isBiggerThanMediumMedia,
+	isBiggerThanTabletMedia,
 } from '@psycron/theme/media-queries/mediaQueries';
 import { spacing } from '@psycron/theme/spacing/spacing.theme';
 

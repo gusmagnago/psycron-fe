@@ -1,10 +1,9 @@
-import { palette } from '@psycron/theme/palette/palette.theme';
-
 import styled from '@emotion/styled';
+import { palette } from '@psycron/theme/palette/palette.theme';
 import {
-  shadowInnerPress,
-  shadowMain,
-  shadowPress,
+	shadowInnerPress,
+	shadowMain,
+	shadowPress,
 } from '@psycron/theme/shadow/shadow.theme';
 
 export const StyledBox = styled.div`

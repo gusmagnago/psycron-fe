@@ -17,7 +17,7 @@ const meta: Meta<typeof PasswordInput> = {
 		docs: {
 			description: {
 				component:
-                    'This component should be used within a form tag as part of a group of inputs in a form. It handles password input scenarios, including visibility toggling, and ensures that both password and confirmation fields are managed and validated properly.',
+					'This component should be used within a form tag as part of a group of inputs in a form. It handles password input scenarios, including visibility toggling, and ensures that both password and confirmation fields are managed and validated properly.',
 			},
 		},
 	},
@@ -32,6 +32,7 @@ export const Default: Story = {
 		const {
 			register,
 			formState: { errors },
+			// eslint-disable-next-line react-hooks/rules-of-hooks
 		} = useForm();
 
 		return <PasswordInput errors={errors} register={register} />;
@@ -46,11 +47,10 @@ export const WithConfirmPassword: Story = {
 		const {
 			register,
 			formState: { errors },
+			// eslint-disable-next-line react-hooks/rules-of-hooks
 		} = useForm();
 
-		return (
-			<PasswordInput errors={errors} register={register} hasToConfirm />
-		);
+		return <PasswordInput errors={errors} register={register} hasToConfirm />;
 	},
 	args: {
 		hasToConfirm: false,

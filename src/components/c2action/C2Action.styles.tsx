@@ -1,14 +1,14 @@
-import { styled, Box, TextField } from '@mui/material';
+import { Box, styled, TextField } from '@mui/material';
 import { Button } from '@psycron/components/button/Button';
+import { Text } from '@psycron/components/text/Text';
 import {
-  isBiggerThanMediumMedia,
-  isBiggerThanTabletMedia,
-  isMobileMedia,
+	isBiggerThanMediumMedia,
+	isBiggerThanTabletMedia,
+	isMobileMedia,
 } from '@psycron/theme/media-queries/mediaQueries';
+import { palette } from '@psycron/theme/palette/palette.theme';
 import { shadowMain } from '@psycron/theme/shadow/shadow.theme';
 import { spacing } from '@psycron/theme/spacing/spacing.theme';
-import { Text } from '@psycron/components/text/Text';
-import { palette } from '@psycron/theme/palette/palette.theme';
 
 export const C2ActionWrapper = styled(Box)`
   display: flex;

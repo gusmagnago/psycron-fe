@@ -1,5 +1,5 @@
-import { motion } from 'framer-motion';
 import { styled } from '@mui/material';
+import { motion } from 'framer-motion';
 
 export const StyledAnimatedIconsWrapper = styled(motion.div)`
   width: auto;

@@ -22,6 +22,7 @@ export const Default: Story = {
 			register: registerSignIn,
 			handleSubmit: handleSubmitSignIn,
 			formState: { errors: errorsSignIn },
+			// eslint-disable-next-line react-hooks/rules-of-hooks
 		} = useForm<ISignInForm>();
 
 		const onSubmitSignIn: SubmitHandler<ISignInForm> = (data) => {

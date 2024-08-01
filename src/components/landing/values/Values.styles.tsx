@@ -1,9 +1,8 @@
 import { Box, styled } from '@mui/material';
-
 import { Text } from '@psycron/components/text/Text';
 import {
-  isBiggerThanTabletMedia,
-  isBiggerThanMediumMedia,
+	isBiggerThanMediumMedia,
+	isBiggerThanTabletMedia,
 } from '@psycron/theme/media-queries/mediaQueries';
 
 export const ValuesSection = styled(Box)`
