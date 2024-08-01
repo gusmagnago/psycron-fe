@@ -1,0 +1,170 @@
+{
+  "globals": {
+    "email": "email",
+    "password": "password",
+    "phone": "phone",
+    "whatsapp": "whatsapp",
+    "address": "address",
+    "patients": "patients",
+    "patient": "patient",
+    "registered-patients": "registered patients",
+    "patients-manager": "patients manager",
+    "billing-manager": "billing manager",
+    "subscription-manager": "subscription manager",
+    "appointments-manager": "appointments manager",
+    "change-language": "change language",
+    "help": "help center",
+    "logout": "logout",
+    "plan": "plan",
+    "cancel": "cancel",
+    "date-time-format": "{{format}}",
+    "time-remaining": {
+      "days": "in {{count}} day(s)",
+      "hours": "in {{count}} hour(s)",
+      "minutes": "in {{count}} minute(s)",
+      "less-than-a-minute": "session {{status}}"
+    },
+    "in-progress": "in progress",
+    "paused": "paused",
+    "proceed": "proceed",
+    "resume": "resume"
+  },
+  "components": {
+    "form": {
+      "confirm-password": "confirm password",
+      "keep-loggedin": "please keep me logged in",
+      "signup": {
+        "title": "sign up",
+        "firstName": "first name",
+        "lastName": "last name",
+        "already-have-acc": "already have an account?",
+        "signin-here-link": "sign in here"
+      },
+      "signin": {
+        "title": "sign in",
+        "dont-have-acc": "you dont have an account yet?",
+        "signup-here-link": "sign up here"
+      },
+      "validation": {
+        "required": "{{name}} is required",
+        "invalid": "{{name}} is invalid",
+        "characters": "password must be at least {{numChar}} characters",
+        "pass-rules": "password must contain at least one uppercase letter, one lowercase letter, one number, and one special character",
+        "match": "{{name}} must match"
+      },
+      "address-form": {
+        "search": "search the address here",
+        "search-note": "You can start searching for the address, or type it in the below fields.",
+        "street": "street",
+        "number": "nº",
+        "hood": "neighbourhood",
+        "more-info": "complementary info",
+        "city": "city",
+        "state": "state / province",
+        "zip": "zip code",
+        "country": "country",
+        "more-info-bttn": "add more info"
+      },
+      "add-patient": {
+        "name": "add patient"
+      },
+      "contacts-form": {
+        "contact-via": "contact via {{method}}?",
+        "contact-via-same": "is phone number the same as whatsapp?"
+      }
+    },
+    "input": {
+      "phone-input": {
+        "select-label": "country",
+        "phone-num-label": "{{registerName}} number here",
+        "phone-number-guide": "please provide a phone number including the city code if applicable."
+      }
+    },
+    "navbar": {
+      "dashboard": "dashboard",
+      "user-settings": "user settings"
+    },
+    "user-details": {
+      "edit": "edit details",
+      "edit-contacts": "edit contacts",
+      "change": "change {{name}}",
+      "save": "save details"
+    },
+    "dashboard": {
+      "card": {
+        "delay-notification": "Pausing the timer will delay all your remaining appointments for today by the duration of this pause.",
+        "delay-confirmation": "Are you sure you want to pause the timer?",
+        "pause": "pause timer",
+        "session-progress": "session progress:"
+      }
+    },
+    "appointments": {
+      "card-title": "appointments of the day",
+      "manager": "appointments manager"
+    },
+    "patients-table": {
+      "name": "patient name",
+      "next-session": "next session",
+      "payment-status": "payment status",
+      "sessions-month": "sessions per Month",
+      "value": "value per session",
+      "discount": "discount?",
+      "discount-val": "discount value",
+      "amount": "full amount",
+      "currency": "currency",
+      "latest-payment": "latest payment",
+      "manage": "manage patient"
+    },
+    "progress": {
+      "received": "You have already received {{progress}}% of your payments 🥳",
+      "missing": "You are missing {{progress}}% of your payments",
+      "not-received": "You haven't received any payments yet",
+      "received-all": "You have received 100% of your payments for this period 🥳 😎"
+    },
+    "c2-action": {
+      "join-waitlist": "join our <strong>waitlist</strong> today to streamline your therapy practice and focus more on your patients.",
+      "email": "your email",
+      "join-now": "join now"
+    },
+    "hero": {
+      "heading": "Revolutionize your therapy practice with a seamless all-in-one solution",
+      "helper": "Easily manage your appointments, payments, patient records, billing, and more."
+    },
+    "header": {
+      "join": "join now",
+      "benefits": "benefits",
+			"about": "about"
+    }
+  },
+  "page": {
+    "landing": {
+      "values": {
+        "all-in-one": "all-in-one solution",
+        "text": "From scheduling appointments to processing payments, maintaining patient records, and handling billing, we help you with your daily tasks, and you will have much more time to take care of your patients. Our solution can transform your practice management, integrating everything into a single, intuitive platform.",
+        "text-focus": "Now you can focus on what truly matters and let us handle the rest for you."
+      },
+      "benefits": {
+        "increased-efficiency": {
+          "name": "Increased Efficiency",
+          "description": "Spend less time on admin tasks. Automate reminders, schedule appointments, and manage patient records seamlessly. Focus more on your patients, not paperwork"
+        },
+        "better-patient-management": {
+          "name": "Better Patient Management",
+          "description": "Easily track patient history and appointments. Enhance care with organized, up-to-date records."
+        },
+        "reduced-administrative-burden": {
+          "name": "Reduced Administrative Burden",
+          "description": "We simplified your workflow"
+        },
+        "enhanced-financial-control": {
+          "name": "Enhanced Financial Control",
+          "description": "Take control of your finances with secure and efficient billing"
+        }
+      },
+      "ct-action": {
+        "heading": "ready to revolutionize your practice?",
+        "join-waitlist": "<strong>Join our waitlist</strong> today and <strong>be the first</strong> to <strong>experience</strong> <strong>cutting-edge</strong> therapy practice management. <strong>Unlock</strong> <strong>new levels</strong> of <strong>efficiency</strong> and <strong>patient care</strong> with our <strong>innovative tools</strong>."
+      }
+    }
+  }
+}

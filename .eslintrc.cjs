@@ -10,6 +10,7 @@ module.exports = {
 		'plugin:react/recommended',
 		'plugin:react-hooks/recommended',
 		'plugin:storybook/recommended',
+		'prettier'
 	],
 	settings: {
 		react: {
@@ -44,10 +45,9 @@ module.exports = {
 		indent: ['error', 'tab'],
 		'linebreak-style': 0,
 		quotes: ['error', 'single'],
-		'no-mixed-spaces-and-tabs': ['error', 'smart-tabs'],
 		'react/react-in-jsx-scope': 'off',
 		'react/jsx-uses-react': 'off',
-		'react/no-unknown-property': ['off', { ignore: ['JSX'] }],
+		'react/no-unknown-property': ['off', { ignore: ['JSX', 'css'] }],
 		'simple-import-sort/exports': 'error',
 		'typescript-sort-keys/interface': 'error',
 		'typescript-sort-keys/string-enum': 'error',

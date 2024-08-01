@@ -4,18 +4,17 @@ import type { CSSObject } from '@mui/system';
 import type { Palette } from '@psycron/theme/palette/palette.types';
 
 import { shadowInnerPress } from '../shadow/shadow.theme';
+import { spacing } from '../spacing/spacing.theme';
 
 const inputStyles = ({ palette }: Theme): Record<string, CSSObject> => {
-	const { text , gray} = palette as unknown as Palette;
+	const { text, gray } = palette as unknown as Palette;
 
 	return {
 		root: {
-			borderRadius: '40px',
-			height: '50px',
-			padding: '20px',
+			borderRadius: `calc(2 * ${spacing.mediumSmall})`,
+			minHeight: '50px',
 			boxShadow: shadowInnerPress,
 			color: text.primary,
-			margin: '4px 8px',
 			'::before': {
 				borderBottom: '0 !important',
 			},
@@ -23,8 +22,8 @@ const inputStyles = ({ palette }: Theme): Record<string, CSSObject> => {
 				borderBottom: '0 !important',
 			},
 			[`&.${inputBaseClasses.disabled}`]: {
-				backgroundColor: gray['02']
-			}
+				backgroundColor: gray['02'],
+			},
 		},
 	};
 };

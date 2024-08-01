@@ -25,9 +25,10 @@
       "@psycron/*": ["./src/*"]
     }
   },
-  "include": ["src"],
+  "include": ["src", "mui.d.ts"],
   "references": [{ "path": "./tsconfig.node.json" }],
   "lint-staged": {
     "**/*.ts": "tsc-files --noEmit"
-  }
+  },
+  "types": ["vite-plugin-svgr/client", "@emotion/react/types/css-prop"]
 }

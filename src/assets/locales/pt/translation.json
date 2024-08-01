@@ -1,0 +1,169 @@
+{
+  "globals": {
+    "email": "e-mail",
+    "password": "senha",
+    "phone": "telefone",
+    "whatsapp": "whatsapp",
+    "address": "endereço",
+    "patients": "pacientes",
+    "patient": "paciente",
+    "registered-patients": "pacientes registrados",
+    "patients-manager": "genrecie seus pacientes",
+    "billing-manager": "gerencie seus pagamentos",
+    "subscription-manager": "gerencie sua assinatura",
+    "appointments-manager": "gerencie seus atendimentos",
+    "change-language": "mude o idioma",
+    "help": "centro de ajuda",
+    "logout": "sair",
+    "plan": "plano",
+    "cancel": "cancelar",
+    "date-time-format": "{{format}}",
+    "time-remaining": {
+      "days": "em {{count}} dia(s)",
+      "hours": "em {{count}} horas(s)",
+      "minutes": "em {{count}} minuto(s)",
+      "less-than-a-minute": "sessão {{status}}"
+    },
+    "in-progress": "em andamento",
+    "paused": "pausada",
+    "proceed": "continuar",
+    "resume": "retomar"
+  },
+  "components": {
+    "form": {
+      "confirm-password": "confirmar senha",
+      "keep-loggedin": "por favor, mantenha-me conectado",
+      "signup": {
+        "title": "cadastre-se",
+        "firstName": "nome",
+        "lastName": "sobrenome",
+        "already-have-acc": "você já tem uma conta?",
+        "signin-here-link": "clique aqui para entrar"
+      },
+      "signin": {
+        "title": "entrar",
+        "dont-have-acc": "você ainda não tem uma conta?",
+        "signup-here-link": "cadastre-se aqui"
+      },
+      "validation": {
+        "required": "{{name}} é um campo obrigatório",
+        "invalid": "{{name}} não é válido",
+        "characters": "senha deve conter no mínimo {{numChar}} caracteres",
+        "pass-rules": "sua senha deve conter ao menos uma letra maiúscula, uma letra minúscula, um número e um caractere especial (@€#$+...) ",
+        "match": "{{name}} precisa coincidir"
+      },
+      "address-form": {
+        "search": "procure o endereço aqui",
+        "search-note": "Você pode começar pesquisando o indereço aqui, ou então preencher os campos abaixo",
+        "street": "rua",
+        "number": "nº",
+        "hood": "localidade / bairro",
+        "more-info": "complemento",
+        "city": "cidade",
+        "state": "estado",
+        "zip": "cep",
+        "country": "país",
+        "more-info-bttn": "adicione um complemento"
+      },
+      "add-patient": {
+        "name": "adicionar paciente"
+      },
+      "contacts-form": {
+        "contact-via": "entrar em contato via {{method}}?",
+        "contact-via-same": "o número é o mesmo para o Whatsapp?"
+      }
+    },
+    "input": {
+      "phone-input": {
+        "select-label": "país",
+        "phone-num-label": "número de {{registerName}}",
+        "phone-number-guide": "por favor, forneça seu número de telefone com o código da cidade"
+      }
+    },
+    "navbar": {
+      "dashboard": "painel",
+      "user-settings": "configurações"
+    },
+    "user-details": {
+      "edit": "editar detalhes",
+      "edit-contacts": "editar contatos",
+      "change": "alterar {{name}}"
+    },
+    "dashboard": {
+      "card": {
+        "delay-notification": "Pausar o cronômetro vai atrasar todos os seus compromissos de hoje pelo tempo da pausa.",
+        "delay-confirmation": "Você tem certeza que quer pausar o cronômetro?",
+        "pause": "pausar cronômetro",
+        "session-progress": "progresso da sessão:"
+      }
+    },
+    "appointments": {
+      "card-title": "consultas do dia",
+      "manager": "gerenciador de consultas"
+    },
+    "patients-table": {
+      "name": "nome do paciente",
+      "next-session": "próxima sessão",
+      "payment-status": "status de pagamento",
+      "sessions-month": "sessões por mês",
+      "value": "valor por sessão",
+      "discount": "desconto?",
+      "discount-val": "valor do desconto",
+      "amount": "valor total",
+      "currency": "moeda",
+      "latest-payment": "último pagamento",
+      "manage": "veja paciente"
+    },
+    "progress": {
+      "received": "Você já recebeu {{progress}}% dos seus pagamentos 🥳",
+      "missing": "Faltam {{progress}}% dos seus pagamentos",
+      "not-received": "Você não recebeu nenhum pagamento ainda",
+      "received-all": "Você recebeu 100% dos seus pagamentos para este período 🥳 😎"
+    },
+    "c2-action": {
+      "join-waitlist": "Junte-se à nossa <strong>lista de espera</strong> para simplificar sua prática de terapia e focar mais em seus pacientes.",
+      "email": "seu email",
+      "join-now": "inscreva-se"
+    },
+    "hero": {
+      "heading": "Transforme sua prática de terapia com essa solução completa",
+      "helper": "Gerencie facilmente seus agendamentos, pagamentos, prontuários, faturamento e muito mais."
+    },
+    "header": {
+      "join": "inscreva-se",
+      "benefits": "utilidades",
+			"about": "sobre nós"
+    }
+  },
+  "page": {
+    "landing": {
+      "values": {
+        "all-in-one": "solução completa",
+        "text": "Do agendamento de consultas ao processamento de pagamentos, manutenção de prontuários e faturamento, ajudamos você nas tarefas diárias para que tenha muito mais tempo para cuidar dos seus pacientes. Nossa solução pode transformar a gestão da sua prática, integrando tudo em uma única plataforma intuitiva.",
+        "text-focus": "Agora você pode focar no que realmente importa e deixar o resto com a gente."
+      },
+			"benefits": {
+				"increased-efficiency": {
+					"name": "Mais Eficiência",
+					"description": "Perca menos tempo em tarefas administrativas. Automatize lembretes, agendamento de consultas e gerencie seus prontuários de forma integrada. Foque mais nos seus pacientes, não nos processos"
+				},
+				"better-patient-management": {
+					"name": "Maior Gestão de Pacientes",
+					"description": "Acompanhe facilmente o histórico e as consultas dos pacientes. Auxilie seu atendimento com registros organizados e atualizados."
+				},
+				"reduced-administrative-burden": {
+					"name": "Elimine a Carga Administrativa",
+					"description": "Simplificamos o fluxo do trabalho para você"
+				},
+				"enhanced-financial-control": {
+					"name": "Maior Controle Financeiro",
+					"description": "Assuma o controle das suas finanças com faturamento seguro e eficiente"
+				}
+			},
+			"ct-action": {
+				"heading": "você quer revolucionar a sua prática de trabalho?",
+				"join-waitlist": "<strong>Junte-se à nossa lista de espera</strong> hoje e <strong>seja o primeirx</strong> a <strong>experimentar</strong> uma gestão de prática terapêutica <strong>inovadora</strong>. <strong>Desbloqueie</strong> <strong>novos níveis</strong> de <strong>eficiência</strong> e <strong>cuidado ao paciente</strong> com nossas <strong>ferramentas inovadoras</strong>."
+			}
+    }
+  }
+}
