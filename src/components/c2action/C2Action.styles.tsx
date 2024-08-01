@@ -29,6 +29,7 @@ export const C2ActionWrapper = styled(Box)`
 
   ${isMobileMedia} {
     padding: ${spacing.small};
+    margin-top: 0;
   }
 `;
 
