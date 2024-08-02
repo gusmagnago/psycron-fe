@@ -1,11 +1,31 @@
-import { motion } from 'framer-motion';
+import { useEffect, useRef } from 'react';
+import { motion, useAnimation, useInView } from 'framer-motion';
 
-import { H2, H6, H6Wrapper, Heading, HeroWrapper, Image } from './Hero.styles';
+import { H1, H6, H6Wrapper, Heading, HeroWrapper, Image } from './Hero.styles';
 import type { IHero } from './Hero.types';
 
 export const Hero = ({ headingText, imgSrc, helperText, c2Action }: IHero) => {
+	const headingRef = useRef<HTMLDivElement | null>(null);
+
+	const isInView = useInView(headingRef);
+
+	const controls = useAnimation();
+
+	useEffect(() => {
+		if (isInView) {
+			controls.start('visible');
+		} else {
+			controls.start('hidden');
+		}
+	}, [isInView, controls]);
+
 	const inital = { opacity: 0, scale: 0.5 };
-	const animate = { opacity: 1, scale: 1 };
+
+	const variants = {
+		hidden: { opacity: 0, scale: 0.5 },
+		visible: { opacity: 1, scale: 1 },
+	};
+
 	const transition = {
 		duration: 0.3,
 		ease: [0, 0.71, 0.2, 1.01],
@@ -18,13 +38,27 @@ export const Hero = ({ headingText, imgSrc, helperText, c2Action }: IHero) => {
 	};
 
 	return (
-		<HeroWrapper>
-			<Heading>
-				<motion.div initial={inital} animate={animate} transition={transition}>
-					<H2 variant='h1'>{headingText}</H2>
+		<HeroWrapper as='section'>
+			<Heading ref={headingRef}>
+				<motion.div
+					initial={inital}
+					animate={controls}
+					variants={variants}
+					transition={transition}
+				>
+					<H1 variant='h1'>{headingText}</H1>
 				</motion.div>
-				<motion.div initial={inital} animate={animate} transition={transition}>
-					<Image src={imgSrc} alt='hero-image' loading='lazy' />
+				<motion.div
+					initial={inital}
+					animate={controls}
+					variants={variants}
+					transition={transition}
+				>
+					<Image
+						src={imgSrc}
+						alt='3D illustration of a black women with short curly hair wearing a white shirt and a yellow skirt, smiling and pointing to the side, wearing a smartwatch.'
+						loading='lazy'
+					/>
 				</motion.div>
 			</Heading>
 			<H6Wrapper>
