@@ -5,22 +5,30 @@ import {
 	isBiggerThanTabletMedia,
 } from '@psycron/theme/media-queries/mediaQueries';
 
-export const ValuesSection = styled(Box)`
-  display: flex;
-  justify-content: center;
-  flex-direction: column;
-  height: 100vh;
+export const ValuesWrapper = styled(Box)`
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	position: relative;
+`;
 
-  ${isBiggerThanMediumMedia} {
-    flex-direction: row;
-  }
+export const ValuesSection = styled(Box)`
+	display: flex;
+	justify-content: center;
+	flex-direction: column;
+	height: 100vh;
+
+	${isBiggerThanMediumMedia} {
+		flex-direction: row;
+	}
 `;
 
 export const StyledText = styled(Text)`
-  font-size: 2rem;
-  font-weight: 800;
+	font-size: 2rem;
+	font-weight: 800;
 
-  ${isBiggerThanTabletMedia} {
-    font-size: 2.5rem;
-  }
+	${isBiggerThanTabletMedia} {
+		font-size: 2.5rem;
+	}
 `;

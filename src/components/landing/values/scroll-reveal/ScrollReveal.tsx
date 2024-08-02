@@ -48,7 +48,7 @@ export const ScrollReveal = () => {
 				<ImgWrapper>
 					<img
 						src='/images/img-hero3.png'
-						alt='value-section1'
+						alt='3D illustration of a smartphone displaying graphs and charts.'
 						style={{ transform: 'scaleX(-1)' }}
 						width={250}
 					/>

@@ -1,42 +1,19 @@
-import { useEffect, useRef, useState } from 'react';
-import { useAnimation } from 'framer-motion';
+import { useEffect, useRef } from 'react';
+import { useAnimation, useInView } from 'framer-motion';
 
 import { StyledMotionDiv, StyledMotionSpan } from './TextAnimated.styles';
 import type { ITextAnimated } from './TextAnimated.types';
 
 export const TextAnimated = ({ text, children }: ITextAnimated) => {
+	const textRef = useRef<HTMLDivElement | null>(null);
 	const controls = useAnimation();
-	const [isInView, setIsInView] = useState(false);
-	const textRef = useRef<HTMLDivElement>(null);
-
-	useEffect(() => {
-		const observer = new IntersectionObserver(
-			(entries) => {
-				entries.forEach((entry) => {
-					if (entry.isIntersecting) {
-						setIsInView(true);
-						observer.disconnect();
-					}
-				});
-			},
-			{ threshold: 0.1 }
-		);
-
-		if (textRef.current) {
-			observer.observe(textRef.current);
-		}
-
-		return () => {
-			if (textRef.current) {
-				// eslint-disable-next-line react-hooks/exhaustive-deps
-				observer.unobserve(textRef.current);
-			}
-		};
-	}, []);
+	const isInView = useInView(textRef);
 
 	useEffect(() => {
 		if (isInView) {
 			controls.start('visible');
+		} else {
+			controls.start('hidden');
 		}
 	}, [isInView, controls]);
 
