@@ -18,7 +18,7 @@ export const Call2ActionSection = ({
 	i18nextTrans,
 }: ICall2ActionSection) => {
 	return (
-		<BGWrapper id='join-now'>
+		<BGWrapper id='join-now' as='section'>
 			<Call2ActionFooterWrapper>
 				<Call2ActionFooterItem>
 					<Heading variant='h2' isFirstUpper>

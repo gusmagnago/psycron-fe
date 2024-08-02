@@ -38,7 +38,7 @@ export const Hero = ({ headingText, imgSrc, helperText, c2Action }: IHero) => {
 	};
 
 	return (
-		<HeroWrapper>
+		<HeroWrapper as='section'>
 			<Heading ref={headingRef}>
 				<motion.div
 					initial={inital}
@@ -54,7 +54,11 @@ export const Hero = ({ headingText, imgSrc, helperText, c2Action }: IHero) => {
 					variants={variants}
 					transition={transition}
 				>
-					<Image src={imgSrc} alt='hero-image' loading='lazy' />
+					<Image
+						src={imgSrc}
+						alt='3D illustration of a black women with short curly hair wearing a white shirt and a yellow skirt, smiling and pointing to the side, wearing a smartwatch.'
+						loading='lazy'
+					/>
 				</motion.div>
 			</Heading>
 			<H6Wrapper>
