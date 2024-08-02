@@ -8,19 +8,8 @@ import { Call2ActionSection } from '@psycron/components/landing/call-to-action/C
 import { Hero } from '@psycron/components/landing/hero/Hero';
 import { Values } from '@psycron/components/landing/values/Values';
 import { SEOProvider } from '@psycron/context/seo/SEOContext';
-import type { ISEOProps } from '@psycron/context/seo/SEOContext.types';
 
 import { DOMAIN } from '../urls';
-
-const homepageSEO: ISEOProps = {
-	title: 'Psycron - Therapist management app',
-	description: 'Welcome to the homepage of your site.',
-	canonicalUrl: DOMAIN,
-	ogTitle: 'Psycron - Therapist management app',
-	ogDescription: 'Welcome to the homepage of your site.',
-	ogUrl: DOMAIN,
-	ogType: 'website',
-};
 
 export const Home = () => {
 	const { t } = useTranslation();
@@ -34,6 +23,16 @@ export const Home = () => {
 	const onSubmit = (data: FieldValues) => {
 		// eslint-disable-next-line no-console
 		console.log('🚀 ~ onSubmit ~ data:', data);
+	};
+
+	const homepageSEO = {
+		title: t('page.landing.seo.title'),
+		description: t('page.landing.seo.description'),
+		canonicalUrl: window.location.href || DOMAIN,
+		ogTitle: t('page.landing.seo.ogTitle'),
+		ogDescription: t('page.landing.seo.ogDescription'),
+		ogUrl: window.location.href || DOMAIN,
+		ogType: 'website',
 	};
 
 	return (

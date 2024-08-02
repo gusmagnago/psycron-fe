@@ -1,22 +1,14 @@
 import { useTranslation } from 'react-i18next';
-import { Box } from '@mui/material';
 import { TextAnimated } from '@psycron/components/text/text-animated/TextAnimated';
 
 import { ScrollReveal } from './scroll-reveal/ScrollReveal';
-import { StyledText, ValuesSection } from './Values.styles';
+import { StyledText, ValuesSection, ValuesWrapper } from './Values.styles';
 
 export const Values = () => {
 	const { t } = useTranslation();
 
 	return (
-		<Box
-			display='flex'
-			flexDirection='column'
-			justifyContent='center'
-			alignItems='center'
-			position='relative'
-			my={5}
-		>
+		<ValuesWrapper>
 			<ValuesSection>
 				<ScrollReveal />
 			</ValuesSection>
@@ -30,6 +22,6 @@ export const Values = () => {
 				/>
 				<img src='/images/img-hero5.png' alt='value-section2' width={300} />
 			</ValuesSection>
-		</Box>
+		</ValuesWrapper>
 	);
 };
