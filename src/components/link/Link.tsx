@@ -1,6 +1,6 @@
 import { useParams } from 'react-router-dom';
 
-import { StyledLink } from './Link.styles';
+import { StyledAnchor, StyledLink } from './Link.styles';
 import type { ILinkProps } from './Link.types';
 
 export const Link = ({
@@ -12,7 +12,23 @@ export const Link = ({
 }: ILinkProps) => {
 	const { lang } = useParams<{ lang: string }>();
 
-	const prefixedTo = `/${lang}${to}`;
+	const isString = (value: unknown): value is string =>
+		typeof value === 'string';
+
+	const isExternal = isString(to) && /^https?:\/\//.test(to);
+
+	if (isExternal) {
+		return (
+			<StyledAnchor href={to} target='_blank' rel='noreferrer' {...props}>
+				{children}
+			</StyledAnchor>
+		);
+	}
+
+	const prefixedTo = isString(to)
+		? `/${lang}${to}`
+		: { ...to, pathname: `/${lang}${to.pathname}` };
+
 	return (
 		<StyledLink
 			to={prefixedTo}

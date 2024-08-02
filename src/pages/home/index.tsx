@@ -1,8 +1,7 @@
-import type { FieldValues} from 'react-hook-form';
-import {useForm } from 'react-hook-form';
+import type { FieldValues } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { Box, Divider } from '@mui/material';
-import { AnimatedBackground } from '@psycron/components/animated-background/AnimatedBackground';
 import { C2Action } from '@psycron/components/c2action/C2Action';
 import { Benefits } from '@psycron/components/landing/benefits/Benefits';
 import { Call2ActionSection } from '@psycron/components/landing/call-to-action/Call2Action';
@@ -39,7 +38,6 @@ export const Home = () => {
 
 	return (
 		<SEOProvider seo={homepageSEO}>
-			<AnimatedBackground />
 			<Box zIndex={10}>
 				<Hero
 					headingText={t('components.hero.heading')}
