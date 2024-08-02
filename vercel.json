@@ -1,10 +1,6 @@
 {
-  "redirects": [
-    {
-      "source": "/",
-      "destination": "/en",
-      "permanent": true
-    }
+	 "rewrites": [
+    { "source": "/:locale/(.*)", "destination": "/:locale/" }
   ],
   "headers": [
     {
