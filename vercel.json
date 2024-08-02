@@ -1,7 +1,4 @@
 {
-	 "rewrites": [
-    { "source": "/:locale/(.*)", "destination": "/:locale/" }
-  ],
   "headers": [
     {
       "source": "/(.*)",
@@ -20,5 +17,15 @@
         }
       ]
     }
+  ],
+  "redirects": [
+    {
+      "source": "/",
+      "destination": "/en",
+      "permanent": false
+    }
+  ],
+  "rewrites": [
+    { "source": "/:locale/:path*", "destination": "/index.html" }
   ]
 }
