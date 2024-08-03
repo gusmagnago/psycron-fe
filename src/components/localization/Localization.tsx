@@ -10,7 +10,7 @@ const LANGKEY = 'i18nextLng';
 
 export const Localization = () => {
 	const { i18n } = useTranslation();
-	const { lang } = useParams<{ lang: string }>();
+	const { locale } = useParams<{ locale: string }>();
 	const navigate = useNavigate();
 	const location = useLocation();
 
@@ -48,7 +48,7 @@ export const Localization = () => {
 		setDefaultLang(newLang);
 		localStorage.setItem(LANGKEY, newLang);
 
-		const newPath = location.pathname.replace(`/${lang}`, `/${newLang}`);
+		const newPath = location.pathname.replace(`/${locale}`, `/${newLang}`);
 		navigate(newPath);
 	};
 
@@ -56,16 +56,16 @@ export const Localization = () => {
 		const storedLang = localStorage.getItem(LANGKEY);
 		if (storedLang && i18n.language !== storedLang) {
 			changeLanguage(storedLang.toLowerCase());
-		} else if (lang && i18n.language !== lang) {
-			changeLanguage(lang.toLowerCase());
+		} else if (locale && i18n.language !== locale) {
+			changeLanguage(locale.toLowerCase());
 		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [i18n, lang]);
+	}, [i18n, locale]);
 
 	return (
 		<StyledSelectWrapper>
 			<Select
-				value={defaultLang}
+				value={defaultLang.split('-')[0]}
 				onChangeSelect={(e) => changeLanguage(e.target.value as string)}
 				items={availableLanguages}
 			/>

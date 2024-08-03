@@ -1,22 +1,4 @@
 {
-  "redirects": [
-    {
-      "source": "/",
-      "destination": "/en",
-      "permanent": true
-    },
-    {
-      "source": "/:locale(en|pt)",
-      "destination": "/:locale/",
-      "permanent": true
-    }
-  ],
-  "rewrites": [
-    {
-      "source": "/:locale(en|pt)/:path*",
-      "destination": "/:locale/:path*"
-    }
-  ],
   "headers": [
     {
       "source": "/(.*)",
@@ -35,5 +17,15 @@
         }
       ]
     }
+  ],
+  "redirects": [
+    {
+      "source": "/",
+      "destination": "/en",
+      "permanent": false
+    }
+  ],
+  "rewrites": [
+    { "source": "/:locale/:path*", "destination": "/index.html" }
   ]
 }

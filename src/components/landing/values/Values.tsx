@@ -1,4 +1,7 @@
+import { useEffect } from 'react';
+import ReactGA from 'react-ga4';
 import { useTranslation } from 'react-i18next';
+import { useInView as RIUseInView } from 'react-intersection-observer';
 import { TextAnimated } from '@psycron/components/text/text-animated/TextAnimated';
 
 import { ScrollReveal } from './scroll-reveal/ScrollReveal';
@@ -7,8 +10,22 @@ import { StyledText, ValuesSection, ValuesWrapper } from './Values.styles';
 export const Values = () => {
 	const { t } = useTranslation();
 
+	const { ref: valuesRef, inView: valuesInView } = RIUseInView({
+		threshold: 0.5,
+	});
+
+	useEffect(() => {
+		if (valuesInView) {
+			ReactGA.event({
+				category: 'Section',
+				action: 'View Section',
+				label: 'Values Section',
+			});
+		}
+	}, [valuesInView]);
+
 	return (
-		<ValuesWrapper as='section'>
+		<ValuesWrapper as='section' ref={valuesRef}>
 			<ValuesSection>
 				<ScrollReveal />
 			</ValuesSection>
