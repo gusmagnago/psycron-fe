@@ -1,3 +1,7 @@
+import { useEffect } from 'react';
+import ReactGA from 'react-ga4';
+import { useInView as RIUseInView } from 'react-intersection-observer';
+
 import { ParallaxBenefitItem } from './benefits-item/BenefitsItem';
 import { BenefitsBox, BenefitsSectionWrapper } from './Benefits.styles';
 
@@ -31,8 +35,22 @@ export const Benefits = () => {
 		},
 	];
 
+	const { ref: benefitsRef, inView: benefitsInView } = RIUseInView({
+		threshold: 0.5,
+	});
+
+	useEffect(() => {
+		if (benefitsInView) {
+			ReactGA.event({
+				category: 'Section',
+				action: 'View Section',
+				label: 'Benefits Section',
+			});
+		}
+	}, [benefitsInView]);
+
 	return (
-		<BenefitsSectionWrapper as='section'>
+		<BenefitsSectionWrapper as='section' ref={benefitsRef}>
 			<BenefitsBox>
 				{benefits.map(({ key, img, imgAlt, justify }, index) => (
 					<ParallaxBenefitItem

@@ -11,6 +11,10 @@ const baseLinkStyles = css`
 	text-decoration: none;
 	color: ${palette.secondary.main};
 	transition: color 0.2s ease-out;
+
+	display: flex;
+	align-items: center;
+
 	&:hover {
 		color: ${palette.secondary.action.press};
 		transform: scale(1.1);

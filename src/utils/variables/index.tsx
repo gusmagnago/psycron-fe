@@ -1,3 +1,4 @@
+import ReactGA from 'react-ga4';
 import {
 	addMinutes,
 	differenceInDays,
@@ -69,6 +70,13 @@ export const checkAppointmentTimes = (
 };
 
 export const scrollToSection = (id: string) => {
+	ReactGA.event({
+		category: 'User',
+		action: 'Click Button',
+		value: 10,
+		label: `User clicked ${id} header button`,
+	});
+
 	const element = document.getElementById(id);
 	if (element) {
 		element.scrollIntoView({ behavior: 'smooth' });
