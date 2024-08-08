@@ -11,6 +11,7 @@ import {
 } from 'react-router-dom';
 import { useParams } from 'react-router-dom';
 import App from '@psycron/App';
+import { AlertProvider } from '@psycron/context/alert/AlertContext';
 import { UserGeoLocationProvider } from '@psycron/context/CountryContext';
 import { AuthProvider } from '@psycron/context/user/UserAuthenticationContext';
 import { UserDetailsProvider } from '@psycron/context/user/UserDetailsContext';
@@ -45,14 +46,16 @@ const LanguageLayout: FC = () => {
 	}, [lang]);
 
 	return (
-		<AuthProvider>
-			<UserDetailsProvider>
-				<UserGeoLocationProvider>
-					<AnalyticsTracker />
-					<Outlet />
-				</UserGeoLocationProvider>
-			</UserDetailsProvider>
-		</AuthProvider>
+		<AlertProvider>
+			<AuthProvider>
+				<UserDetailsProvider>
+					<UserGeoLocationProvider>
+						<AnalyticsTracker />
+						<Outlet />
+					</UserGeoLocationProvider>
+				</UserDetailsProvider>
+			</AuthProvider>
+		</AlertProvider>
 	);
 };
 

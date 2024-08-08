@@ -27,7 +27,14 @@
 		"in-progress": "Em andamento",
 		"paused": "Pausada",
 		"proceed": "Continuar",
-		"resume": "Retomar"
+		"resume": "Retomar",
+		"error": {
+			"already-subscribed": "Você já está na nossa lista de espera",
+			"internal-server-error": "Algo aconteceu errado, tente novamente mais tarde"
+		},
+		"success": {
+			"subscribed": "Você foi inscrito com sucesso. Por favor verifique o seu -mail!"
+		}
 	},
 	"components": {
 		"form": {
