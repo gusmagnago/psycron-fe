@@ -9,6 +9,10 @@ const baseURL =
 
 const apiClient = axios.create({
 	baseURL: baseURL,
+	headers: {
+		'Content-Type': 'application/json',
+	},
+	withCredentials: true,
 });
 
 apiClient.interceptors.request.use(
