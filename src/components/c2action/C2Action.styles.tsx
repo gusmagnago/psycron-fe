@@ -5,75 +5,83 @@ import {
 	isBiggerThanMediumMedia,
 	isBiggerThanTabletMedia,
 	isMobileMedia,
+	isTabletMedia,
 } from '@psycron/theme/media-queries/mediaQueries';
 import { palette } from '@psycron/theme/palette/palette.theme';
 import { shadowMain } from '@psycron/theme/shadow/shadow.theme';
 import { spacing } from '@psycron/theme/spacing/spacing.theme';
+import { motion } from 'framer-motion';
 
 export const C2ActionWrapper = styled(Box)`
-  display: flex;
-  flex-direction: column;
-  padding: ${spacing.mediumSmall};
-  border-radius: ${spacing.medium};
-  box-shadow: ${shadowMain};
-  border: 1px solid rgba(255, 255, 255, 0.3);
+	display: flex;
+	flex-direction: column;
+	padding: ${spacing.mediumSmall};
+	border-radius: ${spacing.medium};
+	box-shadow: ${shadowMain};
+	border: 1px solid rgba(255, 255, 255, 0.3);
 
-  background-color: ${palette.background.paper};
+	background-color: ${palette.background.paper};
 
-  width: 100%;
-  margin-top: ${spacing.large};
+	width: 100%;
+	margin-top: ${spacing.large};
 
-  ${isBiggerThanMediumMedia} {
-    width: 50%;
-  }
+	${isBiggerThanMediumMedia} {
+		width: 50%;
+	}
 
-  ${isMobileMedia} {
-    padding: ${spacing.small};
-    margin-top: 0;
-  }
+	${isTabletMedia} {
+		width: auto;
+	}
+
+	${isMobileMedia} {
+		padding: ${spacing.small};
+		margin-top: 0;
+	}
 `;
 
-export const C2ActionBox = styled(Box)`
-  display: flex;
-  align-items: center;
-  flex-direction: column;
-  width: auto;
-  padding: ${spacing.small};
+export const C2ActionBox = styled(motion.div)`
+	display: flex;
+	align-items: center;
+	flex-direction: column;
+	width: auto;
+	padding: ${spacing.small};
+	height: 8.25rem;
 
-  ${isBiggerThanMediumMedia} {
-    flex-direction: row;
-  }
+	${isBiggerThanMediumMedia} {
+		flex-direction: row;
+		justify-content: center;
+	}
 `;
 
 export const C2ActionText = styled(Text)`
-  text-align: left;
+	text-align: left;
 
-  ${isBiggerThanTabletMedia} {
-    text-align: center;
-  }
+	${isBiggerThanTabletMedia} {
+		text-align: center;
+	}
 `;
 
 export const C2ActionButton = styled(Button)`
-  width: 100%;
-  margin-left: 0;
-  margin-top: ${spacing.small};
+	width: 100%;
+	margin-left: 0;
+	margin-top: ${spacing.small};
 
-  ${isBiggerThanMediumMedia} {
-    margin-left: ${spacing.small};
-    margin-top: 0;
-    width: 12rem;
-  }
+	${isBiggerThanMediumMedia} {
+		margin-left: ${spacing.small};
+		margin-top: 0;
+		width: 12rem;
+	}
 
-  ${isMobileMedia} {
-    margin-top: ${spacing.xs};
-  }
+	${isMobileMedia} {
+		margin-top: ${spacing.xs};
+	}
 `;
 
 export const HighlightedText = styled('span')`
-  color: ${palette.secondary.main};
-  font-weight: 600;
+	color: ${palette.secondary.main};
+	font-weight: 600;
 `;
 
 export const StyledTextField = styled(TextField)`
-  text-align: center;
+	text-align: center;
 `;
