@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const { VITE_PSYCRON_BASE_API_URL, VITE_PSYCRON_API_KEY } = import.meta.env;
+const { VITE_PSYCRON_BASE_API_URL } = import.meta.env;
 
 const baseURL =
 	import.meta.env.MODE === 'development'
@@ -9,14 +9,10 @@ const baseURL =
 
 const apiClient = axios.create({
 	baseURL: baseURL,
-	// headers: {
-	// 	'Content-Type': 'application/json',
-	// },
 });
 
 apiClient.interceptors.request.use(
 	(config) => {
-		config.headers['x-api-key'] = VITE_PSYCRON_API_KEY;
 		return config;
 	},
 	(error) => {

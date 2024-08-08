@@ -46,6 +46,7 @@ export const C2ActionBox = styled(motion.div)`
 	width: auto;
 
 	height: 8.25rem;
+	padding-top: ${spacing.small};
 
 	${isBiggerThanMediumMedia} {
 		flex-direction: row;
@@ -86,6 +87,11 @@ export const StyledTextField = styled(TextField)`
 	text-align: center;
 
 	& .MuiInputLabel-root.Mui-focused {
+		top: -0.625rem !important;
+		left: -0.625rem !important;
+	}
+
+	& .MuiInputLabel-root.Mui-error {
 		top: -0.625rem !important;
 		left: -0.625rem !important;
 	}
