@@ -1,6 +1,5 @@
 import { Trans, useTranslation } from 'react-i18next';
 import { Outlet } from 'react-router-dom';
-import { Box } from '@mui/material';
 import { AnimatedBackground } from '@psycron/components/animated-background/AnimatedBackground';
 import { Header } from '@psycron/components/header/Header';
 import { Link } from '@psycron/components/link/Link';
@@ -8,9 +7,11 @@ import { Text } from '@psycron/components/text/Text';
 import { SEOProvider } from '@psycron/context/seo/SEOContext';
 
 import {
+	FooterContent,
 	FooterWrapper,
 	PublicLayoutContent,
 	PublicLayoutWrapper,
+	StyledFooterTex,
 } from './PublicLayout.styles';
 
 export const PublicLayout = () => {
@@ -36,8 +37,8 @@ export const PublicLayout = () => {
 				</PublicLayoutContent>
 			</PublicLayoutWrapper>
 			<FooterWrapper>
-				<Box display='flex' flexDirection='column' alignItems='center'>
-					<Text mb={3} id='about' display='flex'>
+				<FooterContent>
+					<StyledFooterTex id='about'>
 						<Trans
 							i18nKey={t('components.footer.contact')}
 							components={{
@@ -48,7 +49,7 @@ export const PublicLayout = () => {
 								),
 							}}
 						/>
-					</Text>
+					</StyledFooterTex>
 					<Text variant='caption' mb={5} display='flex'>
 						<Trans
 							i18nKey={t('components.footer.credit.illustration')}
@@ -62,7 +63,7 @@ export const PublicLayout = () => {
 							}}
 						/>
 					</Text>
-				</Box>
+				</FooterContent>
 			</FooterWrapper>
 		</SEOProvider>
 	);

@@ -21,7 +21,7 @@ export const Header = ({ hideLinks = false }: IHeaderProps) => {
 				<Brand />
 			</Box>
 			<Box display='flex' alignItems='center'>
-				{!hideLinks || !isMobile ? (
+				{hideLinks || !isMobile ? (
 					<>
 						<Text isFirstUpper>
 							<Link to='#' isHeader onClick={() => scrollToSection('benefits')}>

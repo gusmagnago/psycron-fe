@@ -44,7 +44,7 @@ export const C2ActionBox = styled(motion.div)`
 	align-items: center;
 	flex-direction: column;
 	width: auto;
-	padding: ${spacing.small};
+
 	height: 8.25rem;
 
 	${isBiggerThanMediumMedia} {
@@ -84,4 +84,9 @@ export const HighlightedText = styled('span')`
 
 export const StyledTextField = styled(TextField)`
 	text-align: center;
+
+	& .MuiInputLabel-root.Mui-focused {
+		top: -0.625rem !important;
+		left: -0.625rem !important;
+	}
 `;

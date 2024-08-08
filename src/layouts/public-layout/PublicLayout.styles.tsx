@@ -1,4 +1,6 @@
 import { Box, styled } from '@mui/material';
+import { Text } from '@psycron/components/text/Text';
+import { isBiggerThanMediumMedia } from '@psycron/theme/media-queries/mediaQueries';
 import { spacing } from '@psycron/theme/spacing/spacing.theme';
 
 export const PublicLayoutWrapper = styled(Box)`
@@ -20,4 +22,20 @@ export const FooterWrapper = styled(Box)`
 	position: relative;
 	padding: 0 ${spacing.large} ${spacing.large};
 	z-index: 2;
+`;
+
+export const FooterContent = styled(Box)`
+	display: flex;
+	align-items: center;
+	flex-direction: column;
+`;
+
+export const StyledFooterTex = styled(Text)`
+	display: flex;
+	flex-direction: column;
+	margin-bottom: ${spacing.small};
+
+	${isBiggerThanMediumMedia} {
+		flex-direction: row;
+	}
 `;
