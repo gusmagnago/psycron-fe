@@ -22,11 +22,8 @@ export const AddPatientForm = ({ shortButton }: AddPatientProps) => {
 
 	const [open, setOpen] = useState<boolean>(false);
 
-	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	const onSubmit = (data: FieldValues) => {
-		// eslint-disable-next-line no-console
-		// console.log('🚀 ~ onSubmit ~ data:', data);
-		// add correct http method
+		data;
 	};
 
 	return (
