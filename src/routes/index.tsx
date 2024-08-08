@@ -11,6 +11,7 @@ import {
 } from 'react-router-dom';
 import { useParams } from 'react-router-dom';
 import App from '@psycron/App';
+import { AlertProvider } from '@psycron/context/alert/AlertContext';
 import { UserGeoLocationProvider } from '@psycron/context/CountryContext';
 import { AuthProvider } from '@psycron/context/user/UserAuthenticationContext';
 import { UserDetailsProvider } from '@psycron/context/user/UserDetailsContext';
@@ -18,6 +19,7 @@ import i18n from '@psycron/i18n';
 import { AppLayout } from '@psycron/layouts/app-layout/AppLayout';
 import { PublicLayout } from '@psycron/layouts/public-layout/PublicLayout';
 import { AuthPage } from '@psycron/pages/auth';
+import { NotFound } from '@psycron/pages/error/NotFound';
 import { HOMEPAGE, LOCALISATION, SIGNIN, SIGNUP } from '@psycron/pages/urls';
 
 const AnalyticsTracker: FC = () => {
@@ -27,6 +29,7 @@ const AnalyticsTracker: FC = () => {
 		ReactGA.send({
 			hitType: 'pageview',
 			page: location.pathname + location.search,
+			title: document.title,
 		});
 	}, [location]);
 
@@ -43,14 +46,16 @@ const LanguageLayout: FC = () => {
 	}, [lang]);
 
 	return (
-		<AuthProvider>
-			<UserDetailsProvider>
-				<UserGeoLocationProvider>
-					<AnalyticsTracker />
-					<Outlet />
-				</UserGeoLocationProvider>
-			</UserDetailsProvider>
-		</AuthProvider>
+		<AlertProvider>
+			<AuthProvider>
+				<UserDetailsProvider>
+					<UserGeoLocationProvider>
+						<AnalyticsTracker />
+						<Outlet />
+					</UserGeoLocationProvider>
+				</UserDetailsProvider>
+			</AuthProvider>
+		</AlertProvider>
 	);
 };
 
@@ -78,6 +83,10 @@ const router = createBrowserRouter([
 				children: [{ index: true, element: <div>Dashboard Homepage</div> }],
 			},
 		],
+	},
+	{
+		path: '*',
+		element: <NotFound />,
 	},
 ]);
 

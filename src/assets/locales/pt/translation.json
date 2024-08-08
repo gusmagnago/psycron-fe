@@ -1,118 +1,125 @@
 {
 	"globals": {
-		"email": "e-mail",
-		"password": "senha",
-		"phone": "telefone",
-		"whatsapp": "whatsapp",
-		"address": "endereço",
-		"patients": "pacientes",
-		"patient": "paciente",
-		"registered-patients": "pacientes registrados",
-		"patients-manager": "genrecie seus pacientes",
-		"billing-manager": "gerencie seus pagamentos",
-		"subscription-manager": "gerencie sua assinatura",
-		"appointments-manager": "gerencie seus atendimentos",
-		"change-language": "mude o idioma",
-		"help": "centro de ajuda",
-		"logout": "sair",
-		"plan": "plano",
-		"cancel": "cancelar",
+		"email": "E-mail",
+		"password": "Senha",
+		"phone": "Telefone",
+		"whatsapp": "Whatsapp",
+		"address": "Endereço",
+		"patients": "Pacientes",
+		"patient": "Paciente",
+		"registered-patients": "Pacientes registrados",
+		"patients-manager": "Genrecie seus pacientes",
+		"billing-manager": "Gerencie seus pagamentos",
+		"subscription-manager": "Gerencie sua assinatura",
+		"appointments-manager": "Gerencie seus atendimentos",
+		"change-language": "Mude o idioma",
+		"help": "Centro de ajuda",
+		"logout": "Sair",
+		"plan": "Plano",
+		"cancel": "Cancelar",
 		"date-time-format": "{{format}}",
 		"time-remaining": {
-			"days": "em {{count}} dia(s)",
-			"hours": "em {{count}} horas(s)",
-			"minutes": "em {{count}} minuto(s)",
-			"less-than-a-minute": "sessão {{status}}"
+			"days": "Em {{count}} dia(s)",
+			"hours": "Em {{count}} horas(s)",
+			"minutes": "Em {{count}} minuto(s)",
+			"less-than-a-minute": "Sessão {{status}}"
 		},
-		"in-progress": "em andamento",
-		"paused": "pausada",
-		"proceed": "continuar",
-		"resume": "retomar"
+		"in-progress": "Em andamento",
+		"paused": "Pausada",
+		"proceed": "Continuar",
+		"resume": "Retomar",
+		"error": {
+			"already-subscribed": "Você já está na nossa lista de espera",
+			"internal-server-error": "Algo aconteceu errado, tente novamente mais tarde"
+		},
+		"success": {
+			"subscribed": "Você foi inscrito com sucesso. Por favor verifique o seu -mail!"
+		}
 	},
 	"components": {
 		"form": {
-			"confirm-password": "confirmar senha",
-			"keep-loggedin": "por favor, mantenha-me conectado",
+			"confirm-password": "Confirmar senha",
+			"keep-loggedin": "Por favor, mantenha-me conectado",
 			"signup": {
-				"title": "cadastre-se",
-				"firstName": "nome",
-				"lastName": "sobrenome",
-				"already-have-acc": "você já tem uma conta?",
-				"signin-here-link": "clique aqui para entrar"
+				"title": "Cadastre-se",
+				"firstName": "Nome",
+				"lastName": "Sobrenome",
+				"already-have-acc": "Você já tem uma conta?",
+				"signin-here-link": "Clique aqui para entrar"
 			},
 			"signin": {
-				"title": "entrar",
-				"dont-have-acc": "você ainda não tem uma conta?",
-				"signup-here-link": "cadastre-se aqui"
+				"title": "Entrar",
+				"dont-have-acc": "Você ainda não tem uma conta?",
+				"signup-here-link": "Cadastre-se aqui"
 			},
 			"validation": {
 				"required": "{{name}} é um campo obrigatório",
 				"invalid": "{{name}} não é válido",
-				"characters": "senha deve conter no mínimo {{numChar}} caracteres",
-				"pass-rules": "sua senha deve conter ao menos uma letra maiúscula, uma letra minúscula, um número e um caractere especial (@€#$+...) ",
+				"characters": "Senha deve conter no mínimo {{numChar}} caracteres",
+				"pass-rules": "Sua senha deve conter ao menos uma letra maiúscula, uma letra minúscula, um número e um caractere especial (@€#$+...) ",
 				"match": "{{name}} precisa coincidir"
 			},
 			"address-form": {
-				"search": "procure o endereço aqui",
+				"search": "Procure o endereço aqui",
 				"search-note": "Você pode começar pesquisando o indereço aqui, ou então preencher os campos abaixo",
-				"street": "rua",
-				"number": "nº",
-				"hood": "localidade / bairro",
-				"more-info": "complemento",
-				"city": "cidade",
-				"state": "estado",
-				"zip": "cep",
-				"country": "país",
-				"more-info-bttn": "adicione um complemento"
+				"street": "Rua",
+				"number": "Nº",
+				"hood": "Localidade / bairro",
+				"more-info": "Complemento",
+				"city": "Cidade",
+				"state": "Estado",
+				"zip": "Cep",
+				"country": "País",
+				"more-info-bttn": "Adicione um complemento"
 			},
 			"add-patient": {
-				"name": "adicionar paciente"
+				"name": "Adicionar paciente"
 			},
 			"contacts-form": {
-				"contact-via": "entrar em contato via {{method}}?",
-				"contact-via-same": "o número é o mesmo para o Whatsapp?"
+				"contact-via": "Entrar em contato via {{method}}?",
+				"contact-via-same": "O número é o mesmo para o Whatsapp?"
 			}
 		},
 		"input": {
 			"phone-input": {
-				"select-label": "país",
-				"phone-num-label": "número de {{registerName}}",
-				"phone-number-guide": "por favor, forneça seu número de telefone com o código da cidade"
+				"select-label": "País",
+				"phone-num-label": "Número de {{registerName}}",
+				"phone-number-guide": "Por favor, forneça seu número de telefone com o código da cidade"
 			}
 		},
 		"navbar": {
-			"dashboard": "painel",
-			"user-settings": "configurações"
+			"dashboard": "Painel",
+			"user-settings": "Configurações"
 		},
 		"user-details": {
-			"edit": "editar detalhes",
-			"edit-contacts": "editar contatos",
-			"change": "alterar {{name}}"
+			"edit": "Editar detalhes",
+			"edit-contacts": "Editar contatos",
+			"change": "Alterar {{name}}"
 		},
 		"dashboard": {
 			"card": {
 				"delay-notification": "Pausar o cronômetro vai atrasar todos os seus compromissos de hoje pelo tempo da pausa.",
 				"delay-confirmation": "Você tem certeza que quer pausar o cronômetro?",
-				"pause": "pausar cronômetro",
-				"session-progress": "progresso da sessão:"
+				"pause": "Pausar cronômetro",
+				"session-progress": "Progresso da sessão:"
 			}
 		},
 		"appointments": {
-			"card-title": "consultas do dia",
-			"manager": "gerenciador de consultas"
+			"card-title": "Consultas do dia",
+			"manager": "Gerenciador de consultas"
 		},
 		"patients-table": {
-			"name": "nome do paciente",
-			"next-session": "próxima sessão",
-			"payment-status": "status de pagamento",
-			"sessions-month": "sessões por mês",
-			"value": "valor por sessão",
-			"discount": "desconto?",
-			"discount-val": "valor do desconto",
-			"amount": "valor total",
-			"currency": "moeda",
-			"latest-payment": "último pagamento",
-			"manage": "veja paciente"
+			"name": "Nome do paciente",
+			"next-session": "Próxima sessão",
+			"payment-status": "Status de pagamento",
+			"sessions-month": "Sessões por mês",
+			"value": "Valor por sessão",
+			"discount": "Desconto?",
+			"discount-val": "Valor do desconto",
+			"amount": "Valor total",
+			"currency": "Moeda",
+			"latest-payment": "Último pagamento",
+			"manage": "Veja paciente"
 		},
 		"progress": {
 			"received": "Você já recebeu {{progress}}% dos seus pagamentos 🥳",
@@ -122,17 +129,30 @@
 		},
 		"c2-action": {
 			"join-waitlist": "Junte-se à nossa <strong>lista de espera</strong> para simplificar sua prática de terapia e focar mais em seus pacientes.",
-			"email": "seu email",
-			"join-now": "inscreva-se"
+			"email": "Seu email",
+			"join-now": "Inscreva-se"
 		},
 		"hero": {
 			"heading": "Transforme sua prática de terapia com essa solução completa",
 			"helper": "Gerencie facilmente seus agendamentos, pagamentos, prontuários, faturamento e muito mais."
 		},
 		"header": {
-			"join": "inscreva-se",
-			"benefits": "utilidades",
-			"about": "sobre nós"
+			"join": "Inscreva-se",
+			"benefits": "Utilidades",
+			"about": "Sobre nós"
+		},
+		"link": {
+			"navigate": {
+				"back": "Voltar",
+				"next": "Prosseguir"
+			},
+			"footer": {
+				"contact": "Quer entrar em contato? <a>Você pode me encontrar aqui</a>",
+				"find-me": "Você pode me encontrar aqui",
+				"credit": {
+					"illustration": "Ilustrações por <owner>Icons 8</owner> de <page>Ouch!</page>"
+				}
+			}
 		}
 	},
 	"page": {
@@ -144,32 +164,37 @@
 				"ogDescription": "Transforme sua prática de terapia com essa solução completa. Com esse app você pode gerenciar facilmente seus agendamentos, pagamentos, prontuários, faturamento e muito mais."
 			},
 			"values": {
-				"all-in-one": "solução completa",
+				"all-in-one": "Solução completa",
 				"text": "Do agendamento de consultas ao processamento de pagamentos, manutenção de prontuários e faturamento, ajudamos você nas tarefas diárias para que tenha muito mais tempo para cuidar dos seus pacientes. Nossa solução pode transformar a gestão da sua prática, integrando tudo em uma única plataforma intuitiva.",
 				"text-focus": "Agora você pode focar no que realmente importa e deixar o resto com a gente."
 			},
 			"benefits": {
 				"increased-efficiency": {
-					"name": "Mais Eficiência",
+					"name": "Mais eficiência",
 					"description": "Perca menos tempo em tarefas administrativas. Automatize lembretes, agendamento de consultas e gerencie seus prontuários de forma integrada. Foque mais nos seus pacientes, não nos processos"
 				},
 				"better-patient-management": {
-					"name": "Maior Gestão de Pacientes",
+					"name": "Maior gestão de pacientes",
 					"description": "Acompanhe facilmente o histórico e as consultas dos pacientes. Auxilie seu atendimento com registros organizados e atualizados."
 				},
 				"reduced-administrative-burden": {
-					"name": "Elimine a Carga Administrativa",
+					"name": "Elimine a carga administrativa",
 					"description": "Simplificamos o fluxo do trabalho para você"
 				},
 				"enhanced-financial-control": {
-					"name": "Maior Controle Financeiro",
+					"name": "Maior controle financeiro",
 					"description": "Assuma o controle das suas finanças com faturamento seguro e eficiente"
 				}
 			},
 			"ct-action": {
-				"heading": "você quer revolucionar a sua prática de trabalho?",
-				"join-waitlist": "<strong>Junte-se à nossa lista de espera</strong> hoje e <strong>seja o primeirx</strong> a <strong>experimentar</strong> uma gestão de prática terapêutica <strong>inovadora</strong>. <strong>Desbloqueie</strong> <strong>novos níveis</strong> de <strong>eficiência</strong> e <strong>cuidado ao paciente</strong> com nossas <strong>ferramentas inovadoras</strong>."
+				"heading": "Você quer revolucionar a sua prática de trabalho?",
+				"join-waitlist": "<strong>Junte-se à nossa lista de espera</strong> hoje e <strong>e se antecipe</strong> para <strong>experimentar</strong> uma gestão de prática terapêutica <strong>inovadora</strong>. <strong>Desbloqueie</strong> <strong>novos níveis</strong> de <strong>eficiência</strong> e <strong>cuidado ao paciente</strong> com <strong>um produto feito para você</strong>."
 			}
+		},
+		"not-found": {
+			"title": "Eita, algo deu errado!",
+			"sub-title": "Mas relaxa que já estamos correndo atrás disso!",
+			"note": "Pois é... prometo que estamos :)"
 		}
 	}
 }

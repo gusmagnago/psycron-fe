@@ -1,4 +1,6 @@
 import { useEffect, useRef } from 'react';
+import ReactGA from 'react-ga4';
+import { useInView as RIUseInView } from 'react-intersection-observer';
 import { motion, useAnimation, useInView } from 'framer-motion';
 
 import { H1, H6, H6Wrapper, Heading, HeroWrapper, Image } from './Hero.styles';
@@ -6,6 +8,10 @@ import type { IHero } from './Hero.types';
 
 export const Hero = ({ headingText, imgSrc, helperText, c2Action }: IHero) => {
 	const headingRef = useRef<HTMLDivElement | null>(null);
+
+	const { ref: heroRef, inView: heroInView } = RIUseInView({
+		threshold: 1,
+	});
 
 	const isInView = useInView(headingRef);
 
@@ -18,6 +24,16 @@ export const Hero = ({ headingText, imgSrc, helperText, c2Action }: IHero) => {
 			controls.start('hidden');
 		}
 	}, [isInView, controls]);
+
+	useEffect(() => {
+		if (heroInView) {
+			ReactGA.event({
+				category: 'Section',
+				action: 'View Section',
+				label: 'Hero Section',
+			});
+		}
+	}, [heroInView]);
 
 	const inital = { opacity: 0, scale: 0.5 };
 
@@ -38,7 +54,7 @@ export const Hero = ({ headingText, imgSrc, helperText, c2Action }: IHero) => {
 	};
 
 	return (
-		<HeroWrapper as='section'>
+		<HeroWrapper as='section' ref={heroRef}>
 			<Heading ref={headingRef}>
 				<motion.div
 					initial={inital}

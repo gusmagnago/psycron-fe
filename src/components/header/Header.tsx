@@ -8,8 +8,9 @@ import useViewport from '@psycron/hooks/useViewport';
 import { scrollToSection } from '@psycron/utils/variables';
 
 import { HeaderWrapper } from './Header.styles';
+import type { IHeaderProps } from './Header.types';
 
-export const Header = () => {
+export const Header = ({ hideLinks = false }: IHeaderProps) => {
 	const { t } = useTranslation();
 
 	const { isMobile } = useViewport();
@@ -20,7 +21,7 @@ export const Header = () => {
 				<Brand />
 			</Box>
 			<Box display='flex' alignItems='center'>
-				{!isMobile ? (
+				{hideLinks || !isMobile ? (
 					<>
 						<Text isFirstUpper>
 							<Link to='#' isHeader onClick={() => scrollToSection('benefits')}>

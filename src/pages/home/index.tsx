@@ -1,28 +1,87 @@
-import type { FieldValues } from 'react-hook-form';
-import { useForm } from 'react-hook-form';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useParams } from 'react-router-dom';
 import { Box, Divider } from '@mui/material';
+import type { CustomError } from '@psycron/api/error';
+import { statusCodeToTranslationKey } from '@psycron/api/error';
+import { waitlistSubscription } from '@psycron/api/subs';
 import { C2Action } from '@psycron/components/c2action/C2Action';
+import type { IWaitlistSubs } from '@psycron/components/c2action/C2Action.types';
 import { Benefits } from '@psycron/components/landing/benefits/Benefits';
 import { Call2ActionSection } from '@psycron/components/landing/call-to-action/Call2Action';
 import { Hero } from '@psycron/components/landing/hero/Hero';
 import { Values } from '@psycron/components/landing/values/Values';
+import { useAlert } from '@psycron/context/alert/AlertContext';
 import { SEOProvider } from '@psycron/context/seo/SEOContext';
+import { useMutation } from '@tanstack/react-query';
 
 import { DOMAIN } from '../urls';
 
 export const Home = () => {
 	const { t } = useTranslation();
 
-	const {
-		register,
-		handleSubmit,
-		formState: { errors },
-	} = useForm();
+	const { locale } = useParams<{ locale: string }>();
 
-	const onSubmit = (data: FieldValues) => {
-		// eslint-disable-next-line no-console
-		console.log('🚀 ~ onSubmit ~ data:', data);
+	const [heroError, setHeroError] = useState<string | null>(null);
+	const [footerError, setFooterError] = useState<string | null>(null);
+
+	const { showAlert } = useAlert();
+
+	const heroMutation = useMutation({
+		mutationFn: waitlistSubscription,
+		onSuccess: () => {
+			setHeroError(null);
+			showAlert({
+				message: t('globals.success.subscribed'),
+				severity: 'success',
+			});
+		},
+		onError: (error: CustomError) => {
+			const translationKey = statusCodeToTranslationKey[error.statusCode];
+
+			setHeroError(t(translationKey));
+			showAlert({
+				message: t(translationKey),
+				severity: 'warning',
+				resetCallback: () => heroMutation.reset(),
+			});
+		},
+	});
+
+	const footerMutation = useMutation({
+		mutationFn: waitlistSubscription,
+		onSuccess: () => {
+			setFooterError(null);
+			showAlert({
+				message: t('globals.success.subscribed'),
+				severity: 'success',
+			});
+		},
+		onError: (error: CustomError) => {
+			const translationKey = statusCodeToTranslationKey[error.statusCode];
+			setFooterError(translationKey);
+			showAlert({
+				message: t(translationKey),
+				severity: 'warning',
+				resetCallback: () => footerMutation.reset(),
+			});
+		},
+	});
+
+	const onHeroSubmit = (data: IWaitlistSubs) => {
+		const submissionData = {
+			email: data.email.toLowerCase(),
+			language: locale,
+		};
+		heroMutation.mutate(submissionData);
+	};
+
+	const onFooterSubmit = (data: IWaitlistSubs) => {
+		const submissionData = {
+			email: data.email.toLowerCase(),
+			language: locale,
+		};
+		footerMutation.mutate(submissionData);
 	};
 
 	const homepageSEO = {
@@ -46,11 +105,10 @@ export const Home = () => {
 						<C2Action
 							i18nKey='components.c2-action.join-waitlist'
 							label={t('components.c2-action.email')}
-							handleSubmit={handleSubmit}
-							onSubmit={onSubmit}
-							register={register}
-							errors={errors}
+							onSubmit={onHeroSubmit}
 							bttnText={t('components.c2-action.join-now')}
+							error={heroError}
+							isLoading={heroMutation.isPending}
 						/>
 					}
 				/>
@@ -66,11 +124,10 @@ export const Home = () => {
 						c2Action={
 							<C2Action
 								label={t('components.c2-action.email')}
-								handleSubmit={handleSubmit}
-								onSubmit={onSubmit}
-								register={register}
-								errors={errors}
+								onSubmit={onFooterSubmit}
 								bttnText={t('components.c2-action.join-now')}
+								error={footerError}
+								isLoading={footerMutation.isPending}
 							/>
 						}
 					/>
