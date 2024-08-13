@@ -4,7 +4,9 @@
   --bg-color: #f7fafa;
   --color-default: #060b0e;
   --font-family: "Inter", sans-serif;
-	--header-big-height: 9.0625rem;
+	--header-heigh: 8.375rem;
+	--footer-height: 7rem;
+	--total-component-height: calc(var(--header-heigh) + var(--footer-height))
 }
 
 body,

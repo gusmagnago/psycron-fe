@@ -196,6 +196,12 @@
 			"title": "Oops, something went wrong!",
 			"sub-title": "But we promise we are working hard to fix it!",
 			"note": "Yes... both of us :)"
+		},
+		"unsubscribe": {
+			"title": "Goodbye for now, {{email}}!",
+			"body-text": "Thank you for being a part of our journey. While we’re sad to see you go, we completely understand your decision. We’ll keep working hard to bring you the best we’ve got, and just know, you’re always welcome back whenever you’re ready.",
+			"see-you": "Hope to see you again soon! ❤️",
+			"confirm": "Click here to complete and unsubscribe"
 		}
 	}
 }

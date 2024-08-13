@@ -20,7 +20,14 @@ import { AppLayout } from '@psycron/layouts/app-layout/AppLayout';
 import { PublicLayout } from '@psycron/layouts/public-layout/PublicLayout';
 import { AuthPage } from '@psycron/pages/auth';
 import { NotFound } from '@psycron/pages/error/NotFound';
-import { HOMEPAGE, LOCALISATION, SIGNIN, SIGNUP } from '@psycron/pages/urls';
+import { Unsubscribe } from '@psycron/pages/unsubscribe/Unsubscribe';
+import {
+	HOMEPAGE,
+	LOCALISATION,
+	SIGNIN,
+	SIGNUP,
+	UNSUBSCRIBE,
+} from '@psycron/pages/urls';
 
 const AnalyticsTracker: FC = () => {
 	const location = useLocation();
@@ -73,6 +80,7 @@ const router = createBrowserRouter([
 				element: <PublicLayout />,
 				children: [
 					{ index: true, element: <App /> },
+					{ path: UNSUBSCRIBE, element: <Unsubscribe /> },
 					{ path: SIGNIN, element: <AuthPage /> },
 					{ path: SIGNUP, element: <AuthPage /> },
 				],
