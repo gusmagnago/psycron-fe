@@ -195,6 +195,12 @@
 			"title": "Eita, algo deu errado!",
 			"sub-title": "Mas relaxa que já estamos correndo atrás disso!",
 			"note": "Pois é... prometo que estamos :)"
+		},
+		"unsubscribe": {
+			"title": "Até logo, {{email}}!",
+			"body-text": "Agradecemos por fazer parte da nossa jornada. Embora a gente fique triste em ver você partir, entendemos completamente sua decisão. Continuaremos trabalhando duro para oferecer o melhor que podemos e, lembre-se, estaremos sempre com as portas abertas para você, sempre que quiser voltar.",
+			"see-you": "Esperamos você de volta logo logo! ❤️",
+			"confirm": "Clique aqui para completar"
 		}
 	}
 }

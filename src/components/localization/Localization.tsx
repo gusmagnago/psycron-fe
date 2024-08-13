@@ -6,7 +6,7 @@ import { Select } from '../Select/Select';
 
 import { StyledSelectWrapper } from './Localization.styles';
 
-const LANGKEY = 'i18nextLng';
+export const LANGKEY = 'i18nextLng';
 
 export const Localization = () => {
 	const { i18n } = useTranslation();

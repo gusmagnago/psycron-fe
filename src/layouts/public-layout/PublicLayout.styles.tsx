@@ -22,6 +22,7 @@ export const FooterWrapper = styled(Box)`
 	position: relative;
 	padding: 0 ${spacing.large} ${spacing.large};
 	z-index: 2;
+	height: var(--footer-height);
 `;
 
 export const FooterContent = styled(Box)`

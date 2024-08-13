@@ -4,7 +4,7 @@ const { VITE_PSYCRON_BASE_API_URL } = import.meta.env;
 
 const baseURL =
 	import.meta.env.MODE === 'development'
-		? 'http://localhost:2008/api/v1'
+		? 'http://localhost:8080/api/v1'
 		: VITE_PSYCRON_BASE_API_URL;
 
 const apiClient = axios.create({
