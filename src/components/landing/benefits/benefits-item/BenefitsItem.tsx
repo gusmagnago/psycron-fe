@@ -9,6 +9,7 @@ import {
 	StyledBox,
 	StyledDescription,
 	StyledImgWrapper,
+	StyledMotionDescription,
 	StyledTitle,
 } from './BenefitsItem.styles';
 import type { IParallaxBenefitItemProps } from './BenefitsItem.types';
@@ -54,14 +55,14 @@ export const ParallaxBenefitItem = ({
 						{t(`page.landing.benefits.${i18Nkey}.name`)}
 					</StyledTitle>
 				</motion.div>
-				<motion.div ref={textRef} style={{ y: textY }}>
+				<StyledMotionDescription ref={textRef} y={textY}>
 					<StyledDescription
 						variant='body2'
 						textAlign={justify.includes('end') ? 'right' : 'left'}
 					>
 						{t(`page.landing.benefits.${i18Nkey}.description`)}
 					</StyledDescription>
-				</motion.div>
+				</StyledMotionDescription>
 			</StyledBox>
 		</BenefitsItems>
 	);

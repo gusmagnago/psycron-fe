@@ -140,7 +140,7 @@
 		"header": {
 			"join": "Join now",
 			"benefits": "Benefits",
-			"about": "About"
+			"contact": "Contact"
 		},
 		"link": {
 			"navigate": {
@@ -149,8 +149,8 @@
 			}
 		},
 		"footer": {
-			"contact": "Would you like to get in touch? <a>Find me here</a>",
-			"find-me": "Find me here",
+			"contact": "Would you like to get in touch? <a>Find us here</a>",
+			"find-me": "Find us here",
 			"credit": {
 				"illustration": "Illustrations by <owner>Icons 8</owner> from <page>Ouch!</page>"
 			}

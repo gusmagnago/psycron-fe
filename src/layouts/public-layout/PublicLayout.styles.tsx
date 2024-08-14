@@ -1,6 +1,6 @@
 import { Box, styled } from '@mui/material';
 import { Text } from '@psycron/components/text/Text';
-import { isBiggerThanMediumMedia } from '@psycron/theme/media-queries/mediaQueries';
+import { isMobileMedia } from '@psycron/theme/media-queries/mediaQueries';
 import { spacing } from '@psycron/theme/spacing/spacing.theme';
 
 export const PublicLayoutWrapper = styled(Box)`
@@ -33,10 +33,13 @@ export const FooterContent = styled(Box)`
 
 export const StyledFooterTex = styled(Text)`
 	display: flex;
-	flex-direction: column;
 	margin-bottom: ${spacing.small};
+	flex-direction: row;
+	width: 100%;
+	justify-content: center;
 
-	${isBiggerThanMediumMedia} {
-		flex-direction: row;
+	${isMobileMedia} {
+		flex-direction: column;
+		align-items: center;
 	}
 `;

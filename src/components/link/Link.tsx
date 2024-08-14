@@ -18,7 +18,8 @@ export const Link = ({
 
 	const isString = (value: To): value is string => typeof value === 'string';
 
-	const isExternal = isString(to) && /^https?:\/\//.test(to);
+	const isExternal =
+		isString(to) && (/^https?:\/\//.test(to) || /^mailto:/.test(to));
 
 	const handleClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
 		const label = isString(to) ? to : to.pathname;

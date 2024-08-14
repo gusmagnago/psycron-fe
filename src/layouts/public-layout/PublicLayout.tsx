@@ -38,12 +38,12 @@ export const PublicLayout = () => {
 			</PublicLayoutWrapper>
 			<FooterWrapper>
 				<FooterContent>
-					<StyledFooterTex id='about'>
+					<StyledFooterTex id='contact'>
 						<Trans
 							i18nKey={t('components.footer.contact')}
 							components={{
 								a: (
-									<Link to='https://www.linkedin.com/in/gustavo-magnago/'>
+									<Link to='mailto:contact@psycron.app'>
 										{t('components.footer.find-me')}
 									</Link>
 								),

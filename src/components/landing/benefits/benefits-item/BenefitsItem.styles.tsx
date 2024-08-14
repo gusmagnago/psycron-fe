@@ -3,6 +3,7 @@ import { Box, css, styled } from '@mui/material';
 import { Text } from '@psycron/components/text/Text';
 import { isBiggerThanMediumMedia } from '@psycron/theme/media-queries/mediaQueries';
 import { spacing } from '@psycron/theme/spacing/spacing.theme';
+import type { MotionValue } from 'framer-motion';
 import { motion } from 'framer-motion';
 
 export const BenefitsItems = styled(Box, {
@@ -25,7 +26,11 @@ export const BenefitsItems = styled(Box, {
 export const StyledAnimatedBox = styled(motion.div)`
 	scroll-snap-type: y mandatory;
 	scroll-behavior: smooth;
-	height: 100%;
+	height: 10rem;
+
+	${isBiggerThanMediumMedia} {
+		height: 12.5rem;
+	}
 `;
 
 export const StyledImgWrapper = styled(Box)`
@@ -33,7 +38,7 @@ export const StyledImgWrapper = styled(Box)`
 	width: 100%;
 
 	${isBiggerThanMediumMedia} {
-		height: 15.625rem;
+		height: 12.5rem;
 	}
 `;
 
@@ -74,6 +79,18 @@ export const StyledBox = styled(Box, {
 			: css`
 					align-items: flex-start;
 				`}
+`;
+
+export const StyledMotionDescription = styled(motion.div, {
+	shouldForwardProp: (props) => props !== 'y',
+})<{ y: MotionValue<number> }>`
+	width: 100%;
+
+	transform: translateY(${({ y }) => `${y}px`});
+
+	${isBiggerThanMediumMedia} {
+		width: 50%;
+	}
 `;
 
 export const StyledDescription = styled(Text)`

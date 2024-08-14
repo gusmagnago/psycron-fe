@@ -139,19 +139,19 @@
 		"header": {
 			"join": "Inscreva-se",
 			"benefits": "Utilidades",
-			"about": "Sobre nós"
+			"contact": "Contato"
 		},
 		"link": {
 			"navigate": {
 				"back": "Voltar",
 				"next": "Prosseguir"
-			},
-			"footer": {
-				"contact": "Quer entrar em contato? <a>Você pode me encontrar aqui</a>",
-				"find-me": "Você pode me encontrar aqui",
-				"credit": {
-					"illustration": "Ilustrações por <owner>Icons 8</owner> de <page>Ouch!</page>"
-				}
+			}
+		},
+		"footer": {
+			"contact": "Quer entrar em contato? <a>Você pode nos encontrar aqui</a>",
+			"find-me": "Você pode nos encontrar aqui",
+			"credit": {
+				"illustration": "Ilustrações por <owner>Icons 8</owner> de <page>Ouch!</page>"
 			}
 		}
 	},
