@@ -40,7 +40,7 @@ export const C2Action = ({
 	return (
 		<C2ActionWrapper component='form' onSubmit={handleSubmit(onSubmit)}>
 			{i18nKey !== undefined ? (
-				<C2ActionText variant='subtitle1'>
+				<C2ActionText>
 					<Trans
 						i18nKey={i18nKey}
 						components={{ strong: <HighlightedText /> }}

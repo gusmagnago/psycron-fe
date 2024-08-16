@@ -3,7 +3,7 @@ import ReactGA from 'react-ga4';
 import { useInView as RIUseInView } from 'react-intersection-observer';
 import { motion, useAnimation, useInView } from 'framer-motion';
 
-import { H1, H6, H6Wrapper, Heading, HeroWrapper, Image } from './Hero.styles';
+import { H1, H2, H6Wrapper, Heading, HeroWrapper, Image } from './Hero.styles';
 import type { IHero } from './Hero.types';
 
 export const Hero = ({ headingText, imgSrc, helperText, c2Action }: IHero) => {
@@ -74,11 +74,13 @@ export const Hero = ({ headingText, imgSrc, helperText, c2Action }: IHero) => {
 						src={imgSrc}
 						alt='3D illustration of a black women with short curly hair wearing a white shirt and a yellow skirt, smiling and pointing to the side, wearing a smartwatch.'
 						loading='lazy'
+						width={250}
+						height={250}
 					/>
 				</motion.div>
 			</Heading>
 			<H6Wrapper>
-				<H6 variant='h6'>{helperText}</H6>
+				<H2 variant='h2'>{helperText}</H2>
 			</H6Wrapper>
 			{c2Action}
 		</HeroWrapper>

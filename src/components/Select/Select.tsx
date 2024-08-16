@@ -1,19 +1,14 @@
 import { forwardRef } from 'react';
 import type { SelectChangeEvent, SelectProps } from '@mui/material';
-import {
-	InputLabel,
-	MenuItem,
-	Select as MuiSelect,
-	Typography,
-} from '@mui/material';
+import { MenuItem, Select as MuiSelect, Typography } from '@mui/material';
 import { ChevronDown } from 'lucide-react';
 
-import { ControlledWrapper } from './Select.styles';
+import { ControlledWrapper, StyledInputLabel } from './Select.styles';
 import type { SelectComponentProps } from './Select.types';
 
 export const Select = forwardRef<
-  HTMLSelectElement,
-  SelectComponentProps & SelectProps
+	HTMLSelectElement,
+	SelectComponentProps & SelectProps
 >(
 	(
 		{
@@ -28,41 +23,50 @@ export const Select = forwardRef<
 			name,
 		},
 		ref
-	) => (
-		<ControlledWrapper
-			required={required}
-			fullWidth={!width && true}
-			disabled={disabled}
-			width={width}
-		>
-			<InputLabel>{selectLabel}</InputLabel>
-			<MuiSelect
-				variant='standard'
-				name={name}
-				value={value}
-				label={selectLabel}
-				onChange={
-          onChangeSelect as (event: SelectChangeEvent<string | number>) => void
-				}
-				IconComponent={ChevronDown}
-				fullWidth
-				inputRef={ref}
+	) => {
+		const labelId = `${name}-label`;
+
+		return (
+			<ControlledWrapper
+				required={required}
+				fullWidth={!width && true}
+				disabled={disabled}
+				width={width}
 			>
-				{items?.map(({ name, value }, index) => (
-					<MenuItem
-						value={value}
-						divider={index !== items.length - 1}
-						key={`item-${name}-${value}`}
-					>
-						{name}
-						{subtitle ? (
-							<Typography variant='caption'>{value}</Typography>
-						) : null}
-					</MenuItem>
-				))}
-			</MuiSelect>
-		</ControlledWrapper>
-	)
+				<StyledInputLabel id={labelId}>{selectLabel}</StyledInputLabel>
+				<MuiSelect
+					variant='standard'
+					name={name}
+					value={value}
+					labelId={labelId}
+					label={selectLabel}
+					aria-labelledby={labelId}
+					aria-label={selectLabel}
+					onChange={
+						onChangeSelect as (
+							event: SelectChangeEvent<string | number>
+						) => void
+					}
+					IconComponent={ChevronDown}
+					fullWidth
+					inputRef={ref}
+				>
+					{items?.map(({ name, value }, index) => (
+						<MenuItem
+							value={value}
+							divider={index !== items.length - 1}
+							key={`item-${name}-${value}`}
+						>
+							{name}
+							{subtitle ? (
+								<Typography variant='caption'>{value}</Typography>
+							) : null}
+						</MenuItem>
+					))}
+				</MuiSelect>
+			</ControlledWrapper>
+		);
+	}
 );
 
 Select.displayName = 'Select';

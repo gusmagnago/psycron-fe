@@ -139,7 +139,8 @@
 		"header": {
 			"join": "Inscreva-se",
 			"benefits": "Utilidades",
-			"contact": "Contato"
+			"contact": "Contato",
+			"language": "Idioma"
 		},
 		"link": {
 			"navigate": {
