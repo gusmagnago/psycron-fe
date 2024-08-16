@@ -24,7 +24,7 @@ import { ImgCredits, NoteCard, StoryLink } from './Introduction.styles';
 import type { DesignSystem, NestedItem } from './Introduction.types';
 
 export default {
-	title: 'Getting Started',
+	title: 'Introduction',
 } as Meta;
 
 export const Introduction = () => {
@@ -52,7 +52,7 @@ export const Introduction = () => {
 			title: 'Components',
 			icon: <Component color={palette.primary.main} />,
 			description:
-        'Multiple elements working harmoniously to craft visually stunning, reusable pieces!',
+				'Multiple elements working harmoniously to craft visually stunning, reusable pieces!',
 			items: [
 				{ name: 'card' },
 				{
@@ -116,14 +116,14 @@ export const Introduction = () => {
 			title: 'Layouts',
 			icon: <LayoutTemplate color={palette.tertiary.main} />,
 			description:
-        'Frameworks that provide the skeleton for organizing components and creating...',
+				'Frameworks that provide the skeleton for organizing components and creating...',
 			items: [{ name: 'app-layout' }],
 		},
 		{
 			title: 'Pages',
 			icon: <AppWindow color={palette.info.main} />,
 			description:
-        'Complete compositions of elements, components, and structures.',
+				'Complete compositions of elements, components, and structures.',
 		},
 	];
 
@@ -133,18 +133,30 @@ export const Introduction = () => {
 
 	return (
 		<Box style={{ padding: '20px' }}>
-			<Box display='flex' alignItems='center' px={4} mb={5}>
+			<Box
+				display='flex'
+				alignItems='center'
+				px={4}
+				mb={5}
+				justifyContent='center'
+			>
 				<img src='/images/img4.png' height={150} loading='lazy' />
 				<Box>
-					<Typography variant='h4' fontWeight={700} textAlign='center'>
-            Welcome to the
+					<Typography
+						variant='h4'
+						fontWeight={700}
+						textAlign='center'
+						display='flex'
+						justifyContent='center'
+					>
+						Welcome to the
 						<Link to={'http://psycron.app'}>psycron.app</Link>
-            Design System
+						Design System
 					</Typography>
 					<Box p={6}>
 						<Typography variant='subtitle1' textAlign='left'>
-              Here you can find the list of all elements, components and pages
-              that might help you to create the most beautiful UI you can
+							Here you can find the list of all elements, components and pages
+							that might help you to create the most beautiful UI you can
 						</Typography>
 					</Box>
 				</Box>
@@ -152,22 +164,22 @@ export const Introduction = () => {
 			</Box>
 			<Box>
 				<Typography variant='h6' fontWeight={600} gutterBottom>
-          Getting Started
+					Getting Started
 				</Typography>
 				<Typography variant='body1'>
-          To get started, select a component from the sidebar. You can select
-          the one you need to debug and get ready to have fun!
+					To get started, select a component from the sidebar. You can select
+					the one you need to debug and get ready to have fun!
 				</Typography>
 			</Box>
 			<NoteCard>
 				<Typography textAlign='center' variant='subtitle1'>
-          We've crafted our UI library around fundamental web principles. Keep
-          it simple, readable, scalable, and reusable.
+					We've crafted our UI library around fundamental web principles. Keep
+					it simple, readable, scalable, and reusable.
 				</Typography>
 			</NoteCard>
 			<Box mt={5}>
 				<Typography variant='subtitle2' py={5}>
-          This translates into our design system being divided into 4 key items:
+					This translates into our design system being divided into 4 key items:
 				</Typography>
 				{designSystem.map((item, index) => (
 					<ListItem key={index}>
@@ -249,7 +261,7 @@ export const Introduction = () => {
 										{item.components ? (
 											<Box ml={7}>
 												<Typography variant='subtitle2' fontWeight={600} my={4}>
-                          Components
+													Components
 												</Typography>
 												{item.components.map((component, componentIndex) => (
 													<ListItem key={componentIndex}>
@@ -285,27 +297,27 @@ export const Introduction = () => {
 				my={6}
 			>
 				<Typography variant='h4' fontWeight={600}>
-          Thank you for being part of it!
+					Thank you for being part of it!
 				</Typography>
 				<img src='/images/img6.png' height={150} loading='lazy' />
 			</Box>
 			<ImgCredits>
 				<Typography>
-          Illustrations by
+					Illustrations by
 					<a
 						href='https://icons8.com/illustrations/author/zD2oqC8lLBBA'
 						target='_blank'
 						rel='noreferrer'
 					>
-            Icons 8
+						Icons 8
 					</a>
-          from
+					from
 					<a
 						href='https://icons8.com/illustrations'
 						target='_blank'
 						rel='noreferrer'
 					>
-            Ouch!
+						Ouch!
 					</a>
 				</Typography>
 				<Box>
@@ -315,7 +327,7 @@ export const Introduction = () => {
 							target='_blank'
 							rel='noreferrer'
 						>
-              Find more here
+							Find more here
 						</a>
 					</Typography>
 				</Box>
@@ -326,7 +338,7 @@ export const Introduction = () => {
 						target='_blank'
 						rel='noreferrer'
 					>
-            animatiss
+						animatiss
 					</a>
 				</Typography>
 			</ImgCredits>

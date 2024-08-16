@@ -6,7 +6,6 @@ import { Localization } from '@psycron/components/localization/Localization';
 import { Text } from '@psycron/components/text/Text';
 import useViewport from '@psycron/hooks/useViewport';
 import { HOMEPAGE } from '@psycron/pages/urls';
-import { scrollToSection } from '@psycron/utils/variables';
 
 import { BrandLink, BrandWrapper, HeaderWrapper } from './Header.styles';
 import type { IHeaderProps } from './Header.types';
@@ -23,7 +22,6 @@ export const Header = ({ hideLinks = false }: IHeaderProps) => {
 		<HeaderWrapper>
 			<BrandWrapper>
 				<BrandLink href={HOMEPAGE}>
-					{/* <Brand /> */}
 					<img src='/images/og-image.png' width={'auto'} height={'100%'} />
 				</BrandLink>
 			</BrandWrapper>
@@ -31,17 +29,17 @@ export const Header = ({ hideLinks = false }: IHeaderProps) => {
 				{!notShowLinks && !isMobile ? (
 					<>
 						<Text isFirstUpper>
-							<Link to='#' isHeader onClick={() => scrollToSection('benefits')}>
+							<Link to='#benefits' isHeader>
 								{t('components.header.benefits')}
 							</Link>
 						</Text>
 						<Text isFirstUpper>
-							<Link to='#' isHeader onClick={() => scrollToSection('join-now')}>
+							<Link to='#join-now' isHeader>
 								{t('components.header.join')}
 							</Link>
 						</Text>
 						<Text isFirstUpper>
-							<Link to='#' isHeader onClick={() => scrollToSection('contact')}>
+							<Link to='#contact' isHeader>
 								{t('components.header.contact')}
 							</Link>
 						</Text>
