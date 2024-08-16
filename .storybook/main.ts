@@ -1,21 +1,19 @@
 import type { StorybookConfig } from '@storybook/react-vite';
 
 const config: StorybookConfig = {
-  stories: ['../src/**/*.mdx', '../src/**/*.stories.@(js|jsx|mjs|ts|tsx|mdx)'],
-  addons: [
-    '@storybook/addon-links',
-    '@storybook/addon-essentials',
-    '@chromatic-com/storybook',
-    '@storybook/addon-interactions',
-    '@storybook/addon-themes',
-    'storybook-react-i18next',
-  ],
-  docs: {},
-  framework: {
-    name: '@storybook/react-vite',
-    options: {},
-  },
-  previewHead: (head) => `
+	stories: ['../src/**/*.mdx', '../src/**/*.stories.@(js|jsx|mjs|ts|tsx|mdx)'],
+	addons: [
+		'@storybook/addon-links',
+		'@storybook/addon-essentials',
+		'@chromatic-com/storybook',
+		'@storybook/addon-interactions',
+		'@storybook/addon-themes',
+		'storybook-react-i18next',
+		'@storybook/addon-viewport',
+	],
+	docs: {},
+	framework: '@storybook/react-vite',
+	previewHead: (head) => `
     ${head}
    <link rel="preconnect" href="https://fonts.googleapis.com" />
    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />

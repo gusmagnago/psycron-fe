@@ -8,8 +8,8 @@ import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 
 import '@psycron/index.css';
 
+import AppRouter from './routes/AppRouter';
 import i18n from './i18n';
-import AppRouter from './routes';
 import theme from './theme';
 
 const queryClient = new QueryClient();

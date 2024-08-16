@@ -21,9 +21,18 @@ export const Link = ({
 	const isExternal =
 		isString(to) && (/^https?:\/\//.test(to) || /^mailto:/.test(to));
 
+	const isHashLink = isString(to) && to.startsWith('#');
+
 	const handleClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
-		const label = isString(to) ? to : to.pathname;
-		trackLinkClick(label);
+		if (isHashLink) {
+			e.preventDefault();
+
+			const targetElement = document.getElementById(to.slice(1));
+			if (targetElement) {
+				targetElement.scrollIntoView({ behavior: 'smooth' });
+			}
+			return;
+		}
 
 		if (to === 'go-back') {
 			e.preventDefault();
@@ -37,7 +46,11 @@ export const Link = ({
 				navigate(HOMEPAGE);
 			}
 		}
+
+		const label = isString(to) ? to : to.pathname;
+		trackLinkClick(label);
 	};
+
 	if (isExternal) {
 		return (
 			<StyledAnchor
@@ -54,9 +67,7 @@ export const Link = ({
 		);
 	}
 
-	const prefixedTo = isString(to)
-		? `/${lang}${to}`
-		: { ...to, pathname: `/${lang}${to.pathname}` };
+	const prefixedTo = isString(to) ? `/${lang}${to}` : '#';
 
 	return (
 		<StyledLink

@@ -1,5 +1,5 @@
 // MAIN
-export const DOMAIN = 'https://www.psycron.app';
+export const DOMAIN = 'https://psycron.app';
 export const HOMEPAGE = '/';
 export const LOCALISATION = '/:locale';
 export const BASE_API_URL = 'https://api.psycron.app/api/v1/';

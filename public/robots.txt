@@ -1,0 +1,5 @@
+
+User-agent: *
+Disallow:
+
+Sitemap: https://psycron.app/sitemap.xml
