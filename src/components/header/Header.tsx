@@ -21,8 +21,13 @@ export const Header = ({ hideLinks = false }: IHeaderProps) => {
 	return (
 		<HeaderWrapper>
 			<BrandWrapper>
-				<BrandLink href={HOMEPAGE}>
-					<img src='/images/og-image.png' width={'auto'} height={'100%'} />
+				<BrandLink href={HOMEPAGE} aria-label='Go to homepage'>
+					<img
+						src='/images/og-image.png'
+						width={'auto'}
+						height={'100%'}
+						alt='Psycron logo'
+					/>
 				</BrandLink>
 			</BrandWrapper>
 			<Box display='flex' alignItems='center'>

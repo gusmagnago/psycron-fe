@@ -51,14 +51,14 @@ export const H1 = styled(Text)`
 	}
 `;
 
-export const H6 = styled(Text)`
+export const H2 = styled(Text)`
 	font-weight: 500;
-	font-size: 1rem;
+	font-size: 1.5rem;
 	text-align: left;
 	width: 100%;
 
 	${isBiggerThanTabletMedia} {
-		font-size: 1.2rem;
+		font-size: 2rem;
 		width: 80%;
 	}
 `;

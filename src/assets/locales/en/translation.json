@@ -140,7 +140,8 @@
 		"header": {
 			"join": "Join now",
 			"benefits": "Benefits",
-			"contact": "Contact"
+			"contact": "Contact",
+			"language": "Language"
 		},
 		"link": {
 			"navigate": {
