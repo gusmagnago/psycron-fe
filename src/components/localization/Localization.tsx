@@ -9,7 +9,7 @@ import { StyledSelectWrapper } from './Localization.styles';
 export const LANGKEY = 'i18nextLng';
 
 export const Localization = () => {
-	const { i18n, t } = useTranslation();
+	const { i18n } = useTranslation();
 	const { locale } = useParams<{ locale: string }>();
 	const navigate = useNavigate();
 	const location = useLocation();
@@ -66,7 +66,7 @@ export const Localization = () => {
 		<StyledSelectWrapper>
 			<Select
 				name='language-select'
-				selectLabel={t('components.header.language')}
+				// selectLabel={t('components.header.language')}
 				value={defaultLang.split('-')[0]}
 				onChangeSelect={(e) => changeLanguage(e.target.value as string)}
 				items={availableLanguages}

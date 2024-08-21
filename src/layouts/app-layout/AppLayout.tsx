@@ -3,7 +3,7 @@ import { Outlet } from 'react-router-dom';
 import { Box, Divider } from '@mui/material';
 import { Navbar } from '@psycron/components/navbar/Navbar';
 import { UserDetailsCard } from '@psycron/components/user/components/user-details-card/UserDetailsCard';
-import { useUserDetails } from '@psycron/context/user/UserDetailsContext';
+import { useUserDetails } from '@psycron/context/user/details/UserDetailsContext';
 import useViewport from '@psycron/hooks/useViewport';
 
 import { Content, LayoutWrapper } from './AppLayout.styles';
@@ -48,9 +48,7 @@ export const AppLayout: FC = () => {
 			</Box>
 			<Box>
 				<Divider
-					orientation={
-						isMobile || isTablet ? 'horizontal' : 'vertical'
-					}
+					orientation={isMobile || isTablet ? 'horizontal' : 'vertical'}
 				/>
 			</Box>
 			<Content>

@@ -1,7 +1,7 @@
 import { useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Box, IconButton } from '@mui/material';
-import { useUserDetails } from '@psycron/context/user/UserDetailsContext';
+import { useUserDetails } from '@psycron/context/user/details/UserDetailsContext';
 import useClickOutside from '@psycron/hooks/useClickoutside';
 import useViewport from '@psycron/hooks/useViewport';
 import { LOGOUT } from '@psycron/pages/urls';

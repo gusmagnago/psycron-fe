@@ -28,19 +28,23 @@ export const Unsubscribe = () => {
 
 	const { data, error, isLoading } = useQuery({
 		queryKey: ['subscriber', token],
-		queryFn: () => getSubscriber({ token }),
+		queryFn: () => getSubscriber(token),
 	});
 
+	const handleNavigationAfterSuccess = () => {
+		setTimeout(() => {
+			navigate(HOMEPAGE);
+		}, 5000);
+	};
+
 	const mutation = useMutation({
-		mutationFn: () => unSubscribe({ token }),
+		mutationFn: () => unSubscribe(token),
 		onSuccess: () => {
 			showAlert({
 				message: t('globals.success.subscribed'),
 				severity: 'success',
 			});
-			setTimeout(() => {
-				navigate(HOMEPAGE);
-			}, 5000);
+			handleNavigationAfterSuccess();
 		},
 		onError: () => {
 			showAlert({

@@ -1,26 +1,18 @@
 import axios from 'axios';
 
-const { VITE_PSYCRON_BASE_API_URL } = import.meta.env;
-
-const baseURL =
-	import.meta.env.MODE === 'development'
-		? 'http://localhost:8080/api/v1'
-		: VITE_PSYCRON_BASE_API_URL;
-
 const apiClient = axios.create({
-	baseURL: baseURL,
-	headers: {
-		'Content-Type': 'application/json',
-	},
+	baseURL: import.meta.env.VITE_PSYCRON_BASE_API_URL,
+	headers: { 'Content-Type': 'application/json' },
 	withCredentials: true,
 });
 
-apiClient.interceptors.request.use(
-	(config) => {
-		return config;
-	},
+apiClient.interceptors.response.use(
+	(response) => response,
 	(error) => {
-		return Promise.reject(error);
+		const errorMessage =
+			error.response?.data?.message || 'Unknown error occurred';
+		const statusCode = error.response?.status || 500;
+		return Promise.reject({ message: errorMessage, statusCode });
 	}
 );
 

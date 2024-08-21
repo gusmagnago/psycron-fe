@@ -1,5 +1,5 @@
 import { useRef } from 'react';
-import { useUserDetails } from '@psycron/context/user/UserDetailsContext';
+import { useUserDetails } from '@psycron/context/user/details/UserDetailsContext';
 import useClickOutside from '@psycron/hooks/useClickoutside';
 
 import { UserDetails } from '../user-details/UserDetails';

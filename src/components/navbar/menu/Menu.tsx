@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import { Box, Divider } from '@mui/material';
-import { useAuth } from '@psycron/context/user/UserAuthenticationContext';
+import { useAuth } from '@psycron/context/user/auth/UserAuthenticationContext';
 import useViewport from '@psycron/hooks/useViewport';
 import { LOGOUT } from '@psycron/pages/urls';
 

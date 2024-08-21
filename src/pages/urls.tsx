@@ -12,3 +12,6 @@ export const LOGOUT = 'logout';
 
 // UNSUBSCRIBE
 export const UNSUBSCRIBE = ':token/unsubscribe';
+
+// PRIVATE
+export const DASHBOARD = 'dashboard';

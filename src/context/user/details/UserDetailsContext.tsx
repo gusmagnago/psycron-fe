@@ -2,23 +2,23 @@ import type { FC, ReactNode } from 'react';
 import { createContext, useContext, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-export interface UserBoxContextType {
-    handleClickEditUser: (path: string) => void;
-    isUserDetailsVisible: boolean;
-    toggleUserDetails: () => void;
-}
+import { useAuth } from '../auth/UserAuthenticationContext';
+
+import type { UserBoxContextType } from './UserDetailsContext.types';
 
 export const UserDetailsContext = createContext<UserBoxContextType | undefined>(
-	undefined,
+	undefined
 );
 
 export const UserDetailsProvider: FC<{ children: ReactNode }> = ({
 	children,
 }) => {
 	const [isUserDetailsVisible, setIsUserDetailsVisible] =
-        useState<boolean>(false);
+		useState<boolean>(false);
 
 	const navigate = useNavigate();
+
+	const { user } = useAuth();
 
 	const toggleUserDetails = () => {
 		setIsUserDetailsVisible((prev) => !prev);
@@ -35,6 +35,7 @@ export const UserDetailsProvider: FC<{ children: ReactNode }> = ({
 				isUserDetailsVisible,
 				toggleUserDetails,
 				handleClickEditUser,
+				user,
 			}}
 		>
 			{children}
@@ -45,9 +46,7 @@ export const UserDetailsProvider: FC<{ children: ReactNode }> = ({
 export const useUserDetails = () => {
 	const context = useContext(UserDetailsContext);
 	if (!context) {
-		throw new Error(
-			'useUserDetails must be used within a UserDetailsProvider',
-		);
+		throw new Error('useUserDetails must be used within a UserDetailsProvider');
 	}
 	return context;
 };

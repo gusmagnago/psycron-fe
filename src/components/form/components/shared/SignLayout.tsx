@@ -15,7 +15,7 @@ export const SignLayout: FC<{ children: ReactNode; isSignin?: boolean }> = ({
 	const { t } = useTranslation();
 
 	return (
-		<SignUpWrapper m={6}>
+		<SignUpWrapper>
 			<LogoWrapper display='flex' justifyContent='center'>
 				<Brand color={palette.primary.main} />
 			</LogoWrapper>

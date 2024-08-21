@@ -13,7 +13,7 @@ import {
 	PlanUnpaid,
 } from '@psycron/components/icons';
 import { Tooltip } from '@psycron/components/tooltip/Tooltip';
-import { useUserDetails } from '@psycron/context/user/UserDetailsContext';
+import { useUserDetails } from '@psycron/context/user/details/UserDetailsContext';
 import useClickOutside from '@psycron/hooks/useClickoutside';
 import useViewport from '@psycron/hooks/useViewport';
 
@@ -153,17 +153,13 @@ export const UserDetails = ({ plan, user }: IUserDetailsCardProps) => {
 									variant='subtitle1'
 									fontWeight={600}
 								>{`${firstName} ${lastName}`}</Typography>
-								<Typography variant='overline'>
-									{email}
-								</Typography>
+								<Typography variant='overline'>{email}</Typography>
 							</NameEmailBox>
 							<StyledUserDetailsLinks
 								onClick={() => handleClickEditUser('/name')}
 							>
 								<Typography variant='caption'>
-									{isEditUser
-										? t('components.user-details.edit')
-										: null}
+									{isEditUser ? t('components.user-details.edit') : null}
 								</Typography>
 							</StyledUserDetailsLinks>
 						</Box>
@@ -180,9 +176,7 @@ export const UserDetails = ({ plan, user }: IUserDetailsCardProps) => {
 				<UserDetailsItems>
 					{userDetailsCardItems.map(
 						({ name, icon, value, sub, subPath, edit }, index) => (
-							<UserDetailsItemWrapper
-								key={`item-${name}-${index}`}
-							>
+							<UserDetailsItemWrapper key={`item-${name}-${index}`}>
 								<ItemWrapper>
 									<Box height={40}>{icon}</Box>
 									<Item>
@@ -194,21 +188,17 @@ export const UserDetails = ({ plan, user }: IUserDetailsCardProps) => {
 											{name}
 										</Typography>
 										<StyledUserDetailsLinks
-											onClick={() =>
-												handleClickEditUser(subPath)
-											}
+											onClick={() => handleClickEditUser(subPath)}
 										>
 											<Typography variant='caption'>
-												{isEditUser && edit?.length
-													? edit
-													: sub}
+												{isEditUser && edit?.length ? edit : sub}
 											</Typography>
 										</StyledUserDetailsLinks>
 									</Item>
 								</ItemWrapper>
 								<Box>{value}</Box>
 							</UserDetailsItemWrapper>
-						),
+						)
 					)}
 				</UserDetailsItems>
 			</Box>

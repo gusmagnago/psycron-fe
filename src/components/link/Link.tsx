@@ -13,7 +13,7 @@ export const Link = ({
 	isHeader,
 	...props
 }: ILinkProps) => {
-	const { lang } = useParams<{ lang: string }>();
+	const { locale } = useParams<{ locale: string }>();
 	const navigate = useNavigate();
 
 	const isString = (value: To): value is string => typeof value === 'string';
@@ -67,7 +67,7 @@ export const Link = ({
 		);
 	}
 
-	const prefixedTo = isString(to) ? `/${lang}${to}` : '#';
+	const prefixedTo = isString(to) ? `/${locale}${to}` : '#';
 
 	return (
 		<StyledLink
