@@ -30,7 +30,8 @@
 		"resume": "Retomar",
 		"error": {
 			"already-subscribed": "Você já está na nossa lista de espera",
-			"internal-server-error": "Algo aconteceu errado, tente novamente mais tarde"
+			"internal-server-error": "Algo aconteceu errado, tente novamente mais tarde",
+			"invalid-user": "Email ou senha invalidos"
 		},
 		"success": {
 			"subscribed": "Você foi inscrito com sucesso. Por favor verifique o seu -mail!"

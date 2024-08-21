@@ -30,7 +30,8 @@
 		"resume": "Resume",
 		"error": {
 			"already-subscribed": "Your email is already subscribed",
-			"internal-server-error": "Something went wrong, please try again later"
+			"internal-server-error": "Something went wrong, please try again later",
+			"invalid-user": "Invalid email or password"
 		},
 		"success": {
 			"subscribed": "You were successfully subscribed. Please check your email!"

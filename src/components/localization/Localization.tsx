@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import Cookies from 'js-cookie';
 
 import { Select } from '../Select/Select';
 
@@ -27,7 +28,7 @@ export const Localization = () => {
 	};
 
 	const getDefaultLang = () => {
-		const storedLang = localStorage.getItem(LANGKEY);
+		const storedLang = Cookies.get(LANGKEY);
 		if (storedLang) {
 			return storedLang.toLowerCase();
 		} else {
@@ -46,14 +47,14 @@ export const Localization = () => {
 		const newLang = lng.toLowerCase();
 		i18n.changeLanguage(newLang);
 		setDefaultLang(newLang);
-		localStorage.setItem(LANGKEY, newLang);
+		Cookies.set(LANGKEY, newLang, { expires: 7 });
 
 		const newPath = location.pathname.replace(`/${locale}`, `/${newLang}`);
 		navigate(newPath);
 	};
 
 	useEffect(() => {
-		const storedLang = localStorage.getItem(LANGKEY);
+		const storedLang = Cookies.get(LANGKEY);
 		if (storedLang && i18n.language !== storedLang) {
 			changeLanguage(storedLang.toLowerCase());
 		} else if (locale && i18n.language !== locale) {

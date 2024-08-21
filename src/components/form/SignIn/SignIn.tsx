@@ -42,7 +42,7 @@ export const SignIn = ({
 					<Box>
 						<Checkbox
 							labelKey={t('components.form.keep-loggedin')}
-							{...register('stayConnected')}
+							register={register('stayConnected')}
 						/>
 					</Box>
 				</Box>

@@ -23,7 +23,7 @@ export const AuthPage = () => {
 		register,
 		handleSubmit,
 		formState: { errors },
-	} = useForm<ISignInForm>();
+	} = useForm<ISignInForm | ISignUpForm>();
 
 	const onSubmitSignIn: SubmitHandler<ISignInForm> = (data) => {
 		signIn(data);

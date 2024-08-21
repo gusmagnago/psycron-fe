@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import type { TextFieldProps } from '@mui/material';
 import { Box, IconButton, InputAdornment } from '@mui/material';
 import { NotVisible, Visible } from '@psycron/components/icons';
+import { useAuth } from '@psycron/context/user/auth/UserAuthenticationContext';
 
 import { InputFields } from '../shared/styles';
 
@@ -17,6 +18,8 @@ export const PasswordInput = <T extends FieldValues>({
 	disabled,
 }: PasswordInputProps<T> & TextFieldProps) => {
 	const { t } = useTranslation();
+
+	const { signInError } = useAuth();
 
 	const passwordInputId: Path<T> = 'password' as Path<T>;
 	const confirmPasswordInputId: Path<T> = 'confirmPassword' as Path<T>;
@@ -58,8 +61,8 @@ export const PasswordInput = <T extends FieldValues>({
 				fullWidth
 				type={!isVisible[passwordInputId] ? 'password' : 'text'}
 				{...register(passwordInputId)}
-				error={!!errors.password}
-				helperText={errors.password?.message as string}
+				error={!!errors.password || !!signInError?.length}
+				helperText={(errors.password?.message as string) || signInError}
 				value={passwordValue}
 				autoComplete='password'
 				onChange={(e) => {
