@@ -32,7 +32,7 @@ export const SignLayout: FC<ISignLayout> = ({
 								? t('components.form.signin.dont-have-acc')
 								: t('components.form.signup.already-have-acc')}
 						</Typography>
-						<Link to={`/${isSignin ? SIGNUP : SIGNIN}`} firstLetterUpper>
+						<Link to={`${isSignin ? SIGNUP : SIGNIN}`} firstLetterUpper>
 							{isSignin
 								? t('components.form.signin.signup-here-link')
 								: t('components.form.signup.signin-here-link')}
