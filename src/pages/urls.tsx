@@ -10,6 +10,7 @@ export const SIGNIN = 'sign-in';
 export const SIGNUP = 'sign-up';
 export const LOGOUT = 'logout';
 export const REQPASSRESET = 'reset-password';
+export const PASSRESET = 'password-reset/:token';
 
 // UNSUBSCRIBE
 export const UNSUBSCRIBE = ':token/unsubscribe';

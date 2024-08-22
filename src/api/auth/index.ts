@@ -4,6 +4,10 @@ import type {
 } from '@psycron/components/form/SignIn/SignIn.types';
 import type { ISignUpForm } from '@psycron/components/form/SignUp/SignUp.types';
 import type {
+	IResetPass,
+	IResetPassResponse,
+} from '@psycron/pages/auth/password/ChangePassword.types';
+import type {
 	IEmailForm,
 	IEmailResponse,
 } from '@psycron/pages/auth/password/ResetPassword.types';
@@ -37,5 +41,17 @@ export const requestPassReset = async (
 	data: IEmailForm
 ): Promise<IEmailResponse> => {
 	const response = await apiClient.post('/users/request-password-reset', data);
+	return response.data;
+};
+
+export const resetPassword = async (
+	data: IResetPass
+): Promise<IResetPassResponse> => {
+	const { token, password, confirmPassword } = data;
+
+	const response = await apiClient.post(`/users/password-reset/${token}`, {
+		password,
+		confirmPassword,
+	});
 	return response.data;
 };

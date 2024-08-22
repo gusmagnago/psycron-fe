@@ -194,7 +194,7 @@
 			}
 		},
 		"not-found": {
-			"title": "Eita, algo deu errado!",
+			"title": "Oops, algo deu errado!",
 			"sub-title": "Mas relaxa que já estamos correndo atrás disso!",
 			"note": "Pois é... prometo que estamos :)"
 		},
@@ -205,7 +205,8 @@
 			"confirm": "Clique aqui para completar"
 		},
 		"reset-password": {
-			"reset": "Resetar senha"
+			"reset": "Resetar senha",
+			"change-password": "Alterar senha"
 		}
 	}
 }

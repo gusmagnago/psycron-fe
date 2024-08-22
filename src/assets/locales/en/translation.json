@@ -206,7 +206,8 @@
 			"confirm": "Click here to complete and unsubscribe"
 		},
 		"reset-password": {
-			"reset": "Reset password"
+			"reset": "Reset password",
+			"change-password": "Change password"
 		}
 	}
 }
