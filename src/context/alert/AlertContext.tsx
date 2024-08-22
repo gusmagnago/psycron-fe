@@ -1,17 +1,8 @@
 import type { FC, ReactNode } from 'react';
 import { createContext, useContext, useState } from 'react';
-import type { AlertProps } from '@mui/material';
 import { Alert, Snackbar } from '@mui/material';
 
-interface IAlertProps {
-	message: string;
-	resetCallback?: () => void;
-	severity: AlertProps['severity'];
-}
-
-interface AlertContextProps {
-	showAlert: ({ message, severity }: IAlertProps) => void;
-}
+import type { AlertContextProps, IAlertProps } from './AlertContext.types';
 
 const AlertContext = createContext<AlertContextProps | undefined>(undefined);
 

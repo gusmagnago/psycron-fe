@@ -3,6 +3,10 @@ import type {
 	ISignInResponse,
 } from '@psycron/components/form/SignIn/SignIn.types';
 import type { ISignUpForm } from '@psycron/components/form/SignUp/SignUp.types';
+import type {
+	IEmailForm,
+	IEmailResponse,
+} from '@psycron/pages/auth/password/ResetPassword.types';
 
 import apiClient from '../axios-instance';
 
@@ -26,5 +30,12 @@ export const logoutFc = async (): Promise<void> => {
 
 export const getSession = async (): Promise<{ isAuthenticated: boolean }> => {
 	const response = await apiClient.get('/users/session');
+	return response.data;
+};
+
+export const requestPassReset = async (
+	data: IEmailForm
+): Promise<IEmailResponse> => {
+	const response = await apiClient.post('/users/request-password-reset', data);
 	return response.data;
 };

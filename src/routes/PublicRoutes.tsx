@@ -1,9 +1,9 @@
 import App from '@psycron/App';
 import { PublicLayout } from '@psycron/layouts/public-layout/PublicLayout';
 import { AuthPage } from '@psycron/pages/auth';
-import { Testing } from '@psycron/pages/testing/indext';
+import { ResetPassword } from '@psycron/pages/auth/password/ResetPassword';
 import { Unsubscribe } from '@psycron/pages/unsubscribe/Unsubscribe';
-import { SIGNIN, SIGNUP, UNSUBSCRIBE } from '@psycron/pages/urls';
+import { REQPASSRESET, SIGNIN, SIGNUP, UNSUBSCRIBE } from '@psycron/pages/urls';
 
 const publicRoutes = [
 	{
@@ -14,7 +14,7 @@ const publicRoutes = [
 			{ path: UNSUBSCRIBE, element: <Unsubscribe /> },
 			{ path: SIGNIN, element: <AuthPage /> },
 			{ path: SIGNUP, element: <AuthPage /> },
-			{ path: 'testing', element: <Testing /> },
+			{ path: REQPASSRESET, element: <ResetPassword /> },
 		],
 	},
 ];
