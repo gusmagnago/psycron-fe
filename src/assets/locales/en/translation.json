@@ -51,7 +51,8 @@
 			"signin": {
 				"title": "Sign in",
 				"dont-have-acc": "You dont have an account yet?",
-				"signup-here-link": "Sign up here"
+				"signup-here-link": "Sign up here",
+				"forgot-password": "Forgot your password?"
 			},
 			"validation": {
 				"required": "{{name}} is required",

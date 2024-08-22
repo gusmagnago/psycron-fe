@@ -49,7 +49,9 @@ export const SignIn = ({
 					</Box>
 					<Box>
 						<Link to='/reset-password'>
-							<Text variant='caption'>Esqueceu a sua senha?</Text>
+							<Text variant='caption'>
+								{t('components.form.signin.forgot-password')}
+							</Text>
 						</Link>
 					</Box>
 				</Box>

@@ -5,7 +5,7 @@ import { Link } from '@psycron/components/link/Link';
 import { Localization } from '@psycron/components/localization/Localization';
 import { Text } from '@psycron/components/text/Text';
 import useViewport from '@psycron/hooks/useViewport';
-import { HOMEPAGE } from '@psycron/pages/urls';
+import { HOMEPAGE, SIGNIN } from '@psycron/pages/urls';
 
 import { BrandLink, BrandWrapper, HeaderWrapper } from './Header.styles';
 import type { IHeaderProps } from './Header.types';
@@ -17,6 +17,25 @@ export const Header = ({ hideLinks = false }: IHeaderProps) => {
 
 	const notShowLinks = hideLinks || location.pathname.includes('unsubscribe');
 	const { isMobile } = useViewport();
+
+	const links = [
+		{
+			name: t('components.header.benefits'),
+			to: '#benefits',
+		},
+		{
+			name: t('components.header.join'),
+			to: '#join-now',
+		},
+		{
+			name: t('components.header.contact'),
+			to: '#contact',
+		},
+		{
+			name: t('components.form.signin.title'),
+			to: SIGNIN,
+		},
+	];
 
 	return (
 		<HeaderWrapper>
@@ -33,21 +52,13 @@ export const Header = ({ hideLinks = false }: IHeaderProps) => {
 			<Box display='flex' alignItems='center'>
 				{!notShowLinks && !isMobile ? (
 					<>
-						<Text isFirstUpper>
-							<Link to='#benefits' isHeader>
-								{t('components.header.benefits')}
-							</Link>
-						</Text>
-						<Text isFirstUpper>
-							<Link to='#join-now' isHeader>
-								{t('components.header.join')}
-							</Link>
-						</Text>
-						<Text isFirstUpper>
-							<Link to='#contact' isHeader>
-								{t('components.header.contact')}
-							</Link>
-						</Text>
+						{links.map(({ to, name }, id) => (
+							<Text isFirstUpper key={`header-link-${name}-${id}`}>
+								<Link to={to} isHeader>
+									{name}
+								</Link>
+							</Text>
+						))}
 					</>
 				) : null}
 				<Localization />

@@ -13,7 +13,7 @@
 		"subscription-manager": "Gerencie sua assinatura",
 		"appointments-manager": "Gerencie seus atendimentos",
 		"change-language": "Mude o idioma",
-		"help": "Centro de ajuda",
+		"help": "Centro de suporte",
 		"logout": "Sair",
 		"plan": "Plano",
 		"cancel": "Cancelar",
@@ -51,7 +51,8 @@
 			"signin": {
 				"title": "Entrar",
 				"dont-have-acc": "Você ainda não tem uma conta?",
-				"signup-here-link": "Cadastre-se aqui"
+				"signup-here-link": "Cadastre-se aqui",
+				"forgot-password": "Esqueceu a sua senha?"
 			},
 			"validation": {
 				"required": "{{name}} é um campo obrigatório",

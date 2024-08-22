@@ -22,7 +22,11 @@ export const SignUpWrapper = styled(Box)`
 `;
 
 export const LogoWrapper = styled(Box)`
+	display: flex;
+	justify-content: center;
+
 	svg {
-		width: 50%;
+		width: 3.25rem;
+		height: auto;
 	}
 `;
