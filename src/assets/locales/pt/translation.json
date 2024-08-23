@@ -13,7 +13,7 @@
 		"subscription-manager": "Gerencie sua assinatura",
 		"appointments-manager": "Gerencie seus atendimentos",
 		"change-language": "Mude o idioma",
-		"help": "Centro de ajuda",
+		"help": "Centro de suporte",
 		"logout": "Sair",
 		"plan": "Plano",
 		"cancel": "Cancelar",
@@ -30,7 +30,8 @@
 		"resume": "Retomar",
 		"error": {
 			"already-subscribed": "Você já está na nossa lista de espera",
-			"internal-server-error": "Algo aconteceu errado, tente novamente mais tarde"
+			"internal-server-error": "Algo aconteceu errado, tente novamente mais tarde",
+			"invalid-user": "Email ou senha invalidos"
 		},
 		"success": {
 			"subscribed": "Você foi inscrito com sucesso. Por favor verifique o seu -mail!"
@@ -50,7 +51,8 @@
 			"signin": {
 				"title": "Entrar",
 				"dont-have-acc": "Você ainda não tem uma conta?",
-				"signup-here-link": "Cadastre-se aqui"
+				"signup-here-link": "Cadastre-se aqui",
+				"forgot-password": "Esqueceu a sua senha?"
 			},
 			"validation": {
 				"required": "{{name}} é um campo obrigatório",
@@ -193,7 +195,7 @@
 			}
 		},
 		"not-found": {
-			"title": "Eita, algo deu errado!",
+			"title": "Oops, algo deu errado!",
 			"sub-title": "Mas relaxa que já estamos correndo atrás disso!",
 			"note": "Pois é... prometo que estamos :)"
 		},
@@ -202,6 +204,10 @@
 			"body-text": "Agradecemos por fazer parte da nossa jornada. Embora a gente fique triste em ver você partir, entendemos completamente sua decisão. Continuaremos trabalhando duro para oferecer o melhor que podemos e, lembre-se, estaremos sempre com as portas abertas para você, sempre que quiser voltar.",
 			"see-you": "Esperamos você de volta logo logo! ❤️",
 			"confirm": "Clique aqui para completar"
+		},
+		"reset-password": {
+			"reset": "Resetar senha",
+			"change-password": "Alterar senha"
 		}
 	}
 }

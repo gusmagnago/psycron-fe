@@ -30,7 +30,8 @@
 		"resume": "Resume",
 		"error": {
 			"already-subscribed": "Your email is already subscribed",
-			"internal-server-error": "Something went wrong, please try again later"
+			"internal-server-error": "Something went wrong, please try again later",
+			"invalid-user": "Invalid email or password"
 		},
 		"success": {
 			"subscribed": "You were successfully subscribed. Please check your email!"
@@ -50,7 +51,8 @@
 			"signin": {
 				"title": "Sign in",
 				"dont-have-acc": "You dont have an account yet?",
-				"signup-here-link": "Sign up here"
+				"signup-here-link": "Sign up here",
+				"forgot-password": "Forgot your password?"
 			},
 			"validation": {
 				"required": "{{name}} is required",
@@ -203,6 +205,10 @@
 			"body-text": "Thank you for being a part of our journey. While we’re sad to see you go, we completely understand your decision. We’ll keep working hard to bring you the best we’ve got, and just know, you’re always welcome back whenever you’re ready.",
 			"see-you": "Hope to see you again soon! ❤️",
 			"confirm": "Click here to complete and unsubscribe"
+		},
+		"reset-password": {
+			"reset": "Reset password",
+			"change-password": "Change password"
 		}
 	}
 }

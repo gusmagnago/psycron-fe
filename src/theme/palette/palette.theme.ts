@@ -67,9 +67,9 @@ export const palette: Palette = {
 		},
 		surface: {
 			hover: '#BFEFCF',
-			press: 'rgba(149, 193, 175, 0.6)',
-			light: 'rgba(146, 255, 209, 0.56)',
-			disabled: 'rgba(135, 173, 148, 0.8)',
+			press: 'rgba(149, 193, 175)',
+			light: 'rgba(146, 255, 209)',
+			disabled: 'rgba(135, 173, 148)',
 		},
 	},
 	info: {

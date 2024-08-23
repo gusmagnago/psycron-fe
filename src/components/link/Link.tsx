@@ -13,7 +13,7 @@ export const Link = ({
 	isHeader,
 	...props
 }: ILinkProps) => {
-	const { lang } = useParams<{ lang: string }>();
+	const { locale } = useParams<{ locale: string }>();
 	const navigate = useNavigate();
 
 	const isString = (value: To): value is string => typeof value === 'string';
@@ -26,7 +26,6 @@ export const Link = ({
 	const handleClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
 		if (isHashLink) {
 			e.preventDefault();
-
 			const targetElement = document.getElementById(to.slice(1));
 			if (targetElement) {
 				targetElement.scrollIntoView({ behavior: 'smooth' });
@@ -36,7 +35,6 @@ export const Link = ({
 
 		if (to === 'go-back') {
 			e.preventDefault();
-
 			const referrer = document.referrer;
 			const isInternalReferrer = referrer.includes(window.location.origin);
 
@@ -67,7 +65,7 @@ export const Link = ({
 		);
 	}
 
-	const prefixedTo = isString(to) ? `/${lang}${to}` : '#';
+	const prefixedTo = isString(to) ? `/${locale}/${to}` : '#';
 
 	return (
 		<StyledLink

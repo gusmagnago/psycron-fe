@@ -2,6 +2,8 @@ import { useTranslation } from 'react-i18next';
 import { Box } from '@mui/material';
 import { Button } from '@psycron/components/button/Button';
 import { Checkbox } from '@psycron/components/checkbox/Checkbox';
+import { Link } from '@psycron/components/link/Link';
+import { Text } from '@psycron/components/text/Text';
 
 import { PasswordInput } from '../components/password/PasswordInput';
 import { SignLayout } from '../components/shared/SignLayout';
@@ -42,8 +44,15 @@ export const SignIn = ({
 					<Box>
 						<Checkbox
 							labelKey={t('components.form.keep-loggedin')}
-							{...register('stayConnected')}
+							register={register('stayConnected')}
 						/>
+					</Box>
+					<Box>
+						<Link to='/reset-password'>
+							<Text variant='caption'>
+								{t('components.form.signin.forgot-password')}
+							</Text>
+						</Link>
 					</Box>
 				</Box>
 			</Box>

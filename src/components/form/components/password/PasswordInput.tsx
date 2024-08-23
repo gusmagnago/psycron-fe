@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react';
-import type { FieldValues, Path } from 'react-hook-form';
+import type { FieldError, FieldValues, Path } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import type { TextFieldProps } from '@mui/material';
 import { Box, IconButton, InputAdornment } from '@mui/material';
 import { NotVisible, Visible } from '@psycron/components/icons';
+import { useAuth } from '@psycron/context/user/auth/UserAuthenticationContext';
 
 import { InputFields } from '../shared/styles';
 
@@ -17,6 +18,8 @@ export const PasswordInput = <T extends FieldValues>({
 	disabled,
 }: PasswordInputProps<T> & TextFieldProps) => {
 	const { t } = useTranslation();
+
+	const { signInError } = useAuth();
 
 	const passwordInputId: Path<T> = 'password' as Path<T>;
 	const confirmPasswordInputId: Path<T> = 'confirmPassword' as Path<T>;
@@ -50,6 +53,23 @@ export const PasswordInput = <T extends FieldValues>({
 		}
 	};
 
+	const getHelperText = (fieldId: Path<T>): React.ReactNode => {
+		// Se existir um erro no formulário ou signInError, retornar a mensagem apropriada
+		if (typeof signInError === 'string') {
+			return signInError; // Erro externo (ex.: do servidor)
+		}
+		if (typeof errors === 'string') {
+			return errors; // Também pode ser um erro externo em forma de string
+		} else if (
+			errors &&
+			errors[fieldId] &&
+			'message' in (errors[fieldId] as FieldError)
+		) {
+			return (errors[fieldId] as FieldError).message; // Erro do formulário
+		}
+		return null;
+	};
+
 	return (
 		<Box>
 			<InputFields
@@ -58,8 +78,8 @@ export const PasswordInput = <T extends FieldValues>({
 				fullWidth
 				type={!isVisible[passwordInputId] ? 'password' : 'text'}
 				{...register(passwordInputId)}
-				error={!!errors.password}
-				helperText={errors.password?.message as string}
+				error={!!getHelperText(passwordInputId)}
+				helperText={getHelperText(passwordInputId)}
 				value={passwordValue}
 				autoComplete='password'
 				onChange={(e) => {
@@ -87,8 +107,8 @@ export const PasswordInput = <T extends FieldValues>({
 					id={confirmPasswordInputId}
 					type={!isVisible[confirmPasswordInputId] ? 'password' : 'text'}
 					{...register(confirmPasswordInputId)}
-					error={!!errors.confirmPassword}
-					helperText={errors.confirmPassword?.message as string}
+					error={!!getHelperText(confirmPasswordInputId)}
+					helperText={getHelperText(confirmPasswordInputId)}
 					value={confirmPasswordValue}
 					autoComplete='confirm-password'
 					onChange={(e) => {

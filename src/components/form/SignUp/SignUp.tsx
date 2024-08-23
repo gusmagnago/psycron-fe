@@ -1,6 +1,7 @@
 import { useTranslation } from 'react-i18next';
 import { Box } from '@mui/material';
 import { Button } from '@psycron/components/button/Button';
+import { useAuth } from '@psycron/context/user/auth/UserAuthenticationContext';
 
 import { NameForm } from '../components/name/NameForm';
 import { PasswordInput } from '../components/password/PasswordInput';
@@ -17,6 +18,8 @@ export const SignUp = ({
 }: SignUpFormTypes) => {
 	const { t } = useTranslation();
 
+	const { signUpError } = useAuth();
+
 	return (
 		<SignLayout>
 			<Box component='form' onSubmit={handleSubmit(onSubmit)}>
@@ -27,14 +30,10 @@ export const SignUp = ({
 					id='email'
 					{...register('email')}
 					autoComplete='email'
-					error={!!errors.email}
-					helperText={errors.email?.message}
+					error={!!errors.email || !!signUpError?.length}
+					helperText={errors.email?.message || signUpError}
 				/>
-				<PasswordInput
-					errors={errors}
-					register={register}
-					hasToConfirm
-				/>
+				<PasswordInput errors={errors} register={register} hasToConfirm />
 				<Box>
 					<Button type='submit' fullWidth>
 						{t('components.form.signup.title')}

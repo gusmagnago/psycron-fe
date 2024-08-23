@@ -13,6 +13,7 @@ const alertStyles = ({ palette }: Theme): Record<string, CSSObject> => {
 			borderRadius: `${spacing.mediumSmall}`,
 			margin: `${spacing.mediumSmall}`,
 			boxShadow: shadowMain,
+			zIndex: 1000,
 		},
 		standardSuccess: {
 			backgroundColor: success.surface.light,

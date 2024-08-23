@@ -1,22 +1,29 @@
 import type { SubmitHandler } from 'react-hook-form';
 import { useForm } from 'react-hook-form';
-import { useLocation } from 'react-router-dom';
-import { Box } from '@mui/material';
+import { Navigate, useLocation, useParams } from 'react-router-dom';
 import { SignIn as SignInForm } from '@psycron/components/form/SignIn/SignIn';
 import type { ISignInForm } from '@psycron/components/form/SignIn/SignIn.types';
 import { SignUp } from '@psycron/components/form/SignUp/SignUp';
 import type { ISignUpForm } from '@psycron/components/form/SignUp/SignUp.types';
-import { useAuth } from '@psycron/context/user/UserAuthenticationContext';
+import { useAuth } from '@psycron/context/user/auth/UserAuthenticationContext';
+
+import { DASHBOARD } from '../urls';
+
+import { AuthPageWrapper } from './index.styles';
 
 export const AuthPage = () => {
-	const { signIn, signUp } = useAuth();
+	const { signIn, signUp, isAuthenticated } = useAuth();
+
 	const { pathname } = useLocation();
+	const { locale } = useParams<{ locale: string }>();
+
+	const dashboardPath = `/${locale}/${DASHBOARD}`;
 
 	const {
 		register,
 		handleSubmit,
 		formState: { errors },
-	} = useForm<ISignInForm>();
+	} = useForm<ISignInForm | ISignUpForm>();
 
 	const onSubmitSignIn: SubmitHandler<ISignInForm> = (data) => {
 		signIn(data);
@@ -26,14 +33,12 @@ export const AuthPage = () => {
 		signUp(data);
 	};
 
+	if (isAuthenticated) {
+		return <Navigate to={dashboardPath} replace />;
+	}
+
 	return (
-		<Box
-			display='flex'
-			flexDirection='column'
-			justifyContent='center'
-			alignItems='center'
-			height='100%'
-		>
+		<AuthPageWrapper>
 			{pathname.includes('sign-in') ? (
 				<SignInForm
 					errors={errors}
@@ -49,6 +54,6 @@ export const AuthPage = () => {
 					register={register}
 				/>
 			)}
-		</Box>
+		</AuthPageWrapper>
 	);
 };

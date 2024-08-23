@@ -16,13 +16,18 @@ export const PublicLayoutContent = styled(Box)`
 	display: flex;
 	flex-direction: column;
 	padding: 0;
+	z-index: 2;
 `;
 
 export const FooterWrapper = styled(Box)`
 	position: relative;
-	padding: 0 ${spacing.large} ${spacing.large};
+	padding: 0 ${spacing.large} ${spacing.small};
 	z-index: 2;
 	height: var(--footer-height);
+
+	display: flex;
+	align-items: center;
+	justify-content: center;
 `;
 
 export const FooterContent = styled(Box)`

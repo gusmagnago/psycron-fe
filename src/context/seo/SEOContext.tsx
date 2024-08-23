@@ -1,8 +1,8 @@
 import type { FC } from 'react';
 import { createContext, useContext } from 'react';
 import { Helmet } from 'react-helmet-async';
-import { Box } from '@mui/material';
 
+import { StyledContentWrapper } from './SEOContext.styles';
 import type { ISEOContextProps, ISEOProps } from './SEOContext.types';
 
 const SEOContext = createContext<ISEOProps | undefined>(undefined);
@@ -62,9 +62,7 @@ export const SEOProvider: FC<ISEOContextProps> = ({ seo, children }) => {
 				<meta name='author' content='Psycron' />
 				<meta name='viewport' content='width=device-width, initial-scale=1.0' />
 			</Helmet>
-			<Box display='flex' flexDirection='column'>
-				{children}
-			</Box>
+			<StyledContentWrapper>{children}</StyledContentWrapper>
 		</SEOContext.Provider>
 	);
 };
