@@ -13,7 +13,7 @@ export const Avatar = ({
 }: IAvatarProps) => {
 	const { isMobile } = useViewport();
 
-	const largeSize = large ? 60 : 45;
+	const largeSize = large ? 100 : 45;
 
 	const stringToColor = (string: string) => {
 		let hash = 0;

@@ -5,6 +5,7 @@ import type { ISignUpForm } from '@psycron/components/form/SignUp/SignUp.types';
 export interface AuthContextType {
 	isAuthenticated: boolean;
 	isSessionLoading: boolean;
+	isSessionSuccess: boolean;
 	logout: () => void;
 	signIn: (data: ISignInForm) => void;
 	signInError: string | null;

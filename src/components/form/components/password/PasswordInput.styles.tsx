@@ -13,12 +13,14 @@ export const PasswordWrapper = styled(Box)`
 	}
 `;
 
-export const StyledInput = styled(TextField)`
+export const StyledInput = styled(TextField, {
+	shouldForwardProp: (props) => props !== 'hasToConfirm',
+})<{ hasToConfirm?: boolean }>`
 	padding-bottom: ${spacing.small};
 	padding-right: 0;
 
 	${isBiggerThanTabletMedia} {
 		padding-bottom: 0;
-		padding-right: ${spacing.small};
+		padding-right: ${({ hasToConfirm }) => (hasToConfirm ? spacing.small : 0)};
 	}
 `;

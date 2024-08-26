@@ -23,6 +23,7 @@ import {
 	EditingBox,
 	EditUserButtonWrapper,
 	EditUserFooter,
+	EditUserWrapper,
 } from './EditUser.styles';
 
 export const EditUser = () => {
@@ -92,93 +93,95 @@ export const EditUser = () => {
 	const defaultAddress = getAddress(userDetails);
 
 	return (
-		<Box>
-			<EditingBox isEditing={isEditName}>
-				<Box display='flex' alignItems='center'>
-					<Avatar
-						firstName={defaultMainDetails.firstName}
-						lastName={defaultMainDetails.lastName}
-						src={defaultMainDetails.src}
-						large
-					/>
-					<NameForm
-						errors={errors}
-						register={register}
-						placeholderFirstName={defaultMainDetails.firstName}
-						placeholderLastName={defaultMainDetails.lastName}
-						disabled={!isEditName}
-					/>
-				</Box>
-				<EditButton>
-					<Switch
-						label={t('components.user-details.edit')}
-						defaultChecked={isEditName}
-						onChange={() => setIsEditName((prev) => !prev)}
-					/>
-				</EditButton>
-			</EditingBox>
-			<EditingBox isEditing={isEditPassword}>
-				<PasswordInput
-					errors={errors}
-					register={register}
-					hasToConfirm={isEditPassword}
-					defaultPasswordHash={defaultMainDetails.passwordHash}
-					disabled={!isEditPassword}
-				/>
-				<EditButton>
-					<Switch
-						label={t('components.user-details.change', {
-							name: t('globals.password'),
-						})}
-						defaultChecked={isEditPassword}
-						onChange={() => setIsEditPassword((prev) => !prev)}
-					/>
-				</EditButton>
-			</EditingBox>
-			<Box mb={spacing.xxl}>
-				<EditingBox isEditing={isEditContacts}>
-					<ContactsForm
-						errors={errors}
-						register={register}
-						getPhoneValue={getValues}
-						setPhoneValue={setValue}
-						defaultValues={defaultContacts}
-						disabled={!isEditContacts}
-					/>
+		<Box width={'100%'} display='flex' justifyContent='center'>
+			<EditUserWrapper>
+				<EditingBox isEditing={isEditName}>
+					<Box display='flex' alignItems='center'>
+						<Avatar
+							firstName={defaultMainDetails.firstName}
+							lastName={defaultMainDetails.lastName}
+							src={defaultMainDetails.src}
+							large
+						/>
+						<NameForm
+							errors={errors}
+							register={register}
+							placeholderFirstName={defaultMainDetails.firstName}
+							placeholderLastName={defaultMainDetails.lastName}
+							disabled={!isEditName}
+						/>
+					</Box>
 					<EditButton>
 						<Switch
-							label={t('components.user-details.edit-contacts')}
-							defaultChecked={isEditContacts}
-							onChange={() => setIsEditContacts((prev) => !prev)}
+							label={t('components.user-details.edit')}
+							defaultChecked={isEditName}
+							onChange={() => setIsEditName((prev) => !prev)}
 						/>
 					</EditButton>
 				</EditingBox>
-				<EditingBox isEditing={isEditAddress}>
-					<AddressForm
+				<EditingBox isEditing={isEditPassword}>
+					<PasswordInput
 						errors={errors}
 						register={register}
-						defaultValues={defaultAddress}
-						disabled={!isEditAddress}
+						hasToConfirm={isEditPassword}
+						defaultPasswordHash={defaultMainDetails.passwordHash}
+						disabled={!isEditPassword}
 					/>
 					<EditButton>
 						<Switch
 							label={t('components.user-details.change', {
-								name: t('globals.address'),
+								name: t('globals.password'),
 							})}
-							defaultChecked={isEditAddress}
-							onChange={() => setIsEditAddress((prev) => !prev)}
+							defaultChecked={isEditPassword}
+							onChange={() => setIsEditPassword((prev) => !prev)}
 						/>
 					</EditButton>
 				</EditingBox>
-			</Box>
-			<EditUserFooter component='footer' zIndex={100}>
-				<EditUserButtonWrapper>
-					<Button>{t('components.user-details.save')}</Button>
-					<Button secondary onClick={() => navigate(-1)}>
-						{t('globals.cancel')}
-					</Button>
-				</EditUserButtonWrapper>
-			</EditUserFooter>
+				<Box mb={spacing.xxl}>
+					<EditingBox isEditing={isEditContacts}>
+						<ContactsForm
+							errors={errors}
+							register={register}
+							getPhoneValue={getValues}
+							setPhoneValue={setValue}
+							defaultValues={defaultContacts}
+							disabled={!isEditContacts}
+						/>
+						<EditButton>
+							<Switch
+								label={t('components.user-details.edit-contacts')}
+								defaultChecked={isEditContacts}
+								onChange={() => setIsEditContacts((prev) => !prev)}
+							/>
+						</EditButton>
+					</EditingBox>
+					<EditingBox isEditing={isEditAddress}>
+						<AddressForm
+							errors={errors}
+							register={register}
+							defaultValues={defaultAddress}
+							disabled={!isEditAddress}
+						/>
+						<EditButton>
+							<Switch
+								label={t('components.user-details.change', {
+									name: t('globals.address'),
+								})}
+								defaultChecked={isEditAddress}
+								onChange={() => setIsEditAddress((prev) => !prev)}
+							/>
+						</EditButton>
+					</EditingBox>
+				</Box>
+				<EditUserFooter component='footer' zIndex={100}>
+					<EditUserButtonWrapper>
+						<Button>{t('components.user-details.save')}</Button>
+						<Button secondary onClick={() => navigate(-1)}>
+							{t('globals.cancel')}
+						</Button>
+					</EditUserButtonWrapper>
+				</EditUserFooter>
+			</EditUserWrapper>
 		</Box>
 	);
 };

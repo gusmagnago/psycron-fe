@@ -1,6 +1,7 @@
 import type { FC } from 'react';
 import { Navigate, Outlet, useLocation } from 'react-router-dom';
 import { Box, Divider } from '@mui/material';
+import { Loader } from '@psycron/components/loader/Loader';
 import { Navbar } from '@psycron/components/navbar/Navbar';
 import { UserDetailsCard } from '@psycron/components/user/components/user-details-card/UserDetailsCard';
 import { useAuth } from '@psycron/context/user/auth/UserAuthenticationContext';
@@ -12,7 +13,7 @@ import { Content, LayoutWrapper } from './AppLayout.styles';
 
 export const AppLayout: FC = () => {
 	const { isMobile, isTablet } = useViewport();
-	const { isAuthenticated } = useAuth();
+	const { isSessionLoading, isSessionSuccess, isAuthenticated } = useAuth();
 
 	const location = useLocation();
 
@@ -25,7 +26,11 @@ export const AppLayout: FC = () => {
 		},
 	};
 
-	if (!isAuthenticated) {
+	if (isSessionLoading) {
+		return <Loader />;
+	}
+
+	if (!isSessionSuccess && !isAuthenticated) {
 		return <Navigate to={SIGNIN} replace state={{ from: location }} />;
 	}
 

@@ -97,6 +97,7 @@ export const PasswordInput = <T extends FieldValues>({
 						</InputAdornment>
 					) : null,
 				}}
+				hasToConfirm={hasToConfirm}
 			/>
 			{hasToConfirm ? (
 				<TextField

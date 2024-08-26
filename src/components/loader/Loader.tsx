@@ -1,3 +1,5 @@
+import { Box } from '@mui/material';
+
 import { Ball, LoaderWrapper } from './Loader.styles';
 
 type RepeatType = 'reverse' | 'loop' | 'mirror';
@@ -40,9 +42,17 @@ export const Loader = () => {
 	};
 
 	return (
-		<LoaderWrapper>
-			<Ball {...loaderAnimation} />
-			<Ball {...reverseLoaderAnimation} />
-		</LoaderWrapper>
+		<Box
+			display='flex'
+			justifyContent='center'
+			alignItems='center'
+			height={'100%'}
+			width={'100%'}
+		>
+			<LoaderWrapper>
+				<Ball {...loaderAnimation} />
+				<Ball {...reverseLoaderAnimation} />
+			</LoaderWrapper>
+		</Box>
 	);
 };
