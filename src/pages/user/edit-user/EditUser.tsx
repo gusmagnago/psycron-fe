@@ -10,6 +10,12 @@ import { ContactsForm } from '@psycron/components/form/components/contacts/Conta
 import { NameForm } from '@psycron/components/form/components/name/NameForm';
 import { PasswordInput } from '@psycron/components/form/components/password/PasswordInput';
 import { Switch } from '@psycron/components/switch/components/item/Switch';
+import type {
+	IAddress,
+	IBaseUser,
+	IContactInfo,
+} from '@psycron/context/user/auth/UserAuthenticationContext.types';
+import { useUserDetails } from '@psycron/context/user/details/UserDetailsContext';
 import { spacing } from '@psycron/theme/spacing/spacing.theme';
 
 import {
@@ -21,6 +27,10 @@ import {
 
 export const EditUser = () => {
 	const { t } = useTranslation();
+	const { userId } = useParams<{ userId: string }>();
+
+	const { userDetails } = useUserDetails(userId);
+
 	const { section } = useParams<{ section: string }>();
 
 	const [isEditName, setIsEditName] = useState<boolean>(false);
@@ -44,30 +54,42 @@ export const EditUser = () => {
 		setIsEditPassword(section === 'password');
 	}, [section]);
 
-	const defaultMainDetails = {
-		src: '',
-		firstName: 'Johan',
-		lastName: 'Donna',
-		passwordHash: '************',
+	const getUserDetails = (userDetails?: Partial<IBaseUser>) => {
+		return {
+			src: '',
+			firstName: userDetails?.firstName,
+			lastName: userDetails?.lastName,
+			passwordHash: '************',
+		};
 	};
 
-	const defaultContacts = {
-		defaultEmail: 'email@email.com',
-		defaultPhone: '+552756161616',
-		defaultWpp: '+372000000000000',
+	const defaultMainDetails = getUserDetails(userDetails);
+
+	const getContacts = (userDetails?: { contacts: IContactInfo }) => {
+		return {
+			email: userDetails?.contacts.email,
+			phone: userDetails?.contacts?.phone || '',
+			whatsapp: userDetails?.contacts?.whatsapp || '',
+		};
 	};
 
-	const defaultAddress = {
-		address: '123 Main St, Apt 4B',
-		administrativeArea: 'California',
-		city: 'Los Angeles',
-		country: 'USA',
-		moreInfo: 'Near the big park',
-		postalCode: '90001',
-		route: 'Main St',
-		streetNumber: '123',
-		sublocality: 'Downtown',
+	const defaultContacts = getContacts(userDetails);
+
+	const getAddress = (userDetails?: { address?: IAddress }) => {
+		return {
+			address: `${userDetails?.address?.streetNumber ?? ''}, ${userDetails?.address?.route ?? ''}`,
+			streetNumber: userDetails?.address?.streetNumber || '',
+			route: userDetails?.address?.route || '',
+			administrativeArea: userDetails?.address?.administrativeArea || '',
+			city: userDetails?.address?.city || '',
+			country: userDetails?.address?.country || '',
+			moreInfo: userDetails?.address?.moreInfo || '',
+			postalCode: userDetails?.address?.postalCode || '',
+			sublocality: userDetails?.address?.sublocality || '',
+		};
 	};
+
+	const defaultAddress = getAddress(userDetails);
 
 	return (
 		<Box>

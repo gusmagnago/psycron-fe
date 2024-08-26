@@ -1,18 +1,22 @@
-import type { FC, ReactNode } from 'react';
 import { createContext, useContext, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { getUserById } from '@psycron/api/user';
+import { EDITUSERPATH } from '@psycron/pages/urls';
+import { useQuery } from '@tanstack/react-query';
 
 import { useAuth } from '../auth/UserAuthenticationContext';
+import type { ITherapist } from '../auth/UserAuthenticationContext.types';
 
-import type { UserBoxContextType } from './UserDetailsContext.types';
+import type {
+	UserDetailsContextType,
+	UserDetailsProviderProps,
+} from './UserDetailsContext.types';
 
-export const UserDetailsContext = createContext<UserBoxContextType | undefined>(
-	undefined
-);
+export const UserDetailsContext = createContext<
+	UserDetailsContextType | undefined
+>(undefined);
 
-export const UserDetailsProvider: FC<{ children: ReactNode }> = ({
-	children,
-}) => {
+export const UserDetailsProvider = ({ children }: UserDetailsProviderProps) => {
 	const [isUserDetailsVisible, setIsUserDetailsVisible] =
 		useState<boolean>(false);
 
@@ -24,8 +28,8 @@ export const UserDetailsProvider: FC<{ children: ReactNode }> = ({
 		setIsUserDetailsVisible((prev) => !prev);
 	};
 
-	const handleClickEditUser = (path: string) => {
-		navigate(`edit-user${path}`);
+	const handleClickEditUser = (id: string) => {
+		navigate(`${EDITUSERPATH}/${id}`);
 		toggleUserDetails();
 	};
 
@@ -43,10 +47,25 @@ export const UserDetailsProvider: FC<{ children: ReactNode }> = ({
 	);
 };
 
-export const useUserDetails = () => {
+export const useUserDetails = (passedUserId?: string) => {
 	const context = useContext(UserDetailsContext);
 	if (!context) {
 		throw new Error('useUserDetails must be used within a UserDetailsProvider');
 	}
-	return context;
+
+	const { user } = context;
+	const userId = passedUserId || user?._id;
+
+	const { data: userDetails, isLoading: isUserDetailsLoading } =
+		useQuery<ITherapist>({
+			queryKey: ['userDetails', userId],
+			queryFn: () => getUserById(userId),
+			enabled: !!userId,
+		});
+
+	return {
+		...context,
+		userDetails,
+		isUserDetailsLoading,
+	};
 };

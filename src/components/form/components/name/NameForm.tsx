@@ -1,10 +1,9 @@
 import type { FieldValues, Path } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import type { TextFieldProps } from '@mui/material';
-import { Grid } from '@mui/material';
+import { Box, TextField } from '@mui/material';
 
-import { InputFields } from '../shared/styles';
-
+import { NameFormWrapper, StyledNameInput } from './NameForm.styles';
 import type { NameFormProps } from './NameForm.types';
 
 export const NameForm = <T extends FieldValues>({
@@ -17,9 +16,9 @@ export const NameForm = <T extends FieldValues>({
 	const { t } = useTranslation();
 
 	return (
-		<Grid container>
-			<Grid item xs={12}>
-				<InputFields
+		<NameFormWrapper>
+			<Box width={'100%'}>
+				<StyledNameInput
 					label={t('components.form.signup.firstName')}
 					fullWidth
 					id='firstName'
@@ -30,9 +29,9 @@ export const NameForm = <T extends FieldValues>({
 					required
 					disabled={disabled}
 				/>
-			</Grid>
-			<Grid item xs={12}>
-				<InputFields
+			</Box>
+			<Box width={'100%'}>
+				<TextField
 					label={t('components.form.signup.lastName')}
 					fullWidth
 					id='lastName'
@@ -43,7 +42,7 @@ export const NameForm = <T extends FieldValues>({
 					required
 					disabled={disabled}
 				/>
-			</Grid>
-		</Grid>
+			</Box>
+		</NameFormWrapper>
 	);
 };

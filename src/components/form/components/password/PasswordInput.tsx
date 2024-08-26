@@ -2,12 +2,11 @@ import { useEffect, useState } from 'react';
 import type { FieldError, FieldValues, Path } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import type { TextFieldProps } from '@mui/material';
-import { Box, IconButton, InputAdornment } from '@mui/material';
+import { IconButton, InputAdornment, TextField } from '@mui/material';
 import { NotVisible, Visible } from '@psycron/components/icons';
 import { useAuth } from '@psycron/context/user/auth/UserAuthenticationContext';
 
-import { InputFields } from '../shared/styles';
-
+import { PasswordWrapper, StyledInput } from './PasswordInput.styles';
 import type { PasswordInputProps } from './PasswordInput.types';
 
 export const PasswordInput = <T extends FieldValues>({
@@ -54,25 +53,24 @@ export const PasswordInput = <T extends FieldValues>({
 	};
 
 	const getHelperText = (fieldId: Path<T>): React.ReactNode => {
-		// Se existir um erro no formulário ou signInError, retornar a mensagem apropriada
 		if (typeof signInError === 'string') {
-			return signInError; // Erro externo (ex.: do servidor)
+			return signInError;
 		}
 		if (typeof errors === 'string') {
-			return errors; // Também pode ser um erro externo em forma de string
+			return errors;
 		} else if (
 			errors &&
 			errors[fieldId] &&
 			'message' in (errors[fieldId] as FieldError)
 		) {
-			return (errors[fieldId] as FieldError).message; // Erro do formulário
+			return (errors[fieldId] as FieldError).message;
 		}
 		return null;
 	};
 
 	return (
-		<Box>
-			<InputFields
+		<PasswordWrapper>
+			<StyledInput
 				label={t('globals.password')}
 				id={passwordInputId}
 				fullWidth
@@ -101,7 +99,7 @@ export const PasswordInput = <T extends FieldValues>({
 				}}
 			/>
 			{hasToConfirm ? (
-				<InputFields
+				<TextField
 					label={t('components.form.confirm-password')}
 					fullWidth
 					id={confirmPasswordInputId}
@@ -133,6 +131,6 @@ export const PasswordInput = <T extends FieldValues>({
 					}}
 				/>
 			) : null}
-		</Box>
+		</PasswordWrapper>
 	);
 };

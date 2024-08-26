@@ -4,6 +4,7 @@ import type { ISignUpForm } from '@psycron/components/form/SignUp/SignUp.types';
 
 export interface AuthContextType {
 	isAuthenticated: boolean;
+	isSessionLoading: boolean;
 	logout: () => void;
 	signIn: (data: ISignInForm) => void;
 	signInError: string | null;
@@ -23,7 +24,7 @@ export interface IUserData {
 
 export interface IBaseUser {
 	_id: string;
-	address: string;
+	address: IAddress;
 	contacts: IContactInfo;
 	createdAt?: Date;
 	firstName: string;
@@ -53,6 +54,17 @@ export interface IContactInfo {
 	email: string;
 	phone?: string;
 	whatsapp?: string;
+}
+
+export interface IAddress {
+	administrativeArea?: string;
+	city?: string;
+	country?: string;
+	moreInfo?: string;
+	postalCode?: string;
+	route?: string;
+	streetNumber?: string;
+	sublocality?: string;
 }
 
 export interface INotification {

@@ -1,6 +1,6 @@
 import type { SubmitHandler } from 'react-hook-form';
 import { useForm } from 'react-hook-form';
-import { Navigate, useLocation, useParams } from 'react-router-dom';
+import { Navigate, useLocation } from 'react-router-dom';
 import { SignIn as SignInForm } from '@psycron/components/form/SignIn/SignIn';
 import type { ISignInForm } from '@psycron/components/form/SignIn/SignIn.types';
 import { SignUp } from '@psycron/components/form/SignUp/SignUp';
@@ -14,10 +14,7 @@ import { AuthPageWrapper } from './index.styles';
 export const AuthPage = () => {
 	const { signIn, signUp, isAuthenticated } = useAuth();
 
-	const { pathname } = useLocation();
-	const { locale } = useParams<{ locale: string }>();
-
-	const dashboardPath = `/${locale}/${DASHBOARD}`;
+	const { pathname, state } = useLocation();
 
 	const {
 		register,
@@ -34,7 +31,7 @@ export const AuthPage = () => {
 	};
 
 	if (isAuthenticated) {
-		return <Navigate to={dashboardPath} replace />;
+		return <Navigate to={state?.from?.pathname || DASHBOARD} replace />;
 	}
 
 	return (

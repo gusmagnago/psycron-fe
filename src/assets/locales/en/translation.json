@@ -97,7 +97,9 @@
 			"edit": "Edit details",
 			"edit-contacts": "Edit contacts",
 			"change": "Change {{name}}",
-			"save": "Save details"
+			"save": "Save details",
+			"address-not-found": "Address not found. Please add your info.",
+			"detail-not-found": "{{detail}} is not registered yet"
 		},
 		"dashboard": {
 			"card": {

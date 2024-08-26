@@ -96,7 +96,10 @@
 		"user-details": {
 			"edit": "Editar detalhes",
 			"edit-contacts": "Editar contatos",
-			"change": "Alterar {{name}}"
+			"change": "Alterar {{name}}",
+			"save": "Salvar",
+			"address-not-found": "Nenhum endereço cadastrado. Adicione suas informações.",
+			"detail-not-found": "{{detail}} não cadastrado ainda"
 		},
 		"dashboard": {
 			"card": {

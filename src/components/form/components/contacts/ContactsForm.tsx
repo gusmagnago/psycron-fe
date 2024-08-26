@@ -20,6 +20,8 @@ export const ContactsForm = <T extends FieldValues>({
 }: ContactsFormProps<T> & TextFieldProps) => {
 	const { t } = useTranslation();
 
+	const { email, phone, whatsapp } = defaultValues;
+
 	const [hasWhatsApp, setHasWhatsApp] = useState<boolean>(false);
 	const [isPhoneWpp, setIsPhoneWpp] = useState<boolean>(true);
 
@@ -37,7 +39,7 @@ export const ContactsForm = <T extends FieldValues>({
 					label={t('globals.email')}
 					fullWidth
 					id='email'
-					defaultValue={defaultValues?.defaultEmail}
+					defaultValue={email}
 					{...register('email' as Path<T>)}
 					autoComplete='email'
 					error={!!errors?.email}
@@ -51,7 +53,7 @@ export const ContactsForm = <T extends FieldValues>({
 					errors={errors}
 					register={register}
 					registerName='phone'
-					defaultValue={defaultValues?.defaultPhone}
+					defaultValue={phone}
 					disabled={disabled}
 				/>
 			</Grid>
@@ -72,9 +74,7 @@ export const ContactsForm = <T extends FieldValues>({
 							onChange={() => setIsPhoneWpp((prev) => !prev)}
 							value={isPhoneWpp}
 							defaultChecked
-							label={t(
-								'components.form.contacts-form.contact-via-same',
-							)}
+							label={t('components.form.contacts-form.contact-via-same')}
 						/>
 					</Grid>
 				) : null}
@@ -86,7 +86,7 @@ export const ContactsForm = <T extends FieldValues>({
 								errors={errors}
 								register={register}
 								registerName='whatsapp'
-								defaultValue={defaultValues?.defaultWpp}
+								defaultValue={whatsapp}
 							/>
 						) : null}
 					</Grid>

@@ -24,17 +24,24 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
 	const [user, setUser] = useState<ITherapist | null>(null);
 
-	const { data: sessionData } = useQuery<IUserData>({
+	const {
+		data: sessionData,
+		isLoading: isSessionLoading,
+		isSuccess,
+		isError,
+	} = useQuery<IUserData>({
 		queryKey: ['session'],
 		queryFn: getSession,
 	});
 
 	useEffect(() => {
-		if (sessionData) {
-			setIsAuthenticated(sessionData.isAuthenticated);
+		if (isSuccess && sessionData?.isAuthenticated === true) {
+			setIsAuthenticated(true);
 			setUser(sessionData.user);
+		} else if (isError) {
+			setIsAuthenticated(false);
 		}
-	}, [sessionData]);
+	}, [isSuccess, isError, sessionData]);
 
 	const signInMutation = useMutation({
 		mutationFn: signInFc,
@@ -70,6 +77,10 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 	const signUp = (data: ISignUpForm) => signUpMutation.mutate(data);
 	const logout = () => logoutMutation.mutate();
 
+	if (isSessionLoading) {
+		return null;
+	}
+
 	return (
 		<AuthContext.Provider
 			value={{
@@ -79,6 +90,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 				signInError,
 				signUpError,
 				isAuthenticated,
+				isSessionLoading,
 				user,
 			}}
 		>
