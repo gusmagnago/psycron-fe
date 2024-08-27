@@ -8,6 +8,10 @@ export const ControlledWrapper = styled(FormControl)<{ width?: string }>`
 		margin-left: 0;
 	}
 	width: ${({ width }) => width};
+
+	& svg {
+		height: auto;
+	}
 `;
 
 export const StyledInputLabel = styled(InputLabel)`

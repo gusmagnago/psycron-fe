@@ -82,7 +82,7 @@ export const Header = ({ hideLinks = false }: IHeaderProps) => {
 						})}
 					</>
 				) : null}
-				<Localization />
+				<Localization hasMargin />
 			</Box>
 		</HeaderWrapper>
 	);

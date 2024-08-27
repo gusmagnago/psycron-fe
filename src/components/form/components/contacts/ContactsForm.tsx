@@ -2,11 +2,10 @@ import { useEffect, useState } from 'react';
 import type { FieldValues, Path } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import type { TextFieldProps } from '@mui/material';
-import { Grid } from '@mui/material';
+import { Box, TextField } from '@mui/material';
 import { Switch } from '@psycron/components/switch/components/item/Switch';
 
 import { PhoneInput } from '../phone/PhoneInput';
-import { InputFields } from '../shared/styles';
 
 import type { ContactsFormProps } from './ContactsForm.types';
 
@@ -20,6 +19,8 @@ export const ContactsForm = <T extends FieldValues>({
 }: ContactsFormProps<T> & TextFieldProps) => {
 	const { t } = useTranslation();
 
+	const { email, phone, whatsapp } = defaultValues;
+
 	const [hasWhatsApp, setHasWhatsApp] = useState<boolean>(false);
 	const [isPhoneWpp, setIsPhoneWpp] = useState<boolean>(true);
 
@@ -31,13 +32,13 @@ export const ContactsForm = <T extends FieldValues>({
 	}, [getPhoneValue, isPhoneWpp, setPhoneValue]);
 
 	return (
-		<Grid container>
-			<Grid item xs={12}>
-				<InputFields
+		<Box>
+			<Box pb={4}>
+				<TextField
 					label={t('globals.email')}
 					fullWidth
 					id='email'
-					defaultValue={defaultValues?.defaultEmail}
+					defaultValue={email}
 					{...register('email' as Path<T>)}
 					autoComplete='email'
 					error={!!errors?.email}
@@ -45,18 +46,18 @@ export const ContactsForm = <T extends FieldValues>({
 					required
 					disabled={disabled}
 				/>
-			</Grid>
-			<Grid item xs={12}>
+			</Box>
+			<Box>
 				<PhoneInput
 					errors={errors}
 					register={register}
 					registerName='phone'
-					defaultValue={defaultValues?.defaultPhone}
+					defaultValue={phone}
 					disabled={disabled}
 				/>
-			</Grid>
-			<Grid container>
-				<Grid item xs={12} display='flex'>
+			</Box>
+			<Box>
+				<Box display='flex'>
 					<Switch
 						onChange={() => setHasWhatsApp((prev) => !prev)}
 						value={hasWhatsApp}
@@ -65,33 +66,31 @@ export const ContactsForm = <T extends FieldValues>({
 						})}
 						disabled={disabled}
 					/>
-				</Grid>
+				</Box>
 				{hasWhatsApp ? (
-					<Grid item xs={12} display='flex'>
+					<Box display='flex'>
 						<Switch
 							onChange={() => setIsPhoneWpp((prev) => !prev)}
 							value={isPhoneWpp}
 							defaultChecked
-							label={t(
-								'components.form.contacts-form.contact-via-same',
-							)}
+							label={t('components.form.contacts-form.contact-via-same')}
 						/>
-					</Grid>
+					</Box>
 				) : null}
 
 				{hasWhatsApp ? (
-					<Grid item xs={12}>
+					<Box>
 						{!isPhoneWpp ? (
 							<PhoneInput
 								errors={errors}
 								register={register}
 								registerName='whatsapp'
-								defaultValue={defaultValues?.defaultWpp}
+								defaultValue={whatsapp}
 							/>
 						) : null}
-					</Grid>
+					</Box>
 				) : null}
-			</Grid>
-		</Grid>
+			</Box>
+		</Box>
 	);
 };

@@ -27,7 +27,8 @@ export const ContentWrapper = styled(Box)`
 
 	flex-direction: column-reverse;
 
-	padding: ${spacing.medium};
+	padding: ${spacing.mediumLarge};
+
 	${isBiggerThanMediumMedia} {
 		padding: ${spacing.large};
 		flex-direction: row;

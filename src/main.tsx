@@ -8,7 +8,7 @@ import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 
 import '@psycron/index.css';
 
-import AppRouter from './routes/AppRouter';
+import App from './App';
 import i18n from './i18n';
 import theme from './theme';
 
@@ -23,7 +23,7 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
 		<QueryClientProvider client={queryClient}>
 			<I18nextProvider i18n={i18n}>
 				<ThemeProvider theme={theme}>
-					<AppRouter />
+					<App />
 					<ReactQueryDevtools initialIsOpen={false} />
 				</ThemeProvider>
 			</I18nextProvider>

@@ -1,13 +1,17 @@
 import { useEffect, useState } from 'react';
 import type { FieldError, FieldValues, Path } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
+import { useLocation } from 'react-router-dom';
 import type { TextFieldProps } from '@mui/material';
-import { Box, IconButton, InputAdornment } from '@mui/material';
+import { InputAdornment, TextField } from '@mui/material';
 import { NotVisible, Visible } from '@psycron/components/icons';
 import { useAuth } from '@psycron/context/user/auth/UserAuthenticationContext';
 
-import { InputFields } from '../shared/styles';
-
+import {
+	PasswordWrapper,
+	StyledIconButton,
+	StyledInput,
+} from './PasswordInput.styles';
 import type { PasswordInputProps } from './PasswordInput.types';
 
 export const PasswordInput = <T extends FieldValues>({
@@ -20,8 +24,11 @@ export const PasswordInput = <T extends FieldValues>({
 	const { t } = useTranslation();
 
 	const { signInError } = useAuth();
+	const { pathname } = useLocation();
 
-	const passwordInputId: Path<T> = 'password' as Path<T>;
+	const passInputId = pathname.includes('edit/') ? 'newPassword' : 'password';
+
+	const passwordInputId: Path<T> = passInputId as Path<T>;
 	const confirmPasswordInputId: Path<T> = 'confirmPassword' as Path<T>;
 
 	const [isVisible, setIsVisible] = useState<{ [key: string]: boolean }>({
@@ -54,25 +61,24 @@ export const PasswordInput = <T extends FieldValues>({
 	};
 
 	const getHelperText = (fieldId: Path<T>): React.ReactNode => {
-		// Se existir um erro no formulário ou signInError, retornar a mensagem apropriada
 		if (typeof signInError === 'string') {
-			return signInError; // Erro externo (ex.: do servidor)
+			return signInError;
 		}
 		if (typeof errors === 'string') {
-			return errors; // Também pode ser um erro externo em forma de string
+			return errors;
 		} else if (
 			errors &&
 			errors[fieldId] &&
 			'message' in (errors[fieldId] as FieldError)
 		) {
-			return (errors[fieldId] as FieldError).message; // Erro do formulário
+			return (errors[fieldId] as FieldError).message;
 		}
 		return null;
 	};
 
 	return (
-		<Box>
-			<InputFields
+		<PasswordWrapper>
+			<StyledInput
 				label={t('globals.password')}
 				id={passwordInputId}
 				fullWidth
@@ -86,22 +92,24 @@ export const PasswordInput = <T extends FieldValues>({
 					handleInputChange(passwordInputId, e.target.value);
 				}}
 				disabled={disabled}
+				required
 				InputProps={{
 					endAdornment: passwordValue?.length ? (
 						<InputAdornment position='end'>
-							<IconButton
+							<StyledIconButton
 								onMouseEnter={() => toggleVisibility(passwordInputId)}
 								onMouseLeave={() => toggleVisibility(passwordInputId)}
 								edge='end'
 							>
-								{!isVisible[passwordInputId] ? <NotVisible /> : <Visible />}
-							</IconButton>
+								{isVisible[passwordInputId] ? <NotVisible /> : <Visible />}
+							</StyledIconButton>
 						</InputAdornment>
 					) : null,
 				}}
+				hasToConfirm={hasToConfirm}
 			/>
 			{hasToConfirm ? (
-				<InputFields
+				<TextField
 					label={t('components.form.confirm-password')}
 					fullWidth
 					id={confirmPasswordInputId}
@@ -114,10 +122,11 @@ export const PasswordInput = <T extends FieldValues>({
 					onChange={(e) => {
 						handleInputChange(confirmPasswordInputId, e.target.value);
 					}}
+					required={hasToConfirm}
 					InputProps={{
 						endAdornment: confirmPasswordValue?.length ? (
 							<InputAdornment position='end'>
-								<IconButton
+								<StyledIconButton
 									onMouseEnter={() => toggleVisibility(confirmPasswordInputId)}
 									onMouseLeave={() => toggleVisibility(confirmPasswordInputId)}
 									edge='end'
@@ -127,12 +136,12 @@ export const PasswordInput = <T extends FieldValues>({
 									) : (
 										<Visible />
 									)}
-								</IconButton>
+								</StyledIconButton>
 							</InputAdornment>
 						) : null,
 					}}
 				/>
 			) : null}
-		</Box>
+		</PasswordWrapper>
 	);
 };

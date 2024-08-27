@@ -16,6 +16,7 @@ import { Tooltip } from '@psycron/components/tooltip/Tooltip';
 import { useUserDetails } from '@psycron/context/user/details/UserDetailsContext';
 import useClickOutside from '@psycron/hooks/useClickoutside';
 import useViewport from '@psycron/hooks/useViewport';
+import { palette } from '@psycron/theme/palette/palette.theme';
 
 import { AddressInfoItem } from '../address-info-item/AddressInfoItem';
 import { ContactInfoItem } from '../contact-info-item/ContactInfoItem';
@@ -37,18 +38,18 @@ export const UserDetails = ({ plan, user }: IUserDetailsCardProps) => {
 
 	const { t } = useTranslation();
 
-	const { toggleUserDetails, handleClickEditUser } = useUserDetails();
+	const { toggleUserDetails, handleClickEditUser, handleClickEditSession } =
+		useUserDetails();
 	const { isMobile, isTablet } = useViewport();
 
 	const { name: planName, status: planStatus } = plan;
 	const {
-		contacts: { address, phone, whatsapp },
+		contacts: { email, phone, whatsapp },
 		firstName,
 		lastName,
 		patients,
-		pass,
-		email,
-		image,
+		address,
+		// image,
 	} = user;
 
 	useClickOutside(userDetailsCardRef, toggleUserDetails);
@@ -61,18 +62,39 @@ export const UserDetails = ({ plan, user }: IUserDetailsCardProps) => {
 	);
 
 	const addressDetails = [
-		{ value: `${address.route} ${address.streetNumber}` },
-		{ value: address.moreInfo },
-		{ value: `${address.sublocality} ${address.city}` },
-		{ value: `${address.administrativeArea} ${address.postalCode}` },
-		{ value: address.country },
+		{ value: `${address?.route ?? ''} ${address?.streetNumber ?? ''}`.trim() },
+		{ value: address?.moreInfo ?? '' },
+		{ value: `${address?.sublocality ?? ''} ${address?.city ?? ''}`.trim() },
+		{
+			value:
+				`${address?.administrativeArea ?? ''} ${address?.postalCode ?? ''}`.trim(),
+		},
+		{ value: address?.country ?? '' },
 	];
+
+	const hasAddressInfo = addressDetails.some(
+		(detail) => detail.value && detail.value.trim() !== ''
+	);
 
 	const addressInfo = (
 		<Box display='flex' flexDirection='column' alignItems='flex-end'>
-			{addressDetails.map((detail, index) => (
-				<AddressInfoItem key={index} value={detail.value} />
-			))}
+			{hasAddressInfo ? (
+				addressDetails.map((detail, index) =>
+					detail.value.trim() ? (
+						<AddressInfoItem key={index} value={detail.value} />
+					) : null
+				)
+			) : (
+				<Typography
+					variant='body2'
+					pb={1}
+					color={palette.text.disabled}
+					textAlign='end'
+					width={'60%'}
+				>
+					{t('components.user-details.address-not-found')}
+				</Typography>
+			)}
 		</Box>
 	);
 
@@ -98,18 +120,22 @@ export const UserDetails = ({ plan, user }: IUserDetailsCardProps) => {
 		{
 			name: t('globals.password'),
 			icon: <Password />,
-			value: <Typography variant='body1'>{pass}</Typography>,
+			value: (
+				<Typography variant='body2' color={palette.text.disabled}>
+					**********
+				</Typography>
+			),
 			edit: t('components.user-details.change', {
 				name: t('globals.password'),
 			}),
-			subPath: '/password',
+			subPath: 'password',
 		},
 		{
 			name: 'Contacts',
 			icon: <Phone />,
 			value: constactsInfo,
 			edit: t('components.user-details.edit-contacts'),
-			subPath: '/contacts',
+			subPath: 'contacts',
 		},
 		{
 			name: t('globals.address'),
@@ -118,21 +144,21 @@ export const UserDetails = ({ plan, user }: IUserDetailsCardProps) => {
 			edit: t('components.user-details.change', {
 				name: t('globals.address'),
 			}),
-			subPath: '/address',
+			subPath: 'address',
 		},
 		{
 			name: t('globals.plan'),
 			icon: <Plan />,
 			value: planStatusInfo,
 			sub: t('globals.subscription-manager'),
-			subPath: '/subscription',
+			subPath: 'subscription',
 		},
 		{
 			name: t('globals.registered-patients'),
 			icon: <PatientList />,
 			value: patients.length,
 			sub: t('globals.patients-manager'),
-			subPath: '/patients',
+			subPath: 'patients',
 		},
 	];
 
@@ -141,12 +167,7 @@ export const UserDetails = ({ plan, user }: IUserDetailsCardProps) => {
 			<Box>
 				<UserDetailsTop>
 					<Box display='flex'>
-						<Avatar
-							src={image}
-							large
-							firstName={firstName}
-							lastName={lastName}
-						/>
+						<Avatar src={''} large firstName={firstName} lastName={lastName} />
 						<Box display='flex' flexDirection='column'>
 							<NameEmailBox>
 								<Typography
@@ -156,7 +177,7 @@ export const UserDetails = ({ plan, user }: IUserDetailsCardProps) => {
 								<Typography variant='overline'>{email}</Typography>
 							</NameEmailBox>
 							<StyledUserDetailsLinks
-								onClick={() => handleClickEditUser('/name')}
+								onClick={() => handleClickEditUser(user?._id)}
 							>
 								<Typography variant='caption'>
 									{isEditUser ? t('components.user-details.edit') : null}
@@ -188,7 +209,7 @@ export const UserDetails = ({ plan, user }: IUserDetailsCardProps) => {
 											{name}
 										</Typography>
 										<StyledUserDetailsLinks
-											onClick={() => handleClickEditUser(subPath)}
+											onClick={() => handleClickEditSession(user?._id, subPath)}
 										>
 											<Typography variant='caption'>
 												{isEditUser && edit?.length ? edit : sub}
@@ -196,7 +217,9 @@ export const UserDetails = ({ plan, user }: IUserDetailsCardProps) => {
 										</StyledUserDetailsLinks>
 									</Item>
 								</ItemWrapper>
-								<Box>{value}</Box>
+								<Box height={'100%'} pt={1}>
+									{value}
+								</Box>
 							</UserDetailsItemWrapper>
 						)
 					)}
