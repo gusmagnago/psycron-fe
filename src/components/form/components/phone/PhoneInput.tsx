@@ -1,10 +1,11 @@
 import { useEffect, useState } from 'react';
 import type { FieldValues, Path } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import { Grid, type SelectChangeEvent, Tooltip } from '@mui/material';
+import { Grid, type SelectChangeEvent } from '@mui/material';
 import countryList from '@psycron/assets/countries/countries.json';
 import { Info, Logo } from '@psycron/components/icons';
 import { Select } from '@psycron/components/Select/Select';
+import { Tooltip } from '@psycron/components/tooltip/Tooltip';
 import { useUserGeolocation } from '@psycron/context/CountryContext';
 import type { CountryDataSimple } from '@psycron/context/CountryContext.types';
 import { palette } from '@psycron/theme/palette/palette.theme';

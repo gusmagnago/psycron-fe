@@ -33,12 +33,18 @@ export const UserDetailsProvider = ({ children }: UserDetailsProviderProps) => {
 		toggleUserDetails();
 	};
 
+	const handleClickEditSession = (userId: string, session: string) => {
+		navigate(`${EDITUSERPATH}/${userId}/${session}`);
+		toggleUserDetails();
+	};
+
 	return (
 		<UserDetailsContext.Provider
 			value={{
 				isUserDetailsVisible,
 				toggleUserDetails,
 				handleClickEditUser,
+				handleClickEditSession,
 				user,
 			}}
 		>
@@ -56,16 +62,20 @@ export const useUserDetails = (passedUserId?: string) => {
 	const { user } = context;
 	const userId = passedUserId || user?._id;
 
-	const { data: userDetails, isLoading: isUserDetailsLoading } =
-		useQuery<ITherapist>({
-			queryKey: ['userDetails', userId],
-			queryFn: () => getUserById(userId),
-			enabled: !!userId,
-		});
+	const {
+		data: userDetails,
+		isLoading: isUserDetailsLoading,
+		isSuccess: isUserDetailsSucces,
+	} = useQuery<ITherapist>({
+		queryKey: ['userDetails', userId],
+		queryFn: () => getUserById(userId),
+		enabled: !!userId,
+	});
 
 	return {
 		...context,
 		userDetails,
 		isUserDetailsLoading,
+		isUserDetailsSucces,
 	};
 };

@@ -3,20 +3,21 @@ import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Box } from '@mui/material';
+import type { CustomError } from '@psycron/api/error';
+import { editUserById, type IEditUser } from '@psycron/api/user';
 import { Avatar } from '@psycron/components/avatar/Avatar';
 import { Button } from '@psycron/components/button/Button';
 import { AddressForm } from '@psycron/components/form/components/address/AddressForm';
 import { ContactsForm } from '@psycron/components/form/components/contacts/ContactsForm';
 import { NameForm } from '@psycron/components/form/components/name/NameForm';
 import { PasswordInput } from '@psycron/components/form/components/password/PasswordInput';
+import { Loader } from '@psycron/components/loader/Loader';
 import { Switch } from '@psycron/components/switch/components/item/Switch';
-import type {
-	IAddress,
-	IBaseUser,
-	IContactInfo,
-} from '@psycron/context/user/auth/UserAuthenticationContext.types';
+import { useAlert } from '@psycron/context/alert/AlertContext';
+import type { IAddress } from '@psycron/context/user/auth/UserAuthenticationContext.types';
 import { useUserDetails } from '@psycron/context/user/details/UserDetailsContext';
 import { spacing } from '@psycron/theme/spacing/spacing.theme';
+import { useMutation } from '@tanstack/react-query';
 
 import {
 	EditButton,
@@ -29,85 +30,126 @@ import {
 export const EditUser = () => {
 	const { t } = useTranslation();
 	const { userId } = useParams<{ userId: string }>();
+	const { session } = useParams<{ session: string }>();
 
-	const { userDetails } = useUserDetails(userId);
+	const navigate = useNavigate();
 
-	const { section } = useParams<{ section: string }>();
+	const { userDetails, isUserDetailsSucces, isUserDetailsLoading } =
+		useUserDetails(userId);
 
 	const [isEditName, setIsEditName] = useState<boolean>(false);
+
 	const [isEditContacts, setIsEditContacts] = useState<boolean>(false);
 	const [isEditAddress, setIsEditAddress] = useState<boolean>(false);
 	const [isEditPassword, setIsEditPassword] = useState<boolean>(false);
 
-	const navigate = useNavigate();
+	const { showAlert } = useAlert();
 
 	const {
 		register,
+		handleSubmit,
 		getValues,
 		setValue,
 		formState: { errors },
 	} = useForm();
 
 	useEffect(() => {
-		setIsEditName(section === 'name');
-		setIsEditContacts(section === 'contacts');
-		setIsEditAddress(section === 'address');
-		setIsEditPassword(section === 'password');
-	}, [section]);
+		setIsEditName(session === 'name');
+		setIsEditContacts(session === 'contacts');
+		setIsEditAddress(session === 'address');
+		setIsEditPassword(session === 'password');
+	}, [session]);
 
-	const getUserDetails = (userDetails?: Partial<IBaseUser>) => {
-		return {
-			src: '',
-			firstName: userDetails?.firstName,
-			lastName: userDetails?.lastName,
-			passwordHash: '************',
+	const editUserMutation = useMutation({
+		mutationFn: (editData: IEditUser) => editUserById(editData),
+		onSuccess: () => {
+			showAlert({
+				message: 'Details edited successfully',
+				severity: 'success',
+			});
+
+			setIsEditName(false);
+			setIsEditContacts(false);
+			setIsEditAddress(false);
+			setIsEditPassword(false);
+
+			navigate(-1);
+		},
+		onError: (error: CustomError) => {
+			showAlert({
+				message: error.message || 'something went wrong',
+				severity: 'error',
+			});
+		},
+	});
+
+	if (isUserDetailsLoading || !isUserDetailsSucces) {
+		return <Loader />;
+	}
+
+	const handleSave = () => {
+		const data = getValues();
+
+		const editData: IEditUser = {
+			userId: userDetails._id,
+			data: {
+				firstName: data.firstName || userDetails.firstName,
+				lastName: data.lastName || userDetails.lastName,
+				contacts: {
+					email: data.email || userDetails.contacts.email,
+					phone: data.countryCode + data.phone || userDetails.contacts.phone,
+					whatsapp: data.whatsapp || userDetails.contacts.whatsapp,
+				},
+				address: {
+					administrativeArea:
+						data.administrativeArea || userDetails.address?.administrativeArea,
+					city: data.city || userDetails.address?.city,
+					country: data.country || userDetails.address?.country,
+					streetNumber: data.streetNumber || userDetails.address?.streetNumber,
+					route: data.route || userDetails.address?.route,
+					postalCode: data.postalCode || userDetails.address?.postalCode,
+					sublocality: data.sublocality || userDetails.address?.sublocality,
+				},
+			},
 		};
+
+		const addressFields = [
+			'administrativeArea',
+			'city',
+			'country',
+			'streetNumber',
+			'route',
+			'postalCode',
+			'sublocality',
+		];
+
+		const isAddressEmpty = addressFields.every(
+			(field) => !editData.data.address?.[field as keyof IAddress]
+		);
+
+		if (isAddressEmpty) {
+			delete editData.data.address;
+		}
+
+		editUserMutation.mutate(editData);
 	};
-
-	const defaultMainDetails = getUserDetails(userDetails);
-
-	const getContacts = (userDetails?: { contacts: IContactInfo }) => {
-		return {
-			email: userDetails?.contacts.email,
-			phone: userDetails?.contacts?.phone || '',
-			whatsapp: userDetails?.contacts?.whatsapp || '',
-		};
-	};
-
-	const defaultContacts = getContacts(userDetails);
-
-	const getAddress = (userDetails?: { address?: IAddress }) => {
-		return {
-			address: `${userDetails?.address?.streetNumber ?? ''}, ${userDetails?.address?.route ?? ''}`,
-			streetNumber: userDetails?.address?.streetNumber || '',
-			route: userDetails?.address?.route || '',
-			administrativeArea: userDetails?.address?.administrativeArea || '',
-			city: userDetails?.address?.city || '',
-			country: userDetails?.address?.country || '',
-			moreInfo: userDetails?.address?.moreInfo || '',
-			postalCode: userDetails?.address?.postalCode || '',
-			sublocality: userDetails?.address?.sublocality || '',
-		};
-	};
-
-	const defaultAddress = getAddress(userDetails);
 
 	return (
-		<Box width={'100%'} display='flex' justifyContent='center'>
-			<EditUserWrapper>
+		<Box width='100%' display='flex' justifyContent='center'>
+			<EditUserWrapper as='form' onSubmit={handleSubmit(handleSave)}>
 				<EditingBox isEditing={isEditName}>
 					<Box display='flex' alignItems='center'>
 						<Avatar
-							firstName={defaultMainDetails.firstName}
-							lastName={defaultMainDetails.lastName}
-							src={defaultMainDetails.src}
+							firstName={userDetails?.firstName}
+							lastName={userDetails?.lastName}
+							src={''}
 							large
 						/>
 						<NameForm
 							errors={errors}
 							register={register}
-							placeholderFirstName={defaultMainDetails.firstName}
-							placeholderLastName={defaultMainDetails.lastName}
+							placeholderFirstName={userDetails?.firstName}
+							placeholderLastName={userDetails?.lastName}
 							disabled={!isEditName}
 						/>
 					</Box>
@@ -119,12 +161,13 @@ export const EditUser = () => {
 						/>
 					</EditButton>
 				</EditingBox>
+
 				<EditingBox isEditing={isEditPassword}>
 					<PasswordInput
 						errors={errors}
 						register={register}
 						hasToConfirm={isEditPassword}
-						defaultPasswordHash={defaultMainDetails.passwordHash}
+						defaultPasswordHash='************'
 						disabled={!isEditPassword}
 					/>
 					<EditButton>
@@ -137,6 +180,7 @@ export const EditUser = () => {
 						/>
 					</EditButton>
 				</EditingBox>
+
 				<Box mb={spacing.xxl}>
 					<EditingBox isEditing={isEditContacts}>
 						<ContactsForm
@@ -144,7 +188,7 @@ export const EditUser = () => {
 							register={register}
 							getPhoneValue={getValues}
 							setPhoneValue={setValue}
-							defaultValues={defaultContacts}
+							defaultValues={userDetails?.contacts}
 							disabled={!isEditContacts}
 						/>
 						<EditButton>
@@ -155,11 +199,12 @@ export const EditUser = () => {
 							/>
 						</EditButton>
 					</EditingBox>
+
 					<EditingBox isEditing={isEditAddress}>
 						<AddressForm
 							errors={errors}
 							register={register}
-							defaultValues={defaultAddress}
+							defaultValues={userDetails?.address}
 							disabled={!isEditAddress}
 						/>
 						<EditButton>
@@ -173,9 +218,10 @@ export const EditUser = () => {
 						</EditButton>
 					</EditingBox>
 				</Box>
-				<EditUserFooter component='footer' zIndex={100}>
+
+				<EditUserFooter component='footer' zIndex={10}>
 					<EditUserButtonWrapper>
-						<Button>{t('components.user-details.save')}</Button>
+						<Button type='submit'>{t('components.user-details.save')}</Button>
 						<Button secondary onClick={() => navigate(-1)}>
 							{t('globals.cancel')}
 						</Button>

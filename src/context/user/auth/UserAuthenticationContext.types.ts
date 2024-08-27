@@ -58,6 +58,7 @@ export interface IContactInfo {
 }
 
 export interface IAddress {
+	address?: string;
 	administrativeArea?: string;
 	city?: string;
 	country?: string;

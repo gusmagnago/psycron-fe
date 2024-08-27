@@ -38,7 +38,8 @@ export const UserDetails = ({ plan, user }: IUserDetailsCardProps) => {
 
 	const { t } = useTranslation();
 
-	const { toggleUserDetails, handleClickEditUser } = useUserDetails();
+	const { toggleUserDetails, handleClickEditUser, handleClickEditSession } =
+		useUserDetails();
 	const { isMobile, isTablet } = useViewport();
 
 	const { name: planName, status: planStatus } = plan;
@@ -127,14 +128,14 @@ export const UserDetails = ({ plan, user }: IUserDetailsCardProps) => {
 			edit: t('components.user-details.change', {
 				name: t('globals.password'),
 			}),
-			subPath: '/password',
+			subPath: 'password',
 		},
 		{
 			name: 'Contacts',
 			icon: <Phone />,
 			value: constactsInfo,
 			edit: t('components.user-details.edit-contacts'),
-			subPath: '/contacts',
+			subPath: 'contacts',
 		},
 		{
 			name: t('globals.address'),
@@ -143,21 +144,21 @@ export const UserDetails = ({ plan, user }: IUserDetailsCardProps) => {
 			edit: t('components.user-details.change', {
 				name: t('globals.address'),
 			}),
-			subPath: '/address',
+			subPath: 'address',
 		},
 		{
 			name: t('globals.plan'),
 			icon: <Plan />,
 			value: planStatusInfo,
 			sub: t('globals.subscription-manager'),
-			subPath: '/subscription',
+			subPath: 'subscription',
 		},
 		{
 			name: t('globals.registered-patients'),
 			icon: <PatientList />,
 			value: patients.length,
 			sub: t('globals.patients-manager'),
-			subPath: '/patients',
+			subPath: 'patients',
 		},
 	];
 
@@ -208,7 +209,7 @@ export const UserDetails = ({ plan, user }: IUserDetailsCardProps) => {
 											{name}
 										</Typography>
 										<StyledUserDetailsLinks
-											onClick={() => handleClickEditUser(subPath)}
+											onClick={() => handleClickEditSession(user?._id, subPath)}
 										>
 											<Typography variant='caption'>
 												{isEditUser && edit?.length ? edit : sub}

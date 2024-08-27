@@ -18,7 +18,8 @@ export const EditUserWrapper = styled(Box)`
 export const EditingBox = styled(Box, {
 	shouldForwardProp: (props) => props !== 'isEditing',
 })<{ isEditing?: boolean }>`
-	padding: ${spacing.small};
+	padding: ${spacing.mediumLarge};
+	padding-bottom: ${spacing.medium};
 
 	${({ isEditing }) =>
 		isEditing

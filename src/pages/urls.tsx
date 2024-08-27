@@ -18,6 +18,7 @@ export const UNSUBSCRIBE = ':token/unsubscribe';
 // PRIVATE
 export const DASHBOARD = 'dashboard';
 export const EDITUSER = 'edit/:userId';
+export const EDITUSERBYSESSION = 'edit/:userId/:session';
 export const EDITUSERPATH = 'edit';
 export const PATIENTS = 'patients';
 export const PAYMENTS = 'payments';

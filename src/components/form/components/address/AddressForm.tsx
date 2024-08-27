@@ -1,26 +1,23 @@
+/* eslint-disable indent */
+import type { ChangeEvent } from 'react';
 import { useState } from 'react';
 import type { FieldValues, Path } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import type { TextFieldProps } from '@mui/material';
-import { Grid, TextField, Typography } from '@mui/material';
+import { Grid, TextField } from '@mui/material';
 import { Switch } from '@psycron/components/switch/components/item/Switch';
-import { GOOGLE_MAPS_API_KEY } from '@psycron/utils/variables';
-import type { Libraries } from '@react-google-maps/api';
-import { Autocomplete, useLoadScript } from '@react-google-maps/api';
+import type { IAddress } from '@psycron/context/user/auth/UserAuthenticationContext.types';
 
+import { GoogleAddressSearch } from './GoogleAddressSearch/GoogleAddressSearch';
 import { ComplementaryField } from './AddressForm.styles';
-import type {
-	AddressComponent,
-	AddressComponentProps,
-} from './AddressForm.types';
-
-const LIBRARIES: Libraries = ['places'];
+import type { AddressComponentProps } from './AddressForm.types';
 
 export const AddressForm = <T extends FieldValues>({
 	errors,
 	register,
 	defaultValues,
 	disabled,
+	showGoogleAddressSearch,
 }: AddressComponentProps<T> & TextFieldProps) => {
 	const { t } = useTranslation();
 
@@ -36,55 +33,47 @@ export const AddressForm = <T extends FieldValues>({
 	};
 
 	const [addressComponents, setAddressComponents] = useState<
-        AddressComponent | undefined
-    >(defaultValues || defaultAddressVal);
+		IAddress | undefined
+	>(defaultValues || defaultAddressVal);
 
 	const [addMoreInfo, setAddMoreInfo] = useState<boolean>(false);
 
-	const { isLoaded, loadError } = useLoadScript({
-		googleMapsApiKey: GOOGLE_MAPS_API_KEY,
-		libraries: LIBRARIES,
-	});
-
-	const handlePlaceSelect = (
-		autocomplete: google.maps.places.Autocomplete,
-	) => {
+	const handlePlaceSelect = (autocomplete: google.maps.places.Autocomplete) => {
 		const place = autocomplete.getPlace();
 
-		const updatedAddressComponents: Partial<AddressComponent> = {
+		const updatedAddressComponents: Partial<IAddress> = {
 			address: place.formatted_address || '',
 		};
 
 		place.address_components?.forEach((component) => {
 			const componentType = component.types[0];
 			switch (componentType) {
-			case 'street_number':
-				updatedAddressComponents.streetNumber = component.long_name;
-				break;
-			case 'route':
-				updatedAddressComponents.route = component.long_name;
-				break;
-			case 'sublocality_level_1':
-			case 'sublocality':
-				updatedAddressComponents.sublocality = component.long_name;
-				break;
-			case 'political':
-			case 'locality':
-			case 'administrative_area_level_2':
-				updatedAddressComponents.city = component.long_name;
-				break;
-			case 'administrative_area_level_1':
-				updatedAddressComponents.administrativeArea =
-                        component.long_name;
-				break;
-			case 'country':
-				updatedAddressComponents.country = component.long_name;
-				break;
-			case 'postal_code':
-				updatedAddressComponents.postalCode = component.long_name;
-				break;
-			default:
-				break;
+				case 'street_number':
+					updatedAddressComponents.streetNumber = component.long_name;
+					break;
+				case 'route':
+					updatedAddressComponents.route = component.long_name;
+					break;
+				case 'sublocality_level_1':
+				case 'sublocality':
+					updatedAddressComponents.sublocality = component.long_name;
+					break;
+				case 'political':
+				case 'locality':
+				case 'administrative_area_level_2':
+					updatedAddressComponents.city = component.long_name;
+					break;
+				case 'administrative_area_level_1':
+					updatedAddressComponents.administrativeArea = component.long_name;
+					break;
+				case 'country':
+					updatedAddressComponents.country = component.long_name;
+					break;
+				case 'postal_code':
+					updatedAddressComponents.postalCode = component.long_name;
+					break;
+				default:
+					break;
 			}
 		});
 
@@ -94,7 +83,7 @@ export const AddressForm = <T extends FieldValues>({
 		}));
 	};
 
-	const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+	const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
 		const { name, value } = e.target;
 		setAddressComponents((prev) => ({
 			...(prev ?? defaultAddressVal),
@@ -104,34 +93,12 @@ export const AddressForm = <T extends FieldValues>({
 
 	return (
 		<Grid container columnSpacing={5} rowSpacing={5} pt={2} pb={5}>
-			{!defaultValues && isLoaded && !loadError ? (
-				<Grid item xs={12}>
-					<Autocomplete
-						onLoad={(autocomplete) =>
-							autocomplete.addListener('place_changed', () =>
-								handlePlaceSelect(autocomplete),
-							)
-						}
-					>
-						<TextField
-							id='addressSearch'
-							name='addressSearch'
-							label={t('components.form.address-form.search')}
-							// value={addressComponents.address}
-							onChange={handleChange}
-							fullWidth
-						/>
-					</Autocomplete>
-					<Typography
-						variant='caption'
-						textAlign='center'
-						textTransform='initial'
-					>
-						{t('components.form.address-form.search-note')}
-					</Typography>
-				</Grid>
+			{showGoogleAddressSearch ? (
+				<GoogleAddressSearch
+					handleChange={handleChange}
+					handlePlaceSelect={handlePlaceSelect}
+				/>
 			) : null}
-
 			<Grid item xs={12} md={8}>
 				<TextField
 					label={t('components.form.address-form.street')}
