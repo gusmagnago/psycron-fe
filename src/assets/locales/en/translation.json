@@ -210,7 +210,14 @@
 		},
 		"reset-password": {
 			"reset": "Reset password",
-			"change-password": "Change password"
+			"change-password": "Change password",
+			"password-rule": "Your password must contain at least:",
+			"password-example": "Example:",
+			"item-letter": "One letter {{rule}}",
+			"item-number": "One number {{rule}}",
+			"item-special": "One special character {{rule}}",
+			"item-minimum": "9 characters long",
+			"current-password": "Current password"
 		}
 	}
 }

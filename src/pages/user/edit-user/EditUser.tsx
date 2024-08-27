@@ -6,26 +6,20 @@ import { Box } from '@mui/material';
 import type { CustomError } from '@psycron/api/error';
 import { editUserById, type IEditUser } from '@psycron/api/user';
 import { Avatar } from '@psycron/components/avatar/Avatar';
-import { Button } from '@psycron/components/button/Button';
 import { AddressForm } from '@psycron/components/form/components/address/AddressForm';
 import { ContactsForm } from '@psycron/components/form/components/contacts/ContactsForm';
+import { FormFooter } from '@psycron/components/form/components/footer/FormFooter';
 import { NameForm } from '@psycron/components/form/components/name/NameForm';
-import { PasswordInput } from '@psycron/components/form/components/password/PasswordInput';
 import { Loader } from '@psycron/components/loader/Loader';
 import { Switch } from '@psycron/components/switch/components/item/Switch';
+import { Text } from '@psycron/components/text/Text';
 import { useAlert } from '@psycron/context/alert/AlertContext';
 import type { IAddress } from '@psycron/context/user/auth/UserAuthenticationContext.types';
 import { useUserDetails } from '@psycron/context/user/details/UserDetailsContext';
 import { spacing } from '@psycron/theme/spacing/spacing.theme';
 import { useMutation } from '@tanstack/react-query';
 
-import {
-	EditButton,
-	EditingBox,
-	EditUserButtonWrapper,
-	EditUserFooter,
-	EditUserWrapper,
-} from './EditUser.styles';
+import { EditButton, EditingBox, EditUserWrapper } from './EditUser.styles';
 
 export const EditUser = () => {
 	const { t } = useTranslation();
@@ -41,7 +35,6 @@ export const EditUser = () => {
 
 	const [isEditContacts, setIsEditContacts] = useState<boolean>(false);
 	const [isEditAddress, setIsEditAddress] = useState<boolean>(false);
-	const [isEditPassword, setIsEditPassword] = useState<boolean>(false);
 
 	const { showAlert } = useAlert();
 
@@ -57,7 +50,6 @@ export const EditUser = () => {
 		setIsEditName(session === 'name');
 		setIsEditContacts(session === 'contacts');
 		setIsEditAddress(session === 'address');
-		setIsEditPassword(session === 'password');
 	}, [session]);
 
 	const editUserMutation = useMutation({
@@ -71,7 +63,6 @@ export const EditUser = () => {
 			setIsEditName(false);
 			setIsEditContacts(false);
 			setIsEditAddress(false);
-			setIsEditPassword(false);
 
 			navigate(-1);
 		},
@@ -136,6 +127,9 @@ export const EditUser = () => {
 
 	return (
 		<Box width='100%' display='flex' justifyContent='center'>
+			<Text variant='h6' pb={5}>
+				{t('components.user-details.edit')}
+			</Text>
 			<EditUserWrapper as='form' onSubmit={handleSubmit(handleSave)}>
 				<EditingBox isEditing={isEditName}>
 					<Box display='flex' alignItems='center'>
@@ -158,25 +152,6 @@ export const EditUser = () => {
 							label={t('components.user-details.edit')}
 							defaultChecked={isEditName}
 							onChange={() => setIsEditName((prev) => !prev)}
-						/>
-					</EditButton>
-				</EditingBox>
-
-				<EditingBox isEditing={isEditPassword}>
-					<PasswordInput
-						errors={errors}
-						register={register}
-						hasToConfirm={isEditPassword}
-						defaultPasswordHash='************'
-						disabled={!isEditPassword}
-					/>
-					<EditButton>
-						<Switch
-							label={t('components.user-details.change', {
-								name: t('globals.password'),
-							})}
-							defaultChecked={isEditPassword}
-							onChange={() => setIsEditPassword((prev) => !prev)}
 						/>
 					</EditButton>
 				</EditingBox>
@@ -218,15 +193,7 @@ export const EditUser = () => {
 						</EditButton>
 					</EditingBox>
 				</Box>
-
-				<EditUserFooter component='footer' zIndex={10}>
-					<EditUserButtonWrapper>
-						<Button type='submit'>{t('components.user-details.save')}</Button>
-						<Button secondary onClick={() => navigate(-1)}>
-							{t('globals.cancel')}
-						</Button>
-					</EditUserButtonWrapper>
-				</EditUserFooter>
+				<FormFooter />
 			</EditUserWrapper>
 		</Box>
 	);

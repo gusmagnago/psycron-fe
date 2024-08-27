@@ -1,5 +1,11 @@
 import { Dashboard } from '@psycron/pages/dashboard/Dashboard';
-import { DASHBOARD, EDITUSER, EDITUSERBYSESSION } from '@psycron/pages/urls';
+import {
+	CHANGEPASSWORD,
+	DASHBOARD,
+	EDITUSER,
+	EDITUSERBYSESSION,
+} from '@psycron/pages/urls';
+import { EditPassword } from '@psycron/pages/user/edit-password/EditPassword';
 import { EditUser } from '@psycron/pages/user/edit-user/EditUser';
 
 const privateRoutes = [
@@ -9,6 +15,7 @@ const privateRoutes = [
 	},
 	{ path: EDITUSER, element: <EditUser /> },
 	{ path: EDITUSERBYSESSION, element: <EditUser /> },
+	{ path: CHANGEPASSWORD, element: <EditPassword /> },
 ];
 
 export default privateRoutes;

@@ -210,7 +210,14 @@
 		},
 		"reset-password": {
 			"reset": "Resetar senha",
-			"change-password": "Alterar senha"
+			"change-password": "Alterar senha",
+			"password-rule": "A sua senha deve conter no mínimo:",
+			"password-example": "Exemplo:",
+			"item-letter": "Uma letra {{rule}}",
+			"item-number": "Um número {{rule}}",
+			"item-special": "Um caractere especial {{rule}}",
+			"item-minimum": "9 dígitos",
+			"current-password": "Senha atual"
 		}
 	}
 }

@@ -1,4 +1,4 @@
-import { Box, styled, TextField } from '@mui/material';
+import { Box, IconButton, styled, TextField } from '@mui/material';
 import { isBiggerThanTabletMedia } from '@psycron/theme/media-queries/mediaQueries';
 import { spacing } from '@psycron/theme/spacing/spacing.theme';
 
@@ -23,4 +23,9 @@ export const StyledInput = styled(TextField, {
 		padding-bottom: 0;
 		padding-right: ${({ hasToConfirm }) => (hasToConfirm ? spacing.small : 0)};
 	}
+`;
+
+export const StyledIconButton = styled(IconButton)`
+	width: 2em;
+	height: 2em;
 `;

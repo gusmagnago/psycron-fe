@@ -34,7 +34,20 @@ export const UserDetailsProvider = ({ children }: UserDetailsProviderProps) => {
 	};
 
 	const handleClickEditSession = (userId: string, session: string) => {
-		navigate(`${EDITUSERPATH}/${userId}/${session}`);
+		const editUserPath = `${EDITUSERPATH}/${userId}`;
+
+		const specialPaths: { [hey: string]: string } = {
+			password: `${editUserPath}/password`,
+			subscription: '/subscription-manager',
+			patients: '/patients-manager',
+		};
+
+		if (specialPaths[session]) {
+			navigate(specialPaths[session]);
+		} else {
+			navigate(`${editUserPath}/${session}`);
+		}
+
 		toggleUserDetails();
 	};
 

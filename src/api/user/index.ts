@@ -11,6 +11,22 @@ export interface IEditUser {
 	userId: string;
 }
 
+export interface IPasswordChange {
+	confirmPassword: string;
+	newPassword: string;
+	password: string;
+}
+
+export interface IChangePass {
+	data: IPasswordChange;
+	userId: string;
+}
+
+export interface IResponse {
+	message: string;
+	status: string;
+}
+
 export const getUserById = async (userId: string): Promise<ITherapist> => {
 	const response = await apiClient.get<IUserByIdResponse>(`/users/${userId}`);
 
@@ -23,6 +39,15 @@ export const editUserById = async ({
 }: IEditUser): Promise<IUserByIdResponse> => {
 	const response = await apiClient.post<IUserByIdResponse>(
 		`/users/edit/${userId}`,
+		data
+	);
+
+	return response.data;
+};
+
+export const changePassword = async ({ data, userId }: IChangePass) => {
+	const response = await apiClient.post<IResponse>(
+		`/users/password-change/${userId}`,
 		data
 	);
 
