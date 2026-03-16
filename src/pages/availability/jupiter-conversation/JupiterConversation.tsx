@@ -27,10 +27,10 @@ import {
 	PublishingMessageWrapper,
 	PublishingOverlay,
 	SendButton,
-	ThinkingBubble,
 	UserBubble,
 	UserMessageGroup,
 } from './JupiterConversation.styles';
+import { JupiterThinking } from './JupiterThinking';
 import { useJupiterFlow } from './useJupiterFlow';
 
 export const JupiterConversation = () => {
@@ -210,11 +210,7 @@ export const JupiterConversation = () => {
 						</SendButton>
 					</InputRow>
 					{isParsing && (
-						<ThinkingBubble>
-							<span />
-							<span />
-							<span />
-						</ThinkingBubble>
+						<JupiterThinking />
 					)}
 				</ChipsInline>
 			);
@@ -262,13 +258,7 @@ export const JupiterConversation = () => {
 							otherPlaceholder={t('jupiter.working-days.other-placeholder')}
 							onOtherSubmit={handleWorkingDaysOtherSubmit}
 						/>
-						{isParsing && (
-							<ThinkingBubble>
-								<span />
-								<span />
-								<span />
-							</ThinkingBubble>
-						)}
+						{isParsing && <JupiterThinking />}
 					</ChipsInline>
 				);
 
@@ -409,11 +399,7 @@ export const JupiterConversation = () => {
 				<>
 					<PublishingOverlay />
 					<PublishingMessageWrapper>
-						<ThinkingBubble>
-							<span />
-							<span />
-							<span />
-						</ThinkingBubble>
+						<JupiterThinking />
 					</PublishingMessageWrapper>
 				</>
 			)}
