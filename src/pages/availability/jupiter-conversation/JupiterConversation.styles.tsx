@@ -55,6 +55,7 @@ export const CardWrapper = styled(Box)`
 	flex-direction: column;
 	width: 100%;
 	flex: 1;
+	position: relative;
 
 	padding: ${spacing.small};
 
@@ -68,6 +69,26 @@ export const CardWrapper = styled(Box)`
 		background: ${palette.background.paper};
 		overflow: hidden;
 	}
+`;
+
+export const PublishingOverlay = styled(Box)`
+	position: absolute;
+	inset: 0;
+	z-index: 10;
+	backdrop-filter: blur(6px);
+	background-color: ${hexToRgba(palette.background.paper, 0.6)};
+	border-radius: inherit;
+	pointer-events: all;
+`;
+
+export const PublishingMessageWrapper = styled(Box)`
+	position: absolute;
+	inset: 0;
+	z-index: 11;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	pointer-events: none;
 `;
 
 export const CardHeader = styled(Box)`
