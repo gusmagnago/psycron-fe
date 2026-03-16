@@ -24,6 +24,8 @@ import {
 	ConversationContainer,
 	IconRow,
 	InputRow,
+	PublishingMessageWrapper,
+	PublishingOverlay,
 	SendButton,
 	ThinkingBubble,
 	UserBubble,
@@ -402,6 +404,19 @@ export const JupiterConversation = () => {
 				{renderStepChips()}
 				<div ref={bottomRef} />
 			</ConversationContainer>
+
+			{isPublishing && (
+				<>
+					<PublishingOverlay />
+					<PublishingMessageWrapper>
+						<ThinkingBubble>
+							<span />
+							<span />
+							<span />
+						</ThinkingBubble>
+					</PublishingMessageWrapper>
+				</>
+			)}
 		</CardWrapper>
 	);
 };
