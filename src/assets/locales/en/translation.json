@@ -676,6 +676,16 @@
     }
   },
   "availability": {
+    "calendar": {
+      "legend-available": "Available",
+      "legend-busy": "Busy",
+      "legend-full": "Full",
+      "legend-partial": "Partial",
+      "page-title": "Availability",
+      "source-google": "Google",
+      "source-jupiter": "Júpiter",
+      "subtitle": "Your availability calendar"
+    },
     "gate": {
       "deleted-notice": "You no longer have availability set up. Head to Jupiter to create a new one."
     },

@@ -8,9 +8,14 @@ import type { IAvailabilityRecord } from './index.types';
 //   return response.data;
 // The setQueryData call in useJupiterFlow.handlePublish acts as the in-session
 // bridge until this endpoint exists. Remove it once the API is live.
-export const getAvailability = async (): Promise<IAvailabilityRecord | null> => {
+export const getAvailability = async (params?: {
+	from?: string;
+	to?: string;
+}): Promise<IAvailabilityRecord | null> => {
 	try {
-		const response = await apiClient.get<IAvailabilityRecord>('/jupiter/availability');
+		const response = await apiClient.get<IAvailabilityRecord>('/jupiter/availability', {
+			params,
+		});
 		return response.data;
 	} catch {
 		return null;

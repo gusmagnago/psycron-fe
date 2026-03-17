@@ -675,6 +675,16 @@
     }
   },
   "availability": {
+    "calendar": {
+      "legend-available": "Disponível",
+      "legend-busy": "Ocupado",
+      "legend-full": "Completo",
+      "legend-partial": "Parcial",
+      "page-title": "Disponibilidade",
+      "source-google": "Google",
+      "source-jupiter": "Júpiter",
+      "subtitle": "Seu calendário de disponibilidade"
+    },
     "gate": {
       "deleted-notice": "Você não tem mais disponibilidade configurada. Fale com a Júpiter para criar uma nova."
     },
