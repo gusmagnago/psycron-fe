@@ -534,8 +534,8 @@
   },
   "jupiter": {
     "welcome": {
-      "title-line1": "Eu sou o Júpiter,",
-      "title-line2": "seu Assistente Inteligente",
+      "title-line1": "Eu sou a Júpiter,",
+      "title-line2": "sua Assistente Inteligente",
       "subtitle": "Vou te ajudar a configurar sua disponibilidade em poucos momentos. Vamos tornar o agendamento simples e rápido.",
       "cta": "Configurar minha agenda"
     },
@@ -604,7 +604,7 @@
       "page-subtitle": "Gerencie sua disponibilidade e preferências de agendamento",
       "success-toast": "Sua disponibilidade está ativa. Seus clientes já podem agendar sessões com você.",
       "welcome-toast": "Bem-vindo ao Psycron!",
-      "tip-title": "Dica do Júpiter",
+      "tip-title": "Dica da Júpiter",
       "tip-text": "Sua disponibilidade está ótima. Adicionar uma política de cancelamento ajuda a reduzir faltas e define expectativas claras com seus clientes.",
       "tip-cta": "Configurar política de cancelamento",
       "status-active-hours": "Horas ativas",
@@ -625,8 +625,8 @@
       "checklist-calendar-sync": "Sincronizar com sua agenda existente",
       "checklist-calendar-desc": "Conecte sua agenda para evitar conflitos",
       "help-title": "Precisa de ajuda?",
-      "help-text": "O Júpiter pode te ajudar a completar sua configuração",
-      "help-cta": "Falar com o Júpiter"
+      "help-text": "A Júpiter pode te ajudar a completar sua configuração",
+      "help-cta": "Falar com a Júpiter"
     },
     "google-calendar": {
       "permissions-intro": "Vamos conectar sua Google Agenda com segurança para:",
@@ -675,10 +675,13 @@
     }
   },
   "availability": {
+    "gate": {
+      "deleted-notice": "Você não tem mais disponibilidade configurada. Fale com a Júpiter para criar uma nova."
+    },
     "settings": {
       "live-alert": "Sua disponibilidade está ativa. Seus clientes já podem agendar sessões com você.",
       "page-title": "Disponibilidade",
-      "talk-to-jupiter": "Editar com o Júpiter"
+      "talk-to-jupiter": "Editar com a Júpiter"
     }
   }
 }
