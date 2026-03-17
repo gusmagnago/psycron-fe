@@ -676,6 +676,9 @@
     }
   },
   "availability": {
+    "gate": {
+      "deleted-notice": "You no longer have availability set up. Head to Jupiter to create a new one."
+    },
     "settings": {
       "live-alert": "Your availability is now live. Clients can start booking sessions with you right away.",
       "page-title": "Availability",

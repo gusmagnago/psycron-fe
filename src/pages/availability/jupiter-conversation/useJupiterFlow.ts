@@ -17,7 +17,26 @@ import type {
 	JupiterStep,
 } from './JupiterConversation.types';
 
-export const STORAGE_KEY = 'jupiter-flow';
+export const STORAGE_KEY = '_psy_jd';
+export const ONBOARDING_KEY = '_psy_ob';
+
+// One-time migration from legacy readable keys
+const LEGACY_STORAGE_KEY = 'jupiter-flow';
+const LEGACY_ONBOARDING_KEY = 'psycron-jupiter-onboarded';
+const migrateLocalStorageKeys = () => {
+	const draft = localStorage.getItem(LEGACY_STORAGE_KEY);
+	if (draft) {
+		localStorage.setItem(STORAGE_KEY, draft);
+		localStorage.removeItem(LEGACY_STORAGE_KEY);
+	}
+	const onboarded = localStorage.getItem(LEGACY_ONBOARDING_KEY);
+	if (onboarded) {
+		localStorage.setItem(ONBOARDING_KEY, onboarded);
+		localStorage.removeItem(LEGACY_ONBOARDING_KEY);
+	}
+};
+
+migrateLocalStorageKeys();
 
 const VALID_SESSION_TYPE_KEYS = new Set(['chip-online', 'chip-in-person', 'chip-both']);
 
@@ -326,6 +345,7 @@ export const useJupiterFlow = (initialAnswers?: JupiterAnswers) => {
 				timezone: answers.timezone,
 			});
 			localStorage.removeItem(STORAGE_KEY);
+			localStorage.setItem(ONBOARDING_KEY, 'true');
 			queryClient.setQueryData<IAvailabilityRecord>(['availability'], {
 				availabilityId,
 				sessionDuration: answers.sessionDuration!,

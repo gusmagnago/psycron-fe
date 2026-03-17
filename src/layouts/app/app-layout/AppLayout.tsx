@@ -4,6 +4,7 @@ import { Outlet } from 'react-router-dom';
 import { Box, Divider } from '@mui/material';
 import { AppAnalytics } from '@psycron/analytics/posthog/AppAnalytics';
 import { EnvironmentBanner } from '@psycron/components/environment-banner/EnvironmentBanner';
+import { AvailabilityGate } from '@psycron/components/guards/AvailabilityGate';
 import {
 	Calendar,
 	DashboardIcon,
@@ -116,7 +117,9 @@ export const AppLayout: FC = () => {
 			</NavBarWrapper>
 			<Content>
 				<EnvironmentBanner isVisible={isTestingEnv} />
-				<Outlet />
+				<AvailabilityGate>
+					<Outlet />
+				</AvailabilityGate>
 				{isAuthenticated && isUserDetailsVisible && (
 					<UserDetailsCard user={userDetails} />
 				)}
