@@ -709,6 +709,8 @@
       "no-appointments": "No appointments",
       "page-title": "Availability",
       "prev-week": "Previous week",
+      "filter-hide-free": "Hide free slots",
+      "filter-show-free": "Show free slots",
       "slot": "slot",
       "slots": "slots",
       "title": "Week Schedule",

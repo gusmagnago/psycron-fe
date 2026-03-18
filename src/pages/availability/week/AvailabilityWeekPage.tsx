@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams } from 'react-router-dom';
-import { Calendar, ChevronLeft, ChevronRight } from '@psycron/components/icons';
+import { Calendar, ChevronLeft, ChevronRight, Filter } from '@psycron/components/icons';
+import { useCalendarPrefs } from '@psycron/hooks/useCalendarPrefs';
 import useViewport from '@psycron/hooks/useViewport';
 import i18n from '@psycron/i18n';
 import { PageLayout } from '@psycron/layouts/app/pages-layout/PageLayout';
@@ -28,6 +29,7 @@ import {
 	DayHeader,
 	DayName,
 	DayNumber,
+	FilterButton,
 	LegendItem,
 	LegendLabel,
 	LegendSwatch,
@@ -89,15 +91,20 @@ const formatTimeRange = (startTime: string, durationMin: number) => {
 const getDaySlots = (day: Date): IWeekSlot[] =>
 	MOCK_WEEK_DATA[format(day, 'yyyy-MM-dd')] ?? [];
 
-const getScheduledSlots = (day: Date): IWeekSlot[] =>
-	getDaySlots(day).filter((s) => s.status !== 'available');
-
 export const AvailabilityWeekPage = () => {
 	const { t } = useTranslation();
 	const navigate = useNavigate();
 	const { date } = useParams<{ date: string }>();
 	const { isMobile } = useViewport();
+	const { prefs, toggleShowUnavailable } = useCalendarPrefs();
 	const [selectedSlot, setSelectedSlot] = useState<IWeekSlot | null>(null);
+
+	const getVisibleDaySlots = (day: Date): IWeekSlot[] => {
+		const slots = getDaySlots(day);
+		return prefs.showUnavailableSlots
+			? slots
+			: slots.filter((s) => s.status !== 'available');
+	};
 
 	const baseDate = date ? parseISO(date) : new Date();
 	const weekStart = startOfWeek(baseDate, { weekStartsOn: 1 });
@@ -125,6 +132,19 @@ export const AvailabilityWeekPage = () => {
 	const handleSlotClick = (slot: IWeekSlot) => {
 		if (isBookable(slot.status)) setSelectedSlot(slot);
 	};
+
+	const filterButton = (
+		<FilterButton
+			isActive={prefs.showUnavailableSlots}
+			onClick={toggleShowUnavailable}
+			small
+		>
+			<Filter />
+			{prefs.showUnavailableSlots
+				? t('availability.week.filter-hide-free')
+				: t('availability.week.filter-show-free')}
+		</FilterButton>
+	);
 
 	// Shared nav controls — identical in both mobile and desktop layouts
 	const prevButton = (
@@ -163,6 +183,7 @@ export const AvailabilityWeekPage = () => {
 							{prevButton}
 							{todayButton}
 							{nextButton}
+							{filterButton}
 						</WeekHeader>
 					</>
 				) : (
@@ -177,6 +198,7 @@ export const AvailabilityWeekPage = () => {
 						<WeekHeaderRight>
 							{todayButton}
 							{nextButton}
+							{filterButton}
 						</WeekHeaderRight>
 					</WeekHeader>
 				)}
@@ -184,7 +206,7 @@ export const AvailabilityWeekPage = () => {
 				{isMobile ? (
 					<MobileDayList>
 						{workingDays.map((day) => {
-							const daySlots = getScheduledSlots(day);
+							const daySlots = getVisibleDaySlots(day);
 							return (
 								<MobileDayCard key={day.toISOString()}>
 									<MobileDayCardHeader>
@@ -269,7 +291,7 @@ export const AvailabilityWeekPage = () => {
 									</TimeLabel>
 									{weekDays.map((day) => {
 										const isDisabled = !WORKING_DAYS.includes(day.getDay());
-										const daySlots = getDaySlots(day);
+										const daySlots = getVisibleDaySlots(day);
 										const slot = isDisabled
 											? null
 											: (daySlots.find((s) => s.startTime === time) ?? null);

@@ -129,6 +129,33 @@ export const TodayButton = styled(Button)`
 	}
 `;
 
+export const FilterButton = styled(Button, {
+	shouldForwardProp: (prop) => prop !== 'isActive',
+})<{ isActive: boolean }>`
+	white-space: nowrap;
+	transition: all 0.15s ease;
+	background: ${({ isActive }) =>
+		isActive ? palette.brand.purple : 'transparent'};
+	color: ${({ isActive }) =>
+		isActive ? palette.white : palette.gray['06']};
+	border: 1px solid
+		${({ isActive }) =>
+			isActive ? palette.brand.purple : palette.gray['03']};
+
+	& span {
+		display: flex;
+		align-items: center;
+		gap: ${spacing.xs};
+	}
+
+	&:hover {
+		background: ${({ isActive }) =>
+			isActive ? palette.brand.dark : palette.gray['01']};
+		border-color: ${({ isActive }) =>
+			isActive ? palette.brand.dark : palette.gray['04']};
+	}
+`;
+
 // ─── Desktop Grid ─────────────────────────────────────────────────────────────
 
 export const WeekGridWrapper = styled(Box)`

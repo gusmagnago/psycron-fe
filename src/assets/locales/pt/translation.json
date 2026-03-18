@@ -710,6 +710,8 @@
       "prev-week": "Semana anterior",
       "slot": "horário",
       "slots": "horários",
+      "filter-hide-free": "Ocultar horários livres",
+      "filter-show-free": "Mostrar horários livres",
       "title": "Agenda da Semana",
       "today": "Hoje"
     },
