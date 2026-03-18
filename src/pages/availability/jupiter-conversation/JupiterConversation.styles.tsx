@@ -8,7 +8,7 @@ import {
 import { hexToRgba, palette } from '@psycron/theme/palette/palette.theme';
 import { shadowMain, smallShadow } from '@psycron/theme/shadow/shadow.theme';
 import { spacing } from '@psycron/theme/spacing/spacing.theme';
-import { zIndexAboveHeader, zIndexHeader } from '@psycron/theme/zIndex';
+import { zIndexSticky } from '@psycron/theme/zIndex';
 
 // ─── Shared animations ────────────────────────────────────────────────────────
 
@@ -75,7 +75,7 @@ export const CardWrapper = styled(Box)`
 export const PublishingOverlay = styled(Box)`
 	position: absolute;
 	inset: 0;
-	z-index: ${zIndexHeader};
+	z-index: ${zIndexSticky};
 	backdrop-filter: blur(6px);
 	background-color: ${hexToRgba(palette.background.paper, 0.6)};
 	border-radius: inherit;
@@ -85,7 +85,7 @@ export const PublishingOverlay = styled(Box)`
 export const PublishingMessageWrapper = styled(Box)`
 	position: absolute;
 	inset: 0;
-	z-index: ${zIndexAboveHeader};
+	z-index: ${zIndexSticky + 1};
 	display: flex;
 	align-items: center;
 	justify-content: center;

@@ -4,7 +4,7 @@ import { Tooltip } from '@psycron/components/tooltip/Tooltip';
 import { isBiggerThanTabletMedia } from '@psycron/theme/media-queries/mediaQueries';
 import { palette } from '@psycron/theme/palette/palette.theme';
 import { spacing } from '@psycron/theme/spacing/spacing.theme';
-import { zIndexHeader } from '@psycron/theme/zIndex';
+import { zIndexSticky } from '@psycron/theme/zIndex';
 
 export const StyledWrapper = styled(Grid)`
 	display: flex;
@@ -45,7 +45,7 @@ export const StyledSessionDatesTitle = styled(Text)`
 	background-color: ${palette.background.default};
 	font-weight: 600;
 	top: 0;
-	z-index: ${zIndexHeader};
+	z-index: ${zIndexSticky};
 `;
 
 export const StyledNextSessionText = styled(Text, {

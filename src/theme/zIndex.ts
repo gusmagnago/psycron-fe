@@ -1,13 +1,6 @@
 export const zIndexBg = -1;
-export const zIndexContent = 2;
-export const zIndexLayer = 3;
-export const zIndexHeader = 10;
-export const zIndexAboveHeader = 11;
-export const zIndexTableHead = 20;
-export const zIndexSidebar = 50;
+export const zIndexSticky = 10;
 export const zIndexHover = 100;
-export const zIndexFloating = 500;
 export const zIndexModal = 1500;
-export const zIndexModalAbove = 1501;
 export const zIndexBase = 9999;
 export const zIndexPopover = zIndexBase + 1;

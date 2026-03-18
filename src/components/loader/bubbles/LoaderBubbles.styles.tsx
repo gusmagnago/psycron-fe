@@ -1,6 +1,5 @@
 import { Box, css, keyframes, styled } from '@mui/material';
 import { palette } from '@psycron/theme/palette/palette.theme';
-import { zIndexHeader } from '@psycron/theme/zIndex';
 
 export const bounce = keyframes`
 0%, 80%, 100% {
@@ -13,7 +12,6 @@ export const bounce = keyframes`
 
 export const LoaderBubblesWrapper = styled(Box)`
 	gap: 0.375rem;
-	z-index: ${zIndexHeader};
 	width: 100%;
 	height: 1.25rem;
 	display: flex;

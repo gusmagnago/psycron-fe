@@ -1,12 +1,10 @@
 import { Box, styled } from '@mui/material';
 import { isBiggerThanMediumMedia } from '@psycron/theme/media-queries/mediaQueries';
 import { spacing } from '@psycron/theme/spacing/spacing.theme';
-import { zIndexHover, zIndexSidebar } from '@psycron/theme/zIndex';
 
 export const AppLayoutDividerMobilePadding = `${spacing.small}`;
 
 export const NavBarWrapper = styled(Box)`
-	z-index: ${zIndexHover};
 	display: flex;
 	flex-direction: column;
 
@@ -27,7 +25,6 @@ export const Content = styled(Box)`
 	overflow-y: hidden;
 	overflow-x: hidden;
 
-	z-index: ${zIndexSidebar};
 	position: relative;
 
 	${isBiggerThanMediumMedia} {
