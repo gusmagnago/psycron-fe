@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Calendar, ChevronLeft, ChevronRight, Filter } from '@psycron/components/icons';
@@ -19,6 +19,7 @@ import {
 } from 'date-fns';
 
 import { AvailabilityWeekDrawer } from './drawer/AvailabilityWeekDrawer';
+import { AvailabilityWeekFilters } from './filters/AvailabilityWeekFilters';
 import type { IWeekSlot, SlotStatus } from './AvailabilityWeekPage.mock';
 import {
 	MOCK_WEEK_DATA,
@@ -96,15 +97,19 @@ export const AvailabilityWeekPage = () => {
 	const navigate = useNavigate();
 	const { date } = useParams<{ date: string }>();
 	const { isMobile } = useViewport();
-	const { prefs, toggleShowUnavailable } = useCalendarPrefs();
+	const {
+		activeFilterCount,
+		clearFilters,
+		prefs,
+		toggleBookingSource,
+		toggleDeliveryMode,
+		toggleSessionType,
+		toggleShowCancelledSlots,
+		toggleShowFreeSlots,
+		toggleTimeOfDay,
+	} = useCalendarPrefs();
 	const [selectedSlot, setSelectedSlot] = useState<IWeekSlot | null>(null);
-
-	const getVisibleDaySlots = (day: Date): IWeekSlot[] => {
-		const slots = getDaySlots(day);
-		return prefs.showUnavailableSlots
-			? slots
-			: slots.filter((s) => s.status !== 'available');
-	};
+	const [filterAnchorEl, setFilterAnchorEl] = useState<HTMLElement | null>(null);
 
 	const baseDate = date ? parseISO(date) : new Date();
 	const weekStart = startOfWeek(baseDate, { weekStartsOn: 1 });
@@ -113,6 +118,56 @@ export const AvailabilityWeekPage = () => {
 	const workingDays = weekDays.filter((d) => WORKING_DAYS.includes(d.getDay()));
 
 	const weekRange = `${format(weekStart, 'MMM d')} – ${format(weekEnd, 'MMM d, yyyy')}`;
+
+	const allSessionTypes = useMemo(() => {
+		const types = new Set<string>();
+		weekDays.forEach((day) => {
+			getDaySlots(day).forEach((slot) => {
+				if (slot.therapyType) types.add(slot.therapyType);
+			});
+		});
+		return Array.from(types).sort();
+	}, [weekDays]);
+
+	const getVisibleDaySlots = (day: Date): IWeekSlot[] => {
+		let slots = getDaySlots(day);
+
+		if (!prefs.showFreeSlots) slots = slots.filter((s) => s.status !== 'available');
+		if (!prefs.showCancelledSlots) slots = slots.filter((s) => s.status !== 'cancelled');
+
+		if (prefs.bookingSources.length > 0) {
+			slots = slots.filter((s) => {
+				if (s.status === 'booked-jupiter') return prefs.bookingSources.includes('jupiter');
+				if (s.status === 'booked-google') return prefs.bookingSources.includes('google');
+				return true;
+			});
+		}
+
+		if (prefs.sessionTypes.length > 0) {
+			slots = slots.filter(
+				(s) => !s.therapyType || prefs.sessionTypes.includes(s.therapyType)
+			);
+		}
+
+		if (prefs.deliveryModes.length > 0) {
+			slots = slots.filter(
+				(s) => !s.deliveryMode || prefs.deliveryModes.includes(s.deliveryMode)
+			);
+		}
+
+		if (prefs.timeOfDay.length > 0) {
+			slots = slots.filter((s) => {
+				const hour = parseInt(s.startTime.split(':')[0], 10);
+				return prefs.timeOfDay.some((band) => {
+					if (band === 'morning') return hour >= 8 && hour < 12;
+					if (band === 'afternoon') return hour >= 12 && hour < 17;
+					return hour >= 17; // evening
+				});
+			});
+		}
+
+		return slots;
+	};
 
 	const goToPrevWeek = () =>
 		navigate(
@@ -135,14 +190,13 @@ export const AvailabilityWeekPage = () => {
 
 	const filterButton = (
 		<FilterButton
-			isActive={prefs.showUnavailableSlots}
-			onClick={toggleShowUnavailable}
+			isActive={activeFilterCount > 0}
+			onClick={(e) => setFilterAnchorEl(e.currentTarget as HTMLElement)}
 			small
 		>
 			<Filter />
-			{prefs.showUnavailableSlots
-				? t('availability.week.filter-hide-free')
-				: t('availability.week.filter-show-free')}
+			{t('availability.week.filters')}
+			{activeFilterCount > 0 ? ` · ${activeFilterCount}` : ''}
 		</FilterButton>
 	);
 
@@ -335,6 +389,21 @@ export const AvailabilityWeekPage = () => {
 					))}
 				</WeekFooter>
 			</WeekCard>
+
+			<AvailabilityWeekFilters
+				activeFilterCount={activeFilterCount}
+				allSessionTypes={allSessionTypes}
+				anchorEl={filterAnchorEl}
+				onClearFilters={clearFilters}
+				onClose={() => setFilterAnchorEl(null)}
+				onToggleBookingSource={toggleBookingSource}
+				onToggleDeliveryMode={toggleDeliveryMode}
+				onToggleSessionType={toggleSessionType}
+				onToggleShowCancelledSlots={toggleShowCancelledSlots}
+				onToggleShowFreeSlots={toggleShowFreeSlots}
+				onToggleTimeOfDay={toggleTimeOfDay}
+				prefs={prefs}
+			/>
 
 			{selectedSlot && (
 				<AvailabilityWeekDrawer

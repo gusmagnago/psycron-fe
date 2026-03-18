@@ -1,7 +1,9 @@
 export type SlotStatus = 'available' | 'booked-jupiter' | 'booked-google' | 'cancelled';
+export type DeliveryMode = 'online' | 'in-person';
 
 export interface IWeekSlot {
 	date: string; // 'YYYY-MM-DD'
+	deliveryMode?: DeliveryMode;
 	duration: number; // minutes
 	id: string;
 	notes?: string;
@@ -42,6 +44,7 @@ export const MOCK_WEEK_DATA: Record<string, IWeekSlot[]> = {
 			status: 'booked-jupiter',
 			patientName: 'Maria Silva',
 			therapyType: 'Cognitive Behavioral Therapy',
+			deliveryMode: 'online',
 			timezone: 'GMT-3 (São Paulo)',
 			notes: 'Follow-up session on anxiety management techniques. Patient has shown progress with breathing exercises.',
 		},
@@ -52,6 +55,7 @@ export const MOCK_WEEK_DATA: Record<string, IWeekSlot[]> = {
 			status: 'booked-google',
 			patientName: 'João Costa',
 			therapyType: 'Individual Therapy',
+			deliveryMode: 'in-person',
 			timezone: 'GMT-3 (São Paulo)',
 			notes: 'Initial consultation. Patient referred by Dr. Santos.',
 		},
@@ -67,6 +71,7 @@ export const MOCK_WEEK_DATA: Record<string, IWeekSlot[]> = {
 			status: 'booked-jupiter',
 			patientName: 'Ana Oliveira',
 			therapyType: 'Family Therapy',
+			deliveryMode: 'in-person',
 			timezone: 'GMT-3 (São Paulo)',
 			notes: 'Joint session with partner scheduled.',
 		},
@@ -77,6 +82,7 @@ export const MOCK_WEEK_DATA: Record<string, IWeekSlot[]> = {
 			status: 'booked-jupiter',
 			patientName: 'Pedro Santos',
 			therapyType: 'Psychodynamic Therapy',
+			deliveryMode: 'online',
 			timezone: 'GMT-3 (São Paulo)',
 		},
 		{
@@ -85,6 +91,7 @@ export const MOCK_WEEK_DATA: Record<string, IWeekSlot[]> = {
 			status: 'booked-google',
 			patientName: 'Carla Mendes',
 			therapyType: 'Group Therapy',
+			deliveryMode: 'in-person',
 			timezone: 'GMT-3 (São Paulo)',
 		},
 		{
@@ -93,6 +100,7 @@ export const MOCK_WEEK_DATA: Record<string, IWeekSlot[]> = {
 			status: 'cancelled',
 			patientName: 'Rafael Lima',
 			therapyType: 'Cognitive Behavioral Therapy',
+			deliveryMode: 'online',
 			timezone: 'GMT-3 (São Paulo)',
 		},
 	]),
@@ -103,6 +111,7 @@ export const MOCK_WEEK_DATA: Record<string, IWeekSlot[]> = {
 			status: 'booked-jupiter',
 			patientName: 'Lucas Ferreira',
 			therapyType: 'Cognitive Behavioral Therapy',
+			deliveryMode: 'in-person',
 			timezone: 'GMT-3 (São Paulo)',
 		},
 		{ startTime: '10:00', duration: 60, status: 'available' },
@@ -116,6 +125,7 @@ export const MOCK_WEEK_DATA: Record<string, IWeekSlot[]> = {
 			status: 'booked-jupiter',
 			patientName: 'Sofia Martins',
 			therapyType: 'Cognitive Behavioral Therapy',
+			deliveryMode: 'online',
 			timezone: 'GMT-3 (São Paulo)',
 		},
 		{ startTime: '10:00', duration: 60, status: 'available' },
