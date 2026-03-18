@@ -1,4 +1,7 @@
 {
+  "common": {
+    "close": "Fechar"
+  },
   "auth": {
     "error": {
       "login-failed": "Email ou senha inválidos. Por favor, verifique suas credenciais e tente novamente.",
@@ -684,6 +687,31 @@
       "source-google": "Google",
       "source-jupiter": "Júpiter",
       "subtitle": "Seu calendário de disponibilidade"
+    },
+    "week": {
+      "drawer": {
+        "cancel-appointment": "Cancelar consulta",
+        "date": "Data",
+        "edit": "Editar",
+        "minutes": "minutos",
+        "notes": "Notas",
+        "patient-time": "Horário do paciente",
+        "session-type": "Tipo de sessão",
+        "your-time": "Seu horário",
+        "confirmed": "Confirmado"
+      },
+      "legend-available": "Disponível",
+      "legend-booked-google": "Google",
+      "legend-booked-jupiter": "Manual",
+      "legend-cancelled": "Cancelado",
+      "next-week": "Próxima semana",
+      "no-appointments": "Sem agendamentos",
+      "page-title": "Disponibilidade",
+      "prev-week": "Semana anterior",
+      "slot": "horário",
+      "slots": "horários",
+      "title": "Agenda da Semana",
+      "today": "Hoje"
     },
     "gate": {
       "deleted-notice": "Você não tem mais disponibilidade configurada. Fale com a Júpiter para criar uma nova."

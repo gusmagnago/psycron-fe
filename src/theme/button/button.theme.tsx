@@ -17,6 +17,10 @@ const buttonStyles = ({ palette }: Theme): Record<string, CSSObject> => {
 		brand,
 		tertiary,
 		gray,
+		error,
+		info,
+		success,
+		warning,
 		text: { primary: textPrimary, disabled: textDisabled },
 	} = palette as unknown as Palette;
 
@@ -72,6 +76,24 @@ const buttonStyles = ({ palette }: Theme): Record<string, CSSObject> => {
 			},
 			'&.Mui-disabled': {
 				backgroundColor: secondary.action.disabled,
+				color: textDisabled,
+				filter: shadowDisabled,
+				pointerEvents: 'none',
+			},
+		},
+		containedTertiary: {
+			backgroundColor: tertiary.main,
+			color: tertiary.light,
+			'&:hover': {
+				backgroundColor: tertiary.action.hover,
+				boxShadow: shadowPress,
+			},
+			'&:focus': {
+				backgroundColor: tertiary.action.press,
+				boxShadow: shadowPress,
+			},
+			'&.Mui-disabled': {
+				backgroundColor: tertiary.action.disabled,
 				color: textDisabled,
 				filter: shadowDisabled,
 				pointerEvents: 'none',
@@ -134,6 +156,90 @@ const buttonStyles = ({ palette }: Theme): Record<string, CSSObject> => {
 				border: generateBorder(tertiary.action.disabled),
 				filter: shadowDisabled,
 				color: textDisabled,
+				pointerEvents: 'none',
+			},
+		},
+		outlinedError: {
+			border: `2px solid ${error.main}`,
+			backgroundColor: 'transparent',
+			boxSizing: 'border-box',
+			color: error.main,
+			'&:hover': {
+				backgroundColor: error.surface.hover,
+				border: generateBorder(error.action.hover),
+				boxShadow: shadowMain,
+			},
+			'&:focus': {
+				border: generateBorder(error.action.press),
+				boxShadow: shadowPress,
+			},
+			'&.Mui-disabled': {
+				border: generateBorder(error.action.disabled),
+				color: textDisabled,
+				filter: shadowDisabled,
+				pointerEvents: 'none',
+			},
+		},
+		outlinedSuccess: {
+			border: `2px solid ${success.main}`,
+			backgroundColor: 'transparent',
+			boxSizing: 'border-box',
+			color: success.dark,
+			'&:hover': {
+				backgroundColor: success.surface.hover,
+				border: generateBorder(success.action.hover),
+				boxShadow: shadowMain,
+			},
+			'&:focus': {
+				border: generateBorder(success.action.press),
+				boxShadow: shadowPress,
+			},
+			'&.Mui-disabled': {
+				border: generateBorder(success.action.disabled),
+				color: textDisabled,
+				filter: shadowDisabled,
+				pointerEvents: 'none',
+			},
+		},
+		outlinedInfo: {
+			border: `2px solid ${info.main}`,
+			backgroundColor: 'transparent',
+			boxSizing: 'border-box',
+			color: info.main,
+			'&:hover': {
+				backgroundColor: info.surface.hover,
+				border: generateBorder(info.action.hover),
+				boxShadow: shadowMain,
+			},
+			'&:focus': {
+				border: generateBorder(info.action.press),
+				boxShadow: shadowPress,
+			},
+			'&.Mui-disabled': {
+				border: generateBorder(info.action.disabled),
+				color: textDisabled,
+				filter: shadowDisabled,
+				pointerEvents: 'none',
+			},
+		},
+		outlinedWarning: {
+			border: `2px solid ${warning.main}`,
+			backgroundColor: 'transparent',
+			boxSizing: 'border-box',
+			color: warning.dark,
+			'&:hover': {
+				backgroundColor: warning.surface.hover,
+				border: generateBorder(warning.action.hover),
+				boxShadow: shadowMain,
+			},
+			'&:focus': {
+				border: generateBorder(warning.action.press),
+				boxShadow: shadowPress,
+			},
+			'&.Mui-disabled': {
+				border: generateBorder(warning.action.disabled),
+				color: textDisabled,
+				filter: shadowDisabled,
 				pointerEvents: 'none',
 			},
 		},

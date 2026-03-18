@@ -1,7 +1,10 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
 import { useJupiterAvailability } from '@psycron/hooks/useJupiterAvailability';
+import i18n from '@psycron/i18n';
 import { PageLayout } from '@psycron/layouts/app/pages-layout/PageLayout';
+import { AVAILABILITYPATH } from '@psycron/pages/urls';
 import {
 	eachDayOfInterval,
 	endOfMonth,
@@ -54,6 +57,7 @@ const getOccupancyLevel = (
 
 export const AvailabilityCalendarPage = () => {
 	const { t } = useTranslation();
+	const navigate = useNavigate();
 	const [sourceView, setSourceView] = useState<SourceView>('jupiter');
 
 	const {
@@ -82,6 +86,10 @@ export const AvailabilityCalendarPage = () => {
 		if (!day) return 'empty';
 		const counts = sourceView === 'jupiter' ? day.jupiter : day.google;
 		return getOccupancyLevel(counts.booked, counts.available);
+	};
+
+	const handleDayClick = (day: Date) => {
+		navigate(`/${i18n.language}/${AVAILABILITYPATH}/week/${format(day, 'yyyy-MM-dd')}`);
 	};
 
 	const legendItems: { key: OccupancyLevel; labelKey: string }[] = [
@@ -128,6 +136,7 @@ export const AvailabilityCalendarPage = () => {
 								isOtherMonth={isOtherMonth}
 								isClickable={!isOtherMonth}
 								disableRipple={isOtherMonth}
+								onClick={isOtherMonth ? undefined : () => handleDayClick(day)}
 							>
 								{format(day, 'd')}
 							</DayCellButton>

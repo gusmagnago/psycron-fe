@@ -1,5 +1,7 @@
 import { Box, styled } from '@mui/material';
 import { Text } from '@psycron/components/text/Text';
+import { isMobileMedia } from '@psycron/theme/media-queries/mediaQueries';
+import { spacing } from '@psycron/theme/spacing/spacing.theme';
 
 export const PageLayoutWrapper = styled(Box)`
 	height: 100vh;
@@ -32,4 +34,9 @@ export const PageChildrenWrapper = styled(Box)`
 	overflow-x: hidden;
 	display: flex;
 	flex-direction: column;
+	padding: 0 ${spacing.small};
+
+	${isMobileMedia} {
+		padding: 0 ${spacing.xs};
+	}
 `;

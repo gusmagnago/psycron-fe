@@ -1,4 +1,7 @@
 {
+  "common": {
+    "close": "Close"
+  },
   "auth": {
     "error": {
       "login-failed": "Invalid email or password. Please check your credentials and try again.",
@@ -685,6 +688,31 @@
       "source-google": "Google",
       "source-jupiter": "Júpiter",
       "subtitle": "Your availability calendar"
+    },
+    "week": {
+      "drawer": {
+        "cancel-appointment": "Cancel appointment",
+        "date": "Date",
+        "edit": "Edit",
+        "minutes": "minutes",
+        "notes": "Notes",
+        "patient-time": "Patient time",
+        "session-type": "Session type",
+        "your-time": "Your time",
+        "confirmed": "Confirmed"
+      },
+      "legend-available": "Available",
+      "legend-booked-google": "Google",
+      "legend-booked-jupiter": "Manual",
+      "legend-cancelled": "Cancelled",
+      "next-week": "Next week",
+      "no-appointments": "No appointments",
+      "page-title": "Availability",
+      "prev-week": "Previous week",
+      "slot": "slot",
+      "slots": "slots",
+      "title": "Week Schedule",
+      "today": "Today"
     },
     "gate": {
       "deleted-notice": "You no longer have availability set up. Head to Jupiter to create a new one."

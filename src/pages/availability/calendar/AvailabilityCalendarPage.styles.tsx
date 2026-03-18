@@ -11,12 +11,12 @@ import { spacing } from '@psycron/theme/spacing/spacing.theme';
 // occupancy gradient, not a reusable design token.
 
 export const OCCUPANCY_COLORS = {
-	available: palette.tertiary.light,   // #EFEAFF — light lilac (0 bookings)
-	partial: '#d1c7fb',                   // medium lilac  (< 50% booked)
-	busy: palette.tertiary.main,          // #BFA7FF — deeper purple (50–99%)
-	full: palette.brand.purple,           // #683fff — solid brand (100%)
-	today: palette.secondary.light,       // #FFDFEE — soft pink
-	empty: '#fefefe',                     // white — no availability
+	available: palette.tertiary.light, // #EFEAFF — light lilac (0 bookings)
+	partial: '#d1c7fb', // medium lilac  (< 50% booked)
+	busy: palette.tertiary.main, // #BFA7FF — deeper purple (50–99%)
+	full: palette.brand.purple, // #683fff — solid brand (100%)
+	today: palette.secondary.light, // #FFDFEE — soft pink
+	empty: '#fefefe', // white — no availability
 } as const;
 
 export type OccupancyLevel = keyof typeof OCCUPANCY_COLORS;
@@ -53,14 +53,14 @@ export const CalendarHeader = styled(Box)`
 `;
 
 export const CalendarTitle = styled(Typography)`
-	font-size: 28px;
+	font-size: 1.2rem;
 	font-weight: 500;
 	color: ${palette.text.primary};
 	line-height: 1.2;
 `;
 
 export const CalendarSubtitle = styled(Typography)`
-	font-size: 14px;
+	font-size: 0.875rem;
 	color: ${palette.gray['05']};
 	margin-top: 2px;
 `;
@@ -83,7 +83,8 @@ export const NavButton = styled(ButtonBase)`
 	transition: box-shadow 0.15s ease;
 
 	&:hover {
-		box-shadow: inset 2px 2px 4px rgba(170, 170, 204, 0.5),
+		box-shadow:
+			inset 2px 2px 4px rgba(170, 170, 204, 0.5),
 			inset -2px -2px 4px #ffffff;
 	}
 `;
@@ -118,7 +119,7 @@ export const CalendarGrid = styled(Box)`
 export const DayCellButton = styled(ButtonBase, {
 	shouldForwardProp: (prop) =>
 		prop !== 'occupancy' && prop !== 'isOtherMonth' && prop !== 'isClickable',
-})<{ isClickable: boolean, isOtherMonth: boolean; occupancy: OccupancyLevel; }>`
+})<{ isClickable: boolean; isOtherMonth: boolean; occupancy: OccupancyLevel }>`
 	border-radius: 12px;
 	font-size: 15px;
 	font-weight: 500;
@@ -195,13 +196,13 @@ export const SourceButton = styled(ButtonBase, {
 	transition: all 0.15s ease;
 	background-color: ${({ isActive }) =>
 		isActive ? palette.brand.purple : 'transparent'};
-	color: ${({ isActive }) =>
-		isActive ? '#ffffff' : palette.gray['05']};
+	color: ${({ isActive }) => (isActive ? '#ffffff' : palette.gray['05'])};
 	box-shadow: ${({ isActive }) =>
-		isActive ? '1px 1px 2px rgba(170,170,204,0.5), -1px -1px 2px white' : 'none'};
+		isActive
+			? '1px 1px 2px rgba(170,170,204,0.5), -1px -1px 2px white'
+			: 'none'};
 
 	&:hover {
-		color: ${({ isActive }) =>
-		isActive ? '#ffffff' : palette.text.primary};
+		color: ${({ isActive }) => (isActive ? '#ffffff' : palette.text.primary)};
 	}
 `;
