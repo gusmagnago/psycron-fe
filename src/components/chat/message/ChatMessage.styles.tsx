@@ -5,7 +5,7 @@ import { palette } from '@psycron/theme/palette/palette.theme';
 import {
 	shadowMain,
 	shadowMediumPurple,
-	smallShadow,
+	shadowSmall,
 } from '@psycron/theme/shadow/shadow.theme';
 import { spacing } from '@psycron/theme/spacing/spacing.theme';
 import { zIndexBg } from '@psycron/theme/zIndex';
@@ -28,7 +28,7 @@ export const ChatMessageWrapper = styled(Box, {
 		isBot
 			? css`
 					align-self: flex-start;
-					box-shadow: ${smallShadow};
+					box-shadow: ${shadowSmall};
 					background-color: ${palette.background.default};
 
 					p {

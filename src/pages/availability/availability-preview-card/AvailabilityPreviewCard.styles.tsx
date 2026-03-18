@@ -2,7 +2,7 @@ import { css } from '@emotion/react';
 import { Box, styled, Typography } from '@mui/material';
 import { Button } from '@psycron/components/button/Button';
 import { palette } from '@psycron/theme/palette/palette.theme';
-import { smallShadow } from '@psycron/theme/shadow/shadow.theme';
+import { shadowSmall } from '@psycron/theme/shadow/shadow.theme';
 import { spacing } from '@psycron/theme/spacing/spacing.theme';
 
 // ─── Shared styles ────────────────────────────────────────────────────────────
@@ -19,7 +19,7 @@ export const PreviewCardWrapper = styled(Box)`
 	width: 100%;
 	align-self: center;
 
-	box-shadow: ${smallShadow};
+	box-shadow: ${shadowSmall};
 
 	@keyframes previewSlideIn {
 		from {

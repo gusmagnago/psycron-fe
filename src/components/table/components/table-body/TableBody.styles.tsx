@@ -1,6 +1,6 @@
 import { Box, css, Grid, styled } from '@mui/material';
 import { palette } from '@psycron/theme/palette/palette.theme';
-import { shadowPress, smallShadow } from '@psycron/theme/shadow/shadow.theme';
+import { shadowPress, shadowSmall } from '@psycron/theme/shadow/shadow.theme';
 import { spacing } from '@psycron/theme/spacing/spacing.theme';
 
 export const TableBodyWrapper = styled(Grid)`
@@ -38,7 +38,7 @@ export const StyledRow = styled(Box)`
 
 	border-radius: 30px;
 	background-color: ${palette.background.paper};
-	box-shadow: ${smallShadow};
+	box-shadow: ${shadowSmall};
 
 	&:hover {
 		background-color: ${palette.secondary.surface.light};

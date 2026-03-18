@@ -13,8 +13,8 @@ export const shadowInnerPress =
 
 export const shadowNeon = `0 0 .2rem ${palette.success.main}, 0 0 .2rem ${palette.success.main},   0 0 2rem ${palette.success.main}, 0 0 0.8rem ${palette.primary.main},   0 0 2.8rem ${palette.primary.main}, inset 0 0 1.3rem ${palette.primary.main}`;
 
-export const smallShadow =
-	'0px 3px 1px -2px rgba(0,0,0,0.2),0px 2px 2px 0px rgba(0,0,0,0.14),0px 1px 5px 0px rgba(0,0,0,0.12)';
+export const shadowSmall =
+	'0px 3px 1px -2px rgba(111, 111, 111, 0.2),0px 2px 2px 0px rgba(112, 112, 112, 0.14),0px 1px 5px 0px rgba(125, 125, 125, 0.12)';
 
 export const shadowMain = '0px 10px 15px -3px rgba(0, 0, 0, 0.1)';
 

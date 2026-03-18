@@ -11,7 +11,7 @@ export const CloseButton = ({ ariaLabel, onClick }: ICloseButtonProps) => {
 		<StyledCloseButton
 			aria-label={ariaLabel ?? t('common.close')}
 			onClick={onClick}
-			secondary
+			tertiary
 			small
 		>
 			<Close />

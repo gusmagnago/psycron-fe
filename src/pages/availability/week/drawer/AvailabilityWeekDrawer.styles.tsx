@@ -3,7 +3,7 @@ import { Box } from '@mui/material';
 import { Text } from '@psycron/components/text/Text';
 import { isMobileMedia } from '@psycron/theme/media-queries/mediaQueries';
 import { hexToRgba, palette } from '@psycron/theme/palette/palette.theme';
-import { shadowPress } from '@psycron/theme/shadow/shadow.theme';
+import { shadowSmall } from '@psycron/theme/shadow/shadow.theme';
 import { spacing } from '@psycron/theme/spacing/spacing.theme';
 
 // ─── Header ───────────────────────────────────────────────────────────────────
@@ -59,8 +59,13 @@ export const SourceBadge = styled(Box, {
 	gap: ${spacing.xxs};
 	background: ${({ isGoogle }) =>
 		isGoogle
-			? palette.brand.google
+			? palette.primary.dark
 			: `linear-gradient(to right, ${hexToRgba(palette.brand.purple, 0.15)}, ${hexToRgba(palette.primary.main, 0.25)})`};
+
+	& svg {
+		width: 18px;
+		height: auto;
+	}
 `;
 
 export const SourceBadgeText = styled(Text, {
@@ -71,13 +76,12 @@ export const SourceBadgeText = styled(Text, {
 	color: ${({ isGoogle }) => (isGoogle ? palette.white : palette.brand.purple)};
 `;
 
-
 // ─── Detail rows ──────────────────────────────────────────────────────────────
 
 export const DrawerDetailsList = styled(Box)`
 	display: flex;
 	flex-direction: column;
-	gap: ${spacing.large};
+	gap: ${spacing.mediumLarge};
 	margin-bottom: ${spacing.large};
 `;
 
@@ -90,13 +94,19 @@ export const DrawerDetailRow = styled(Box)`
 export const DrawerDetailIcon = styled(Box)`
 	background: ${palette.background.default};
 	border-radius: ${spacing.extraSmall};
-	box-shadow: ${shadowPress};
-	padding: ${spacing.mediumSmall};
+	box-shadow: ${shadowSmall};
+	padding: ${spacing.extraSmall};
 	flex-shrink: 0;
 	color: ${palette.brand.purple};
 	display: flex;
 	align-items: center;
 	justify-content: center;
+`;
+
+export const DrawerDetailWrapper = styled(Box)`
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
 `;
 
 export const DrawerDetailLabel = styled(Text)`
@@ -125,4 +135,3 @@ export const DrawerActions = styled(Box)`
 	padding-top: ${spacing.large};
 	border-top: 1px solid ${palette.gray['02']};
 `;
-

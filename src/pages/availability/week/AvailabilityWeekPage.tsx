@@ -1,7 +1,12 @@
-import { useMemo, useState } from 'react';
+import { Fragment, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams } from 'react-router-dom';
-import { Calendar, ChevronLeft, ChevronRight, Filter } from '@psycron/components/icons';
+import {
+	Calendar,
+	ChevronLeft,
+	ChevronRight,
+	Filter,
+} from '@psycron/components/icons';
 import { useCalendarPrefs } from '@psycron/hooks/useCalendarPrefs';
 import useViewport from '@psycron/hooks/useViewport';
 import i18n from '@psycron/i18n';
@@ -109,7 +114,9 @@ export const AvailabilityWeekPage = () => {
 		toggleTimeOfDay,
 	} = useCalendarPrefs();
 	const [selectedSlot, setSelectedSlot] = useState<IWeekSlot | null>(null);
-	const [filterAnchorEl, setFilterAnchorEl] = useState<HTMLElement | null>(null);
+	const [filterAnchorEl, setFilterAnchorEl] = useState<HTMLElement | null>(
+		null
+	);
 
 	const baseDate = date ? parseISO(date) : new Date();
 	const weekStart = startOfWeek(baseDate, { weekStartsOn: 1 });
@@ -132,13 +139,17 @@ export const AvailabilityWeekPage = () => {
 	const getVisibleDaySlots = (day: Date): IWeekSlot[] => {
 		let slots = getDaySlots(day);
 
-		if (!prefs.showFreeSlots) slots = slots.filter((s) => s.status !== 'available');
-		if (!prefs.showCancelledSlots) slots = slots.filter((s) => s.status !== 'cancelled');
+		if (!prefs.showFreeSlots)
+			slots = slots.filter((s) => s.status !== 'available');
+		if (!prefs.showCancelledSlots)
+			slots = slots.filter((s) => s.status !== 'cancelled');
 
 		if (prefs.bookingSources.length > 0) {
 			slots = slots.filter((s) => {
-				if (s.status === 'booked-jupiter') return prefs.bookingSources.includes('jupiter');
-				if (s.status === 'booked-google') return prefs.bookingSources.includes('google');
+				if (s.status === 'booked-jupiter')
+					return prefs.bookingSources.includes('jupiter');
+				if (s.status === 'booked-google')
+					return prefs.bookingSources.includes('google');
 				return true;
 			});
 		}
@@ -259,10 +270,10 @@ export const AvailabilityWeekPage = () => {
 
 				{isMobile ? (
 					<MobileDayList>
-						{workingDays.map((day) => {
+						{workingDays.map((day, _id) => {
 							const daySlots = getVisibleDaySlots(day);
 							return (
-								<MobileDayCard key={day.toISOString()}>
+								<MobileDayCard key={`mobile-day-${day.toISOString() + _id}`}>
 									<MobileDayCardHeader>
 										<div>
 											<MobileDayName>{format(day, 'EEEE')}</MobileDayName>
@@ -293,7 +304,7 @@ export const AvailabilityWeekPage = () => {
 										) : (
 											daySlots.map((slot) => (
 												<MobileSlotCard
-													key={slot.id}
+													key={`mobile-dslot-${slot.id}`}
 													slotStatus={slot.status}
 													onClick={() => handleSlotClick(slot)}
 													disableRipple={!isBookable(slot.status)}
@@ -324,10 +335,13 @@ export const AvailabilityWeekPage = () => {
 						<WeekGrid>
 							<div style={{ height: 60 }} />
 
-							{weekDays.map((day) => {
+							{weekDays.map((day, _id) => {
 								const isDisabled = !WORKING_DAYS.includes(day.getDay());
 								return (
-									<DayHeader key={day.toISOString()} isDisabled={isDisabled}>
+									<DayHeader
+										key={`hd-${day.toISOString() + _id}`}
+										isDisabled={isDisabled}
+									>
 										<DayName>{format(day, 'EEE')}</DayName>
 										<DayNumber
 											sx={isToday(day) ? { color: 'brand.purple' } : undefined}
@@ -339,8 +353,8 @@ export const AvailabilityWeekPage = () => {
 							})}
 
 							{TIME_SLOTS.map((time) => (
-								<>
-									<TimeLabel key={`time-${time}`}>
+								<Fragment key={`time-slot-${time}`}>
+									<TimeLabel>
 										<TimeLabelText>{time}</TimeLabelText>
 									</TimeLabel>
 									{weekDays.map((day) => {
@@ -351,12 +365,14 @@ export const AvailabilityWeekPage = () => {
 											: (daySlots.find((s) => s.startTime === time) ?? null);
 										if (!slot) {
 											return (
-												<SlotCellEmpty key={`${day.toISOString()}-${time}`} />
+												<SlotCellEmpty
+													key={`slot-empty${day.toISOString()}-${time}`}
+												/>
 											);
 										}
 										return (
 											<SlotCell
-												key={`${day.toISOString()}-${time}`}
+												key={`slot-cell-${day.toISOString()}-${time}`}
 												slotStatus={slot.status}
 												onClick={() => handleSlotClick(slot)}
 												disableRipple={!isBookable(slot.status)}
@@ -374,7 +390,7 @@ export const AvailabilityWeekPage = () => {
 											</SlotCell>
 										);
 									})}
-								</>
+								</Fragment>
 							))}
 						</WeekGrid>
 					</WeekGridWrapper>
@@ -382,7 +398,7 @@ export const AvailabilityWeekPage = () => {
 
 				<WeekFooter>
 					{LEGEND_ITEMS.map(({ status, labelKey }) => (
-						<LegendItem key={status}>
+						<LegendItem key={`${status}-${labelKey}`}>
 							<LegendSwatch swatchStatus={status} />
 							<LegendLabel>{t(labelKey)}</LegendLabel>
 						</LegendItem>

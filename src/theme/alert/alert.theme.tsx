@@ -2,7 +2,7 @@ import type { Theme } from '@mui/material/styles';
 import type { CSSObject } from '@mui/system';
 
 import type { Palette } from '../palette/palette.types';
-import { smallShadow } from '../shadow/shadow.theme';
+import { shadowSmall } from '../shadow/shadow.theme';
 import { spacing } from '../spacing/spacing.theme';
 import { zIndexPopover } from '../zIndex';
 
@@ -13,7 +13,7 @@ export const alertStyles = ({ palette }: Theme): Record<string, CSSObject> => {
 		root: {
 			borderRadius: `${spacing.mediumSmall}`,
 			margin: `${spacing.mediumSmall}`,
-			boxShadow: smallShadow,
+			boxShadow: shadowSmall,
 			zIndex: zIndexPopover,
 		},
 		standardSuccess: {

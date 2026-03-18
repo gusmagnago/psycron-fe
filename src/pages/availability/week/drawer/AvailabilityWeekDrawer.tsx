@@ -25,12 +25,16 @@ import {
 	DrawerDetailsList,
 	DrawerDetailSub,
 	DrawerDetailValue,
+	DrawerDetailWrapper,
 	DrawerHeader,
 	DrawerPatientName,
 	SourceBadge,
 	SourceBadgeText,
 } from './AvailabilityWeekDrawer.styles';
-import type { IAvailabilityWeekDrawerProps } from './AvailabilityWeekDrawer.types';
+import type {
+	IAvailabilityWeekDrawerProps,
+	IDrawerDetail,
+} from './AvailabilityWeekDrawer.types';
 
 export const AvailabilityWeekDrawer = ({
 	slot,
@@ -41,6 +45,52 @@ export const AvailabilityWeekDrawer = ({
 
 	const endHour = Number(slot.startTime.split(':')[0]) + slot.duration / 60;
 	const endTime = `${String(endHour).padStart(2, '0')}:${slot.startTime.split(':')[1]}`;
+
+	const details: IDrawerDetail[] = [
+		{
+			icon: <Calendar color={palette.brand.purple} />,
+			key: 'date',
+			label: t('availability.week.drawer.date'),
+			value: format(parseISO(slot.date), 'EEEE, MMMM d, yyyy'),
+		},
+		{
+			icon: <Watch color={palette.brand.purple} />,
+			key: 'time',
+			label: t('availability.week.drawer.your-time'),
+			sub: `${t('availability.week.drawer.session-duration')}${slot.duration} ${t('availability.week.drawer.minutes')}`,
+			value: `${slot.startTime} – ${endTime}`,
+		},
+		...(slot.timezone
+			? [
+					{
+						icon: <MapPin color={palette.brand.purple} />,
+						key: 'timezone',
+						label: t('availability.week.drawer.patient-time'),
+						value: `${slot.startTime} (${slot.timezone})`,
+					},
+				]
+			: []),
+		...(slot.therapyType
+			? [
+					{
+						icon: <Account color={palette.brand.purple} />,
+						key: 'therapy-type',
+						label: t('availability.week.drawer.session-type'),
+						value: slot.therapyType,
+					},
+				]
+			: []),
+		...(slot.notes
+			? [
+					{
+						icon: <Appointment color={palette.brand.purple} />,
+						key: 'notes',
+						label: t('availability.week.drawer.notes'),
+						value: slot.notes,
+					},
+				]
+			: []),
+	];
 
 	return (
 		<Drawer ariaLabel={slot.patientName ?? ''} onClose={onClose}>
@@ -69,80 +119,16 @@ export const AvailabilityWeekDrawer = ({
 			</DrawerHeader>
 
 			<DrawerDetailsList>
-				<DrawerDetailRow>
-					<DrawerDetailIcon>
-						<Calendar color={palette.brand.purple} />
-					</DrawerDetailIcon>
-					<div>
-						<DrawerDetailLabel>
-							{t('availability.week.drawer.date')}
-						</DrawerDetailLabel>
-						<DrawerDetailValue>
-							{format(parseISO(slot.date), 'EEEE, MMMM d, yyyy')}
-						</DrawerDetailValue>
-					</div>
-				</DrawerDetailRow>
-
-				<DrawerDetailRow>
-					<DrawerDetailIcon>
-						<Watch color={palette.brand.purple} />
-					</DrawerDetailIcon>
-					<div>
-						<DrawerDetailLabel>
-							{t('availability.week.drawer.your-time')}
-						</DrawerDetailLabel>
-						<DrawerDetailValue>
-							{slot.startTime} – {endTime} (GMT-3)
-						</DrawerDetailValue>
-						<DrawerDetailSub>
-							{slot.duration} {t('availability.week.drawer.minutes')}
-						</DrawerDetailSub>
-					</div>
-				</DrawerDetailRow>
-
-				{slot.timezone && (
-					<DrawerDetailRow>
-						<DrawerDetailIcon>
-							<MapPin color={palette.brand.purple} />
-						</DrawerDetailIcon>
-						<div>
-							<DrawerDetailLabel>
-								{t('availability.week.drawer.patient-time')}
-							</DrawerDetailLabel>
-							<DrawerDetailValue>
-								{slot.startTime} ({slot.timezone})
-							</DrawerDetailValue>
-						</div>
+				{details.map(({ icon, key, label, sub, value }) => (
+					<DrawerDetailRow key={key}>
+						<DrawerDetailIcon>{icon}</DrawerDetailIcon>
+						<DrawerDetailWrapper>
+							<DrawerDetailLabel>{label}</DrawerDetailLabel>
+							<DrawerDetailValue>{value}</DrawerDetailValue>
+							{sub && <DrawerDetailSub>{sub}</DrawerDetailSub>}
+						</DrawerDetailWrapper>
 					</DrawerDetailRow>
-				)}
-
-				{slot.therapyType && (
-					<DrawerDetailRow>
-						<DrawerDetailIcon>
-							<Account color={palette.brand.purple} />
-						</DrawerDetailIcon>
-						<div>
-							<DrawerDetailLabel>
-								{t('availability.week.drawer.session-type')}
-							</DrawerDetailLabel>
-							<DrawerDetailValue>{slot.therapyType}</DrawerDetailValue>
-						</div>
-					</DrawerDetailRow>
-				)}
-
-				{slot.notes && (
-					<DrawerDetailRow>
-						<DrawerDetailIcon>
-							<Appointment color={palette.brand.purple} />
-						</DrawerDetailIcon>
-						<div>
-							<DrawerDetailLabel>
-								{t('availability.week.drawer.notes')}
-							</DrawerDetailLabel>
-							<DrawerDetailValue>{slot.notes}</DrawerDetailValue>
-						</div>
-					</DrawerDetailRow>
-				)}
+				))}
 			</DrawerDetailsList>
 
 			<DrawerActions>
