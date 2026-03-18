@@ -1,5 +1,6 @@
 import styled from '@emotion/styled';
 import { Box } from '@mui/material';
+import { zIndexContent } from '@psycron/theme/zIndex';
 
 export const PublicLayoutWrapper = styled(Box)`
 	display: flex;
@@ -16,7 +17,7 @@ export const PublicLayoutContent = styled(Box)`
 	flex-direction: column;
 	justify-content: center;
 	padding: 0;
-	z-index: 2;
+	z-index: ${zIndexContent};
 
 	flex: 1;
 	margin-bottom: var(--footer-height);

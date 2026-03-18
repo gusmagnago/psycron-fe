@@ -2,6 +2,7 @@ import { Box, Paper, Skeleton, styled } from '@mui/material';
 import { palette } from '@psycron/theme/palette/palette.theme';
 import { shadowMain } from '@psycron/theme/shadow/shadow.theme';
 import { spacing } from '@psycron/theme/spacing/spacing.theme';
+import { zIndexHover } from '@psycron/theme/zIndex';
 
 export const StyledSkeletonWrapper = styled(Box, {
 	shouldForwardProp: (props) => props !== 'hasOnClick',
@@ -51,7 +52,7 @@ export const TextWrapper = styled(Box)`
 	top: 50%;
 	left: 50%;
 	transform: translate(-50%, -50%);
-	z-index: 100;
+	z-index: ${zIndexHover};
 	display: flex;
 	justify-content: center;
 	align-items: center;

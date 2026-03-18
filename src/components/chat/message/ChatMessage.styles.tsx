@@ -8,6 +8,7 @@ import {
 	smallShadow,
 } from '@psycron/theme/shadow/shadow.theme';
 import { spacing } from '@psycron/theme/spacing/spacing.theme';
+import { zIndexBg } from '@psycron/theme/zIndex';
 
 export const ChatMessageWrapper = styled(Box, {
 	shouldForwardProp: (props) =>
@@ -118,7 +119,7 @@ export const UserBubble = styled(Box)`
 	bottom: 1px;
 	border-radius: 50%;
 	background-color: ${palette.primary.main};
-	z-index: -1;
+	z-index: ${zIndexBg};
 `;
 
 export const UserBubbleSmall = styled(Box)`
@@ -129,5 +130,5 @@ export const UserBubbleSmall = styled(Box)`
 	bottom: -3px;
 	border-radius: 50%;
 	background-color: ${palette.primary.main};
-	z-index: -1;
+	z-index: ${zIndexBg};
 `;

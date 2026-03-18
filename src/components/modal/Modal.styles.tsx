@@ -5,10 +5,11 @@ import {
 	isTabletMedia,
 } from '@psycron/theme/media-queries/mediaQueries';
 import { spacing } from '@psycron/theme/spacing/spacing.theme';
+import { zIndexModal } from '@psycron/theme/zIndex';
 
 export const StyledModal = styled(Modal)`
 	padding: ${spacing.mediumLarge};
-	z-index: 1500;
+	z-index: ${zIndexModal};
 `;
 
 export const StyledContentWrapper = styled(Box)`

@@ -1,5 +1,6 @@
 import { Box, styled } from '@mui/material';
 import { spacing } from '@psycron/theme/spacing/spacing.theme';
+import { zIndexHeader } from '@psycron/theme/zIndex';
 
 export const HeaderWrapper = styled(Box)`
 	height: var(--header-heigh);
@@ -7,5 +8,5 @@ export const HeaderWrapper = styled(Box)`
 	align-items: center;
 	justify-content: space-between;
 	padding: ${spacing.mediumLarge};
-	z-index: 10;
+	z-index: ${zIndexHeader};
 `;

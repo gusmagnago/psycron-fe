@@ -6,9 +6,10 @@ import {
 } from '@psycron/theme/media-queries/mediaQueries';
 import { palette } from '@psycron/theme/palette/palette.theme';
 import { spacing } from '@psycron/theme/spacing/spacing.theme';
+import { zIndexHeader } from '@psycron/theme/zIndex';
 
 export const UnsubsPageWrapper = styled(Box)`
-	z-index: 10;
+	z-index: ${zIndexHeader};
 	height: auto;
 	display: flex;
 	align-items: center;

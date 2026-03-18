@@ -1,5 +1,6 @@
 import { Box, css, styled } from '@mui/material';
 import { palette } from '@psycron/theme/palette/palette.theme';
+import { zIndexBg } from '@psycron/theme/zIndex';
 import { motion } from 'framer-motion';
 
 export const primaryGradient = css`
@@ -38,7 +39,7 @@ export const GradientBackground = styled(motion.div)`
 	width: 100%;
 	height: 100%;
 	overflow: hidden;
-	z-index: -1;
+	z-index: ${zIndexBg};
 `;
 
 export const GradientBlob = styled(motion.div, {

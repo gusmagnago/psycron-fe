@@ -1,9 +1,11 @@
 import type { CSSObject } from '@mui/system';
 
+import { zIndexModalAbove } from '../zIndex';
+
 const popoverStyles = (): Record<string, CSSObject> => {
 	return {
 		root: {
-			zIndex: 1501,
+			zIndex: zIndexModalAbove,
 		},
 	};
 };

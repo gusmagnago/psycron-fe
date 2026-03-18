@@ -3,11 +3,12 @@ import { Text } from '@psycron/components/text/Text';
 import { isBiggerThanMediumMedia } from '@psycron/theme/media-queries/mediaQueries';
 import { palette } from '@psycron/theme/palette/palette.theme';
 import { spacing } from '@psycron/theme/spacing/spacing.theme';
+import { zIndexHover } from '@psycron/theme/zIndex';
 
 export const AppLayoutDividerMobilePadding = `${spacing.small}`;
 
 export const NavBarWrapper = styled(Box)`
-	z-index: 100;
+	z-index: ${zIndexHover};
 	display: flex;
 	flex-direction: column;
 
