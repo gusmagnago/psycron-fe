@@ -6,6 +6,7 @@ import { isMobileMedia } from '@psycron/theme/media-queries/mediaQueries';
 import { palette } from '@psycron/theme/palette/palette.theme';
 import { shadowMain } from '@psycron/theme/shadow/shadow.theme';
 import { spacing } from '@psycron/theme/spacing/spacing.theme';
+import { zIndexSticky } from '@psycron/theme/zIndex';
 
 import type { SlotStatus } from './AvailabilityWeekPage.mock';
 
@@ -36,6 +37,8 @@ export const WeekCard = styled(Box)`
 	overflow: hidden;
 	margin-bottom: 0;
 
+	position: relative;
+
 	${isMobileMedia} {
 		height: auto;
 		box-shadow: none;
@@ -46,28 +49,47 @@ export const WeekCard = styled(Box)`
 
 // ─── Header ───────────────────────────────────────────────────────────────────
 
-export const WeekMobileTitleBlock = styled(Box)`
-	display: none;
-	flex-direction: column;
-	align-items: center;
-	text-align: center;
-	flex-shrink: 0;
-
-	${isMobileMedia} {
-		display: flex;
-	}
-`;
-
 export const WeekHeader = styled(Box)`
+	background-color: ${palette.background.default};
 	display: flex;
+	flex-direction: column;
 	align-items: center;
 	justify-content: space-between;
 	gap: ${spacing.medium};
+	width: 100%;
+	position: sticky;
+	top: 0;
 	flex-shrink: 0;
+	padding-bottom: 0;
+	z-index: ${zIndexSticky};
 
 	${isMobileMedia} {
-		gap: ${spacing.space};
+		gap: ${spacing.small};
+		padding-bottom: ${spacing.small};
 	}
+`;
+export const WeekFeaturesWrapper = styled(Box)`
+	display: flex;
+	width: 100%;
+	justify-content: space-between;
+`;
+
+export const WeekFeaturesActions = styled(Box)`
+	display: flex;
+	flex-direction: column;
+	gap: ${spacing.extraSmall};
+`;
+
+export const WeekActionsWrapper = styled(Box)`
+	display: flex;
+	justify-content: space-between;
+	width: 100%;
+`;
+
+export const WeekActions = styled(Box)`
+	display: flex;
+	justify-content: space-between;
+	width: 100%;
 `;
 
 export const WeekHeaderLeft = styled(Box)`
@@ -107,14 +129,18 @@ export const NavButton = styled(Button)`
 	display: flex;
 	min-width: ${spacing.medium};
 
+	&.Mui-disabled {
+		opacity: 0.3;
+		cursor: not-allowed;
+		pointer-events: auto;
+	}
+
 	${isMobileMedia} {
 		padding: ${spacing.xs};
 	}
 `;
 
 export const TodayButton = styled(Button)`
-	background: ${palette.brand.purple};
-	color: ${palette.background.default};
 	white-space: nowrap;
 	transition: opacity 0.15s ease;
 
@@ -133,26 +159,11 @@ export const FilterButton = styled(Button, {
 	shouldForwardProp: (prop) => prop !== 'isActive',
 })<{ isActive: boolean }>`
 	white-space: nowrap;
-	transition: all 0.15s ease;
-	background: ${({ isActive }) =>
-		isActive ? palette.brand.purple : 'transparent'};
-	color: ${({ isActive }) =>
-		isActive ? palette.white : palette.gray['06']};
-	border: 1px solid
-		${({ isActive }) =>
-			isActive ? palette.brand.purple : palette.gray['03']};
 
 	& span {
 		display: flex;
 		align-items: center;
 		gap: ${spacing.xs};
-	}
-
-	&:hover {
-		background: ${({ isActive }) =>
-			isActive ? palette.brand.dark : palette.gray['01']};
-		border-color: ${({ isActive }) =>
-			isActive ? palette.brand.dark : palette.gray['04']};
 	}
 `;
 

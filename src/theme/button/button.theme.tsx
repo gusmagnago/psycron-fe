@@ -21,6 +21,7 @@ const buttonStyles = ({ palette }: Theme): Record<string, CSSObject> => {
 		info,
 		success,
 		warning,
+		white,
 		text: { primary: textPrimary, disabled: textDisabled },
 	} = palette as unknown as Palette;
 
@@ -82,10 +83,12 @@ const buttonStyles = ({ palette }: Theme): Record<string, CSSObject> => {
 			},
 		},
 		containedTertiary: {
-			backgroundColor: tertiary.main,
-			color: tertiary.light,
+			backgroundColor: brand.purple,
+			color: white,
 			'&:hover': {
-				backgroundColor: tertiary.action.hover,
+				backgroundColor: 'transparent',
+				border: generateBorder(brand.purple),
+				color: textPrimary,
 				boxShadow: shadowPress,
 			},
 			'&:focus': {
@@ -140,7 +143,7 @@ const buttonStyles = ({ palette }: Theme): Record<string, CSSObject> => {
 			},
 		},
 		outlinedTertiary: {
-			border: `2px solid ${brand.purple}`,
+			border: generateBorder(brand.purple),
 			backgroundColor: 'transparent',
 			boxSizing: 'border-box',
 			'&:hover': {

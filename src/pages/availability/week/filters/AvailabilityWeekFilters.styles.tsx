@@ -1,17 +1,9 @@
 import styled from '@emotion/styled';
-import { Box, Popover } from '@mui/material';
+import { Box } from '@mui/material';
 import { Button } from '@psycron/components/button/Button';
 import { Text } from '@psycron/components/text/Text';
 import { palette } from '@psycron/theme/palette/palette.theme';
 import { spacing } from '@psycron/theme/spacing/spacing.theme';
-
-export const FiltersPopover = styled(Popover)`
-	& .MuiPaper-root {
-		border-radius: ${spacing.mediumSmall};
-		box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
-		margin-top: ${spacing.xs};
-	}
-`;
 
 export const FiltersPanelContent = styled(Box)`
 	width: 300px;
@@ -31,20 +23,6 @@ export const FiltersPanelTitle = styled(Text)`
 	font-size: 15px;
 	font-weight: 600;
 	color: ${palette.text.primary};
-`;
-
-export const FiltersPanelClearButton = styled(Button)`
-	font-size: 12px;
-	padding: 0;
-	min-width: unset;
-	color: ${palette.brand.purple};
-	background: transparent;
-	border: none;
-
-	&:hover {
-		background: transparent;
-		text-decoration: underline;
-	}
 `;
 
 export const FiltersDivider = styled(Box)`
@@ -86,8 +64,7 @@ export const FiltersChip = styled(Button, {
 		isActive ? palette.brand.purple : 'transparent'};
 	color: ${({ isActive }) => (isActive ? palette.white : palette.gray['06'])};
 	border: 1px solid
-		${({ isActive }) =>
-			isActive ? palette.brand.purple : palette.gray['03']};
+		${({ isActive }) => (isActive ? palette.brand.purple : palette.gray['03'])};
 
 	&:hover {
 		background: ${({ isActive }) =>

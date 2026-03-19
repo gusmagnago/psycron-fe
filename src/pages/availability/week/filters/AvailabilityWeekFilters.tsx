@@ -1,21 +1,29 @@
+import { Fragment } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Switch } from '@mui/material';
+import { Popover, Switch } from '@mui/material';
+import { Button } from '@psycron/components/button/Button';
+import type {
+	BookingSource,
+	DeliveryMode,
+	TimeOfDay,
+} from '@psycron/hooks/useCalendarPrefs';
 
 import {
 	FiltersChip,
 	FiltersChipGroup,
 	FiltersDivider,
-	FiltersPanelClearButton,
 	FiltersPanelContent,
 	FiltersPanelHeader,
 	FiltersPanelTitle,
-	FiltersPopover,
 	FiltersSection,
 	FiltersSectionLabel,
 	FiltersSwitchLabel,
 	FiltersSwitchRow,
 } from './AvailabilityWeekFilters.styles';
-import type { IAvailabilityWeekFiltersProps } from './AvailabilityWeekFilters.types';
+import type {
+	IAvailabilityWeekFiltersProps,
+	IFilterSection,
+} from './AvailabilityWeekFilters.types';
 
 export const AvailabilityWeekFilters = ({
 	activeFilterCount,
@@ -34,8 +42,68 @@ export const AvailabilityWeekFilters = ({
 	const { t } = useTranslation();
 	const open = Boolean(anchorEl);
 
+	const sections: IFilterSection[] = [
+		{
+			key: 'status',
+			labelKey: 'availability.week.filter-section-status',
+			rows: [
+				{
+					checked: prefs.showFreeSlots,
+					labelKey: 'availability.week.filter-label-free',
+					onChange: onToggleShowFreeSlots,
+				},
+				{
+					checked: prefs.showCancelledSlots,
+					labelKey: 'availability.week.filter-label-cancelled',
+					onChange: onToggleShowCancelledSlots,
+				},
+			],
+			type: 'switches',
+		},
+		{
+			getOptionLabel: (v) => t(`availability.week.filter-source-${v}`),
+			isActive: (v) => prefs.bookingSources.includes(v as BookingSource),
+			key: 'source',
+			labelKey: 'availability.week.filter-section-source',
+			onToggle: (v) => onToggleBookingSource(v as BookingSource),
+			options: ['jupiter', 'google'],
+			type: 'chips',
+		},
+		...(allSessionTypes.length > 0
+			? [
+					{
+						getOptionLabel: (v: string) => v,
+						isActive: (v: string) => prefs.sessionTypes.includes(v),
+						key: 'session-type',
+						labelKey: 'availability.week.filter-section-session-type',
+						onToggle: onToggleSessionType,
+						options: allSessionTypes,
+						type: 'chips' as const,
+					},
+				]
+			: []),
+		{
+			getOptionLabel: (v) => t(`availability.week.filter-delivery-${v}`),
+			isActive: (v) => prefs.deliveryModes.includes(v as DeliveryMode),
+			key: 'delivery',
+			labelKey: 'availability.week.filter-section-delivery',
+			onToggle: (v) => onToggleDeliveryMode(v as DeliveryMode),
+			options: ['online', 'in-person'],
+			type: 'chips',
+		},
+		{
+			getOptionLabel: (v) => t(`availability.week.filter-time-${v}`),
+			isActive: (v) => prefs.timeOfDay.includes(v as TimeOfDay),
+			key: 'time',
+			labelKey: 'availability.week.filter-section-time',
+			onToggle: (v) => onToggleTimeOfDay(v as TimeOfDay),
+			options: ['morning', 'afternoon', 'evening'],
+			type: 'chips',
+		},
+	];
+
 	return (
-		<FiltersPopover
+		<Popover
 			open={open}
 			anchorEl={anchorEl}
 			onClose={onClose}
@@ -48,129 +116,46 @@ export const AvailabilityWeekFilters = ({
 						{t('availability.week.filters')}
 					</FiltersPanelTitle>
 					{activeFilterCount > 0 && (
-						<FiltersPanelClearButton onClick={onClearFilters} tertiary small>
+						<Button onClick={onClearFilters} secondary small>
 							{t('availability.week.filter-clear')}
-						</FiltersPanelClearButton>
+						</Button>
 					)}
 				</FiltersPanelHeader>
 
-				<FiltersDivider />
-
-				{/* Status */}
-				<FiltersSection>
-					<FiltersSectionLabel>
-						{t('availability.week.filter-section-status')}
-					</FiltersSectionLabel>
-					<FiltersSwitchRow>
-						<FiltersSwitchLabel>
-							{t('availability.week.filter-label-free')}
-						</FiltersSwitchLabel>
-						<Switch
-							checked={prefs.showFreeSlots}
-							onChange={onToggleShowFreeSlots}
-							size='small'
-						/>
-					</FiltersSwitchRow>
-					<FiltersSwitchRow>
-						<FiltersSwitchLabel>
-							{t('availability.week.filter-label-cancelled')}
-						</FiltersSwitchLabel>
-						<Switch
-							checked={prefs.showCancelledSlots}
-							onChange={onToggleShowCancelledSlots}
-							size='small'
-						/>
-					</FiltersSwitchRow>
-				</FiltersSection>
-
-				<FiltersDivider />
-
-				{/* Source */}
-				<FiltersSection>
-					<FiltersSectionLabel>
-						{t('availability.week.filter-section-source')}
-					</FiltersSectionLabel>
-					<FiltersChipGroup>
-						{(['jupiter', 'google'] as const).map((source) => (
-							<FiltersChip
-								key={source}
-								isActive={prefs.bookingSources.includes(source)}
-								onClick={() => onToggleBookingSource(source)}
-								small
-							>
-								{t(`availability.week.filter-source-${source}`)}
-							</FiltersChip>
-						))}
-					</FiltersChipGroup>
-				</FiltersSection>
-
-				<FiltersDivider />
-
-				{/* Session type */}
-				{allSessionTypes.length > 0 && (
-					<>
-						<FiltersSection>
-							<FiltersSectionLabel>
-								{t('availability.week.filter-section-session-type')}
-							</FiltersSectionLabel>
-							<FiltersChipGroup>
-								{allSessionTypes.map((type) => (
-									<FiltersChip
-										key={type}
-										isActive={prefs.sessionTypes.includes(type)}
-										onClick={() => onToggleSessionType(type)}
-										small
-									>
-										{type}
-									</FiltersChip>
-								))}
-							</FiltersChipGroup>
-						</FiltersSection>
-
+				{sections.map((section) => (
+					<Fragment key={section.key}>
 						<FiltersDivider />
-					</>
-				)}
-
-				{/* Delivery */}
-				<FiltersSection>
-					<FiltersSectionLabel>
-						{t('availability.week.filter-section-delivery')}
-					</FiltersSectionLabel>
-					<FiltersChipGroup>
-						{(['online', 'in-person'] as const).map((mode) => (
-							<FiltersChip
-								key={mode}
-								isActive={prefs.deliveryModes.includes(mode)}
-								onClick={() => onToggleDeliveryMode(mode)}
-								small
-							>
-								{t(`availability.week.filter-delivery-${mode}`)}
-							</FiltersChip>
-						))}
-					</FiltersChipGroup>
-				</FiltersSection>
-
-				<FiltersDivider />
-
-				{/* Time of day */}
-				<FiltersSection>
-					<FiltersSectionLabel>
-						{t('availability.week.filter-section-time')}
-					</FiltersSectionLabel>
-					<FiltersChipGroup>
-						{(['morning', 'afternoon', 'evening'] as const).map((band) => (
-							<FiltersChip
-								key={band}
-								isActive={prefs.timeOfDay.includes(band)}
-								onClick={() => onToggleTimeOfDay(band)}
-								small
-							>
-								{t(`availability.week.filter-time-${band}`)}
-							</FiltersChip>
-						))}
-					</FiltersChipGroup>
-				</FiltersSection>
+						<FiltersSection>
+							<FiltersSectionLabel>{t(section.labelKey)}</FiltersSectionLabel>
+							{section.type === 'switches' ? (
+								section.rows.map((row) => (
+									<FiltersSwitchRow key={row.labelKey}>
+										<FiltersSwitchLabel>{t(row.labelKey)}</FiltersSwitchLabel>
+										<Switch
+											checked={row.checked}
+											onChange={row.onChange}
+											size='small'
+										/>
+									</FiltersSwitchRow>
+								))
+							) : (
+								<FiltersChipGroup>
+									{section.options.map((opt) => (
+										<FiltersChip
+											key={opt}
+											isActive={section.isActive(opt)}
+											onClick={() => section.onToggle(opt)}
+											small
+										>
+											{section.getOptionLabel(opt)}
+										</FiltersChip>
+									))}
+								</FiltersChipGroup>
+							)}
+						</FiltersSection>
+					</Fragment>
+				))}
 			</FiltersPanelContent>
-		</FiltersPopover>
+		</Popover>
 	);
 };

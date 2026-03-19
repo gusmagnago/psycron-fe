@@ -1,11 +1,13 @@
 import { Fragment, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams } from 'react-router-dom';
+import { Box } from '@mui/material';
 import {
 	Calendar,
 	ChevronLeft,
 	ChevronRight,
 	Filter,
+	FilterFull,
 } from '@psycron/components/icons';
 import { useCalendarPrefs } from '@psycron/hooks/useCalendarPrefs';
 import useViewport from '@psycron/hooks/useViewport';
@@ -60,14 +62,16 @@ import {
 	TimeLabel,
 	TimeLabelText,
 	TodayButton,
+	WeekActionsWrapper,
 	WeekCard,
+	WeekFeaturesActions,
+	WeekFeaturesWrapper,
 	WeekFooter,
 	WeekGrid,
 	WeekGridWrapper,
 	WeekHeader,
 	WeekHeaderLeft,
 	WeekHeaderRight,
-	WeekMobileTitleBlock,
 	WeekSubtitle,
 	WeekTitle,
 } from './AvailabilityWeekPage.styles';
@@ -96,6 +100,14 @@ const formatTimeRange = (startTime: string, durationMin: number) => {
 
 const getDaySlots = (day: Date): IWeekSlot[] =>
 	MOCK_WEEK_DATA[format(day, 'yyyy-MM-dd')] ?? [];
+
+const weekHasData = (weekBase: Date): boolean => {
+	const ws = startOfWeek(weekBase, { weekStartsOn: 1 });
+	const we = endOfWeek(weekBase, { weekStartsOn: 1 });
+	return eachDayOfInterval({ start: ws, end: we })
+		.filter((d) => WORKING_DAYS.includes(d.getDay()))
+		.some((d) => (MOCK_WEEK_DATA[format(d, 'yyyy-MM-dd')]?.length ?? 0) > 0);
+};
 
 export const AvailabilityWeekPage = () => {
 	const { t } = useTranslation();
@@ -180,6 +192,9 @@ export const AvailabilityWeekPage = () => {
 		return slots;
 	};
 
+	const canGoPrev = weekHasData(subWeeks(baseDate, 1));
+	const canGoNext = weekHasData(addWeeks(baseDate, 1));
+
 	const goToPrevWeek = () =>
 		navigate(
 			`/${i18n.language}/${AVAILABILITYPATH}/week/${format(subWeeks(baseDate, 1), 'yyyy-MM-dd')}`
@@ -204,16 +219,17 @@ export const AvailabilityWeekPage = () => {
 			isActive={activeFilterCount > 0}
 			onClick={(e) => setFilterAnchorEl(e.currentTarget as HTMLElement)}
 			small
+			variant='outlined'
 		>
-			<Filter />
+			{activeFilterCount > 0 ? <FilterFull /> : <Filter />}
 			{t('availability.week.filters')}
-			{activeFilterCount > 0 ? ` · ${activeFilterCount}` : ''}
 		</FilterButton>
 	);
 
 	// Shared nav controls — identical in both mobile and desktop layouts
 	const prevButton = (
 		<NavButton
+			disabled={!canGoPrev}
 			onClick={goToPrevWeek}
 			aria-label={t('availability.week.prev-week')}
 		>
@@ -222,6 +238,7 @@ export const AvailabilityWeekPage = () => {
 	);
 	const nextButton = (
 		<NavButton
+			disabled={!canGoNext}
 			onClick={goToNextWeek}
 			aria-label={t('availability.week.next-week')}
 		>
@@ -229,7 +246,7 @@ export const AvailabilityWeekPage = () => {
 		</NavButton>
 	);
 	const todayButton = (
-		<TodayButton onClick={goToToday}>
+		<TodayButton onClick={goToToday} small tertiary variant='contained'>
 			<Calendar />
 			{t('availability.week.today')}
 		</TodayButton>
@@ -238,35 +255,22 @@ export const AvailabilityWeekPage = () => {
 	return (
 		<PageLayout title={t('availability.week.page-title')} isLoading={false}>
 			<WeekCard>
-				{isMobile ? (
-					<>
-						<WeekMobileTitleBlock>
+				<WeekHeader>
+					<WeekFeaturesWrapper>
+						<Box>
 							<WeekTitle>{t('availability.week.title')}</WeekTitle>
 							<WeekSubtitle>{weekRange}</WeekSubtitle>
-						</WeekMobileTitleBlock>
-						<WeekHeader>
-							{prevButton}
-							{todayButton}
-							{nextButton}
+						</Box>
+						<WeekFeaturesActions>
 							{filterButton}
-						</WeekHeader>
-					</>
-				) : (
-					<WeekHeader>
-						<WeekHeaderLeft>
-							{prevButton}
-							<div>
-								<WeekTitle>{t('availability.week.title')}</WeekTitle>
-								<WeekSubtitle>{weekRange}</WeekSubtitle>
-							</div>
-						</WeekHeaderLeft>
-						<WeekHeaderRight>
 							{todayButton}
-							{nextButton}
-							{filterButton}
-						</WeekHeaderRight>
-					</WeekHeader>
-				)}
+						</WeekFeaturesActions>
+					</WeekFeaturesWrapper>
+					<WeekActionsWrapper>
+						<WeekHeaderLeft>{prevButton}</WeekHeaderLeft>
+						<WeekHeaderRight>{nextButton}</WeekHeaderRight>
+					</WeekActionsWrapper>
+				</WeekHeader>
 
 				{isMobile ? (
 					<MobileDayList>

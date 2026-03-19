@@ -1,11 +1,13 @@
 import type { CSSObject } from '@mui/system';
 
-import { zIndexModal } from '../zIndex';
+import { spacing } from '../spacing/spacing.theme';
+import { zIndexPopover } from '../zIndex';
 
 const popoverStyles = (): Record<string, CSSObject> => {
 	return {
 		root: {
-			zIndex: zIndexModal + 1,
+			zIndex: zIndexPopover,
+			borderRadius: spacing.mediumSmall,
 		},
 	};
 };
