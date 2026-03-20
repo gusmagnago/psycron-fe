@@ -90,6 +90,7 @@ apiClient.interceptors.response.use(
 				return apiClient(originalRequest);
 			} catch {
 				clearAuthTokens();
+				window.location.href = '/en/sign-in';
 				return Promise.reject(
 					createSanitizedError('Session expired', 401, requestUrl)
 				);

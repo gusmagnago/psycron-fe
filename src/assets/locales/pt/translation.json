@@ -121,7 +121,9 @@
 				"sign-up": "Cadastra-se",
 				"title-email": "Crie sua conta ",
 				"title": "Crie a sua conta Psycron",
+				"first-name": "Nome",
 				"firstName": "Nome",
+				"last-name": "Sobrenome",
 				"lastName": "Sobrenome",
 				"already-have-acc": "Você já tem uma conta?",
 				"signin-here-link": "Clique aqui para entrar"
@@ -138,6 +140,7 @@
 				"invalid": "{{name}} não é válido",
 				"characters": "Senha deve conter no mínimo {{numChar}} caracteres",
 				"pass-rules": "Sua senha deve conter ao menos uma letra maiúscula, uma letra minúscula, um número e um caractere especial (@€#$+...) ",
+				"at-least-one-contact": "Informe um email ou número de telefone",
 				"match": "{{name}} precisa coincidir"
 			},
 			"address-form": {
@@ -690,16 +693,24 @@
 		},
 		"week": {
 			"drawer": {
-				"cancel-appointment": "Cancelar consulta",
+				"book-slot": "Agendar este horário",
+				"cancel": "Cancelar",
+				"cancel-appointment": "Cancelar",
+				"confirm-booking": "Confirmar",
+				"confirmed": "Confirmado",
+				"status-cancelled": "Cancelado",
+				"status-confirmed": "Confirmado",
 				"date": "Data",
 				"edit": "Editar",
 				"minutes": "minutos",
 				"notes": "Notas",
+				"patient-email": "Email do paciente",
+				"patient-first-name": "Nome do paciente",
+				"patient-last-name": "Sobrenome do paciente",
 				"patient-time": "Horário do paciente",
-				"session-type": "Tipo de sessão",
 				"session-duration": "Duração: ",
-				"your-time": "Seu horário",
-				"confirmed": "Confirmado"
+				"session-type": "Tipo de sessão",
+				"your-time": "Seu horário"
 			},
 			"legend-available": "Disponível",
 			"legend-booked-google": "Google",
@@ -730,6 +741,13 @@
 			"filter-time-morning": "Manhã",
 			"filters": "Filtros",
 			"title": "Agenda da Semana",
+			"extend": {
+				"confirm": "Estender disponibilidade",
+				"end-of-month": "Até o fim do mês",
+				"end-of-year": "Até o fim do ano",
+				"success": "Disponibilidade estendida com sucesso",
+				"title": "Por quanto tempo deseja estender?"
+			},
 			"today": "Hoje"
 		},
 		"gate": {

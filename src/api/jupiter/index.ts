@@ -1,4 +1,16 @@
+import type { IWeekSlot } from '@psycron/pages/availability/week/AvailabilityWeekPage.types';
+
 import apiClient from '../axios-instance';
+
+export interface IWeekSlotDay {
+	availabilityDayId: string;
+	date: string;
+	slots: Omit<IWeekSlot, 'id'>[];
+}
+
+export interface IGetWeekSlotsResponse {
+	days: IWeekSlotDay[];
+}
 
 export type ParseField = 'working-days' | 'time-range' | 'session-duration';
 
@@ -53,3 +65,26 @@ export const importGoogleCalendarSchedule =
 			return null;
 		}
 	};
+
+export const getWeekSlots = async (
+	from: string,
+	to: string
+): Promise<IGetWeekSlotsResponse> => {
+	const response = await apiClient.get<IGetWeekSlotsResponse>(
+		'/jupiter/availability/slots',
+		{ params: { from, to } }
+	);
+	return response.data;
+};
+
+export type RecurrencePattern = 'MONTHLY' | 'WEEKLY';
+
+export const extendAvailability = async (
+	recurrencePattern: RecurrencePattern
+): Promise<{ availabilityId: string }> => {
+	const response = await apiClient.post<{ availabilityId: string }>(
+		'/jupiter/availability/extend',
+		{ recurrencePattern }
+	);
+	return response.data;
+};

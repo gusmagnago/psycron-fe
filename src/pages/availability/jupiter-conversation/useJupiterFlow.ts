@@ -346,14 +346,16 @@ export const useJupiterFlow = (initialAnswers?: JupiterAnswers) => {
 			});
 			localStorage.removeItem(STORAGE_KEY);
 			localStorage.setItem(ONBOARDING_KEY, 'true');
-			queryClient.setQueryData<IAvailabilityRecord>(['availability'], {
+			const record: IAvailabilityRecord = {
 				availabilityId,
 				sessionDuration: answers.sessionDuration!,
 				sessionType: answers.sessionType!,
 				timeRange: answers.timeRange!,
 				timezone: answers.timezone!,
 				workingDays: answers.workingDays!,
-			});
+			};
+			queryClient.setQueryData<IAvailabilityRecord>(['availability'], record);
+			queryClient.setQueryData<IAvailabilityRecord>(['availabilityGate'], record);
 			showAlert({ message: t('jupiter.post-publish.success-toast'), severity: 'success' });
 			showAlert({ message: t('jupiter.post-publish.welcome-toast'), severity: 'success' });
 			navigate(`/${i18n.language}/${AVAILABILITYPATH}`);

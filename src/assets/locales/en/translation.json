@@ -139,6 +139,7 @@
 				"invalid": "{{name}} is invalid",
 				"characters": "Password must be at least {{numChar}} characters",
 				"pass-rules": "Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character",
+				"at-least-one-contact": "Please provide an email or phone number",
 				"match": "{{name}} must match"
 			},
 			"address-form": {
@@ -691,16 +692,24 @@
 		},
 		"week": {
 			"drawer": {
-				"cancel-appointment": "Cancel appointment",
+				"book-slot": "Book this slot",
+				"cancel": "Cancel",
+				"cancel-appointment": "Cancel",
+				"confirm-booking": "Confirm",
+				"confirmed": "Confirmed",
+				"status-cancelled": "Cancelled",
+				"status-confirmed": "Confirmed",
 				"date": "Date",
 				"edit": "Edit",
 				"minutes": "minutes",
 				"notes": "Notes",
+				"patient-email": "Patient's email",
+				"patient-first-name": "Patient's first name",
+				"patient-last-name": "Patient's last name",
 				"patient-time": "Patient time",
-				"session-type": "Session type",
 				"session-duration": "Duration: ",
-				"your-time": "Your time",
-				"confirmed": "Confirmed"
+				"session-type": "Session type",
+				"your-time": "Your time"
 			},
 			"legend-available": "Available",
 			"legend-booked-google": "Google",
@@ -731,6 +740,13 @@
 			"slot": "slot",
 			"slots": "slots",
 			"title": "Week Schedule",
+			"extend": {
+				"confirm": "Extend availability",
+				"end-of-month": "End of the month",
+				"end-of-year": "End of the year",
+				"success": "Availability extended successfully",
+				"title": "How long would you like to extend it?"
+			},
 			"today": "Today"
 		},
 		"gate": {
