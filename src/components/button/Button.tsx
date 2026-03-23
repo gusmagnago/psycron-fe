@@ -39,7 +39,9 @@ export const Button = ({
 			{...props}
 		>
 			<StyledBttnContentWrapper>
-				{loading && <BttnLoader size={25} color='secondary' thickness={5} />}
+				{loading ? (
+					<BttnLoader size={25} color='secondary' thickness={5} />
+				) : null}
 				{children}
 			</StyledBttnContentWrapper>
 		</MUIButton>

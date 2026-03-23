@@ -2,6 +2,11 @@ import { Fragment, useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Box } from '@mui/material';
+import type { AvailabilityLegendItem } from '@psycron/components/availability/AvailabilityLegend';
+import { AvailabilityLegend } from '@psycron/components/availability/AvailabilityLegend';
+import { NavButton } from '@psycron/components/availability/AvailabilityNavButton';
+import { AvailabilityTodayButton } from '@psycron/components/availability/AvailabilityTodayButton';
+import { Button } from '@psycron/components/button/Button';
 import {
 	Calendar,
 	ChevronLeft,
@@ -13,7 +18,8 @@ import { useCalendarPrefs } from '@psycron/hooks/useCalendarPrefs';
 import useViewport from '@psycron/hooks/useViewport';
 import i18n from '@psycron/i18n';
 import { PageLayout } from '@psycron/layouts/app/pages-layout/PageLayout';
-import { AVAILABILITYPATH } from '@psycron/pages/urls';
+import { AVAILABILITYPATH, AVAILABILITYWEEK_BASE } from '@psycron/pages/urls';
+import { palette } from '@psycron/theme/palette/palette.theme';
 import {
 	addWeeks,
 	eachDayOfInterval,
@@ -28,15 +34,11 @@ import {
 import { AvailabilityWeekDrawer } from './drawer/AvailabilityWeekDrawer';
 import { AvailabilityWeekFilters } from './filters/AvailabilityWeekFilters';
 import { AvailabilityExtendBanner } from './AvailabilityExtendBanner';
-import { TIME_SLOTS, WORKING_DAYS } from './AvailabilityWeekPage.mock';
 import {
 	DayHeader,
 	DayName,
 	DayNumber,
 	FilterButton,
-	LegendItem,
-	LegendLabel,
-	LegendSwatch,
 	MobileDayCard,
 	MobileDayCardHeader,
 	MobileDayDate,
@@ -50,14 +52,13 @@ import {
 	MobileSlotPatient,
 	MobileSlotTherapy,
 	MobileSlotTime,
-	NavButton,
+	SLOT_COLORS,
 	SlotCell,
 	SlotCellEmpty,
 	SlotPatientName,
 	SlotTherapyType,
 	TimeLabel,
 	TimeLabelText,
-	TodayButton,
 	WeekActionsWrapper,
 	WeekCard,
 	WeekFeaturesActions,
@@ -74,7 +75,7 @@ import {
 import type { IWeekSlot, SlotStatus } from './AvailabilityWeekPage.types';
 import { useWeekSlots } from './useWeekSlots';
 
-const LEGEND_ITEMS: { labelKey: string; status: SlotStatus }[] = [
+const LEGEND_STATUSES: { labelKey: string; status: SlotStatus }[] = [
 	{ status: 'available', labelKey: 'availability.week.legend-available' },
 	{
 		status: 'booked-jupiter',
@@ -124,9 +125,15 @@ export const AvailabilityWeekPage = () => {
 	const weekEnd = endOfWeek(baseDate, { weekStartsOn: 1 });
 	const weekDays = eachDayOfInterval({ start: weekStart, end: weekEnd });
 
-	const workingDays = weekDays.filter((d) => WORKING_DAYS.includes(d.getDay()));
+	const { weekData, isLoading, isAvailabilityDatesEmpty } = useWeekSlots(
+		weekStart,
+		weekEnd
+	);
 
-	const { weekData, isLoading, isAvailabilityDatesEmpty } = useWeekSlots(weekStart, weekEnd);
+	const workingDays = weekDays.filter(
+		(d) => format(d, 'yyyy-MM-dd') in weekData
+	);
+
 	const getDaySlots = useCallback(
 		(day: Date): IWeekSlot[] => weekData[format(day, 'yyyy-MM-dd')] ?? [],
 		[weekData]
@@ -143,6 +150,14 @@ export const AvailabilityWeekPage = () => {
 		});
 		return Array.from(types).sort();
 	}, [weekDays, getDaySlots]);
+
+	const timeSlots = useMemo(() => {
+		const times = new Set<string>();
+		Object.values(weekData).forEach((slots) =>
+			slots.forEach((s) => times.add(s.startTime))
+		);
+		return Array.from(times).sort();
+	}, [weekData]);
 
 	const getVisibleDaySlots = (day: Date): IWeekSlot[] => {
 		let slots = getDaySlots(day);
@@ -193,20 +208,24 @@ export const AvailabilityWeekPage = () => {
 
 	const goToPrevWeek = () =>
 		navigate(
-			`/${i18n.language}/${AVAILABILITYPATH}/week/${format(subWeeks(baseDate, 1), 'yyyy-MM-dd')}`
+			`/${i18n.language}/${AVAILABILITYWEEK_BASE}/${format(subWeeks(baseDate, 1), 'yyyy-MM-dd')}`
 		);
 
 	const goToNextWeek = () =>
 		navigate(
-			`/${i18n.language}/${AVAILABILITYPATH}/week/${format(addWeeks(baseDate, 1), 'yyyy-MM-dd')}`
+			`/${i18n.language}/${AVAILABILITYWEEK_BASE}/${format(addWeeks(baseDate, 1), 'yyyy-MM-dd')}`
 		);
 
-	const goToToday = () =>
-		navigate(
-			`/${i18n.language}/${AVAILABILITYPATH}/week/${format(new Date(), 'yyyy-MM-dd')}`
-		);
+const handleSlotClick = (slot: IWeekSlot) => setSelectedSlot(slot);
 
-	const handleSlotClick = (slot: IWeekSlot) => setSelectedSlot(slot);
+	const legendItems: AvailabilityLegendItem[] = LEGEND_STATUSES.map(
+		({ status, labelKey }) => ({
+			color: SLOT_COLORS[status],
+			label: t(labelKey),
+			...(status === 'available' && { borderColor: palette.gray['02'] }),
+			...(status === 'cancelled' && { opacity: 0.5 }),
+		})
+	);
 
 	const filterButton = (
 		<FilterButton
@@ -220,7 +239,6 @@ export const AvailabilityWeekPage = () => {
 		</FilterButton>
 	);
 
-	// Shared nav controls — identical in both mobile and desktop layouts
 	const prevButton = (
 		<NavButton
 			disabled={!canGoPrev}
@@ -239,15 +257,14 @@ export const AvailabilityWeekPage = () => {
 			<ChevronRight />
 		</NavButton>
 	);
-	const todayButton = (
-		<TodayButton onClick={goToToday} small tertiary variant='contained'>
-			<Calendar />
-			{t('availability.week.today')}
-		</TodayButton>
-	);
+	const todayButton = <AvailabilityTodayButton />;
 
 	return (
-		<PageLayout title={t('availability.week.page-title')} isLoading={isLoading}>
+		<PageLayout
+			title={t('availability.week.page-title')}
+			isLoading={isLoading}
+			backButton
+		>
 			<WeekCard>
 				<WeekHeader>
 					<WeekFeaturesWrapper>
@@ -336,7 +353,7 @@ export const AvailabilityWeekPage = () => {
 							<div style={{ height: 60 }} />
 
 							{weekDays.map((day, _id) => {
-								const isDisabled = !WORKING_DAYS.includes(day.getDay());
+								const isDisabled = !(format(day, 'yyyy-MM-dd') in weekData);
 								return (
 									<DayHeader
 										key={`hd-${day.toISOString() + _id}`}
@@ -352,14 +369,16 @@ export const AvailabilityWeekPage = () => {
 								);
 							})}
 
-							{TIME_SLOTS.map((time) => {
+							{timeSlots.map((time) => {
 								return (
 									<Fragment key={`time-slot-${time}`}>
 										<TimeLabel>
 											<TimeLabelText>{time}</TimeLabelText>
 										</TimeLabel>
 										{weekDays.map((day) => {
-											const isDisabled = !WORKING_DAYS.includes(day.getDay());
+											const isDisabled = !(
+												format(day, 'yyyy-MM-dd') in weekData
+											);
 											const daySlots = getVisibleDaySlots(day);
 											const slot = isDisabled
 												? null
@@ -399,12 +418,17 @@ export const AvailabilityWeekPage = () => {
 				)}
 
 				<WeekFooter>
-					{LEGEND_ITEMS.map(({ status, labelKey }) => (
-						<LegendItem key={`${status}-${labelKey}`}>
-							<LegendSwatch swatchStatus={status} />
-							<LegendLabel>{t(labelKey)}</LegendLabel>
-						</LegendItem>
-					))}
+					<AvailabilityLegend items={legendItems} />
+					<Box>
+						<Button
+							small
+							tertiary
+							onClick={() => navigate(`/${AVAILABILITYPATH}`)}
+						>
+							<Calendar />
+							Month
+						</Button>
+					</Box>
 				</WeekFooter>
 			</WeekCard>
 

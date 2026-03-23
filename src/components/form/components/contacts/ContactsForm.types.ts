@@ -11,8 +11,12 @@ export type ContactsFormFields<T extends FieldValues> = {
 };
 
 export type ContactsFormProps<T extends FieldValues> = {
+	atLeastOneContact?: boolean;
 	defaultValues?: IContactInfo;
 	disabled?: boolean;
 	fields?: ContactsFormFields<T>;
+	fullWidth?: boolean;
+	labelEmail?: string;
+	placeholderEmail?: string;
 	required?: boolean;
 } & Omit<TextFieldProps, 'defaultValue' | 'required' | 'disabled'>;

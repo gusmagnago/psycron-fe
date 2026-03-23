@@ -53,25 +53,14 @@ export const FiltersChipGroup = styled(Box)`
 export const FiltersChip = styled(Button, {
 	shouldForwardProp: (prop) => prop !== 'isActive',
 })<{ isActive: boolean }>`
-	height: 28px;
-	padding: 0 ${spacing.small};
-	font-size: 12px;
-	border-radius: ${spacing.small};
 	min-width: unset;
 	white-space: nowrap;
 	transition: all 0.15s ease;
 	background: ${({ isActive }) =>
-		isActive ? palette.brand.purple : 'transparent'};
+		isActive ? palette.brand.dark : 'transparent'};
 	color: ${({ isActive }) => (isActive ? palette.white : palette.gray['06'])};
-	border: 1px solid
-		${({ isActive }) => (isActive ? palette.brand.purple : palette.gray['03'])};
-
-	&:hover {
-		background: ${({ isActive }) =>
-			isActive ? palette.brand.dark : palette.gray['01']};
-		border-color: ${({ isActive }) =>
-			isActive ? palette.brand.dark : palette.gray['04']};
-	}
+	border-color: ${({ isActive }) =>
+		isActive ? palette.brand.dark : palette.gray['03']};
 `;
 
 export const FiltersSwitchRow = styled(Box)`

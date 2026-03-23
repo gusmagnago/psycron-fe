@@ -24,7 +24,7 @@ import { useUserDetails } from '@psycron/context/user/details/UserDetailsContext
 import { useAuthSession } from '@psycron/hooks/useAuthSession';
 import useViewport from '@psycron/hooks/useViewport';
 import {
-	APPOINTMENTS,
+	AVAILABILITYPATH,
 	DASHBOARD,
 	LOGOUT,
 	PATIENTS,
@@ -65,8 +65,7 @@ export const AppLayout: FC = () => {
 		{
 			name: t('globals.appointments-manager'),
 			icon: <Calendar />,
-			path: APPOINTMENTS,
-			disabled: true,
+			path: AVAILABILITYPATH,
 		},
 		{
 			name: t('globals.patients'),

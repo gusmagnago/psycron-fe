@@ -1,26 +1,33 @@
 import styled from '@emotion/styled';
-import { Box } from '@mui/material';
+import { Box, ButtonBase } from '@mui/material';
 import { Button } from '@psycron/components/button/Button';
 import { Text } from '@psycron/components/text/Text';
 import { isMobileMedia } from '@psycron/theme/media-queries/mediaQueries';
 import { palette } from '@psycron/theme/palette/palette.theme';
-import { shadowMain } from '@psycron/theme/shadow/shadow.theme';
+import {
+	shadowMain,
+	shadowMedium,
+	shadowSmall,
+} from '@psycron/theme/shadow/shadow.theme';
 import { spacing } from '@psycron/theme/spacing/spacing.theme';
 import { zIndexSticky } from '@psycron/theme/zIndex';
 
-import type { SlotStatus } from './AvailabilityWeekPage.mock';
+import type { SlotStatus } from './AvailabilityWeekPage.types';
 
 // ─── Slot colours ─────────────────────────────────────────────────────────────
 
 export const SLOT_COLORS: Record<SlotStatus, string> = {
-	available: palette.white,
+	available: palette.background.paper,
 	'booked-jupiter': palette.brand.purple,
 	'booked-google': palette.brand.google,
 	cancelled: palette.gray['02'],
 };
 
-const isBookedStatus = (status: SlotStatus) =>
-	status === 'booked-jupiter' || status === 'booked-google';
+const isClickableStatus = (status: SlotStatus) =>
+	status === 'booked-jupiter' ||
+	status === 'booked-google' ||
+	status === 'available' ||
+	status === 'cancelled';
 
 // ─── Card ─────────────────────────────────────────────────────────────────────
 
@@ -123,38 +130,6 @@ export const WeekSubtitle = styled(Text)`
 	margin-top: ${spacing.space};
 `;
 
-export const NavButton = styled(Button)`
-	background: ${palette.background.default};
-	color: ${palette.brand.purple};
-	display: flex;
-	min-width: ${spacing.medium};
-
-	&.Mui-disabled {
-		opacity: 0.3;
-		cursor: not-allowed;
-		pointer-events: auto;
-	}
-
-	${isMobileMedia} {
-		padding: ${spacing.xs};
-	}
-`;
-
-export const TodayButton = styled(Button)`
-	white-space: nowrap;
-	transition: opacity 0.15s ease;
-
-	&:hover {
-		opacity: 0.9;
-	}
-
-	& span {
-		display: flex;
-		align-items: center;
-		gap: ${spacing.xs};
-	}
-`;
-
 export const FilterButton = styled(Button, {
 	shouldForwardProp: (prop) => prop !== 'isActive',
 })<{ isActive: boolean }>`
@@ -179,7 +154,7 @@ export const WeekGridWrapper = styled(Box)`
 export const WeekGrid = styled(Box)`
 	display: grid;
 	grid-template-columns: 64px repeat(7, 1fr);
-	gap: ${spacing.space};
+	gap: ${spacing.xs};
 	min-width: 560px;
 `;
 
@@ -227,54 +202,44 @@ export const TimeLabelText = styled(Text)`
 
 // ─── Desktop slot cell ─────────────────────────────────────────────────────────
 
-export const SlotCell = styled(Button, {
+export const SlotCell = styled(ButtonBase, {
 	shouldForwardProp: (prop) => prop !== 'slotStatus',
 })<{ slotStatus: SlotStatus }>`
 	height: 60px;
 	width: 100%;
-	border-radius: ${spacing.extraSmall};
+	border-radius: 12px;
 	padding: ${spacing.xs} ${spacing.small};
-
+	font-size: 13px;
+	font-weight: 500;
 	display: flex;
 	flex-direction: column;
 	align-items: flex-start;
 	justify-content: center;
-
-	cursor: ${({ slotStatus }) =>
-		isBookedStatus(slotStatus) ? 'pointer' : 'default'};
+	overflow: hidden;
 
 	background-color: ${({ slotStatus }) => SLOT_COLORS[slotStatus]};
-	border: ${({ slotStatus }) =>
-		slotStatus === 'available' ? `1px solid ${palette.gray['02']}` : 'none'};
-	opacity: ${({ slotStatus }) => (slotStatus === 'cancelled' ? 0.5 : 1)};
-	transition: opacity 0.1s ease;
-	overflow: hidden;
-	margin-bottom: ${spacing.space};
-
-	& > div {
-		flex-direction: column;
-		justify-content: center;
-		height: 100%;
-	}
+	color: ${({ slotStatus }) =>
+		slotStatus === 'booked-jupiter' || slotStatus === 'booked-google'
+			? palette.white
+			: palette.text.primary};
+	opacity: ${({ slotStatus }) => (slotStatus === 'cancelled' ? 0.3 : 1)};
+	cursor: ${({ slotStatus }) =>
+		isClickableStatus(slotStatus) ? 'pointer' : 'default'};
+	box-shadow: ${({ slotStatus }) =>
+		slotStatus === 'cancelled' ? 'none' : shadowMedium};
+	transition: box-shadow 0.15s ease;
 
 	&:hover {
-		opacity: ${({ slotStatus }) =>
-			isBookedStatus(slotStatus) ? 0.9 : slotStatus === 'cancelled' ? 0.5 : 1};
-	}
-
-	color: ${({ slotStatus }) =>
-		isBookedStatus(slotStatus) ? palette.white : palette.text.primary};
-
-	& .MuiTypography-root {
-		color: inherit;
+		box-shadow: ${({ slotStatus }) =>
+			slotStatus === 'cancelled' ? 'none' : shadowSmall};
 	}
 `;
 
 export const SlotCellEmpty = styled(Box)`
 	height: 60px;
 	width: 100%;
-	border-radius: ${spacing.extraSmall};
-	margin-bottom: ${spacing.space};
+	border-radius: 12px;
+	background-color: ${palette.gray['02']};
 `;
 
 export const SlotPatientName = styled(Text)`
@@ -364,10 +329,12 @@ export const MobileSlotCard = styled(Button, {
 		slotStatus === 'available' ? `1px solid ${palette.gray['02']}` : 'none'};
 	opacity: ${({ slotStatus }) => (slotStatus === 'cancelled' ? 0.5 : 1)};
 	cursor: ${({ slotStatus }) =>
-		isBookedStatus(slotStatus) ? 'pointer' : 'default'};
+		isClickableStatus(slotStatus) ? 'pointer' : 'default'};
 	transition: opacity 0.1s ease;
 	color: ${({ slotStatus }) =>
-		isBookedStatus(slotStatus) ? palette.white : palette.text.primary};
+		slotStatus === 'booked-jupiter' || slotStatus === 'booked-google'
+			? palette.white
+			: palette.text.primary};
 
 	& > div {
 		height: 100%;
@@ -380,7 +347,11 @@ export const MobileSlotCard = styled(Button, {
 
 	&:hover {
 		opacity: ${({ slotStatus }) =>
-			isBookedStatus(slotStatus) ? 0.9 : slotStatus === 'cancelled' ? 0.5 : 1};
+			isClickableStatus(slotStatus)
+				? 0.9
+				: slotStatus === 'cancelled'
+					? 0.5
+					: 1};
 	}
 `;
 
@@ -425,34 +396,10 @@ export const WeekFooter = styled(Box)`
 	padding-top: ${spacing.mediumSmall};
 	border-top: 1px solid ${palette.gray['02']};
 	flex-shrink: 0;
-
+	justify-content: space-between;
 	margin-bottom: 0;
 
 	${isMobileMedia} {
 		margin-bottom: 140px;
 	}
-`;
-
-export const LegendItem = styled(Box)`
-	display: flex;
-	align-items: center;
-	gap: ${spacing.xs};
-`;
-
-export const LegendSwatch = styled(Box, {
-	shouldForwardProp: (prop) => prop !== 'swatchStatus',
-})<{ swatchStatus: SlotStatus }>`
-	width: ${spacing.mediumSmall};
-	height: ${spacing.mediumSmall};
-	border-radius: ${spacing.xxs};
-	background-color: ${({ swatchStatus }) => SLOT_COLORS[swatchStatus]};
-	border: ${({ swatchStatus }) =>
-		swatchStatus === 'available' ? `1px solid ${palette.gray['02']}` : 'none'};
-	opacity: ${({ swatchStatus }) => (swatchStatus === 'cancelled' ? 0.5 : 1)};
-	flex-shrink: 0;
-`;
-
-export const LegendLabel = styled(Text)`
-	font-size: 13px;
-	color: ${palette.gray['05']};
 `;

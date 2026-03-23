@@ -135,3 +135,9 @@ export const DrawerActions = styled(Box)`
 	padding-top: ${spacing.large};
 	border-top: 1px solid ${palette.gray['02']};
 `;
+
+export const FormWrapper = styled(Box)`
+	display: flex;
+	flex-direction: column;
+	gap: ${spacing.small};
+`;

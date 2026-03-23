@@ -1,6 +1,7 @@
 {
 	"common": {
-		"close": "Close"
+		"close": "Close",
+		"today": "Today"
 	},
 	"auth": {
 		"error": {
@@ -683,8 +684,10 @@
 		"calendar": {
 			"legend-available": "Available",
 			"legend-busy": "Busy",
+			"legend-empty": "Unavailable",
 			"legend-full": "Full",
 			"legend-partial": "Partial",
+			"legend-today": "Today",
 			"page-title": "Availability",
 			"source-google": "Google",
 			"source-jupiter": "Júpiter",
@@ -746,8 +749,7 @@
 				"end-of-year": "End of the year",
 				"success": "Availability extended successfully",
 				"title": "How long would you like to extend it?"
-			},
-			"today": "Today"
+			}
 		},
 		"gate": {
 			"deleted-notice": "You no longer have availability set up. Head to Jupiter to create a new one."

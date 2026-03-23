@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react';
 
-import type { IWeekSlot } from '../AvailabilityWeekPage.mock';
+import type { IWeekSlot } from '../AvailabilityWeekPage.types';
 
 export interface IAvailabilityWeekDrawerProps {
 	onClose: () => void;

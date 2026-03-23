@@ -3,10 +3,7 @@ import { hexToRgba, palette } from '../palette/palette.theme';
 export const shadowPress =
 	'5px 5px 10px rgba(170, 170, 204, 0.5), -5px -5px 10px #FFFFFF';
 
-// Pls apply disabled shadow as "filter" key
-// checkout here: https://developer.mozilla.org/en-US/docs/Web/CSS/filter-function/drop-shadow
-export const shadowDisabled =
-	'drop-shadow(1px 1px 2px rgba(170, 170, 204, 0.5)) drop-shadow(-1px -1px 2px #FFFFFF)';
+export const shadowDisabled = '3px 3px 10px #bebebe,-3px -3px 10px #ffffff';
 
 export const shadowInnerPress =
 	'inset -2px -2px 4px rgba(255, 255, 255, 0.5), inset 2px 2px 4px rgba(170, 170, 204, 0.25), inset 5px 5px 10px rgba(170, 170, 204, 0.5), inset -5px -5px 10px #FFFFFF;';
@@ -19,6 +16,9 @@ export const shadowSmall =
 export const shadowMain = '0px 10px 15px -3px rgba(0, 0, 0, 0.1)';
 
 export const shadowMediumPurple = `4px 5px 10px -6px ${palette.brand.purple}`;
+
+export const shadowMedium =
+	'3px 3px 8px rgba(170, 170, 204, 0.5), -3px -3px 8px #ffffff;';
 
 export const shadowMediumError = `4px 5px 10px -6px ${palette.error.main}`;
 

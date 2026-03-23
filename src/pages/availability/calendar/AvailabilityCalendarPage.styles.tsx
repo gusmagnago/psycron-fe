@@ -2,7 +2,11 @@ import styled from '@emotion/styled';
 import { Box, ButtonBase, Typography } from '@mui/material';
 import { isMobileMedia } from '@psycron/theme/media-queries/mediaQueries';
 import { hexToRgba, palette } from '@psycron/theme/palette/palette.theme';
-import { shadowMain, shadowPress } from '@psycron/theme/shadow/shadow.theme';
+import {
+	shadowMain,
+	shadowMedium,
+	shadowSmall,
+} from '@psycron/theme/shadow/shadow.theme';
 import { spacing } from '@psycron/theme/spacing/spacing.theme';
 
 // ─── Occupancy scale ──────────────────────────────────────────────────────────
@@ -11,12 +15,11 @@ import { spacing } from '@psycron/theme/spacing/spacing.theme';
 // occupancy gradient, not a reusable design token.
 
 export const OCCUPANCY_COLORS = {
-	available: palette.tertiary.light, // #EFEAFF — light lilac (0 bookings)
-	partial: '#d1c7fb', // medium lilac  (< 50% booked)
+	available: palette.background.paper,
 	busy: palette.tertiary.main, // #BFA7FF — deeper purple (50–99%)
+	empty: palette.gray['02'],
 	full: palette.brand.purple, // #683fff — solid brand (100%)
-	today: palette.secondary.light, // #FFDFEE — soft pink
-	empty: '#fefefe', // white — no availability
+	partial: '#d1c7fb', // medium lilac  (< 50% booked)
 } as const;
 
 export type OccupancyLevel = keyof typeof OCCUPANCY_COLORS;
@@ -65,29 +68,6 @@ export const CalendarSubtitle = styled(Typography)`
 	margin-top: 2px;
 `;
 
-export const NavButtons = styled(Box)`
-	display: flex;
-	gap: ${spacing.extraSmall};
-`;
-
-export const NavButton = styled(ButtonBase)`
-	background: ${palette.background.default};
-	border-radius: 15px;
-	box-shadow: ${shadowPress};
-	width: 45px;
-	height: 45px;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	color: ${palette.brand.purple};
-	transition: box-shadow 0.15s ease;
-
-	&:hover {
-		box-shadow:
-			inset 2px 2px 4px rgba(170, 170, 204, 0.5),
-			inset -2px -2px 4px #ffffff;
-	}
-`;
 
 // ─── Weekday labels ───────────────────────────────────────────────────────────
 
@@ -118,24 +98,32 @@ export const CalendarGrid = styled(Box)`
 
 export const DayCellButton = styled(ButtonBase, {
 	shouldForwardProp: (prop) =>
-		prop !== 'occupancy' && prop !== 'isOtherMonth' && prop !== 'isClickable',
-})<{ isClickable: boolean; isOtherMonth: boolean; occupancy: OccupancyLevel }>`
+		prop !== 'occupancy' &&
+		prop !== 'isOtherMonth' &&
+		prop !== 'isClickable' &&
+		prop !== 'isToday',
+})<{
+	isClickable: boolean;
+	isOtherMonth: boolean;
+	isToday: boolean;
+	occupancy: OccupancyLevel;
+}>`
 	border-radius: 12px;
 	font-size: 15px;
 	font-weight: 500;
 	background-color: ${({ occupancy }) => OCCUPANCY_COLORS[occupancy]};
 	color: ${({ occupancy }) =>
-		occupancy === 'full' ? '#ffffff' : palette.text.primary};
+		occupancy === 'full' ? palette.white : palette.text.primary};
+	border: ${({ isToday }) =>
+		isToday ? `2px solid ${palette.secondary.main}` : '2px solid transparent'};
 	opacity: ${({ isOtherMonth }) => (isOtherMonth ? 0.3 : 1)};
 	cursor: ${({ isClickable }) => (isClickable ? 'pointer' : 'default')};
-	transition: transform 0.1s ease;
-	box-shadow: ${({ isOtherMonth }) =>
-		isOtherMonth
-			? 'none'
-			: '1px 1px 2px rgba(170,170,204,0.3), -1px -1px 2px rgba(255,255,255,0.5)'};
+	box-shadow: ${({ isOtherMonth, occupancy }) =>
+		isOtherMonth || occupancy == 'empty' ? 'none' : shadowMedium};
 
 	&:hover {
-		transform: ${({ isClickable }) => (isClickable ? 'scale(1.05)' : 'none')};
+		box-shadow: ${({ isOtherMonth, occupancy }) =>
+			isOtherMonth || occupancy == 'empty' ? 'none' : shadowSmall};
 	}
 `;
 
@@ -149,35 +137,6 @@ export const CalendarFooter = styled(Box)`
 	gap: ${spacing.small};
 	padding-top: ${spacing.mediumSmall};
 	border-top: 1px solid ${hexToRgba(palette.gray['02'], 0.8)};
-`;
-
-export const LegendGroup = styled(Box)`
-	display: flex;
-	align-items: center;
-	gap: ${spacing.small};
-	flex-wrap: wrap;
-`;
-
-export const LegendItem = styled(Box)`
-	display: flex;
-	align-items: center;
-	gap: ${spacing.xs};
-`;
-
-export const LegendSwatch = styled(Box, {
-	shouldForwardProp: (prop) => prop !== 'color',
-})<{ color: string }>`
-	width: 16px;
-	height: 16px;
-	border-radius: 4px;
-	background-color: ${({ color }) => color};
-	flex-shrink: 0;
-`;
-
-export const LegendLabel = styled(Typography)`
-	font-size: 12px;
-	font-weight: 500;
-	color: ${palette.gray['05']};
 `;
 
 export const SourceToggle = styled(Box)`

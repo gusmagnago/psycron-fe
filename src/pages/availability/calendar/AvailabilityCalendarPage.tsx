@@ -1,10 +1,19 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
+import type { AvailabilityLegendItem } from '@psycron/components/availability/AvailabilityLegend';
+import { AvailabilityLegend } from '@psycron/components/availability/AvailabilityLegend';
+import {
+	NavButton,
+	NavButtons,
+} from '@psycron/components/availability/AvailabilityNavButton';
+import { AvailabilityTodayButton } from '@psycron/components/availability/AvailabilityTodayButton';
+import { useAvailability } from '@psycron/context/appointment/availability/AvailabilityContext';
 import { useJupiterAvailability } from '@psycron/hooks/useJupiterAvailability';
 import i18n from '@psycron/i18n';
 import { PageLayout } from '@psycron/layouts/app/pages-layout/PageLayout';
-import { AVAILABILITYPATH } from '@psycron/pages/urls';
+import { AVAILABILITYWEEK_BASE } from '@psycron/pages/urls';
+import { palette } from '@psycron/theme/palette/palette.theme';
 import {
 	eachDayOfInterval,
 	endOfMonth,
@@ -26,12 +35,6 @@ import {
 	CalendarSubtitle,
 	CalendarTitle,
 	DayCellButton,
-	LegendGroup,
-	LegendItem,
-	LegendLabel,
-	LegendSwatch,
-	NavButton,
-	NavButtons,
 	OCCUPANCY_COLORS,
 	SourceButton,
 	SourceToggle,
@@ -60,14 +63,18 @@ export const AvailabilityCalendarPage = () => {
 	const navigate = useNavigate();
 	const [sourceView, setSourceView] = useState<SourceView>('jupiter');
 
+	const { firstDate, lastDate } = useAvailability();
+
 	const {
 		calendar,
+		canGoNext,
+		canGoPrev,
 		currentDate,
 		goToNextMonth,
 		goToPrevMonth,
 		hasGoogleData,
 		isLoading,
-	} = useJupiterAvailability();
+	} = useJupiterAvailability({ firstDate, lastDate });
 
 	const monthStart = startOfMonth(currentDate);
 	const monthEnd = endOfMonth(currentDate);
@@ -80,7 +87,6 @@ export const AvailabilityCalendarPage = () => {
 	const dayMap = new Map(calendar.map((d) => [d.date, d]));
 
 	const getLevel = (date: Date): OccupancyLevel => {
-		if (isToday(date)) return 'today';
 		const key = format(date, 'yyyy-MM-dd');
 		const day = dayMap.get(key);
 		if (!day) return 'empty';
@@ -89,18 +95,44 @@ export const AvailabilityCalendarPage = () => {
 	};
 
 	const handleDayClick = (day: Date) => {
-		navigate(`/${i18n.language}/${AVAILABILITYPATH}/week/${format(day, 'yyyy-MM-dd')}`);
+		navigate(
+			`/${i18n.language}/${AVAILABILITYWEEK_BASE}/${format(day, 'yyyy-MM-dd')}`
+		);
 	};
 
-	const legendItems: { key: OccupancyLevel; labelKey: string }[] = [
-		{ key: 'available', labelKey: 'availability.calendar.legend-available' },
-		{ key: 'partial', labelKey: 'availability.calendar.legend-partial' },
-		{ key: 'busy', labelKey: 'availability.calendar.legend-busy' },
-		{ key: 'full', labelKey: 'availability.calendar.legend-full' },
+	const legendItems: AvailabilityLegendItem[] = [
+		{
+			color: OCCUPANCY_COLORS['available'],
+			label: t('availability.calendar.legend-available'),
+		},
+		{
+			color: OCCUPANCY_COLORS['partial'],
+			label: t('availability.calendar.legend-partial'),
+		},
+		{
+			color: OCCUPANCY_COLORS['busy'],
+			label: t('availability.calendar.legend-busy'),
+		},
+		{
+			color: OCCUPANCY_COLORS['full'],
+			label: t('availability.calendar.legend-full'),
+		},
+		{
+			color: OCCUPANCY_COLORS['empty'],
+			label: t('availability.calendar.legend-empty'),
+		},
+		{
+			borderColor: palette.secondary.main,
+			color: OCCUPANCY_COLORS['available'],
+			label: t('availability.calendar.legend-today'),
+		},
 	];
 
 	return (
-		<PageLayout title={t('availability.calendar.page-title')} isLoading={isLoading}>
+		<PageLayout
+			title={t('availability.calendar.page-title')}
+			isLoading={isLoading}
+		>
 			<CalendarCard>
 				<CalendarHeader>
 					<div>
@@ -110,10 +142,10 @@ export const AvailabilityCalendarPage = () => {
 						</CalendarSubtitle>
 					</div>
 					<NavButtons>
-						<NavButton onClick={goToPrevMonth}>
+						<NavButton disabled={!canGoPrev} onClick={goToPrevMonth}>
 							<ChevronLeft size={20} />
 						</NavButton>
-						<NavButton onClick={goToNextMonth}>
+						<NavButton disabled={!canGoNext} onClick={goToNextMonth}>
 							<ChevronRight size={20} />
 						</NavButton>
 					</NavButtons>
@@ -129,14 +161,18 @@ export const AvailabilityCalendarPage = () => {
 					{calendarDays.map((day) => {
 						const isOtherMonth = !isSameMonth(day, currentDate);
 						const occupancy = isOtherMonth ? 'empty' : getLevel(day);
+						// TODO: when clicking an unavailable day, show a contextual message
+						// (e.g. "No slots available on this day") instead of silently ignoring.
+						const isClickable = !isOtherMonth && occupancy !== 'empty';
 						return (
 							<DayCellButton
 								key={day.toISOString()}
 								occupancy={occupancy}
 								isOtherMonth={isOtherMonth}
-								isClickable={!isOtherMonth}
-								disableRipple={isOtherMonth}
-								onClick={isOtherMonth ? undefined : () => handleDayClick(day)}
+								isClickable={isClickable}
+								isToday={!isOtherMonth && isToday(day)}
+								disableRipple={!isClickable}
+								onClick={isClickable ? () => handleDayClick(day) : undefined}
 							>
 								{format(day, 'd')}
 							</DayCellButton>
@@ -145,16 +181,10 @@ export const AvailabilityCalendarPage = () => {
 				</CalendarGrid>
 
 				<CalendarFooter>
-					<LegendGroup>
-						{legendItems.map(({ key, labelKey }) => (
-							<LegendItem key={key}>
-								<LegendSwatch color={OCCUPANCY_COLORS[key]} />
-								<LegendLabel>{t(labelKey)}</LegendLabel>
-							</LegendItem>
-						))}
-					</LegendGroup>
+					<AvailabilityLegend items={legendItems} />
 
 					<SourceToggle>
+						<AvailabilityTodayButton />
 						<SourceButton
 							isActive={sourceView === 'jupiter'}
 							onClick={() => setSourceView('jupiter')}

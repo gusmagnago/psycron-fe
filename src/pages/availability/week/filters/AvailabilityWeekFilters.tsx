@@ -146,6 +146,7 @@ export const AvailabilityWeekFilters = ({
 											isActive={section.isActive(opt)}
 											onClick={() => section.onToggle(opt)}
 											small
+											tertiary
 										>
 											{section.getOptionLabel(opt)}
 										</FiltersChip>

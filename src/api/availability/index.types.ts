@@ -13,6 +13,7 @@ export interface IAvailabilityRecord {
 	availabilityId: string;
 	calendar?: ICalendarDay[];
 	googleCalendarConnected?: boolean;
+	recurrencePattern?: 'MONTHLY' | 'WEEKLY';
 	sessionDuration: string;
 	sessionType: string;
 	timeRange: string;

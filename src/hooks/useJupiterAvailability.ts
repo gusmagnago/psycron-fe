@@ -1,17 +1,26 @@
 import { useState } from 'react';
 import { getAvailability } from '@psycron/api/availability';
+import type { IDateInfo } from '@psycron/api/user/index.types';
 import { useQuery } from '@tanstack/react-query';
 import {
 	addMonths,
 	endOfMonth,
 	endOfWeek,
 	format,
+	isAfter,
+	isBefore,
+	parseISO,
 	startOfMonth,
 	startOfWeek,
 	subMonths,
 } from 'date-fns';
 
-export const useJupiterAvailability = () => {
+interface UseJupiterAvailabilityOptions {
+	firstDate?: IDateInfo | null;
+	lastDate?: IDateInfo | null;
+}
+
+export const useJupiterAvailability = (options?: UseJupiterAvailabilityOptions) => {
 	const [currentDate, setCurrentDate] = useState(new Date());
 
 	const monthStart = startOfMonth(currentDate);
@@ -30,13 +39,22 @@ export const useJupiterAvailability = () => {
 		(d) => d.google.available > 0 || d.google.booked > 0
 	);
 
+	const firstISO = options?.firstDate?.date ? parseISO(options.firstDate.date) : null;
+	const lastISO = options?.lastDate?.date ? parseISO(options.lastDate.date) : null;
+
+	const canGoPrev = firstISO ? isAfter(startOfMonth(currentDate), startOfMonth(firstISO)) : false;
+	const canGoNext = lastISO ? isBefore(startOfMonth(currentDate), startOfMonth(lastISO)) : false;
+
 	return {
 		availability: data,
 		calendar: data?.calendar ?? [],
+		canGoNext,
+		canGoPrev,
 		currentDate,
 		from,
 		goToNextMonth: () => setCurrentDate((d) => addMonths(d, 1)),
 		goToPrevMonth: () => setCurrentDate((d) => subMonths(d, 1)),
+		goToToday: () => setCurrentDate(new Date()),
 		hasGoogleData,
 		isLoading,
 		to,

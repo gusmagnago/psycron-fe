@@ -1,5 +1,5 @@
 import { useCallback, useMemo, useState } from 'react';
-import type { DeliveryMode } from '@psycron/pages/availability/week/AvailabilityWeekPage.mock';
+import type { DeliveryMode } from '@psycron/pages/availability/week/AvailabilityWeekPage.types';
 
 const CALENDAR_PREFS_KEY = '_psy_cp';
 

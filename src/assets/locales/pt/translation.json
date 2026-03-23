@@ -1,6 +1,7 @@
 {
 	"common": {
-		"close": "Fechar"
+		"close": "Fechar",
+		"today": "Hoje"
 	},
 	"auth": {
 		"error": {
@@ -684,8 +685,10 @@
 		"calendar": {
 			"legend-available": "Disponível",
 			"legend-busy": "Ocupado",
+			"legend-empty": "Indisponível",
 			"legend-full": "Completo",
 			"legend-partial": "Parcial",
+			"legend-today": "Hoje",
 			"page-title": "Disponibilidade",
 			"source-google": "Google",
 			"source-jupiter": "Júpiter",
@@ -747,8 +750,7 @@
 				"end-of-year": "Até o fim do ano",
 				"success": "Disponibilidade estendida com sucesso",
 				"title": "Por quanto tempo deseja estender?"
-			},
-			"today": "Hoje"
+			}
 		},
 		"gate": {
 			"deleted-notice": "Você não tem mais disponibilidade configurada. Fale com a Júpiter para criar uma nova."
