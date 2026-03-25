@@ -58,6 +58,13 @@ export const AvailabilityPreviewCard = ({
 				label: t('jupiter.preview.label-timezone'),
 				value: answers.timezone ?? detectedTimezone,
 			},
+			{
+				dotColor: palette.warning.main,
+				label: t('jupiter.preview.label-recurrence'),
+				value: answers.recurrencePattern
+					? t(`jupiter.recurrence-pattern.value-${answers.recurrencePattern.toLowerCase()}`)
+					: '—',
+			},
 		],
 		[answers, detectedTimezone, daysDisplay, t]
 	);
