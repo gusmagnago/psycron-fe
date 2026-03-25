@@ -436,6 +436,7 @@ export const AvailabilityWeekPage = () => {
 											const slot = isDisabled
 												? null
 												: (daySlots.find((s) => s.startTime === time) ?? null);
+
 											if (!slot) {
 												return (
 													<SlotCellEmpty

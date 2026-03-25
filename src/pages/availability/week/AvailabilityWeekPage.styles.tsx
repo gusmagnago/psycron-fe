@@ -79,19 +79,37 @@ export const WeekFeaturesWrapper = styled(Box)`
 	display: flex;
 	width: 100%;
 	justify-content: space-between;
+	flex-direction: row;
+
+	${isMobileMedia} {
+		gap: ${spacing.small};
+		flex-direction: column;
+		align-items: center;
+	}
 `;
 
 export const WeekNavRow = styled(Box)`
 	display: flex;
 	align-items: center;
 	gap: ${spacing.small};
+
+	${isMobileMedia} {
+		width: 100%;
+		justify-content: space-between;
+	}
 `;
 
 export const WeekFeaturesActions = styled(Box)`
 	display: flex;
-	flex-direction: row;
+	flex-direction: column;
 	align-items: center;
-	gap: ${spacing.small};
+	gap: ${spacing.xs};
+
+	${isMobileMedia} {
+		flex-direction: row;
+		width: 100%;
+		justify-content: flex-end;
+	}
 `;
 
 export const WeekTitle = styled(Text)`
@@ -130,6 +148,7 @@ export const WeekGridWrapper = styled(Box)`
 	min-height: 0;
 	overflow-y: auto;
 	overflow-x: auto;
+	padding-bottom: ${spacing.xs};
 `;
 
 export const WeekGrid = styled(Box)`
@@ -159,7 +178,7 @@ export const DayHeader = styled(Box, {
 	align-items: center;
 	justify-content: center;
 	margin-bottom: ${spacing.extraSmall};
-	opacity: ${({ isDisabled }) => (isDisabled ? 0.4 : 1)};
+	opacity: ${({ isDisabled }) => (isDisabled ? 0.7 : 1)};
 	border: 2px solid
 		${({ isToday }) => (isToday ? palette.secondary.main : 'transparent')};
 	border-radius: ${spacing.xs};
@@ -243,19 +262,7 @@ export const SlotCell = styled(ButtonBase, {
 		content: '';
 		position: absolute;
 		inset: 0;
-		background: rgba(0, 0, 0, 0.018);
-		border-radius: inherit;
-		pointer-events: none;
-	}`
-			: ''}
-
-	${({ isToday }) =>
-		isToday
-			? `&::after {
-		content: '';
-		position: absolute;
-		inset: 0;
-		background: rgba(104, 63, 255, 0.05);
+		background: rgba(255, 255, 255, 0.5);
 		border-radius: inherit;
 		pointer-events: none;
 	}`
@@ -277,7 +284,7 @@ export const SlotCellEmpty = styled(Box, {
 		content: '';
 		position: absolute;
 		inset: 0;
-		background: rgba(0, 0, 0, 0.018);
+		background: rgba(255, 255, 255, 0.4);
 		border-radius: inherit;
 		pointer-events: none;
 	}`
@@ -289,7 +296,7 @@ export const SlotCellEmpty = styled(Box, {
 		content: '';
 		position: absolute;
 		inset: 0;
-		background: rgba(104, 63, 255, 0.05);
+		background: rgba(221, 147, 255, 0.3);
 		border-radius: inherit;
 		pointer-events: none;
 	}`
