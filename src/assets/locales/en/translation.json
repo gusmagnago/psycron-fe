@@ -587,17 +587,27 @@
 			"chip-both": "Both online and in person"
 		},
 		"timezone": {
-			"response": "One last thing — I’ll use your device’s timezone to schedule appointments accurately. This helps ensure your clients book at the right time for you. Sound good?",
+			"response": "Almost there! I’ll use your device’s timezone to schedule appointments accurately. This helps ensure your clients book at the right time for you. Sound good?",
 			"chip-yes": "Yes",
 			"chip-no": "No",
 			"follow-up": "No problem! Please select your timezone:",
 			"search-placeholder": "Search timezone..."
+		},
+		"recurrence-pattern": {
+			"response": "One last thing — how often would you like your availability to repeat?",
+			"chip-weekly": "Weekly (until end of month)",
+			"chip-monthly": "Monthly (until end of year)",
+			"summary-weekly": "Got it! Your slots will repeat every week until the end of this month. You can always extend from your dashboard.",
+			"summary-monthly": "Perfect! Your availability will repeat monthly until the end of the year — giving you full-year scheduling coverage.",
+			"value-weekly": "Weekly (until end of month)",
+			"value-monthly": "Monthly (until end of year)"
 		},
 		"preview": {
 			"title": "Your Availability Preview",
 			"label-days": "Working days:",
 			"label-hours": "Hours:",
 			"label-duration": "Duration:",
+			"label-recurrence": "Repeat:",
 			"label-session-type": "Session type:",
 			"label-timezone": "Timezone:",
 			"footer": "You can edit your availability anytime from your dashboard.",

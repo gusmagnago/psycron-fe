@@ -51,19 +51,20 @@ export const JupiterConversation = () => {
 		detectedTimezone,
 		initFlow,
 		handleCalendarChoice,
+		handleGoogleBack,
+		handleGoogleContinue,
+		handleGooglePostConnect,
+		handlePublish,
+		handleRecurrencePattern,
+		handleReset,
+		handleSessionDuration,
+		handleSessionType,
+		handleTimeRange,
+		handleTimezone,
+		handleTimezoneSelect,
 		handleWorkingDays,
 		handleWorkingDaysFromText,
 		retryWorkingDays,
-		handleTimeRange,
-		handleSessionDuration,
-		handleSessionType,
-		handleTimezone,
-		handleTimezoneSelect,
-		handlePublish,
-		handleReset,
-		handleGoogleContinue,
-		handleGoogleBack,
-		handleGooglePostConnect,
 	} = useJupiterFlow();
 
 	const handleWorkingDaysOtherSubmit = useCallback(
@@ -144,6 +145,18 @@ export const JupiterConversation = () => {
 					key: 'chip-no',
 					label: t('jupiter.timezone.chip-no'),
 					variant: 'danger' as const,
+				},
+			] satisfies IChipOption[],
+			recurrencePattern: [
+				{
+					key: 'chip-weekly',
+					label: t('jupiter.recurrence-pattern.chip-weekly'),
+					variant: 'primary' as const,
+				},
+				{
+					key: 'chip-monthly',
+					label: t('jupiter.recurrence-pattern.chip-monthly'),
+					variant: 'secondary' as const,
 				},
 			] satisfies IChipOption[],
 		}),
@@ -330,6 +343,17 @@ export const JupiterConversation = () => {
 							key='timezone'
 							options={chipOptions.timezone}
 							onSelect={handleTimezone}
+						/>
+					</ChipsInline>
+				);
+
+			case 'recurrence-pattern':
+				return (
+					<ChipsInline>
+						<SingleSelectChips
+							key='recurrence-pattern'
+							options={chipOptions.recurrencePattern}
+							onSelect={handleRecurrencePattern}
 						/>
 					</ChipsInline>
 				);

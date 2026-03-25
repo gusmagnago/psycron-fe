@@ -31,6 +31,7 @@ export const parseJupiterInput = async (
 };
 
 export interface JupiterPublishPayload {
+	recurrencePattern: RecurrencePattern;
 	sessionDuration: string;
 	sessionType: string;
 	timeRange: string;

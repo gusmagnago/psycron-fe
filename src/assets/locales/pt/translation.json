@@ -588,17 +588,27 @@
 			"chip-both": "Online e presencial"
 		},
 		"timezone": {
-			"response": "Uma última coisa — vou usar o fuso horário do seu dispositivo para agendar consultas com precisão. Assim, seus clientes sempre vão agendar no horário certo. Tudo bem?",
+			"response": "Quase lá! Vou usar o fuso horário do seu dispositivo para agendar consultas com precisão. Assim, seus clientes sempre vão agendar no horário certo. Tudo bem?",
 			"chip-yes": "Sim",
 			"chip-no": "Não",
 			"follow-up": "Sem problema! Selecione seu fuso horário:",
 			"search-placeholder": "Buscar fuso horário..."
+		},
+		"recurrence-pattern": {
+			"response": "Última pergunta — com qual frequência você quer que sua disponibilidade se repita?",
+			"chip-weekly": "Semanal (até o fim do mês)",
+			"chip-monthly": "Mensal (até o fim do ano)",
+			"summary-weekly": "Entendido! Seus horários vão se repetir toda semana até o fim deste mês. Você pode estender a qualquer momento pelo painel.",
+			"summary-monthly": "Perfeito! Sua disponibilidade vai se repetir mensalmente até o fim do ano — cobrindo todo o seu calendário anual.",
+			"value-weekly": "Semanal (até o fim do mês)",
+			"value-monthly": "Mensal (até o fim do ano)"
 		},
 		"preview": {
 			"title": "Resumo da sua Disponibilidade",
 			"label-days": "Dias de atendimento:",
 			"label-hours": "Horário:",
 			"label-duration": "Duração:",
+			"label-recurrence": "Repetição:",
 			"label-session-type": "Tipo de sessão:",
 			"label-timezone": "Fuso horário:",
 			"footer": "Você pode editar sua disponibilidade a qualquer momento no painel.",

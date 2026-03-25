@@ -1,3 +1,5 @@
+import type { RecurrencePattern } from '@psycron/api/jupiter';
+
 export type JupiterStep =
 	| 'calendar-choice'
 	| 'working-days'
@@ -5,6 +7,7 @@ export type JupiterStep =
 	| 'session-duration'
 	| 'session-type'
 	| 'timezone'
+	| 'recurrence-pattern'
 	| 'preview'
 	| 'google-permissions'
 	| 'google-success'
@@ -12,6 +15,7 @@ export type JupiterStep =
 
 export interface JupiterAnswers {
 	calendarChoice?: 'google' | 'manual';
+	recurrencePattern?: RecurrencePattern;
 	sessionDuration?: string;
 	sessionType?: string;
 	timeRange?: string;

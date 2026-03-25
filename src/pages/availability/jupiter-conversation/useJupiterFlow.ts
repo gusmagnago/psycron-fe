@@ -6,6 +6,7 @@ import type { IAvailabilityRecord } from '@psycron/api/availability/index.types'
 import {
 	generateJupiterAvailability,
 	importGoogleCalendarSchedule,
+	type RecurrencePattern,
 } from '@psycron/api/jupiter';
 import { useAlert } from '@psycron/context/alert/AlertContext';
 import { AVAILABILITYGENERATE, AVAILABILITYPATH } from '@psycron/pages/urls';
@@ -53,6 +54,10 @@ const loadSaved = (): {
 			data.answers = { ...data.answers, sessionType: undefined };
 			if (data.step === 'preview') data.step = 'session-type';
 		}
+		// Migrate: if at preview but recurrencePattern not yet collected, redirect to that step
+		if (data.step === 'preview' && !data.answers?.recurrencePattern) {
+			data.step = 'recurrence-pattern';
+		}
 		return data;
 	} catch {
 		return null;
@@ -61,6 +66,7 @@ const loadSaved = (): {
 
 const STEP_QUESTION_KEY: Partial<Record<JupiterStep, string>> = {
 	'calendar-choice': 'jupiter.calendar-choice.msg2',
+	'recurrence-pattern': 'jupiter.recurrence-pattern.response',
 	'session-duration': 'jupiter.session-duration.response',
 	'session-type': 'jupiter.session-type.response',
 	'time-range': 'jupiter.time-range.response',
@@ -304,23 +310,36 @@ export const useJupiterFlow = (initialAnswers?: JupiterAnswers) => {
 					timezone: detectedTimezone,
 					timezoneConfirmed: true,
 				}));
-				setTimeout(() => setStep('preview'), 300);
+				advance('jupiter.recurrence-pattern.response', 'recurrence-pattern', 300);
 			} else {
 				addUserMessage(t('jupiter.timezone.chip-no'));
 				addBotMessage(t('jupiter.timezone.follow-up'));
 				setAnswers((prev) => ({ ...prev, timezoneConfirmed: false }));
 			}
 		},
-		[addBotMessage, addUserMessage, detectedTimezone, t]
+		[addBotMessage, addUserMessage, advance, detectedTimezone, t]
 	);
 
 	const handleTimezoneSelect = useCallback(
 		(tz: string) => {
 			addUserMessage(tz);
 			setAnswers((prev) => ({ ...prev, timezone: tz }));
-			setTimeout(() => setStep('preview'), 300);
+			advance('jupiter.recurrence-pattern.response', 'recurrence-pattern', 300);
 		},
-		[addUserMessage]
+		[addUserMessage, advance]
+	);
+
+	const handleRecurrencePattern = useCallback(
+		(key: string) => {
+			const value: RecurrencePattern = key === 'chip-weekly' ? 'WEEKLY' : 'MONTHLY';
+			const label = t(`jupiter.recurrence-pattern.${key}`);
+			const summaryKey =
+				key === 'chip-weekly'
+					? 'jupiter.recurrence-pattern.summary-weekly'
+					: 'jupiter.recurrence-pattern.summary-monthly';
+			commit(label, 'recurrencePattern', value, summaryKey, 'preview');
+		},
+		[commit, t]
 	);
 
 	// ─── Publish / Reset ───────────────────────────────────────────────────────
@@ -331,13 +350,15 @@ export const useJupiterFlow = (initialAnswers?: JupiterAnswers) => {
 			!answers.timeRange ||
 			!answers.sessionDuration ||
 			!answers.sessionType ||
-			!answers.timezone
+			!answers.timezone ||
+			!answers.recurrencePattern
 		)
 			return;
 
 		setIsPublishing(true);
 		try {
 			const { availabilityId } = await generateJupiterAvailability({
+				recurrencePattern: answers.recurrencePattern,
 				workingDays: answers.workingDays,
 				timeRange: answers.timeRange,
 				sessionDuration: answers.sessionDuration,
@@ -348,6 +369,7 @@ export const useJupiterFlow = (initialAnswers?: JupiterAnswers) => {
 			localStorage.setItem(ONBOARDING_KEY, 'true');
 			const record: IAvailabilityRecord = {
 				availabilityId,
+				recurrencePattern: answers.recurrencePattern,
 				sessionDuration: answers.sessionDuration!,
 				sessionType: answers.sessionType!,
 				timeRange: answers.timeRange!,
@@ -446,18 +468,19 @@ export const useJupiterFlow = (initialAnswers?: JupiterAnswers) => {
 		detectedTimezone,
 		initFlow,
 		handleCalendarChoice,
+		handleGoogleBack,
+		handleGoogleContinue,
+		handleGooglePostConnect,
+		handlePublish,
+		handleRecurrencePattern,
+		handleReset,
+		handleSessionDuration,
+		handleSessionType,
+		handleTimeRange,
+		handleTimezone,
+		handleTimezoneSelect,
 		handleWorkingDays,
 		handleWorkingDaysFromText,
 		retryWorkingDays,
-		handleTimeRange,
-		handleSessionDuration,
-		handleSessionType,
-		handleTimezone,
-		handleTimezoneSelect,
-		handlePublish,
-		handleReset,
-		handleGoogleContinue,
-		handleGoogleBack,
-		handleGooglePostConnect,
 	};
 };
