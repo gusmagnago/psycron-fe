@@ -14,6 +14,7 @@ import {
 	Filter,
 	FilterFull,
 } from '@psycron/components/icons';
+import { useAvailability } from '@psycron/context/appointment/availability/AvailabilityContext';
 import { useCalendarPrefs } from '@psycron/hooks/useCalendarPrefs';
 import useViewport from '@psycron/hooks/useViewport';
 import i18n from '@psycron/i18n';
@@ -25,6 +26,8 @@ import {
 	eachDayOfInterval,
 	endOfWeek,
 	format,
+	isAfter,
+	isBefore,
 	isToday,
 	parseISO,
 	startOfWeek,
@@ -103,6 +106,7 @@ export const AvailabilityWeekPage = () => {
 	const { t } = useTranslation();
 	const navigate = useNavigate();
 	const { date } = useParams<{ date: string }>();
+	const { firstDate, lastDate } = useAvailability();
 	const { isMobile } = useViewport();
 	const {
 		activeFilterCount,
@@ -203,8 +207,15 @@ export const AvailabilityWeekPage = () => {
 		return slots;
 	};
 
-	const canGoPrev = true;
-	const canGoNext = true;
+	const firstISO = firstDate?.date ? parseISO(firstDate.date) : null;
+	const lastISO = lastDate?.date ? parseISO(lastDate.date) : null;
+
+	const canGoPrev = firstISO
+		? isAfter(weekStart, startOfWeek(firstISO, { weekStartsOn: 1 }))
+		: false;
+	const canGoNext = lastISO
+		? isBefore(weekStart, startOfWeek(lastISO, { weekStartsOn: 1 }))
+		: false;
 
 	const goToPrevWeek = () =>
 		navigate(
@@ -216,7 +227,7 @@ export const AvailabilityWeekPage = () => {
 			`/${i18n.language}/${AVAILABILITYWEEK_BASE}/${format(addWeeks(baseDate, 1), 'yyyy-MM-dd')}`
 		);
 
-const handleSlotClick = (slot: IWeekSlot) => setSelectedSlot(slot);
+	const handleSlotClick = (slot: IWeekSlot) => setSelectedSlot(slot);
 
 	const legendItems: AvailabilityLegendItem[] = LEGEND_STATUSES.map(
 		({ status, labelKey }) => ({
@@ -423,10 +434,10 @@ const handleSlotClick = (slot: IWeekSlot) => setSelectedSlot(slot);
 						<Button
 							small
 							tertiary
-							onClick={() => navigate(`/${AVAILABILITYPATH}`)}
+							onClick={() => navigate(`/${i18n.language}/${AVAILABILITYPATH}`)}
 						>
 							<Calendar />
-							Month
+							{t('components.agenda.month')}
 						</Button>
 					</Box>
 				</WeekFooter>
