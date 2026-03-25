@@ -546,6 +546,21 @@
 			"subtitle": "Vou te ajudar a configurar sua disponibilidade em poucos momentos. Vamos tornar o agendamento simples e rápido.",
 			"cta": "Configurar minha agenda"
 		},
+		"specialty": {
+			"response": "Qual é a sua área de atuação? Use o nome profissional do que você pratica.",
+			"chip-occupational-therapist": "Terapeuta Ocupacional",
+			"chip-nutritionist": "Nutricionista",
+			"chip-other": "Outro",
+			"chip-physiotherapist": "Fisioterapeuta",
+			"chip-psychiatrist": "Psiquiatra",
+			"chip-psychologist": "Psicólogo(a)",
+			"chip-speech-therapist": "Fonoaudiólogo(a)",
+			"continue": "Continuar",
+			"other-placeholder": "Sua especialidade ou título profissional",
+			"acknowledged": "Entendido! Vou configurar tudo levando isso em conta.",
+			"error-rephrase": "Não consegui identificar bem — tente usar o nome profissional do que você pratica.",
+			"error-rejected": "Não consigo configurar agendamentos para isso. Se você tem outra especialidade, adoraria te ajudar a começar."
+		},
 		"calendar-choice": {
 			"msg1": "Olá! Eu sou a Júpiter, sua assistente de agendamento via IA. Estou aqui para te ajudar a configurar sua disponibilidade de forma simples e natural.",
 			"msg2": "Vamos começar configurando sua agenda. Como você prefere?",
@@ -583,6 +598,7 @@
 		},
 		"session-type": {
 			"response": "Como você costuma realizar suas sessões?",
+			"response-with-suggestion": "Como você costuma realizar suas sessões? Tenho uma sugestão com base na sua especialidade — escolha o que funciona melhor para você.",
 			"chip-online": "Apenas online",
 			"chip-in-person": "Apenas presencial",
 			"chip-both": "Online e presencial"

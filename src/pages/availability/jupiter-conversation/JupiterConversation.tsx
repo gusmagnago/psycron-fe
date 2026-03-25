@@ -7,6 +7,7 @@ import { MultiSelectChips } from '@psycron/components/chat/chips/MultiSelectChip
 import { SingleSelectChips } from '@psycron/components/chat/chips/SingleSelectChips';
 import { Divider } from '@psycron/components/divider/Divider';
 import { ChevronLeft, Jupiter, Send } from '@psycron/components/icons';
+import { useUserDetails } from '@psycron/context/user/details/UserDetailsContext';
 
 import { AvailabilityPreviewCard } from '../availability-preview-card/AvailabilityPreviewCard';
 import { GoogleCalendarPermissions } from '../google-calendar-path/GoogleCalendarPermissions';
@@ -41,12 +42,15 @@ export const JupiterConversation = () => {
 	const [customValue, setCustomValue] = useState('');
 	const [isParsing, setIsParsing] = useState(false);
 
+	const { therapistId, userDetails } = useUserDetails();
+
 	const {
 		step,
 		answers,
 		messages,
 		isImporting,
 		isPublishing,
+		specialityKey,
 		workingDaysKey,
 		detectedTimezone,
 		initFlow,
@@ -59,13 +63,41 @@ export const JupiterConversation = () => {
 		handleReset,
 		handleSessionDuration,
 		handleSessionType,
+		handleSpecialty,
+		handleSpecialtyFromText,
 		handleTimeRange,
 		handleTimezone,
 		handleTimezoneSelect,
 		handleWorkingDays,
 		handleWorkingDaysFromText,
+		retrySpeciality,
 		retryWorkingDays,
-	} = useJupiterFlow();
+	} = useJupiterFlow({
+		therapistId,
+		userSpecialities: userDetails?.specialities,
+	});
+
+	const handleSpecialtyOtherSubmit = useCallback(
+		async (raw: string) => {
+			setIsParsing(true);
+			const result = await parseJupiterInput('specialty', raw);
+			setIsParsing(false);
+
+			if (result.valid && Array.isArray(result.parsed)) {
+				const flag = 'flag' in result ? result.flag : 'accepted';
+				if (flag === 'rejected') {
+					retrySpeciality(true);
+				} else if (flag === 'rephrase') {
+					retrySpeciality(false);
+				} else {
+					handleSpecialtyFromText(result.parsed);
+				}
+			} else {
+				retrySpeciality(false);
+			}
+		},
+		[handleSpecialtyFromText, retrySpeciality]
+	);
 
 	const handleWorkingDaysOtherSubmit = useCallback(
 		async (raw: string) => {
@@ -145,6 +177,22 @@ export const JupiterConversation = () => {
 					key: 'chip-no',
 					label: t('jupiter.timezone.chip-no'),
 					variant: 'danger' as const,
+				},
+			] satisfies IChipOption[],
+			specialty: [
+				{ key: 'chip-psychologist', label: t('jupiter.specialty.chip-psychologist') },
+				{ key: 'chip-physiotherapist', label: t('jupiter.specialty.chip-physiotherapist') },
+				{ key: 'chip-nutritionist', label: t('jupiter.specialty.chip-nutritionist') },
+				{ key: 'chip-psychiatrist', label: t('jupiter.specialty.chip-psychiatrist') },
+				{ key: 'chip-speech-therapist', label: t('jupiter.specialty.chip-speech-therapist') },
+				{
+					key: 'chip-occupational-therapist',
+					label: t('jupiter.specialty.chip-occupational-therapist'),
+				},
+				{
+					key: 'chip-other',
+					label: t('jupiter.specialty.chip-other'),
+					variant: 'outline' as const,
 				},
 			] satisfies IChipOption[],
 			recurrencePattern: [
@@ -249,6 +297,21 @@ export const JupiterConversation = () => {
 
 	const renderStepChips = () => {
 		switch (step) {
+			case 'specialty':
+				return (
+					<ChipsInline>
+						<MultiSelectChips
+							key={specialityKey}
+							options={chipOptions.specialty}
+							onConfirm={handleSpecialty}
+							confirmLabel={t('jupiter.specialty.continue')}
+							otherPlaceholder={t('jupiter.specialty.other-placeholder')}
+							onOtherSubmit={handleSpecialtyOtherSubmit}
+						/>
+						{isParsing && <JupiterThinking />}
+					</ChipsInline>
+				);
+
 			case 'calendar-choice':
 				return (
 					<ChipsInline>
