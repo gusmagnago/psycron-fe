@@ -1,6 +1,7 @@
 import type { RecurrencePattern } from '@psycron/api/jupiter';
 
 export type JupiterStep =
+	| 'specialty'
 	| 'calendar-choice'
 	| 'working-days'
 	| 'time-range'
@@ -18,6 +19,7 @@ export interface JupiterAnswers {
 	recurrencePattern?: RecurrencePattern;
 	sessionDuration?: string;
 	sessionType?: string;
+	specialities?: string[];
 	timeRange?: string;
 	timezone?: string;
 	timezoneConfirmed?: boolean;

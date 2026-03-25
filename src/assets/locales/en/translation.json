@@ -545,6 +545,21 @@
 			"subtitle": "I’ll help you set up your availability in just a few moments. Let’s make scheduling feel effortless.",
 			"cta": "Set up my schedule"
 		},
+		"specialty": {
+			"response": "What do you practice? Use the professional name for your work.",
+			"chip-occupational-therapist": "Occupational Therapist",
+			"chip-nutritionist": "Nutritionist",
+			"chip-other": "Other",
+			"chip-physiotherapist": "Physiotherapist",
+			"chip-psychiatrist": "Psychiatrist",
+			"chip-psychologist": "Psychologist",
+			"chip-speech-therapist": "Speech Therapist",
+			"continue": "Continue",
+			"other-placeholder": "Your specialty or professional title",
+			"acknowledged": "Got it! I'll set things up with that in mind.",
+			"error-rephrase": "I couldn't quite catch that — try using the professional name for what you practice.",
+			"error-rejected": "I'm not able to set up scheduling for that. If you have another specialty, I'd love to help you get started."
+		},
 		"calendar-choice": {
 			"msg1": "Hi! I’m Júpiter, your scheduling assistant. I’m here to help you set up your availability in a way that feels natural and effortless.",
 			"msg2": "Let’s start by setting up your calendar. How would you like to begin?",
@@ -582,6 +597,7 @@
 		},
 		"session-type": {
 			"response": "How do you usually conduct your sessions?",
+			"response-with-suggestion": "How do you usually conduct your sessions? I have a suggestion based on your specialty — pick what works best for you.",
 			"chip-online": "Online only",
 			"chip-in-person": "In person only",
 			"chip-both": "Both online and in person"

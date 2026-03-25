@@ -98,6 +98,7 @@ export interface ITherapist extends IBaseUser {
 	patients: MongoId[];
 	picture?: string;
 	role: TherapistRole;
+	specialities?: string[];
 	stripeCustomerID?: string;
 	timeZone: string;
 }

@@ -8,6 +8,7 @@ import {
 	importGoogleCalendarSchedule,
 	type RecurrencePattern,
 } from '@psycron/api/jupiter';
+import { editUserById } from '@psycron/api/user';
 import { useAlert } from '@psycron/context/alert/AlertContext';
 import { AVAILABILITYGENERATE, AVAILABILITYPATH } from '@psycron/pages/urls';
 import { useQueryClient } from '@tanstack/react-query';
@@ -17,6 +18,11 @@ import type {
 	JupiterMessage,
 	JupiterStep,
 } from './JupiterConversation.types';
+import {
+	SPECIALTY_CHIP_KEY_MAP,
+	SPECIALTY_SESSION_TYPE_DEFAULTS,
+	SPECIALTY_SESSION_TYPE_FALLBACK,
+} from './jupiterSpecialtyDefaults';
 
 export const STORAGE_KEY = '_psy_jd';
 export const ONBOARDING_KEY = '_psy_ob';
@@ -69,6 +75,7 @@ const STEP_QUESTION_KEY: Partial<Record<JupiterStep, string>> = {
 	'recurrence-pattern': 'jupiter.recurrence-pattern.response',
 	'session-duration': 'jupiter.session-duration.response',
 	'session-type': 'jupiter.session-type.response',
+	specialty: 'jupiter.specialty.response',
 	'time-range': 'jupiter.time-range.response',
 	timezone: 'jupiter.timezone.response',
 	'working-days': 'jupiter.working-days.response',
@@ -94,7 +101,17 @@ const CANONICAL_TO_CHIP: Record<string, string> = {
 	WEDNESDAY: 'chip-wed',
 };
 
-export const useJupiterFlow = (initialAnswers?: JupiterAnswers) => {
+interface UseJupiterFlowOptions {
+	initialAnswers?: JupiterAnswers;
+	therapistId?: string;
+	userSpecialities?: string[];
+}
+
+export const useJupiterFlow = ({
+	initialAnswers,
+	therapistId,
+	userSpecialities,
+}: UseJupiterFlowOptions = {}) => {
 	const { t, i18n } = useTranslation();
 	const navigate = useNavigate();
 	const { showAlert } = useAlert();
@@ -107,15 +124,19 @@ export const useJupiterFlow = (initialAnswers?: JupiterAnswers) => {
 		return params.get('calendar') === 'connected';
 	}, []);
 
-	const [step, setStep] = useState<JupiterStep>(
-		isCalendarConnected ? 'google-success' : (saved?.step ?? 'calendar-choice')
-	);
+	const [step, setStep] = useState<JupiterStep>(() => {
+		if (isCalendarConnected) return 'google-success';
+		if (saved) return saved.step;
+		if (!userSpecialities?.length) return 'specialty';
+		return 'calendar-choice';
+	});
 	const [answers, setAnswers] = useState<JupiterAnswers>(
 		initialAnswers ?? saved?.answers ?? {}
 	);
 	const [messages, setMessages] = useState<JupiterMessage[]>([]);
 	const [isPublishing, setIsPublishing] = useState(false);
 	const [isImporting, setIsImporting] = useState(false);
+	const [specialityKey, setSpecialityKey] = useState(0);
 	const [workingDaysKey, setWorkingDaysKey] = useState(0);
 
 	const hasInitialized = useRef(false);
@@ -193,10 +214,18 @@ export const useJupiterFlow = (initialAnswers?: JupiterAnswers) => {
 
 		addBotMessage(t('jupiter.calendar-choice.msg1'));
 		setTimeout(
-			() => addBotMessage(t('jupiter.calendar-choice.msg2'), false),
+			() =>
+				addBotMessage(
+					t(
+						!userSpecialities?.length
+							? 'jupiter.specialty.response'
+							: 'jupiter.calendar-choice.msg2'
+					),
+					false
+				),
 			500
 		);
-	}, [addBotMessage, saved, t]);
+	}, [addBotMessage, saved, t, userSpecialities?.length]);
 
 	// ─── Step handlers ─────────────────────────────────────────────────────────
 
@@ -261,6 +290,67 @@ export const useJupiterFlow = (initialAnswers?: JupiterAnswers) => {
 		setWorkingDaysKey((k) => k + 1);
 	}, [addBotMessage, t]);
 
+	// ─── Specialty handlers ────────────────────────────────────────────────────
+
+	const commitSpecialities = useCallback(
+		async (canonicals: string[]) => {
+			const label = canonicals.join(', ');
+			addUserMessage(label);
+			setAnswers((prev) => ({ ...prev, specialities: canonicals }));
+
+			if (therapistId) {
+				try {
+					await editUserById({ data: { specialities: canonicals }, userId: therapistId });
+				} catch {
+					// Non-critical — flow continues regardless
+				}
+			}
+
+			const defaultSessionType =
+				SPECIALTY_SESSION_TYPE_DEFAULTS[canonicals[0]] ??
+				SPECIALTY_SESSION_TYPE_FALLBACK;
+			setAnswers((prev) => ({ ...prev, sessionType: defaultSessionType }));
+
+			addBotMessage(t('jupiter.specialty.acknowledged'));
+			setTimeout(() => {
+				addBotMessage(t('jupiter.calendar-choice.msg2'), false);
+				setStep('calendar-choice');
+			}, 500);
+		},
+		[addBotMessage, addUserMessage, therapistId, t]
+	);
+
+	const handleSpecialty = useCallback(
+		(selectedKeys: string[]) => {
+			const canonicals = selectedKeys.map(
+				(k) => SPECIALTY_CHIP_KEY_MAP[k] ?? k.replace('chip-', '')
+			);
+			commitSpecialities(canonicals);
+		},
+		[commitSpecialities]
+	);
+
+	const handleSpecialtyFromText = useCallback(
+		(canonicals: string[]) => {
+			commitSpecialities(canonicals);
+		},
+		[commitSpecialities]
+	);
+
+	const retrySpeciality = useCallback(
+		(isRejected = false) => {
+			addBotMessage(
+				t(
+					isRejected
+						? 'jupiter.specialty.error-rejected'
+						: 'jupiter.specialty.error-rephrase'
+				)
+			);
+			setSpecialityKey((k) => k + 1);
+		},
+		[addBotMessage, t]
+	);
+
 	// Receives the resolved display label (from chip option or free text input)
 	const handleTimeRange = useCallback(
 		(label: string) =>
@@ -276,15 +366,16 @@ export const useJupiterFlow = (initialAnswers?: JupiterAnswers) => {
 
 	// Receives the resolved display label (from chip option or free text input)
 	const handleSessionDuration = useCallback(
-		(label: string) =>
-			commit(
-				label,
-				'sessionDuration',
-				label,
-				'jupiter.session-type.response',
-				'session-type'
-			),
-		[commit]
+		(label: string) => {
+			const hasSpecialityDefault =
+				answers.specialities?.length &&
+				SPECIALTY_SESSION_TYPE_DEFAULTS[answers.specialities[0]];
+			const sessionTypeResponseKey = hasSpecialityDefault
+				? 'jupiter.session-type.response-with-suggestion'
+				: 'jupiter.session-type.response';
+			commit(label, 'sessionDuration', label, sessionTypeResponseKey, 'session-type');
+		},
+		[answers.specialities, commit]
 	);
 
 	const handleSessionType = useCallback(
@@ -464,6 +555,7 @@ export const useJupiterFlow = (initialAnswers?: JupiterAnswers) => {
 		messages,
 		isImporting,
 		isPublishing,
+		specialityKey,
 		workingDaysKey,
 		detectedTimezone,
 		initFlow,
@@ -476,11 +568,14 @@ export const useJupiterFlow = (initialAnswers?: JupiterAnswers) => {
 		handleReset,
 		handleSessionDuration,
 		handleSessionType,
+		handleSpecialty,
+		handleSpecialtyFromText,
 		handleTimeRange,
 		handleTimezone,
 		handleTimezoneSelect,
 		handleWorkingDays,
 		handleWorkingDaysFromText,
+		retrySpeciality,
 		retryWorkingDays,
 	};
 };

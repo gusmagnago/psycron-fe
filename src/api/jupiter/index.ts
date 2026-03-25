@@ -12,9 +12,12 @@ export interface IGetWeekSlotsResponse {
 	days: IWeekSlotDay[];
 }
 
-export type ParseField = 'working-days' | 'time-range' | 'session-duration';
+export type ParseField = 'working-days' | 'time-range' | 'session-duration' | 'specialty';
+
+export type ParseSpecialtyFlag = 'accepted' | 'rejected' | 'rephrase';
 
 export type ParseInputResult =
+	| { flag: ParseSpecialtyFlag; parsed: string[]; valid: true }
 	| { parsed: string[], valid: true; }
 	| { parsed: string, valid: true; }
 	| { valid: false };
