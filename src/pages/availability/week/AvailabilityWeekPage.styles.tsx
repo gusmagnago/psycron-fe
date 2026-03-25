@@ -81,36 +81,17 @@ export const WeekFeaturesWrapper = styled(Box)`
 	justify-content: space-between;
 `;
 
+export const WeekNavRow = styled(Box)`
+	display: flex;
+	align-items: center;
+	gap: ${spacing.small};
+`;
+
 export const WeekFeaturesActions = styled(Box)`
 	display: flex;
-	flex-direction: column;
-	gap: ${spacing.extraSmall};
-`;
-
-export const WeekActionsWrapper = styled(Box)`
-	display: flex;
-	justify-content: space-between;
-	width: 100%;
-`;
-
-export const WeekActions = styled(Box)`
-	display: flex;
-	justify-content: space-between;
-	width: 100%;
-`;
-
-export const WeekHeaderLeft = styled(Box)`
-	display: flex;
+	flex-direction: row;
 	align-items: center;
-	justify-content: flex-start;
-	gap: ${spacing.medium};
-`;
-
-export const WeekHeaderRight = styled(Box)`
-	display: flex;
-	align-items: center;
-	justify-content: flex-end;
-	gap: ${spacing.medium};
+	gap: ${spacing.small};
 `;
 
 export const WeekTitle = styled(Text)`
@@ -158,6 +139,15 @@ export const WeekGrid = styled(Box)`
 	min-width: 560px;
 `;
 
+export const WeekGridCorner = styled(Box)`
+	height: 60px;
+	position: sticky;
+	top: 0;
+	left: 0;
+	z-index: ${zIndexSticky};
+	background: ${palette.background.default};
+`;
+
 // ─── Day column header ─────────────────────────────────────────────────────────
 
 export const DayHeader = styled(Box, {
@@ -170,10 +160,13 @@ export const DayHeader = styled(Box, {
 	justify-content: center;
 	margin-bottom: ${spacing.extraSmall};
 	opacity: ${({ isDisabled }) => (isDisabled ? 0.4 : 1)};
-
 	border: 2px solid
 		${({ isToday }) => (isToday ? palette.secondary.main : 'transparent')};
 	border-radius: ${spacing.xs};
+	position: sticky;
+	top: 0;
+	z-index: ${zIndexSticky};
+	background: ${palette.background.default};
 `;
 
 export const DayName = styled(Text)`
@@ -195,6 +188,10 @@ export const TimeLabel = styled(Box)`
 	align-items: center;
 	justify-content: flex-end;
 	padding-right: ${spacing.small};
+	position: sticky;
+	left: 0;
+	z-index: ${zIndexSticky};
+	background: ${palette.background.default};
 `;
 
 export const TimeLabelText = styled(Text)`
@@ -207,8 +204,9 @@ export const TimeLabelText = styled(Text)`
 // ─── Desktop slot cell ─────────────────────────────────────────────────────────
 
 export const SlotCell = styled(ButtonBase, {
-	shouldForwardProp: (prop) => prop !== 'slotStatus',
-})<{ slotStatus: SlotStatus }>`
+	shouldForwardProp: (prop) =>
+		prop !== 'slotStatus' && prop !== 'isToday' && prop !== 'isOddRow',
+})<{ isOddRow?: boolean; isToday?: boolean; slotStatus: SlotStatus }>`
 	height: 60px;
 	width: 100%;
 	border-radius: 12px;
@@ -220,6 +218,7 @@ export const SlotCell = styled(ButtonBase, {
 	align-items: flex-start;
 	justify-content: center;
 	overflow: hidden;
+	position: relative;
 
 	background-color: ${({ slotStatus }) => SLOT_COLORS[slotStatus]};
 	color: ${({ slotStatus }) =>
@@ -237,13 +236,64 @@ export const SlotCell = styled(ButtonBase, {
 		box-shadow: ${({ slotStatus }) =>
 			slotStatus === 'cancelled' ? 'none' : shadowSmall};
 	}
+
+	${({ isOddRow }) =>
+		isOddRow
+			? `&::before {
+		content: '';
+		position: absolute;
+		inset: 0;
+		background: rgba(0, 0, 0, 0.018);
+		border-radius: inherit;
+		pointer-events: none;
+	}`
+			: ''}
+
+	${({ isToday }) =>
+		isToday
+			? `&::after {
+		content: '';
+		position: absolute;
+		inset: 0;
+		background: rgba(104, 63, 255, 0.05);
+		border-radius: inherit;
+		pointer-events: none;
+	}`
+			: ''}
 `;
 
-export const SlotCellEmpty = styled(Box)`
+export const SlotCellEmpty = styled(Box, {
+	shouldForwardProp: (prop) => prop !== 'isToday' && prop !== 'isOddRow',
+})<{ isOddRow?: boolean; isToday?: boolean }>`
 	height: 60px;
 	width: 100%;
 	border-radius: 12px;
 	background-color: ${palette.gray['02']};
+	position: relative;
+
+	${({ isOddRow }) =>
+		isOddRow
+			? `&::before {
+		content: '';
+		position: absolute;
+		inset: 0;
+		background: rgba(0, 0, 0, 0.018);
+		border-radius: inherit;
+		pointer-events: none;
+	}`
+			: ''}
+
+	${({ isToday }) =>
+		isToday
+			? `&::after {
+		content: '';
+		position: absolute;
+		inset: 0;
+		background: rgba(104, 63, 255, 0.05);
+		border-radius: inherit;
+		pointer-events: none;
+	}`
+			: ''}
 `;
 
 export const SlotPatientName = styled(Text)`

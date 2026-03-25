@@ -64,16 +64,15 @@ import {
 	SlotTherapyType,
 	TimeLabel,
 	TimeLabelText,
-	WeekActionsWrapper,
 	WeekCard,
 	WeekFeaturesActions,
 	WeekFeaturesWrapper,
 	WeekFooter,
 	WeekGrid,
+	WeekGridCorner,
 	WeekGridWrapper,
 	WeekHeader,
-	WeekHeaderLeft,
-	WeekHeaderRight,
+	WeekNavRow,
 	WeekSubtitle,
 	WeekTitle,
 } from './AvailabilityWeekPage.styles';
@@ -297,19 +296,19 @@ export const AvailabilityWeekPage = () => {
 			<WeekCard>
 				<WeekHeader>
 					<WeekFeaturesWrapper>
-						<Box>
-							<WeekTitle>{t('availability.week.title')}</WeekTitle>
-							<WeekSubtitle>{weekRange}</WeekSubtitle>
-						</Box>
+						<WeekNavRow>
+							{prevButton}
+							<Box>
+								<WeekTitle>{t('availability.week.title')}</WeekTitle>
+								<WeekSubtitle>{weekRange}</WeekSubtitle>
+							</Box>
+							{nextButton}
+						</WeekNavRow>
 						<WeekFeaturesActions>
 							{filterButton}
 							{todayButton}
 						</WeekFeaturesActions>
 					</WeekFeaturesWrapper>
-					<WeekActionsWrapper>
-						<WeekHeaderLeft>{prevButton}</WeekHeaderLeft>
-						<WeekHeaderRight>{nextButton}</WeekHeaderRight>
-					</WeekActionsWrapper>
 				</WeekHeader>
 
 				{isAvailabilityDatesEmpty ? (
@@ -404,7 +403,7 @@ export const AvailabilityWeekPage = () => {
 				) : (
 					<WeekGridWrapper>
 						<WeekGrid>
-							<div style={{ height: 60 }} />
+							<WeekGridCorner />
 
 							{weekDays.map((day, _id) => {
 								const isDisabled = !(format(day, 'yyyy-MM-dd') in weekData);
@@ -421,7 +420,8 @@ export const AvailabilityWeekPage = () => {
 								);
 							})}
 
-							{timeSlots.map((time) => {
+							{timeSlots.map((time, rowIndex) => {
+								const isOddRow = rowIndex % 2 !== 0;
 								return (
 									<Fragment key={`time-slot-${time}`}>
 										<TimeLabel>
@@ -431,6 +431,7 @@ export const AvailabilityWeekPage = () => {
 											const isDisabled = !(
 												format(day, 'yyyy-MM-dd') in weekData
 											);
+											const todayDay = isToday(day);
 											const daySlots = getVisibleDaySlots(day);
 											const slot = isDisabled
 												? null
@@ -439,6 +440,8 @@ export const AvailabilityWeekPage = () => {
 												return (
 													<SlotCellEmpty
 														key={`slot-empty${day.toISOString()}-${time}`}
+														isOddRow={isOddRow}
+														isToday={todayDay}
 													/>
 												);
 											}
@@ -446,6 +449,8 @@ export const AvailabilityWeekPage = () => {
 												<SlotCell
 													key={`slot-cell-${day.toISOString()}-${time}`}
 													slotStatus={slot.status}
+													isOddRow={isOddRow}
+													isToday={todayDay}
 													onClick={() => handleSlotClick(slot)}
 													disableRipple={!isClickable(slot.status)}
 												>
