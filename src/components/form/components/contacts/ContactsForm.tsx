@@ -17,16 +17,20 @@ import {
 import type { ContactsFormProps } from './ContactsForm.types';
 
 export const ContactsForm = <T extends FieldValues>({
+	atLeastOneContact = false,
 	defaultValues,
 	disabled,
-	required = false,
 	fields,
+	fullWidth,
+	labelEmail,
+	placeholderEmail,
+	required = false,
 	...textFieldProps
 }: ContactsFormProps<T>) => {
 	const { t } = useTranslation();
 	const { isSmallerThanTablet } = useViewport();
 
-	const { register, getFieldState, control, setValue } = useFormContext<T>();
+	const { register, getFieldState, control, getValues, setValue } = useFormContext<T>();
 
 	const emailPath = (fields?.email ?? ('contacts.email' as Path<T>)) as Path<T>;
 	const phonePath = (fields?.phone ?? ('contacts.phone' as Path<T>)) as Path<T>;
@@ -52,14 +56,26 @@ export const ContactsForm = <T extends FieldValues>({
 			<EmailPhoneWrapper>
 				<TextField
 					{...textFieldProps}
-					label={t('globals.email')}
+					label={labelEmail ?? t('globals.email')}
 					fullWidth
 					id={String(emailPath)}
 					defaultValue={defaultValues?.email ?? ''}
 					placeholder={
-						!defaultValues?.email ? t('components.input.text.email') : undefined
+						!defaultValues?.email
+							? (placeholderEmail ?? t('components.input.text.email'))
+							: undefined
 					}
-					{...register(emailPath)}
+					{...register(emailPath, {
+					validate: atLeastOneContact
+						? (v) => {
+								const phone = getValues(phonePath) as string | undefined;
+								if (!v?.trim() && !phone?.trim()) {
+									return t('components.form.validation.at-least-one-contact');
+								}
+								return true;
+							}
+						: undefined,
+				})}
 					autoComplete='email'
 					error={Boolean(emailState.error)}
 					helperText={emailError}
@@ -70,7 +86,18 @@ export const ContactsForm = <T extends FieldValues>({
 				<InputWrapper>
 					<PhoneInputComponent<T>
 						name={phonePath}
-						required={required}
+						required={atLeastOneContact ? false : required}
+						validateFn={
+							atLeastOneContact
+								? (v) => {
+										const email = getValues(emailPath) as string | undefined;
+										if (!v?.trim() && !email?.trim()) {
+											return t('components.form.validation.at-least-one-contact');
+										}
+										return true;
+									}
+								: undefined
+						}
 						disabled={disabled}
 						defaultValue={defaultValues?.phone ?? ''}
 						labelKey='globals.phone'
@@ -135,7 +162,7 @@ export const ContactsForm = <T extends FieldValues>({
 			<input type='hidden' {...register(hasWhatsAppPath)} />
 			<input type='hidden' {...register(isPhoneWppPath)} />
 
-			<ContactsFormWhatsAppWrapper>
+			<ContactsFormWhatsAppWrapper isFullWidth={fullWidth}>
 				{hasWhatsApp && !isPhoneWpp ? (
 					<InputWrapper>
 						<PhoneInputComponent<T>

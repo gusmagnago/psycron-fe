@@ -105,6 +105,7 @@ export interface IAvailabilityDate {
 		note?: string;
 		patientId?: string;
 		reasonCode?: CancellationReasonEnum | null;
+		source?: 'jupiter' | 'google';
 		startTime: string;
 		status: StatusEnum;
 	}>;

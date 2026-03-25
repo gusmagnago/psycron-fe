@@ -12,7 +12,6 @@ export const bounce = keyframes`
 
 export const LoaderBubblesWrapper = styled(Box)`
 	gap: 0.375rem;
-	z-index: 10;
 	width: 100%;
 	height: 1.25rem;
 	display: flex;

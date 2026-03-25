@@ -8,7 +8,6 @@ import { palette } from '@psycron/theme/palette/palette.theme';
 import { spacing } from '@psycron/theme/spacing/spacing.theme';
 
 export const UnsubsPageWrapper = styled(Box)`
-	z-index: 10;
 	height: auto;
 	display: flex;
 	align-items: center;

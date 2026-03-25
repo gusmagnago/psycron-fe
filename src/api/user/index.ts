@@ -39,12 +39,23 @@ export const changePassword = async ({ data, userId }: IChangePass) => {
 	return response.data;
 };
 
-export const getTherapistLatestAvailability = async (therapistId: string) => {
-	const response = await apiClient.get<IAvailabilityResponse>(
-		`/users/${therapistId}/availability?latest=true`
-	);
+const EMPTY_AVAILABILITY: IAvailabilityResponse = {
+	dates: [],
+	firstDate: null,
+	isEmpty: true,
+	lastDate: null,
+	totalPages: 0,
+};
 
-	return response.data;
+export const getTherapistLatestAvailability = async (therapistId: string): Promise<IAvailabilityResponse> => {
+	try {
+		const response = await apiClient.get<IAvailabilityResponse>(
+			`/users/${therapistId}/availability?latest=true`
+		);
+		return response.data;
+	} catch {
+		return EMPTY_AVAILABILITY;
+	}
 };
 
 export const getAvailabilityByDayId = async (

@@ -2,6 +2,7 @@ import { Box, styled } from '@mui/material';
 import { palette } from '@psycron/theme/palette/palette.theme';
 import { shadowDisabled, shadowMain } from '@psycron/theme/shadow/shadow.theme';
 import { spacing } from '@psycron/theme/spacing/spacing.theme';
+import { zIndexSticky } from '@psycron/theme/zIndex';
 
 export const PromptWrapper = styled(Box)`
 	display: flex;
@@ -12,7 +13,7 @@ export const PromptWrapper = styled(Box)`
 	bottom: 0;
 	background-color: ${palette.background.default};
 	border-radius: 3.125rem;
-	z-index: 3;
+	z-index: ${zIndexSticky};
 `;
 
 export const SendPromptIconWrapper = styled(Box, {

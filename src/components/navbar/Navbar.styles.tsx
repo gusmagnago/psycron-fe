@@ -1,6 +1,7 @@
 import { Box, keyframes, styled } from '@mui/material';
 import { AppLayoutDividerMobilePadding } from '@psycron/layouts/app/app-layout/AppLayout.styles';
 import { spacing } from '@psycron/theme/spacing/spacing.theme';
+import { zIndexHover } from '@psycron/theme/zIndex';
 
 const navbarHeight = '3.75rem';
 
@@ -85,7 +86,7 @@ const dropdownAnimation = keyframes`
 
 export const FloatingMobileNavbar = styled(Box)`
 	position: absolute;
-	z-index: 100;
+	z-index: ${zIndexHover};
 	width: 100%;
 	height: auto;
 	display: flex;

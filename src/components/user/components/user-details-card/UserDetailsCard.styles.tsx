@@ -13,6 +13,7 @@ import {
 	shadowSmallPurple,
 } from '@psycron/theme/shadow/shadow.theme';
 import { spacing } from '@psycron/theme/spacing/spacing.theme';
+import { zIndexHover } from '@psycron/theme/zIndex';
 
 const blurIn = keyframes`
 0% {
@@ -48,7 +49,7 @@ export const UserDetailsCardWrapper = styled(Box, {
 		!isPage ? 0 : `calc(2 * ${spacing.medium})`};
 	box-shadow: ${({ isPage }) => (!isPage ? `${shadowMain}` : 'none')};
 	backdrop-filter: blur(10px);
-	z-index: 100;
+	z-index: ${zIndexHover};
 	border: 2px solid rgba(233, 214, 255, 0.1);
 
 	${({ isVisible }) =>

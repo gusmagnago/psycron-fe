@@ -16,8 +16,6 @@ export const PublicLayoutContent = styled(Box)`
 	flex-direction: column;
 	justify-content: center;
 	padding: 0;
-	z-index: 2;
-
 	flex: 1;
 	margin-bottom: var(--footer-height);
 `;

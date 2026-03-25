@@ -7,7 +7,6 @@ export const OuterBox = styled(Box)`
 	flex: 1;
 	display: flex;
 	flex-direction: column;
-	z-index: 2;
 	overflow-y: hidden;
 `;
 

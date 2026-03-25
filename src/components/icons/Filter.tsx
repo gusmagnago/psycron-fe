@@ -11,6 +11,8 @@ export const FilterIcon: React.FC = (props) => (
 		strokeLinejoin='round'
 		{...props}
 	>
-		<polygon points='22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3' />
+		<path d='M2 5h20' />
+		<path d='M6 12h12' />
+		<path d='M9 19h6' />
 	</svg>
 );

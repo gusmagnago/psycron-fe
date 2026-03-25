@@ -4,6 +4,7 @@ import { isMobileMedia } from '@psycron/theme/media-queries/mediaQueries';
 import { palette } from '@psycron/theme/palette/palette.theme';
 import { shadowMediumError } from '@psycron/theme/shadow/shadow.theme';
 import { spacing } from '@psycron/theme/spacing/spacing.theme';
+import { zIndexHover } from '@psycron/theme/zIndex';
 
 export const Banner = styled(Box)`
 	width: 50%;
@@ -16,7 +17,7 @@ export const Banner = styled(Box)`
 
 	border-radius: ${spacing.mediumLarge};
 	position: absolute;
-	z-index: 100;
+	z-index: ${zIndexHover};
 	right: 0;
 	bottom: 0;
 

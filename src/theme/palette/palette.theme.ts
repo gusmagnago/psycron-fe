@@ -142,10 +142,30 @@ export const palette: Palette = {
 		dark: '#363A3B',
 	},
 	brand: {
-		purple: '#683fff',
-		light: '#f0ebff',
 		dark: '#4a2db8',
+		google: '#3B82F6',
+		light: '#f0ebff',
+		purple: '#683fff',
 	},
+	// warning mirrors alert — MUI expects a `warning` palette key for the severity system
+	warning: {
+		main: '#FBE442',
+		light: '#FFF8C8',
+		dark: '#494100',
+		access: '#292508',
+		action: {
+			hover: '#E3AB3D',
+			press: '#FFB966',
+			disabled: '#EADBC9',
+		},
+		surface: {
+			hover: '#FAF1B0',
+			press: '#E9E0A1',
+			light: '#FFFAD8',
+			disabled: 'rgba(251, 228, 66, 0.3)',
+		},
+	},
+	white: '#FFFFFF',
 };
 
 export const hexToRgba = (hex: string, alpha: number): string => {

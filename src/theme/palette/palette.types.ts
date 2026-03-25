@@ -40,6 +40,7 @@ export type BackgroundShades = {
 
 export type BrandShades = {
 	dark: string;
+	google: string;
 	light: string;
 	purple: string;
 };
@@ -58,4 +59,6 @@ export type Palette = {
 	success: ColorScheme;
 	tertiary: ColorScheme;
 	text: TextColors;
+	warning: ColorScheme;
+	white: string;
 };

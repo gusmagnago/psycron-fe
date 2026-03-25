@@ -23,7 +23,7 @@ export const AvailabilityGate = ({ children }: AvailabilityGateProps) => {
 
 	const { data, isLoading } = useQuery({
 		queryKey: ['availabilityGate'],
-		queryFn: getAvailability,
+		queryFn: () => getAvailability(),
 		staleTime: 1000 * 60 * 10,
 	});
 
@@ -34,24 +34,21 @@ export const AvailabilityGate = ({ children }: AvailabilityGateProps) => {
 		if (isOnGeneratePage) return;
 
 		const hasDraft = !!localStorage.getItem(STORAGE_KEY);
-		const hasOnboarded = !!localStorage.getItem(ONBOARDING_KEY);
 		const hasAvailability = data !== null;
 
-		if (!hasAvailability && !hasOnboarded) {
+		if (!hasAvailability) {
+			if (!hasAlerted.current && !!localStorage.getItem(ONBOARDING_KEY)) {
+				hasAlerted.current = true;
+				showAlert({
+					message: t('availability.gate.deleted-notice'),
+					severity: 'warning',
+				});
+			}
 			navigate(`/${i18n.language}/${AVAILABILITYGENERATE}`, { replace: true });
 			return;
 		}
 
-		if (!hasAvailability && hasOnboarded && !hasAlerted.current) {
-			hasAlerted.current = true;
-			showAlert({
-				message: t('availability.gate.deleted-notice'),
-				severity: 'warning',
-			});
-			return;
-		}
-
-		if (hasAvailability && hasDraft) {
+		if (hasDraft) {
 			navigate(`/${i18n.language}/${AVAILABILITYGENERATE}`, { replace: true });
 		}
 	}, [data, isLoading, location.pathname, navigate, i18n.language, showAlert, t]);

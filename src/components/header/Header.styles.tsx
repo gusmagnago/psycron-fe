@@ -7,5 +7,4 @@ export const HeaderWrapper = styled(Box)`
 	align-items: center;
 	justify-content: space-between;
 	padding: ${spacing.mediumLarge};
-	z-index: 10;
 `;

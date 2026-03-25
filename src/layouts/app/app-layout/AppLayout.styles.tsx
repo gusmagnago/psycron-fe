@@ -5,7 +5,6 @@ import { spacing } from '@psycron/theme/spacing/spacing.theme';
 export const AppLayoutDividerMobilePadding = `${spacing.small}`;
 
 export const NavBarWrapper = styled(Box)`
-	z-index: 100;
 	display: flex;
 	flex-direction: column;
 
@@ -26,7 +25,6 @@ export const Content = styled(Box)`
 	overflow-y: hidden;
 	overflow-x: hidden;
 
-	z-index: 50;
 	position: relative;
 
 	${isBiggerThanMediumMedia} {

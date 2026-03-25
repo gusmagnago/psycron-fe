@@ -6,6 +6,7 @@ export type PhoneInputComponentProps<T extends FieldValues> = {
 	labelKey?: string;
 	name: Path<T>;
 	required?: boolean;
+	validateFn?: (value: string) => string | true;
 };
 
 export type StyledPhoneInputProps = {

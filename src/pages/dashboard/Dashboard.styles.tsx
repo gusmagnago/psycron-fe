@@ -2,6 +2,7 @@ import { Paper, styled } from '@mui/material';
 import { isMobileMedia } from '@psycron/theme/media-queries/mediaQueries';
 import { palette } from '@psycron/theme/palette/palette.theme';
 import { spacing } from '@psycron/theme/spacing/spacing.theme';
+import { zIndexHover } from '@psycron/theme/zIndex';
 
 export const StyledPaperModal = styled(Paper)`
 	position: absolute;
@@ -10,7 +11,7 @@ export const StyledPaperModal = styled(Paper)`
 	transform: translate(-50%, -50%);
 	width: 80%;
 	height: 0;
-	z-index: 500;
+	z-index: ${zIndexHover};
 
 	padding: ${spacing.small};
 	background-color: ${palette.background.default};

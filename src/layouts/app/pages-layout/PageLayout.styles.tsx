@@ -10,11 +10,7 @@ export const PageLayoutWrapper = styled(Box)`
 `;
 
 export const PageTitleWrapper = styled(Box)`
-	padding-bottom: ${spacing.largeXl};
-
-	${isMobileMedia} {
-		padding-bottom: ${spacing.mediumSmall};
-	}
+	height: 60px;
 `;
 
 export const PageTitle = styled(Text)`
@@ -38,4 +34,9 @@ export const PageChildrenWrapper = styled(Box)`
 	overflow-x: hidden;
 	display: flex;
 	flex-direction: column;
+	padding: 0 ${spacing.small};
+
+	${isMobileMedia} {
+		padding: 0 ${spacing.xs};
+	}
 `;

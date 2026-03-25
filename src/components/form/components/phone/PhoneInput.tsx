@@ -23,8 +23,9 @@ export const PhoneInputComponent = <T extends FieldValues>({
 	name,
 	defaultValue,
 	disabled,
-	required,
 	labelKey,
+	required,
+	validateFn,
 }: PhoneInputComponentProps<T>) => {
 	const { t } = useTranslation();
 	const { locale } = useParams<{ locale?: string }>();
@@ -62,7 +63,10 @@ export const PhoneInputComponent = <T extends FieldValues>({
 				rules={{
 					validate: (value) => {
 						const v = typeof value === 'string' ? value.trim() : '';
-						if (!v) return required ? t('globals.required', 'Required') : true;
+						if (!v) {
+							if (validateFn) return validateFn(v);
+							return required ? t('globals.required', 'Required') : true;
+						}
 						return isValidPhoneNumber(v)
 							? true
 							: t(
