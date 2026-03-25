@@ -367,10 +367,7 @@ export const AvailabilityWeekPage = () => {
 														disableRipple={!isClickable(slot.status)}
 													>
 														<MobileSlotTime>
-															{formatTimeRange(
-																slot.startTime,
-																slot.duration
-															)}
+															{formatTimeRange(slot.startTime, slot.duration)}
 														</MobileSlotTime>
 														<MobileSlotDetails>
 															{slot.patientName && (
@@ -411,17 +408,15 @@ export const AvailabilityWeekPage = () => {
 
 							{weekDays.map((day, _id) => {
 								const isDisabled = !(format(day, 'yyyy-MM-dd') in weekData);
+								const todayDay = isToday(day);
 								return (
 									<DayHeader
 										key={`hd-${day.toISOString() + _id}`}
 										isDisabled={isDisabled}
+										isToday={todayDay}
 									>
 										<DayName>{format(day, 'EEE')}</DayName>
-										<DayNumber
-											sx={isToday(day) ? { color: 'brand.purple' } : undefined}
-										>
-											{format(day, 'd')}
-										</DayNumber>
+										<DayNumber>{format(day, 'd')}</DayNumber>
 									</DayHeader>
 								);
 							})}

@@ -161,8 +161,8 @@ export const WeekGrid = styled(Box)`
 // ─── Day column header ─────────────────────────────────────────────────────────
 
 export const DayHeader = styled(Box, {
-	shouldForwardProp: (prop) => prop !== 'isDisabled',
-})<{ isDisabled?: boolean }>`
+	shouldForwardProp: (prop) => prop !== 'isDisabled' && prop !== 'isToday',
+})<{ isDisabled?: boolean; isToday?: boolean }>`
 	height: 60px;
 	display: flex;
 	flex-direction: column;
@@ -170,6 +170,10 @@ export const DayHeader = styled(Box, {
 	justify-content: center;
 	margin-bottom: ${spacing.extraSmall};
 	opacity: ${({ isDisabled }) => (isDisabled ? 0.4 : 1)};
+
+	border: 2px solid
+		${({ isToday }) => (isToday ? palette.secondary.main : 'transparent')};
+	border-radius: ${spacing.xs};
 `;
 
 export const DayName = styled(Text)`
