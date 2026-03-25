@@ -740,6 +740,8 @@
 			"filter-time-evening": "Evening",
 			"filter-time-morning": "Morning",
 			"filters": "Filters",
+			"collapse-day": "Show less",
+			"expand-day": "+{{count}} more",
 			"slot": "slot",
 			"slots": "slots",
 			"title": "Week Schedule",

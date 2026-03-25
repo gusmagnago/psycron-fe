@@ -50,8 +50,10 @@ import {
 	MobileDaySlots,
 	MobileEmptyDay,
 	MobileEmptyDayText,
+	MobileExpandButton,
 	MobileSlotCard,
 	MobileSlotCount,
+	MobileSlotDetails,
 	MobileSlotPatient,
 	MobileSlotTherapy,
 	MobileSlotTime,
@@ -98,8 +100,10 @@ const isClickable = (status: SlotStatus) =>
 
 const formatTimeRange = (startTime: string, durationMin: number) => {
 	const [h, m] = startTime.split(':').map(Number);
-	const endH = h + Math.floor(durationMin / 60);
-	return `${startTime} - ${String(endH).padStart(2, '0')}:${String(m).padStart(2, '0')}`;
+	const totalEndMin = h * 60 + m + durationMin;
+	const endH = Math.floor(totalEndMin / 60);
+	const endM = totalEndMin % 60;
+	return `${startTime} – ${String(endH).padStart(2, '0')}:${String(endM).padStart(2, '0')}`;
 };
 
 export const AvailabilityWeekPage = () => {
@@ -122,6 +126,9 @@ export const AvailabilityWeekPage = () => {
 	const [selectedSlot, setSelectedSlot] = useState<IWeekSlot | null>(null);
 	const [filterAnchorEl, setFilterAnchorEl] = useState<HTMLElement | null>(
 		null
+	);
+	const [expandedDays, setExpandedDays] = useState<Set<string>>(
+		() => new Set([format(new Date(), 'yyyy-MM-dd')])
 	);
 
 	const baseDate = date ? parseISO(date) : new Date();
@@ -227,6 +234,17 @@ export const AvailabilityWeekPage = () => {
 			`/${i18n.language}/${AVAILABILITYWEEK_BASE}/${format(addWeeks(baseDate, 1), 'yyyy-MM-dd')}`
 		);
 
+	const COLLAPSED_SLOTS_LIMIT = 3;
+
+	const toggleDayExpanded = (dateStr: string) => {
+		setExpandedDays((prev) => {
+			const next = new Set(prev);
+			if (next.has(dateStr)) next.delete(dateStr);
+			else next.add(dateStr);
+			return next;
+		});
+	};
+
 	const handleSlotClick = (slot: IWeekSlot) => setSelectedSlot(slot);
 
 	const legendItems: AvailabilityLegendItem[] = LEGEND_STATUSES.map(
@@ -299,15 +317,25 @@ export const AvailabilityWeekPage = () => {
 				) : isMobile ? (
 					<MobileDayList>
 						{workingDays.map((day, _id) => {
-							const daySlots = getVisibleDaySlots(day);
+							const dateStr = format(day, 'yyyy-MM-dd');
+							const todayDay = isToday(day);
+							const allSlots = getVisibleDaySlots(day);
+							const isExpanded = expandedDays.has(dateStr);
+							const visibleSlots = isExpanded
+								? allSlots
+								: allSlots.slice(0, COLLAPSED_SLOTS_LIMIT);
+							const hiddenCount = allSlots.length - COLLAPSED_SLOTS_LIMIT;
 							return (
-								<MobileDayCard key={`mobile-day-${day.toISOString() + _id}`}>
+								<MobileDayCard
+									key={`mobile-day-${day.toISOString() + _id}`}
+									isToday={todayDay}
+								>
 									<MobileDayCardHeader>
 										<div>
 											<MobileDayName>{format(day, 'EEEE')}</MobileDayName>
 											<MobileDayDate
 												sx={
-													isToday(day)
+													todayDay
 														? { color: 'brand.purple', fontWeight: 700 }
 														: undefined
 												}
@@ -316,42 +344,60 @@ export const AvailabilityWeekPage = () => {
 											</MobileDayDate>
 										</div>
 										<MobileSlotCount>
-											{daySlots.length}{' '}
-											{daySlots.length === 1
+											{allSlots.length}{' '}
+											{allSlots.length === 1
 												? t('availability.week.slot')
 												: t('availability.week.slots')}
 										</MobileSlotCount>
 									</MobileDayCardHeader>
 									<MobileDaySlots>
-										{daySlots.length === 0 ? (
+										{allSlots.length === 0 ? (
 											<MobileEmptyDay>
 												<MobileEmptyDayText>
 													{t('availability.week.no-appointments')}
 												</MobileEmptyDayText>
 											</MobileEmptyDay>
 										) : (
-											daySlots.map((slot) => (
-												<MobileSlotCard
-													key={`mobile-dslot-${slot.id}`}
-													slotStatus={slot.status}
-													onClick={() => handleSlotClick(slot)}
-													disableRipple={!isClickable(slot.status)}
-												>
-													<MobileSlotTime>
-														{formatTimeRange(slot.startTime, slot.duration)}
-													</MobileSlotTime>
-													{slot.patientName && (
-														<MobileSlotPatient>
-															{slot.patientName}
-														</MobileSlotPatient>
-													)}
-													{slot.therapyType && (
-														<MobileSlotTherapy>
-															{slot.therapyType}
-														</MobileSlotTherapy>
-													)}
-												</MobileSlotCard>
-											))
+											<>
+												{visibleSlots.map((slot) => (
+													<MobileSlotCard
+														key={`mobile-dslot-${slot.id}`}
+														slotStatus={slot.status}
+														onClick={() => handleSlotClick(slot)}
+														disableRipple={!isClickable(slot.status)}
+													>
+														<MobileSlotTime>
+															{formatTimeRange(
+																slot.startTime,
+																slot.duration
+															)}
+														</MobileSlotTime>
+														<MobileSlotDetails>
+															{slot.patientName && (
+																<MobileSlotPatient>
+																	{slot.patientName}
+																</MobileSlotPatient>
+															)}
+															{slot.therapyType && (
+																<MobileSlotTherapy>
+																	{slot.therapyType}
+																</MobileSlotTherapy>
+															)}
+														</MobileSlotDetails>
+													</MobileSlotCard>
+												))}
+												{allSlots.length > COLLAPSED_SLOTS_LIMIT && (
+													<MobileExpandButton
+														onClick={() => toggleDayExpanded(dateStr)}
+													>
+														{isExpanded
+															? t('availability.week.collapse-day')
+															: t('availability.week.expand-day', {
+																	count: hiddenCount,
+																})}
+													</MobileExpandButton>
+												)}
+											</>
 										)}
 									</MobileDaySlots>
 								</MobileDayCard>

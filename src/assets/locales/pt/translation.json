@@ -723,6 +723,8 @@
 			"no-appointments": "Sem agendamentos",
 			"page-title": "Disponibilidade",
 			"prev-week": "Semana anterior",
+			"collapse-day": "Ver menos",
+			"expand-day": "+{{count}} mais",
 			"slot": "horário",
 			"slots": "horários",
 			"filter-clear": "Limpar filtros",

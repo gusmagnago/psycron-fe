@@ -271,11 +271,15 @@ export const MobileDayList = styled(Box)`
 	padding-bottom: ${spacing.small};
 `;
 
-export const MobileDayCard = styled(Box)`
+export const MobileDayCard = styled(Box, {
+	shouldForwardProp: (prop) => prop !== 'isToday',
+})<{ isToday?: boolean }>`
 	background: ${palette.white};
 	border-radius: ${spacing.mediumSmall};
 	padding: ${spacing.small};
 	overflow: hidden;
+	border-left: 3px solid
+		${({ isToday }) => (isToday ? palette.secondary.main : 'transparent')};
 `;
 
 export const MobileDayCardHeader = styled(Box)`
@@ -312,17 +316,17 @@ export const MobileDaySlots = styled(Box)`
 	gap: ${spacing.small};
 `;
 
-export const MobileSlotCard = styled(Button, {
+export const MobileSlotCard = styled(ButtonBase, {
 	shouldForwardProp: (prop) => prop !== 'slotStatus',
 })<{ slotStatus: SlotStatus }>`
 	width: 100%;
 	border-radius: ${spacing.small};
 	padding: ${spacing.xxs} ${spacing.small};
-	height: 65px;
+	height: 56px;
 	display: flex;
-	flex-direction: column;
-	justify-content: flex-start;
-
+	flex-direction: row;
+	align-items: center;
+	gap: ${spacing.small};
 	text-align: left;
 	background-color: ${({ slotStatus }) => SLOT_COLORS[slotStatus]};
 	border: ${({ slotStatus }) =>
@@ -336,15 +340,6 @@ export const MobileSlotCard = styled(Button, {
 			? palette.white
 			: palette.text.primary};
 
-	& > div {
-		height: 100%;
-		gap: ${spacing.space};
-	}
-
-	& .MuiTypography-root {
-		color: inherit;
-	}
-
 	&:hover {
 		opacity: ${({ slotStatus }) =>
 			isClickableStatus(slotStatus)
@@ -356,21 +351,50 @@ export const MobileSlotCard = styled(Button, {
 `;
 
 export const MobileSlotTime = styled(Text)`
-	font-size: 13px;
-	font-weight: 500;
-	width: 60px;
+	font-size: 12px;
+	font-weight: 600;
+	white-space: nowrap;
+	flex-shrink: 0;
 `;
 
 export const MobileSlotPatient = styled(Text)`
-	font-size: 14px;
+	font-size: 13px;
 	font-weight: 600;
-	width: 80px;
+	overflow: hidden;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	width: 100%;
 `;
 
 export const MobileSlotTherapy = styled(Text)`
 	font-size: 11px;
 	opacity: 0.8;
-	padding-left: ${spacing.space};
+	overflow: hidden;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	width: 100%;
+`;
+
+export const MobileSlotDetails = styled(Box)`
+	display: flex;
+	flex-direction: column;
+	gap: 2px;
+	flex: 1;
+	min-width: 0;
+`;
+
+export const MobileExpandButton = styled(ButtonBase)`
+	width: 100%;
+	padding: ${spacing.xs} 0;
+	font-size: 12px;
+	color: ${palette.brand.purple};
+	font-weight: 500;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: ${spacing.xs};
+	margin-top: ${spacing.xs};
+	border-radius: ${spacing.xs};
 `;
 
 export const MobileEmptyDay = styled(Box)`
