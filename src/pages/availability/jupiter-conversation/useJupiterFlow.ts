@@ -27,6 +27,12 @@ import {
 export const STORAGE_KEY = '_psy_jd';
 export const ONBOARDING_KEY = '_psy_ob';
 
+const SESSION_TYPE_CANONICAL: Record<string, string> = {
+	'chip-both': 'BOTH',
+	'chip-in-person': 'IN_PERSON',
+	'chip-online': 'ONLINE',
+};
+
 // One-time migration from legacy readable keys
 const LEGACY_STORAGE_KEY = 'jupiter-flow';
 const LEGACY_ONBOARDING_KEY = 'psycron-jupiter-onboarded';
@@ -384,7 +390,7 @@ export const useJupiterFlow = ({
 			commit(
 				label,
 				'sessionType',
-				key,
+				SESSION_TYPE_CANONICAL[key] ?? key,
 				'jupiter.timezone.response',
 				'timezone'
 			);

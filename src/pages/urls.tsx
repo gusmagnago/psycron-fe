@@ -44,6 +44,8 @@ export const AVAILABILITYWIZARD = `${AVAILABILITYPATH}/create`;
 export const AVAILABILITYGENERATE = `${AVAILABILITYPATH}/generate`;
 export const AVAILABILITYWEEK_BASE = `${AVAILABILITYPATH}/week`;
 export const AVAILABILITYWEEK = `${AVAILABILITYWEEK_BASE}/:date`;
+export const AVAILABILITYSETTINGS = `${AVAILABILITYPATH}/settings`;
+
 export const AGENDA = 'agenda';
 export const BOOKAPPOINTMENT = `${USERID}/book-appointment`;
 export const PATIENTEDITAPPOINTMENT = 'book-appointment';

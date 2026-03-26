@@ -2,8 +2,8 @@ import { useMemo } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { Box } from '@mui/material';
+import type { ICreatePatientForm } from '@psycron/api/patient/index.types';
 import { Button } from '@psycron/components/button/Button';
-import { CloseButton } from '@psycron/components/button/close/CloseButton';
 import { Drawer } from '@psycron/components/drawer/Drawer';
 import { ContactsForm } from '@psycron/components/form/components/contacts/ContactsForm';
 import { NameForm } from '@psycron/components/form/components/name/NameForm';
@@ -21,7 +21,6 @@ import { useUserDetails } from '@psycron/context/user/details/UserDetailsContext
 import { getFormattedContacts } from '@psycron/hooks/useFormattedContacts';
 import { useSecureStorage } from '@psycron/hooks/useSecureStorage';
 import i18n from '@psycron/i18n';
-import type { ICreatePatientForm } from '@psycron/pages/user/appointment/add-patient/AddPatient.types';
 import { palette } from '@psycron/theme/palette/palette.theme';
 import { THERAPIST_ID } from '@psycron/utils/tokens';
 import { format, parseISO } from 'date-fns';
@@ -30,7 +29,6 @@ import { enGB, ptBR } from 'date-fns/locale';
 import {
 	ConfirmedBadge,
 	ConfirmedBadgeText,
-	DrawerActions,
 	DrawerBadgeRow,
 	DrawerDetailIcon,
 	DrawerDetailLabel,
@@ -39,8 +37,6 @@ import {
 	DrawerDetailSub,
 	DrawerDetailValue,
 	DrawerDetailWrapper,
-	DrawerHeader,
-	DrawerPatientName,
 	FormWrapper,
 	SourceBadge,
 	SourceBadgeText,
@@ -189,21 +185,16 @@ export const AvailabilityWeekDrawer = ({
 					? t('availability.week.drawer.book-slot')
 					: (slot.patientName ?? '')
 			}
-			onClose={onClose}
-		>
-			<DrawerHeader>
-				<div>
-					<DrawerPatientName>
-						{isAvailable
-							? t('availability.week.drawer.book-slot')
-							: slot.patientName}
-					</DrawerPatientName>
-
-					{/* Date subtitle for booked slots — context at a glance */}
+			title={
+				isAvailable
+					? t('availability.week.drawer.book-slot')
+					: (slot.patientName ?? '')
+			}
+			headerExtra={
+				<>
 					{!isAvailable && (
 						<DrawerDetailLabel>{formattedDate}</DrawerDetailLabel>
 					)}
-
 					<DrawerBadgeRow>
 						{isAvailable ? (
 							<ConfirmedBadge>
@@ -214,7 +205,7 @@ export const AvailabilityWeekDrawer = ({
 						) : (
 							<>
 								{statusCfg && (
-									<ConfirmedBadge sx={{ background: statusCfg.badgeColor }}>
+									<ConfirmedBadge badgeColor={statusCfg.badgeColor}>
 										<ConfirmedBadgeText>
 											{t(statusCfg.labelKey)}
 										</ConfirmedBadgeText>
@@ -233,10 +224,32 @@ export const AvailabilityWeekDrawer = ({
 							</>
 						)}
 					</DrawerBadgeRow>
-				</div>
-				<CloseButton onClick={onClose} />
-			</DrawerHeader>
-
+				</>
+			}
+			onClose={onClose}
+			actions={
+				isAvailable ? (
+					<Button
+						fullWidth
+						disabled={isSubmitting}
+						onClick={submitBooking}
+						tertiary
+						variant='contained'
+					>
+						{t('availability.week.drawer.confirm-booking')}
+					</Button>
+				) : (
+					<>
+						<Button fullWidth tertiary>
+							{t('availability.week.drawer.edit')}
+						</Button>
+						<Button fullWidth severity='error'>
+							{t('availability.week.drawer.cancel-appointment')}
+						</Button>
+					</>
+				)
+			}
+		>
 			<DrawerDetailsList>
 				{details.map(({ icon, key, label, sub, value }) => (
 					<DrawerDetailRow key={key}>
@@ -257,10 +270,16 @@ export const AvailabilityWeekDrawer = ({
 							<NameForm<ICreatePatientForm>
 								required
 								fields={{ firstName: 'firstName', lastName: 'lastName' }}
-								labelFirstName={t('availability.week.drawer.patient-first-name')}
+								labelFirstName={t(
+									'availability.week.drawer.patient-first-name'
+								)}
 								labelLastName={t('availability.week.drawer.patient-last-name')}
-								placeholderFirstName={t('availability.week.drawer.patient-first-name')}
-								placeholderLastName={t('availability.week.drawer.patient-last-name')}
+								placeholderFirstName={t(
+									'availability.week.drawer.patient-first-name'
+								)}
+								placeholderLastName={t(
+									'availability.week.drawer.patient-last-name'
+								)}
 							/>
 							<ContactsForm<ICreatePatientForm>
 								atLeastOneContact
@@ -279,31 +298,6 @@ export const AvailabilityWeekDrawer = ({
 					</Box>
 				</FormProvider>
 			)}
-
-			<DrawerActions>
-				{isAvailable ? (
-					<>
-						<Button
-							fullWidth
-							disabled={isSubmitting}
-							onClick={submitBooking}
-							tertiary
-							variant='contained'
-						>
-							{t('availability.week.drawer.confirm-booking')}
-						</Button>
-					</>
-				) : (
-					<>
-						<Button fullWidth tertiary>
-							{t('availability.week.drawer.edit')}
-						</Button>
-						<Button fullWidth severity='error'>
-							{t('availability.week.drawer.cancel-appointment')}
-						</Button>
-					</>
-				)}
-			</DrawerActions>
 		</Drawer>
 	);
 };

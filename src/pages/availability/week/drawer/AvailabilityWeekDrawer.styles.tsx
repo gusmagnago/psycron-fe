@@ -1,32 +1,11 @@
 import styled from '@emotion/styled';
 import { Box } from '@mui/material';
 import { Text } from '@psycron/components/text/Text';
-import { isMobileMedia } from '@psycron/theme/media-queries/mediaQueries';
 import { hexToRgba, palette } from '@psycron/theme/palette/palette.theme';
 import { shadowSmall } from '@psycron/theme/shadow/shadow.theme';
 import { spacing } from '@psycron/theme/spacing/spacing.theme';
 
-// ─── Header ───────────────────────────────────────────────────────────────────
-
-export const DrawerHeader = styled(Box)`
-	display: flex;
-	align-items: flex-start;
-	justify-content: space-between;
-	margin-bottom: ${spacing.large};
-`;
-
 // ─── Patient identity ─────────────────────────────────────────────────────────
-
-export const DrawerPatientName = styled(Text)`
-	font-size: 24px;
-	font-weight: 500;
-	color: ${palette.text.primary};
-	margin-bottom: ${spacing.small};
-
-	${isMobileMedia} {
-		font-size: 20px;
-	}
-`;
 
 export const DrawerBadgeRow = styled(Box)`
 	display: flex;
@@ -35,8 +14,10 @@ export const DrawerBadgeRow = styled(Box)`
 	flex-wrap: wrap;
 `;
 
-export const ConfirmedBadge = styled(Box)`
-	background: ${palette.brand.purple};
+export const ConfirmedBadge = styled(Box, {
+	shouldForwardProp: (prop) => prop !== 'badgeColor',
+})<{ badgeColor?: string }>`
+	background: ${({ badgeColor }) => badgeColor ?? palette.brand.purple};
 	padding: ${spacing.space} ${spacing.mediumSmall};
 	border-radius: ${spacing.extraSmall};
 	display: inline-flex;
@@ -127,14 +108,7 @@ export const DrawerDetailSub = styled(Text)`
 	margin-top: ${spacing.space};
 `;
 
-// ─── Action buttons ───────────────────────────────────────────────────────────
-
-export const DrawerActions = styled(Box)`
-	display: flex;
-	gap: ${spacing.medium};
-	padding-top: ${spacing.large};
-	border-top: 1px solid ${palette.gray['02']};
-`;
+// ─── Form ─────────────────────────────────────────────────────────────────────
 
 export const FormWrapper = styled(Box)`
 	display: flex;

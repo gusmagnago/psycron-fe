@@ -58,6 +58,21 @@ export const getTherapistLatestAvailability = async (therapistId: string): Promi
 	}
 };
 
+export const getAvailabilityCalendar = async (
+	therapistId: string,
+	params?: { from?: string; to?: string }
+): Promise<IAvailabilityResponse> => {
+	try {
+		const response = await apiClient.get<IAvailabilityResponse>(
+			`/users/${therapistId}/availability`,
+			{ params: { latest: 'true', ...params } }
+		);
+		return response.data;
+	} catch {
+		return EMPTY_AVAILABILITY;
+	}
+};
+
 export const getAvailabilityByDayId = async (
 	therapistId: string,
 	params: DateInfoParams

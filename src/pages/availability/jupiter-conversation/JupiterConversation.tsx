@@ -305,6 +305,7 @@ export const JupiterConversation = () => {
 							options={chipOptions.specialty}
 							onConfirm={handleSpecialty}
 							confirmLabel={t('jupiter.specialty.continue')}
+							otherChipKey='chip-other'
 							otherPlaceholder={t('jupiter.specialty.other-placeholder')}
 							onOtherSubmit={handleSpecialtyOtherSubmit}
 						/>

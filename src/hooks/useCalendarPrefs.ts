@@ -21,7 +21,7 @@ const DEFAULT_PREFS: CalendarPrefs = {
 	deliveryModes: [],
 	sessionTypes: [],
 	showCancelledSlots: true,
-	showFreeSlots: false,
+	showFreeSlots: true,
 	timeOfDay: [],
 };
 

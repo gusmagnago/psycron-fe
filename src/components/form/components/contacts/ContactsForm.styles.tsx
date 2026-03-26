@@ -26,7 +26,7 @@ export const ContactsFormSwitchWrapper = styled(Box)`
 `;
 
 export const ContactsFormWhatsAppWrapper = styled(Box, {
-	shouldForwardProp: (prop) => prop !== 'isFullWidth?',
+	shouldForwardProp: (prop) => prop !== 'isFullWidth',
 })<{ isFullWidth?: boolean }>`
 	width: ${({ isFullWidth }) => (isFullWidth ? '100%' : '50%')};
 

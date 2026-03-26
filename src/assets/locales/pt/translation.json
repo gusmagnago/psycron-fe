@@ -1,7 +1,10 @@
 {
 	"common": {
 		"close": "Fechar",
-		"today": "Hoje"
+		"today": "Hoje",
+		"save": "Salvar",
+		"saving": "Salvando...",
+		"cancel": "Cancelar"
 	},
 	"auth": {
 		"error": {
@@ -659,7 +662,30 @@
 			"checklist-calendar-desc": "Conecte sua agenda para evitar conflitos",
 			"help-title": "Precisa de ajuda?",
 			"help-text": "A Júpiter pode te ajudar a completar sua configuração",
-			"help-cta": "Falar com a Júpiter"
+			"help-cta": "Falar com a Júpiter",
+			"banner-dismiss": "Fechar",
+			"buffer-drawer-desc": "O tempo de intervalo adiciona uma pausa entre as sessões para que possa se preparar, fazer anotações ou simplesmente respirar entre os atendimentos.",
+			"buffer-drawer-title": "Tempo de intervalo",
+			"buffer-input-helper": "Insira um valor entre 0 e 120 minutos",
+			"buffer-input-label": "Minutos entre sessões",
+			"buffer-save": "Salvar",
+			"buffer-save-fail": "Não foi possível salvar o tempo de intervalo. Tente novamente.",
+			"buffer-save-success": "Tempo de intervalo salvo com sucesso.",
+			"checklist-action-configure": "Configurar",
+			"checklist-action-edit": "Editar",
+			"checklist-action-soon": "Em breve",
+			"checklist-action-view": "Ver",
+			"checklist-badge-recommended": "Recomendado",
+			"checklist-duration": "Duração da sessão",
+			"checklist-duration-desc": "Defina a duração de cada consulta",
+			"checklist-progress-label": "{{count}} de {{total}} concluídos",
+			"checklist-session-type": "Tipo de sessão",
+			"checklist-session-type-desc": "Como você conduz suas sessões",
+			"checklist-timezone": "Fuso horário",
+			"checklist-timezone-desc": "Garanta que todas as reservas usem o fuso horário correto",
+			"checklist-working-hours": "Horário de trabalho",
+			"checklist-working-hours-desc": "Seus dias e horários disponíveis para atendimentos",
+			"tip-buffer-time": "Adicionar um intervalo entre sessões ajuda você a se preparar, fazer anotações e evitar atrasos. Até 10 minutos fazem diferença."
 		},
 		"google-calendar": {
 			"permissions-intro": "Vamos conectar sua Google Agenda com segurança para:",
@@ -784,9 +810,31 @@
 			"deleted-notice": "Você não tem mais disponibilidade configurada. Fale com a Júpiter para criar uma nova."
 		},
 		"settings": {
+			"google-calendar-connect-btn": "Conectar Google Agenda",
+			"google-calendar-connected": "Seu Google Agenda está conectado.",
+			"google-calendar-desc": "Conecte seu Google Agenda para bloquear automaticamente horários ocupados e evitar conflitos.",
+			"google-calendar-drawer-title": "Google Agenda",
 			"live-alert": "Sua disponibilidade está ativa. Seus clientes já podem agendar sessões com você.",
-			"page-title": "Disponibilidade",
-			"talk-to-jupiter": "Editar com a Júpiter"
+			"page-title": "Configurações de Disponibilidade",
+			"save-error": "Não foi possível salvar. Tente novamente.",
+			"save-success": "Configurações salvas com sucesso.",
+			"session-duration-desc": "Defina a duração padrão de cada atendimento.",
+			"session-duration-drawer-title": "Duração da sessão",
+			"session-type-both": "Ambos",
+			"session-type-desc": "Escolha como você conduz suas sessões.",
+			"session-type-drawer-title": "Tipo de sessão",
+			"session-type-in-person": "Presencial",
+			"session-type-online": "Online",
+			"talk-to-jupiter": "Editar com a Júpiter",
+			"timezone-desc": "Todos os agendamentos serão exibidos e criados neste fuso horário.",
+			"timezone-drawer-title": "Fuso horário",
+			"timezone-input-label": "Fuso horário",
+			"working-hours-days-label": "Dias de trabalho",
+			"working-hours-desc": "Defina seus dias disponíveis e o horário para atendimentos.",
+			"working-hours-drawer-title": "Horário de trabalho",
+			"working-hours-end-label": "Fim",
+			"working-hours-start-label": "Início",
+			"working-hours-time-label": "Intervalo de horário"
 		}
 	}
 }

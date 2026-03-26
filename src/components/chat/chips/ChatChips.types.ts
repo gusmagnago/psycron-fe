@@ -16,5 +16,6 @@ export interface IMultiSelectChipsProps {
 	onConfirm: (selectedKeys: string[]) => void;
 	onOtherSubmit?: (text: string) => void;
 	options: IChipOption[];
+	otherChipKey?: string;
 	otherPlaceholder?: string;
 }

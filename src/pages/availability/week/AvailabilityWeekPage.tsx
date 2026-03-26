@@ -122,6 +122,7 @@ export const AvailabilityWeekPage = () => {
 		toggleShowFreeSlots,
 		toggleTimeOfDay,
 	} = useCalendarPrefs();
+
 	const [selectedSlot, setSelectedSlot] = useState<IWeekSlot | null>(null);
 	const [filterAnchorEl, setFilterAnchorEl] = useState<HTMLElement | null>(
 		null

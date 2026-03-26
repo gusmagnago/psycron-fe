@@ -15,3 +15,22 @@ export const getAvailability = async (params?: {
 		return null;
 	}
 };
+
+export interface IUpdateAvailabilitySettingsPayload {
+	bufferTimeMinutes?: number;
+	sessionDuration?: string;
+	sessionType?: string;
+	timeRange?: string;
+	timezone?: string;
+	workingDays?: string[];
+}
+
+export const updateAvailabilitySettings = async (
+	data: IUpdateAvailabilitySettingsPayload
+): Promise<IAvailabilityRecord> => {
+	const response = await apiClient.patch<IAvailabilityRecord>(
+		'/jupiter/availability/settings',
+		data
+	);
+	return response.data;
+};

@@ -1,7 +1,10 @@
 {
 	"common": {
 		"close": "Close",
-		"today": "Today"
+		"today": "Today",
+		"save": "Save",
+		"saving": "Saving...",
+		"cancel": "Cancel"
 	},
 	"auth": {
 		"error": {
@@ -658,7 +661,30 @@
 			"checklist-calendar-desc": "Connect your calendar to prevent conflicts",
 			"help-title": "Need help?",
 			"help-text": "Jupiter can guide you through completing your setup",
-			"help-cta": "Talk to Jupiter"
+			"help-cta": "Talk to Jupiter",
+			"banner-dismiss": "Dismiss",
+			"buffer-drawer-desc": "Buffer time adds a gap between sessions so you can prepare, take notes, or simply breathe between appointments.",
+			"buffer-drawer-title": "Buffer time",
+			"buffer-input-helper": "Enter a value between 0 and 120 minutes",
+			"buffer-input-label": "Minutes between sessions",
+			"buffer-save": "Save",
+			"buffer-save-fail": "Could not save buffer time. Please try again.",
+			"buffer-save-success": "Buffer time saved successfully.",
+			"checklist-action-configure": "Configure",
+			"checklist-action-edit": "Edit",
+			"checklist-action-soon": "Coming soon",
+			"checklist-action-view": "View",
+			"checklist-badge-recommended": "Recommended",
+			"checklist-duration": "Session duration",
+			"checklist-duration-desc": "Set the length of each appointment",
+			"checklist-progress-label": "{{count}} of {{total}} completed",
+			"checklist-session-type": "Session type",
+			"checklist-session-type-desc": "How do you conduct your sessions",
+			"checklist-timezone": "Time zone",
+			"checklist-timezone-desc": "Ensure all bookings use the correct time zone",
+			"checklist-working-hours": "Working hours",
+			"checklist-working-hours-desc": "Your available days and hours for appointments",
+			"tip-buffer-time": "Adding buffer time between sessions helps you prepare, take notes, and avoid running late. Even 10 minutes makes a difference."
 		},
 		"google-calendar": {
 			"permissions-intro": "We’ll securely connect to your Google Calendar to:",
@@ -783,9 +809,31 @@
 			"deleted-notice": "You no longer have availability set up. Head to Jupiter to create a new one."
 		},
 		"settings": {
+			"google-calendar-connect-btn": "Connect Google Calendar",
+			"google-calendar-connected": "Your Google Calendar is connected.",
+			"google-calendar-desc": "Connect your Google Calendar to automatically block busy times and prevent double bookings.",
+			"google-calendar-drawer-title": "Google Calendar",
 			"live-alert": "Your availability is now live. Clients can start booking sessions with you right away.",
-			"page-title": "Availability",
-			"talk-to-jupiter": "Edit with Jupiter"
+			"page-title": "Availability Settings",
+			"save-error": "Could not save settings. Please try again.",
+			"save-success": "Settings saved successfully.",
+			"session-duration-desc": "Set the default length for each appointment.",
+			"session-duration-drawer-title": "Session duration",
+			"session-type-both": "Both",
+			"session-type-desc": "Choose how you conduct your sessions.",
+			"session-type-drawer-title": "Session type",
+			"session-type-in-person": "In person",
+			"session-type-online": "Online",
+			"talk-to-jupiter": "Edit with Jupiter",
+			"timezone-desc": "All bookings will be displayed and scheduled in this time zone.",
+			"timezone-drawer-title": "Time zone",
+			"timezone-input-label": "Time zone",
+			"working-hours-days-label": "Working days",
+			"working-hours-desc": "Set your available days and the time range for appointments.",
+			"working-hours-drawer-title": "Working hours",
+			"working-hours-end-label": "End",
+			"working-hours-start-label": "Start",
+			"working-hours-time-label": "Time range"
 		}
 	}
 }

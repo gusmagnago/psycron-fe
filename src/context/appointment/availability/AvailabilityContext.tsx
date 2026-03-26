@@ -18,7 +18,6 @@ import type {
 	IDateInfo,
 	IPaginatedAvailability,
 } from '@psycron/api/user/index.types';
-import type { ISelectedSlot } from '@psycron/components/calendar/big-calendar/BigCalendar.types';
 import { useAlert } from '@psycron/context/alert/AlertContext';
 import { useTherapistId } from '@psycron/hooks/useTherapistId';
 import {
@@ -31,6 +30,7 @@ import {
 import type {
 	AvailabilityContextType,
 	AvailabilityProviderProps,
+	ISelectedSlot,
 } from './AvailabilityContext.types';
 
 const AvailabilityContext = createContext<AvailabilityContextType | undefined>(
