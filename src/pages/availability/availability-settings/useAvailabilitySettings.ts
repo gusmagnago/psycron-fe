@@ -1,6 +1,7 @@
 import { useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams } from 'react-router-dom';
+import { useFeatureFlagEnabled } from '@posthog/react';
 import { updateAvailabilitySettings } from '@psycron/api/availability';
 import type { IAvailabilityRecord } from '@psycron/api/availability/index.types';
 import { useAlert } from '@psycron/context/alert/AlertContext';
@@ -138,6 +139,10 @@ export const useAvailabilitySettings = (): UseAvailabilitySettingsReturn => {
 
 	const { availability, isLoading } = useJupiterAvailabilityConfig();
 
+	const isCancellationPolicyEnabled = useFeatureFlagEnabled('availability_cancellation_policy');
+	const isGoogleCalendarEnabled = useFeatureFlagEnabled('availability_google_calendar');
+	const isJupiterCtaEnabled = useFeatureFlagEnabled('jupiter_cta_availability');
+
 	const openDrawer = useCallback(
 		(key: DrawerKey) => {
 			if (availability) {
@@ -173,21 +178,27 @@ export const useAvailabilitySettings = (): UseAvailabilitySettingsReturn => {
 	const checklistItems = useMemo<ChecklistItem[]>(() => {
 		if (!availability) return [];
 
-		return CHECKLIST_CONFIG.map(
-			(config): ChecklistItem => ({
+		return CHECKLIST_CONFIG.map((config): ChecklistItem => {
+			const isFlagDisabled =
+				(config.id === 'cancellation-policy' && !isCancellationPolicyEnabled) ||
+				(config.id === 'google-calendar' && !isGoogleCalendarEnabled);
+
+			const isDisabled = isFlagDisabled || (config.disabled ?? false);
+
+			return {
 				descKey: config.descKey,
 				id: config.id,
-				isConfigured: config.disabled ? false : config.configuredBy(availability),
-				isDisabled: config.disabled ?? false,
+				isConfigured: isDisabled ? false : config.configuredBy(availability),
+				isDisabled,
 				isRecommended: config.isRecommended,
 				onConfigure:
 					config.onConfigureDrawer != null
 						? () => openDrawer(config.onConfigureDrawer as DrawerKey)
 						: undefined,
 				titleKey: config.titleKey,
-			})
-		);
-	}, [availability, openDrawer]);
+			};
+		});
+	}, [availability, isCancellationPolicyEnabled, isGoogleCalendarEnabled, openDrawer]);
 
 	const configuredCount = useMemo(
 		() => checklistItems.filter((item) => item.isConfigured).length,
@@ -275,6 +286,7 @@ export const useAvailabilitySettings = (): UseAvailabilitySettingsReturn => {
 		activeDrawer,
 		availability,
 		bannerDismissed,
+		isJupiterCtaEnabled: !!isJupiterCtaEnabled,
 		bufferInput,
 		checklistItems,
 		closeDrawer,

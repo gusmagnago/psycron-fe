@@ -1,7 +1,7 @@
 import styled from '@emotion/styled';
 import { Box, LinearProgress } from '@mui/material';
-import { Button } from '@psycron/components/button/Button';
 import { Text } from '@psycron/components/text/Text';
+import { isMobileMedia } from '@psycron/theme/media-queries/mediaQueries';
 import { hexToRgba, palette } from '@psycron/theme/palette/palette.theme';
 import { spacing } from '@psycron/theme/spacing/spacing.theme';
 
@@ -9,10 +9,25 @@ import { spacing } from '@psycron/theme/spacing/spacing.theme';
 
 export const SettingsWrapper = styled(Box)`
 	display: flex;
+	flex-direction: row;
+	padding: ${spacing.small};
+	gap: ${spacing.medium};
+	width: 100%;
+	margin-bottom: 0;
+
+	${isMobileMedia} {
+		padding: 0;
+		flex-direction: column;
+		margin-bottom: 120px;
+	}
+`;
+
+// ─── Jupiter's Availability panel ────────────────────────────────────────────────────────────
+
+export const JupiterAvailabilityPanel = styled(Box)`
+	display: flex;
 	flex-direction: column;
 	gap: ${spacing.medium};
-	max-width: 600px;
-	width: 100%;
 `;
 
 // ─── Checklist card ────────────────────────────────────────────────────────────
@@ -24,6 +39,14 @@ export const ChecklistCard = styled(Box)`
 	display: flex;
 	flex-direction: column;
 	gap: ${spacing.small};
+	text-align: left;
+	width: 600px;
+
+	${isMobileMedia} {
+		width: 100%;
+		gap: ${spacing.xxs};
+		padding: ${spacing.small};
+	}
 `;
 
 export const ChecklistHeader = styled(Box)`
@@ -33,7 +56,7 @@ export const ChecklistHeader = styled(Box)`
 `;
 
 export const ChecklistTitle = styled(Text)`
-	font-size: 20px;
+	font-size: 1.3rem;
 	font-weight: 700;
 	color: ${palette.text.primary};
 `;
@@ -112,7 +135,7 @@ export const ChecklistRowTitle = styled(Text)`
 	color: ${palette.text.primary};
 	display: flex;
 	align-items: center;
-	gap: 6px;
+	gap: ${spacing.xs};
 	flex-wrap: wrap;
 `;
 
@@ -129,26 +152,6 @@ export const ChecklistRowDesc = styled(Text)`
 	font-size: 0.8rem;
 	color: ${palette.text.secondary};
 	margin-top: 1px;
-`;
-
-// ─── Adjust with Júpiter CTA ───────────────────────────────────────────────────
-
-export const JupiterCta = styled(Button)`
-	border-radius: 40px;
-	border: 2px solid ${palette.brand.purple};
-	background-color: ${palette.background.default};
-	color: ${palette.text.primary};
-	font-size: 15px;
-	font-weight: 500;
-	padding: ${spacing.xs} ${spacing.mediumSmall};
-	text-transform: none;
-	align-self: flex-start;
-	transition: all 0.2s ease;
-
-	&:hover {
-		background-color: ${palette.brand.light};
-		border-color: ${palette.brand.dark};
-	}
 `;
 
 // ─── Drawer field groups (settings-specific) ──────────────────────────────────
@@ -179,10 +182,12 @@ export const OptionChip = styled(Box, {
 	padding: ${spacing.xs} ${spacing.small};
 	border-radius: ${spacing.small};
 	border: 1.5px solid
-		${({ isSelected }) => (isSelected ? palette.brand.purple : palette.gray['02'])};
+		${({ isSelected }) =>
+			isSelected ? palette.brand.purple : palette.gray['02']};
 	background: ${({ isSelected }) =>
 		isSelected ? hexToRgba(palette.brand.purple, 0.08) : 'transparent'};
-	color: ${({ isSelected }) => (isSelected ? palette.brand.purple : palette.text.primary)};
+	color: ${({ isSelected }) =>
+		isSelected ? palette.brand.purple : palette.text.primary};
 	font-size: 14px;
 	font-weight: ${({ isSelected }) => (isSelected ? 600 : 400)};
 	cursor: pointer;

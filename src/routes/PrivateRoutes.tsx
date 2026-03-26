@@ -1,6 +1,6 @@
 import { AvailabilitySettings } from '@psycron/pages/availability/availability-settings/AvailabilitySettings';
-import { AvailabilityCalendarPage } from '@psycron/pages/availability/calendar/AvailabilityCalendarPage';
 import { GenerateAvailability } from '@psycron/pages/availability/GenerateAvailability';
+import { AvailabilityCalendarPage } from '@psycron/pages/availability/page-calendar/AvailabilityCalendarPage';
 import { AvailabilityWeekPage } from '@psycron/pages/availability/week/AvailabilityWeekPage';
 import { Dashboard } from '@psycron/pages/dashboard/Dashboard';
 import {

@@ -1,10 +1,11 @@
 import { Fragment } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Navigate, useParams } from 'react-router-dom';
-import { Autocomplete, TextField } from '@mui/material';
+import { Autocomplete, TextField, Tooltip } from '@mui/material';
 import { Button } from '@psycron/components/button/Button';
 import { SettingsDrawer } from '@psycron/components/drawer/SettingsDrawer';
 import { CheckSuccess } from '@psycron/components/icons';
+import { JupiterHelpCard } from '@psycron/components/jupiter-help-card/JupiterHelpCard';
 import { JupiterTip } from '@psycron/components/jupiter-tip/JupiterTip';
 import { PageLayout } from '@psycron/layouts/app/pages-layout/PageLayout';
 import { AVAILABILITYGENERATE } from '@psycron/pages/urls';
@@ -26,7 +27,7 @@ import {
 	DrawerFieldGroup,
 	DrawerFieldLabel,
 	GoogleCalendarStatus,
-	JupiterCta,
+	JupiterAvailabilityPanel,
 	OptionChip,
 	OptionChipsRow,
 	RecommendedBadge,
@@ -90,6 +91,7 @@ export const AvailabilitySettings = () => {
 		handleGoogleCalendarConnect,
 		handleJupiterCta,
 		handleSessionDurationSave,
+		isJupiterCtaEnabled,
 		handleSessionTypeSave,
 		handleTimezoneSave,
 		handleWorkingHoursSave,
@@ -137,16 +139,23 @@ export const AvailabilitySettings = () => {
 						<ChecklistRowDesc>{t(item.descKey)}</ChecklistRowDesc>
 					</ChecklistRowContent>
 
-					<Button
-						small
-						aria-label={`${renderActionLabel(item)} ${t(item.titleKey)}`}
-						disabled={item.isDisabled && !item.isConfigured}
-						onClick={item.isDisabled ? undefined : item.onConfigure}
-						tertiary
-						variant={item.isConfigured ? 'contained' : 'outlined'}
+					<Tooltip
+						arrow
+						title={item.isDisabled && !item.isConfigured ? t('availability.settings.feature-disabled-tooltip') : ''}
 					>
-						{renderActionLabel(item)}
-					</Button>
+						<span>
+							<Button
+								small
+								aria-label={`${renderActionLabel(item)} ${t(item.titleKey)}`}
+								disabled={item.isDisabled && !item.isConfigured}
+								onClick={item.isDisabled ? undefined : item.onConfigure}
+								tertiary
+								variant={item.isConfigured ? 'contained' : 'outlined'}
+							>
+								{renderActionLabel(item)}
+							</Button>
+						</span>
+					</Tooltip>
 				</ChecklistRow>
 				{idx < checklistItems.length - 1 && (
 					<ChecklistDivider key={`div-${item.id}`} />
@@ -161,21 +170,6 @@ export const AvailabilitySettings = () => {
 			title={t('availability.settings.page-title')}
 		>
 			<SettingsWrapper>
-				{!bannerDismissed && firstMissingRecommended && (
-					<JupiterTip
-						ariaLabel={t('jupiter.post-publish.tip-title')}
-						title={t('jupiter.post-publish.tip-title')}
-						text={t(`jupiter.post-publish.tip-${firstMissingRecommended.id}`)}
-						actionLabel={
-							firstMissingRecommended.onConfigure
-								? t('jupiter.post-publish.checklist-action-configure')
-								: undefined
-						}
-						onAction={firstMissingRecommended.onConfigure}
-						onDismiss={() => setBannerDismissed(true)}
-					/>
-				)}
-
 				<ChecklistCard>
 					<ChecklistHeader>
 						<ChecklistTitle>
@@ -209,10 +203,30 @@ export const AvailabilitySettings = () => {
 
 					{renderChecklist()}
 				</ChecklistCard>
-
-				<JupiterCta onClick={handleJupiterCta}>
-					{t('availability.settings.talk-to-jupiter')}
-				</JupiterCta>
+				<JupiterAvailabilityPanel>
+					{!bannerDismissed && firstMissingRecommended && (
+						<JupiterTip
+							ariaLabel={t('jupiter.post-publish.tip-title')}
+							title={t('jupiter.post-publish.tip-title')}
+							text={t(`jupiter.post-publish.tip-${firstMissingRecommended.id}`)}
+							actionLabel={
+								firstMissingRecommended.onConfigure
+									? t('jupiter.post-publish.checklist-action-configure')
+									: undefined
+							}
+							onAction={firstMissingRecommended.onConfigure}
+							onDismiss={() => setBannerDismissed(true)}
+						/>
+					)}
+					<JupiterHelpCard
+					actionLabel={t('availability.settings.jupiter-help-action')}
+					description={t('availability.settings.jupiter-help-description')}
+					disabled={!isJupiterCtaEnabled}
+					disabledTooltip={t('availability.settings.jupiter-cta-disabled-tooltip')}
+					onAction={handleJupiterCta}
+					title={t('availability.settings.jupiter-help-title')}
+				/>
+				</JupiterAvailabilityPanel>
 			</SettingsWrapper>
 
 			{/* ─── Working hours drawer ─────────────────────────────────────── */}

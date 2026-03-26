@@ -2,6 +2,7 @@ import styled from '@emotion/styled';
 import { Box } from '@mui/material';
 import { Text } from '@psycron/components/text/Text';
 import { jupiterBackgroundMain } from '@psycron/theme/background/background.theme';
+import { isMobileMedia } from '@psycron/theme/media-queries/mediaQueries';
 import { palette } from '@psycron/theme/palette/palette.theme';
 import { shadowSmall } from '@psycron/theme/shadow/shadow.theme';
 import { spacing } from '@psycron/theme/spacing/spacing.theme';
@@ -14,6 +15,11 @@ export const JupiterTipRoot = styled(Box)`
 	box-shadow: ${shadowSmall};
 	background: ${jupiterBackgroundMain};
 	border-radius: ${spacing.medium};
+	width: 400px;
+
+	${isMobileMedia} {
+		width: 100%;
+	}
 `;
 
 export const JupiterIconWrapper = styled(Box)`
@@ -40,14 +46,13 @@ export const JupiterTipContent = styled(Box)`
 `;
 
 export const JupiterTipTitle = styled(Text)`
-	font-weight: 700;
-	color: ${palette.brand.purple};
-	letter-spacing: 0.02em;
+	color: ${palette.brand.dark};
+	font-weight: 600;
 	text-align: left;
 `;
 
 export const JupiterTipText = styled(Text)`
-	color: ${palette.text.primary};
+	color: ${palette.text.secondary};
 	font-size: 0.85rem;
 	text-align: left;
 `;

@@ -6,3 +6,9 @@ export const jupiterBackgroundMain = `linear-gradient(
 		${hexToRgba(palette.primary.main, 0.4)} 100%
 	);
 `;
+
+export const jupiterBackgroundSoft = `linear-gradient(
+	135deg,
+	${hexToRgba(palette.brand.purple, 0.05)} 0%,
+	${hexToRgba(palette.brand.purple, 0.1)} 100%
+)`;

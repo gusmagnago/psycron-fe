@@ -15,6 +15,7 @@ export const StyledCloseButton = styled(Button)`
 
 	background-color: ${palette.background.default};
 	box-shadow: ${shadowSmall};
+	border: none;
 
 	& svg {
 		height: 15px;

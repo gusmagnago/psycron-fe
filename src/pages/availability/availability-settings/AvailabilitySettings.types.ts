@@ -48,6 +48,7 @@ export interface UseAvailabilitySettingsReturn {
 	handleSessionTypeSave: () => void;
 	handleTimezoneSave: () => void;
 	handleWorkingHoursSave: () => void;
+	isJupiterCtaEnabled: boolean;
 	isLoading: boolean;
 	isSaving: boolean;
 	openDrawer: (key: DrawerKey) => void;

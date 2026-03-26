@@ -296,7 +296,7 @@ export const SlotCellEmpty = styled(Box, {
 		content: '';
 		position: absolute;
 		inset: 0;
-		background: rgba(221, 147, 255, 0.3);
+		background: rgba(221, 147, 255, 0.15);
 		border-radius: inherit;
 		pointer-events: none;
 	}`
