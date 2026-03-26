@@ -51,12 +51,9 @@ const WORKING_DAYS = [
 ];
 
 const SESSION_TYPE_OPTIONS = [
-	{ key: 'chip-online', labelKey: 'availability.settings.session-type-online' },
-	{
-		key: 'chip-in-person',
-		labelKey: 'availability.settings.session-type-in-person',
-	},
-	{ key: 'chip-both', labelKey: 'availability.settings.session-type-both' },
+	{ key: 'ONLINE', labelKey: 'availability.settings.session-type-online' },
+	{ key: 'IN_PERSON', labelKey: 'availability.settings.session-type-in-person' },
+	{ key: 'BOTH', labelKey: 'availability.settings.session-type-both' },
 ];
 
 const SESSION_DURATION_OPTIONS = ['30', '45', '60', '90'];
