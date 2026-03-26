@@ -157,6 +157,7 @@ export const AvailabilitySettings = () => {
 	return (
 		<PageLayout
 			isLoading={isLoading}
+			backButton
 			title={t('availability.settings.page-title')}
 		>
 			<SettingsWrapper>

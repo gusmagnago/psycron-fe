@@ -744,7 +744,8 @@
 			"page-title": "Disponibilidade",
 			"source-google": "Google",
 			"source-jupiter": "Júpiter",
-			"subtitle": "Seu calendário de disponibilidade"
+			"subtitle": "Seu calendário de disponibilidade",
+			"settings": "Definições de disponibilidade"
 		},
 		"week": {
 			"drawer": {
@@ -803,8 +804,10 @@
 				"end-of-month": "Até o fim do mês",
 				"end-of-year": "Até o fim do ano",
 				"success": "Disponibilidade estendida com sucesso",
-				"title": "Por quanto tempo deseja estender?"
-			}
+				"title": "Por quanto tempo deseja estender?",
+				"review-settings": "Rever definições"
+			},
+			"settings": "Definições"
 		},
 		"gate": {
 			"deleted-notice": "Você não tem mais disponibilidade configurada. Fale com a Júpiter para criar uma nova."

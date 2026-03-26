@@ -11,6 +11,7 @@ import {
 	Calendar,
 	ChevronLeft,
 	ChevronRight,
+	Edit,
 	Filter,
 	FilterFull,
 } from '@psycron/components/icons';
@@ -19,7 +20,11 @@ import { useCalendarPrefs } from '@psycron/hooks/useCalendarPrefs';
 import useViewport from '@psycron/hooks/useViewport';
 import i18n from '@psycron/i18n';
 import { PageLayout } from '@psycron/layouts/app/pages-layout/PageLayout';
-import { AVAILABILITYPATH, AVAILABILITYWEEK_BASE } from '@psycron/pages/urls';
+import {
+	AVAILABILITYPATH,
+	AVAILABILITYSETTINGS,
+	AVAILABILITYWEEK_BASE,
+} from '@psycron/pages/urls';
 import { palette } from '@psycron/theme/palette/palette.theme';
 import {
 	addWeeks,
@@ -478,7 +483,7 @@ export const AvailabilityWeekPage = () => {
 
 				<WeekFooter>
 					<AvailabilityLegend items={legendItems} />
-					<Box>
+					<Box sx={{ display: 'flex', gap: 1 }}>
 						<Button
 							small
 							tertiary
@@ -486,6 +491,17 @@ export const AvailabilityWeekPage = () => {
 						>
 							<Calendar />
 							{t('components.agenda.month')}
+						</Button>
+						<Button
+							small
+							tertiary
+							aria-label={t('availability.week.settings')}
+							onClick={() =>
+								navigate(`/${i18n.language}/${AVAILABILITYSETTINGS}`)
+							}
+						>
+							<Edit />
+							{t('availability.week.settings')}
 						</Button>
 					</Box>
 				</WeekFooter>

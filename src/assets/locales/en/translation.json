@@ -743,7 +743,8 @@
 			"page-title": "Availability",
 			"source-google": "Google",
 			"source-jupiter": "Júpiter",
-			"subtitle": "Your availability calendar"
+			"subtitle": "Your availability calendar",
+			"settings": "Availability settings"
 		},
 		"week": {
 			"drawer": {
@@ -802,8 +803,10 @@
 				"end-of-month": "End of the month",
 				"end-of-year": "End of the year",
 				"success": "Availability extended successfully",
-				"title": "How long would you like to extend it?"
-			}
+				"title": "How long would you like to extend it?",
+				"review-settings": "Review settings"
+			},
+			"settings": "Settings"
 		},
 		"gate": {
 			"deleted-notice": "You no longer have availability set up. Head to Jupiter to create a new one."

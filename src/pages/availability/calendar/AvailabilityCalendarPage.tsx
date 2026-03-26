@@ -8,11 +8,15 @@ import {
 	NavButtons,
 } from '@psycron/components/availability/AvailabilityNavButton';
 import { AvailabilityTodayButton } from '@psycron/components/availability/AvailabilityTodayButton';
+import { Edit } from '@psycron/components/icons';
 import { useAvailability } from '@psycron/context/appointment/availability/AvailabilityContext';
 import { useJupiterAvailability } from '@psycron/hooks/useJupiterAvailability';
 import i18n from '@psycron/i18n';
 import { PageLayout } from '@psycron/layouts/app/pages-layout/PageLayout';
-import { AVAILABILITYWEEK_BASE } from '@psycron/pages/urls';
+import {
+	AVAILABILITYSETTINGS,
+	AVAILABILITYWEEK_BASE,
+} from '@psycron/pages/urls';
 import { palette } from '@psycron/theme/palette/palette.theme';
 import {
 	eachDayOfInterval,
@@ -147,6 +151,14 @@ export const AvailabilityCalendarPage = () => {
 						</NavButton>
 						<NavButton disabled={!canGoNext} onClick={goToNextMonth}>
 							<ChevronRight size={20} />
+						</NavButton>
+						<NavButton
+							aria-label={t('availability.calendar.settings')}
+							onClick={() =>
+								navigate(`/${i18n.language}/${AVAILABILITYSETTINGS}`)
+							}
+						>
+							<Edit />
 						</NavButton>
 					</NavButtons>
 				</CalendarHeader>
