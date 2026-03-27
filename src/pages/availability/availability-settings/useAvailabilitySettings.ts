@@ -144,6 +144,7 @@ export const useAvailabilitySettings = (): UseAvailabilitySettingsReturn => {
 	const { availability, isLoading } = useJupiterAvailabilityConfig();
 
 	const isCancellationPolicyEnabled = useFeatureFlagEnabled('availability_cancellation_policy');
+	const isBufferTimeEnabled = useFeatureFlagEnabled('availability_buffer_time');
 	const isJupiterCtaEnabled = useFeatureFlagEnabled('jupiter_cta_availability');
 
 	const openDrawer = useCallback(
@@ -182,7 +183,9 @@ export const useAvailabilitySettings = (): UseAvailabilitySettingsReturn => {
 		if (!availability) return [];
 
 		return CHECKLIST_CONFIG.map((config): ChecklistItem => {
-			const isFlagDisabled = config.id === 'cancellation-policy' && !isCancellationPolicyEnabled;
+			const isFlagDisabled =
+				(config.id === 'cancellation-policy' && !isCancellationPolicyEnabled) ||
+				(config.id === 'buffer-time' && !isBufferTimeEnabled);
 
 			const isDisabled = isFlagDisabled || (config.disabled ?? false);
 
@@ -207,7 +210,7 @@ export const useAvailabilitySettings = (): UseAvailabilitySettingsReturn => {
 
 			return rank(a) - rank(b);
 		});
-	}, [availability, isCancellationPolicyEnabled, openDrawer]);
+	}, [availability, isBufferTimeEnabled, isCancellationPolicyEnabled, openDrawer]);
 
 	const activeCount = useMemo(
 		() => checklistItems.filter((item) => !item.isDisabled).length,
@@ -222,7 +225,7 @@ export const useAvailabilitySettings = (): UseAvailabilitySettingsReturn => {
 	const progress = activeCount > 0 ? Math.round((configuredCount / activeCount) * 100) : 0;
 
 	const firstMissingRecommended = useMemo(
-		() => checklistItems.find((item) => item.isRecommended && !item.isConfigured),
+		() => checklistItems.find((item) => item.isRecommended && !item.isConfigured && !item.isDisabled),
 		[checklistItems]
 	);
 

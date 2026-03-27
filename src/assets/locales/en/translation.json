@@ -1,851 +1,878 @@
 {
-	"common": {
-		"close": "Close",
-		"today": "Today",
-		"save": "Save",
-		"saving": "Saving...",
-		"cancel": "Cancel"
-	},
-	"auth": {
-		"error": {
-			"login-failed": "Invalid email or password. Please check your credentials and try again.",
-			"registration-failed": "Unable to complete registration. Please check your information and try again.",
-			"password-reset-request": "If this email is registered, you will receive password reset instructions.",
-			"password-reset-failed": "Unable to reset password. The link may have expired. Please request a new one.",
-			"session-expired": "Your session has expired. Please sign in again.",
-			"rate-limited": "Too many attempts. Please wait a moment before trying again.",
-			"generic": "Something went wrong. Please try again later.",
-			"not-found": "User ID not found",
-			"not-allowed": "You can't delete this account."
-		},
-		"success": {
-			"password-reset-request": "If this email is registered, you will receive password reset instructions shortly.",
-			"password-reset": "Your password has been changed successfully. You can now sign in.",
-			"logout": "You have been signed out successfully."
-		},
-		"continue-google": "Continue with Google",
-		"continue-email": "Continue with email"
-	},
-	"globals": {
-		"email": "Email",
-		"name": "Name",
-		"password": "Password",
-		"phone": "Phone",
-		"whatsapp": "Whatsapp",
-		"address": "Address",
-		"patients": "Patients",
-		"patient": "Patient",
-		"registered-patients": "Registered patients",
-		"patients-manager": "Patients manager",
-		"billing-manager": "Billing manager",
-		"subscription-manager": "Subscription manager",
-		"appointments": "Appointments",
-		"appointments-manager": "Manage your appointments",
-		"change-language": "Change language",
-		"help": "Help center",
-		"logout": "Logout",
-		"plan": "Plan",
-		"cancel": "Cancel",
-		"delete": "Delete",
-		"edit": "Edit",
-		"date-time-format": "{{format}}",
-		"time-remaining": {
-			"days": "In {{count}} day(s)",
-			"hours": "In {{count}} hour(s)",
-			"minutes": "In {{count}} minute(s)",
-			"less-than-a-minute": "Session {{status}}"
-		},
-		"in-progress": "In progress",
-		"paused": "Paused",
-		"proceed": "Proceed",
-		"resume": "Resume",
-		"reason": "Reason",
-		"global-reason": "Global reason",
-		"custom-reason": "Describe the reason",
-		"select": "Select",
-		"unselect": "Unselect",
-		"error": {
-			"already-subscribed": "Your email is already subscribed",
-			"internal-server-error": "Something went wrong, please try again later",
-			"invalid-user": "Invalid email or password"
-		},
-		"success": {
-			"subscribed": "You were successfully subscribed. Please check your email!"
-		},
-		"date": "Date",
-		"time": "Time",
-		"at": "at",
-		"date-time": "Date and Time: ",
-		"therapist": "Therapist",
-		"appointment-status": {
-			"booked": "Booked",
-			"available": "Available",
-			"onhold": "on Hold",
-			"blocked": "Blocked",
-			"cancelled": "Cancelled"
-		},
-		"contacts": "Contacts",
-		"starts": "Starts",
-		"ends": "Ends",
-		"time-range": {
-			"time-from-to": "from {{start}} to {{end}}",
-			"time-range-date": "{{date}} from {{start}} to {{end}}",
-			"your-time": "Your local time",
-			"patient-time": "Patient's time",
-			"therapist-time": "Therapist's time"
-		},
-		"notification": {
-			"email": "Send email",
-			"phone": "Call patient",
-			"whatsapp": "Send WhatsApp message"
-		},
-		"cancellation-title": "Please choose the reason you are cancelling your appointment",
-		"cancellation-reason": {
-			"1": "Emergency (Personal/Health Issue)",
-			"2": "Schedule Conflict",
-			"3": "Financial Issues",
-			"4": "Mental Issues",
-			"5": "No-Show",
-			"6": "Other"
-		},
-		"cancellation-other-title": "Please specify the reason",
-		"status": "Status",
-		"close": "Close",
-		"read-only": "Read-only",
-		"auth-method": "Auth method",
-		"privacy-policy": "Privacy Policy",
-		"terms-of-service": "Terms of Use",
-		"privacy": "Privacy"
-	},
-	"components": {
-		"form": {
-			"confirm-password": "Confirm password",
-			"keep-loggedin": "Keep me logged in",
-			"not-valid": "Some fields are missing",
-			"signup": {
-				"sign-up": "Sign up",
-				"title-email": "Create your account",
-				"title": "Create your Psycron account",
-				"first-name": "First name",
-				"last-name": "Last name",
-				"already-have-acc": "Already have an account?",
-				"signin-here-link": "Sign in here"
-			},
-			"signin": {
-				"sign-in": "Sign in",
-				"title": "Welcome back",
-				"dont-have-acc": "Don't have an account?",
-				"signup-here-link": "Sign up here",
-				"forgot-password": "Forgot your password?"
-			},
-			"validation": {
-				"required": "{{name}} is required",
-				"invalid": "{{name}} is invalid",
-				"characters": "Password must be at least {{numChar}} characters",
-				"pass-rules": "Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character",
-				"at-least-one-contact": "Please provide an email or phone number",
-				"match": "{{name}} must match"
-			},
-			"address-form": {
-				"search": "Search the address here",
-				"search-note": "You can start searching for the address, or type it in the below fields.",
-				"street": "Street",
-				"number": "Nº",
-				"hood": "Neighbourhood",
-				"more-info": "Complementary info",
-				"city": "City",
-				"state": "State / Province",
-				"zip": "Zip Code",
-				"country": "Country",
-				"more-info-bttn": "Add more info"
-			},
-			"add-patient": {
-				"name": "Add patient"
-			},
-			"contacts-form": {
-				"contact-via": "Contact via {{method}}?",
-				"contact-via-same": "Is phone number the same as whatsapp?"
-			},
-			"consent": {
-				"terms": "I agree to the <privacyLink>Privacy Policy</privacyLink> and <termsLink>Terms of Use.</termsLink>",
-				"marketing": "I consent to receive <marketingLink>marketing communications.</marketingLink>",
-				"info": "By continuing, you agree to Psycron's <privacyLink>Privacy Policy</privacyLink> and <termsLink>Terms of Use.</termsLink>"
-			}
-		},
-		"input": {
-			"phone-input": {
-				"select-label": "Country",
-				"phone-num-label": "{{registerName}} number here",
-				"phone-number-guide": "Please provide a phone number including the city code if applicable."
-			},
-			"text": {
-				"first-name": "Your first name here",
-				"last-name": "Your last name here",
-				"email": "Your email here"
-			}
-		},
-		"navbar": {
-			"dashboard": "Dashboard",
-			"user-settings": "User settings",
-			"test": "Tests"
-		},
-		"user-details": {
-			"edit": "Edit details",
-			"edit-contacts": "Edit contacts",
-			"edit-success": "Details updated",
-			"add-contacts": "Add your {{contactValue}} number",
-			"change": "Change {{name}}",
-			"save": "Save details",
-			"address-not-found": "Address not found. Please add your info.",
-			"detail-not-found": "{{detail}} is not registered yet",
-			"delete": {
-				"title": "Delete account",
-				"description": "Your account will be deactivated and your personal data anonymised within 30 days. You can contact support to cancel this request.",
-				"confirmation": "Delete permanently"
-			},
-			"section": {
-				"title": {
-					"account": "Account",
-					"security": "Security & Privacy",
-					"contact": "Contact",
-					"subscription": "Subscription",
-					"patients": "Patients"
-				},
-				"local": "Email & Password",
-				"security": {
-					"google-mgmt": "Managed by Google - Your password is securely handled through Google's authentication system.",
-					"accepted": "By creating your Psycron account, you agreed to our <privacyLink>Privacy Policy</privacyLink> and <termsLink>Terms of Use.</termsLink>",
-					"accepted-info": "You can review these documents at any time.",
-					"marketing": "Receive marketing communications"
-				},
-				"contact": {
-					"title-empty": "Add your phone number to enable SMS or WhatsApp notifications."
-				}
-			}
-		},
-		"dashboard": {
-			"card": {
-				"delay-notification": "Pausing the timer will delay all your remaining appointments for today by the duration of this pause.",
-				"delay-confirmation": "Are you sure you want to pause the timer?",
-				"pause": "Sause timer",
-				"session-progress": "Session progress:"
-			},
-			"availability-card": {
-				"first-availability": "Please create your first availability here"
-			}
-		},
-		"appointments": {
-			"card-title": "Appointments of the day",
-			"manager": "Appointments manager"
-		},
-		"patients-table": {
-			"name": "Patient name",
-			"next-session": "Next session",
-			"payment-status": "Payment status",
-			"sessions-month": "Sessions per Month",
-			"value": "Value per session",
-			"discount": "Discount?",
-			"discount-val": "Discount value",
-			"amount": "Full amount",
-			"currency": "Currency",
-			"latest-payment": "Latest payment",
-			"manage": "Manage patient"
-		},
-		"progress": {
-			"received": "You have already received {{progress}}% of your payments 🥳",
-			"missing": "You are missing {{progress}}% of your payments",
-			"not-received": "You haven't received any payments yet",
-			"received-all": "You have received 100% of your payments for this period 🥳 😎"
-		},
-		"c2-action": {
-			"join-waitlist": "Join our <strong>waitlist</strong> today to streamline your therapy practice and focus more on your patients.",
-			"email": "Your email",
-			"join-now": "Join now"
-		},
-		"hero": {
-			"heading": "Revolutionize your therapy practice with a seamless all-in-one solution",
-			"helper": "Easily manage your appointments, payments, patient records, billing, and more."
-		},
-		"header": {
-			"join": "Join now",
-			"benefits": "Benefits",
-			"contact": "Contact",
-			"language": "Language"
-		},
-		"link": {
-			"navigate": {
-				"back": "Back",
-				"next": "Proceed",
-				"finish": "Finish",
-				"confirm": "Confirm",
-				"cancel": "Cancel"
-			}
-		},
-		"footer": {
-			"contact": "Would you like to get in touch? <a>Find us here</a>",
-			"find-me": "Find us here",
-			"credit": {
-				"illustration": "Illustrations by <owner>Icons 8</owner> from <page>Ouch!</page>"
-			}
-		},
-		"share-button": {
-			"alert": {
-				"success": "Shared successfully!",
-				"success-copy": "Link copied successfully!",
-				"error": "Someting went wrong, please try again later.",
-				"error-copy": "We couldn't copy the link, please try again later."
-			},
-			"tooltip-tile": "Share {{with}}",
-			"share-with-patients": "with your patients",
-			"share-infos": {
-				"availability": {
-					"title": "{{therapistName}} shared with you their availability",
-					"text": "Enter here to book an appointment"
-				}
-			}
-		},
-		"agenda": {
-			"modal": "You are booking for {{appointment}}",
-			"your-details": "Your details",
-			"next-week": "Next week",
-			"previous-week": "Previous week",
-			"today": "Today",
-			"month": "Month",
-			"appointment-details": {
-				"title": "Appointment Details",
-				"mailto-subject": "🔔 About your appointment with {{therapistName}} 🔔",
-				"whatsapp-subject": "Hello, how is it going? I am sending this message regarding your appointment with me, {{therapistName}}",
-				"next-sessions": "Other appointments",
-				"edit-patient-details": "Edit Patient Details",
-				"edit-patient-appointment": "Edit appointment",
-				"edit-availability": "Edit availability",
-				"text-status": "This is slot is {{status}}"
-			},
-			"edit-appointment": {
-				"title": "Edit appointment",
-				"confirmation": "Are you sure you want to reschedule this appointment?"
-			},
-			"cancel-appointment": {
-				"title": "Cancel appointment(s)",
-				"select-all": "{{select}} All",
-				"global-reason": "Please, select a global reason:",
-				"confirmation": "Are you sure you want to cancel all appointments?",
-				"review": "Review the dates you selected"
-			},
-			"book-appointment": {
-				"title": "Booking your appointment"
-			}
-		}
-	},
-	"page": {
-		"landing": {
-			"seo": {
-				"title": "Psycron - Innovative Therapist Management App",
-				"description": "Revolutionize your therapy practice with a seamless all-in-one solution. With our app you can easily manage your appointments, payments, patient records, billing, and more.",
-				"ogTitle": "Psycron - Innovative Therapist Management App",
-				"ogDescription": "Revolutionize your therapy practice with a seamless all-in-one solution. With our app you can easily manage your appointments, payments, patient records, billing, and more."
-			},
-			"values": {
-				"all-in-one": "All-in-one solution",
-				"text": "From scheduling appointments to processing payments, maintaining patient records, and handling billing, we help you with your daily tasks, and you will have much more time to take care of your patients. Our solution can transform your practice management, integrating everything into a single, intuitive platform.",
-				"text-focus": "Now you can focus on what truly matters and let us handle the rest for you."
-			},
-			"benefits": {
-				"increased-efficiency": {
-					"name": "Increased Efficiency",
-					"description": "Spend less time on admin tasks. Automate reminders, schedule appointments, and manage patient records seamlessly. Focus more on your patients, not paperwork"
-				},
-				"better-patient-management": {
-					"name": "Better Patient Management",
-					"description": "Easily track patient history and appointments. Enhance care with organized, up-to-date records."
-				},
-				"reduced-administrative-burden": {
-					"name": "Reduced Administrative Burden",
-					"description": "We simplified your workflow"
-				},
-				"enhanced-financial-control": {
-					"name": "Enhanced Financial Control",
-					"description": "Take control of your finances with secure and efficient billing"
-				}
-			},
-			"ct-action": {
-				"heading": "Ready to revolutionize your practice?",
-				"join-waitlist": "<strong>Join our waitlist</strong> today and <strong>be the first</strong> to <strong>experience</strong> <strong>cutting-edge</strong> therapy practice management. <strong>Unlock</strong> <strong>new levels</strong> of <strong>efficiency</strong> and <strong>patient care</strong> with <strong>a product made for you</strong>."
-			}
-		},
-		"not-found": {
-			"title": "Oops, something went wrong!",
-			"sub-title": "But we promise we are working hard to fix it!",
-			"note": "Yes... both of us :)"
-		},
-		"unsubscribe": {
-			"title": "Goodbye for now, {{email}}!",
-			"body-text": "Thank you for being a part of our journey. While we’re sad to see you go, we completely understand your decision. We’ll keep working hard to bring you the best we’ve got, and just know, you’re always welcome back whenever you’re ready.",
-			"see-you": "Hope to see you again soon! ❤️",
-			"confirm": "Click here to complete and unsubscribe"
-		},
-		"reset-password": {
-			"reset": "Reset password",
-			"change-password": "Change password",
-			"password-rule": "Your password must contain at least:",
-			"password-example": "Example:",
-			"item-letter": "One letter {{rule}}",
-			"item-number": "One number {{rule}}",
-			"item-special": "One special character {{rule}}",
-			"item-minimum": "9 characters long",
-			"current-password": "Current password"
-		},
-		"availability": {
-			"wizard": {
-				"wizard-items": {
-					"intro": {
-						"label": "Intro",
-						"title": "Let's setup your availability. Are you ready?",
-						"alert": "You will need to finish your availability setup later"
-					},
-					"weekdays": {
-						"label": "Choose weekdays",
-						"title": "Tell us the days you usually see patients."
-					},
-					"duration": {
-						"label": "Appointment duration",
-						"title": "Let us know how long your sessions are."
-					},
-					"week-slots": {
-						"label": "Weekly time slots"
-					}
-				},
-				"intro": {
-					"options": {
-						"proceed": "Yes!",
-						"finish-later": "Set availability later"
-					}
-				},
-				"availability-days": {
-					"days": {
-						"mon": "Monday",
-						"tue": "Tuesday",
-						"wed": "Wednesday",
-						"thu": "Thursday",
-						"fri": "Friday"
-					},
-					"options": {
-						"all": "Include all days",
-						"weekends": "Don't include weekends",
-						"specific": "Select specific days"
-					}
-				},
-				"duration": {
-					"label": "Appointment duration",
-					"note": "If you have more than one type of appointment, please let us know the duration you use most often. You will be able to change this in the future without any issues!"
-				},
-				"hours": {
-					"no-session": "No session was found"
-				},
-				"modal-title": "Repeat your weekly availability",
-				"modal-info": "Please choose one of the options below. If you pick 'weekly,' your availability will be repeated until the end of the month. If you pick 'monthly,' it will be repeated until the end of the year.",
-				"complete": "Availability created with success"
-			},
-			"agenda": {
-				"status": {
-					"available": "Available",
-					"unavailable": "Unavailable",
-					"booked": "Booked",
-					"empty": "Empty",
-					"blocked": "Blocked",
-					"cancelled": "Cancelled",
-					"onhold": "On hold"
-				},
-				"therapist-edit-modal": {
-					"title": "Edit your availability"
-				}
-			}
-		},
-		"book-appointment": {
-			"title": "{{therapisName}}'s Open Appointments",
-			"description": "Quickly schedule your therapy session. Check available times and choose the best slot to book your appointment easily and conveniently.",
-			"confirmation-should-replicate": "Would you like to set this day as your default choice for future appointments?",
-			"recurrence-pattern": {
-				"month": "Weekly until month ends",
-				"year": "Weekly until year ends",
-				"single": "Only this appointment",
-				"all-future": "All future appointments"
-			},
-			"confirm-edit": "Please confirm that you want to change your appointment from {{previousDate}} to:",
-			"edit-recurrence-title": "Do you want to update only this appointment or all future appointments?",
-			"edit-appointment-title": "You are editing your appointment on {{formattedDate}} at {{startTime}}."
-		},
-		"booking-confirmation": {
-			"title": "Your Appointment with <strong>{{therapistName}}</strong> is confirmed 🎉",
-			"title-plain": "Your Appointment with {{therapistName}} is confirmed 🎉",
-			"subtitle": "We're excited to see you soon!",
-			"whats-next": "<strong>{{therapistName}}</strong> will reach out with additional details as the appointment date approaches.",
-			"advise": "Please be available a few minutes early.",
-			"reschedule": "You can reschedule your appointment up to 1 day before the session.",
-			"cancel": "To reschedule or cancel , please <strong>click here</strong>",
-			"help": "If you have any questions or need assistance, feel free to contact us at",
-			"thanks": "Thank you! We’re here to support you. Looking forward to your session!",
-			"cancel-or-edit": {
-				"title": "Need to make changes?",
-				"sub": "You can either reschedule or cancel your appointment here.",
-				"appointment-info": "Your appointment on {{date}} at {{startTime}}",
-				"donwload-ics": "Add to calendar 📅"
-			},
-			"no-appointments-title": "You dont have any appointments yet",
-			"no-appointments-link": "Click here to start booking an appointment"
-		},
-		"appointment-list": {
-			"date": "Date",
-			"starts": "Starts at",
-			"ends": "Ends at",
-			"modal": {
-				"title": "Are you sure you want to {{action}} this appointment"
-			},
-			"description": "Here you can set up your availability for appointments and share it with your patients. We will guide you through a simple process to define your available times, which will be replicated across the weeks or until the end of the year. The process is flexible, and you will be able to adjust the information at any time in the future.",
-			"guide": {
-				"step1": {
-					"title": "Decide if you want to start now or later",
-					"description": "If you prefer, you can return to this step later. We understand that it’s not always possible to set everything up immediately, so you will have the option to resume the process at a more convenient time."
-				},
-				"step2": {
-					"title": "Set your off days",
-					"description": "Let us know which days of the week you will not be available for appointments. These days will be blocked, but you can change them in the future, if necessary."
-				},
-				"step3": {
-					"title": "Session duration",
-					"description": "Provide the average duration of your appointments. If you offer more than one type of session, we will set a default now, and you can adjust the times later according to the patient and type of therapy."
-				},
-				"step4": {
-					"title": "Choose your available times",
-					"description": "In a visual and interactive way, you can select the times you will be available for appointments throughout the week. It’s a flexible process: if your preferences change, you can adjust your schedule at any time."
-				}
-			},
-			"session-past": "Past session"
-		},
-		"cancel-appointment": {
-			"title": "Cancel Appointment(s)",
-			"sub-title": "Please select the appointment(s) you want to cancel"
-		},
-		"edit-appointment": {
-			"title": "Edit Appointment",
-			"sub-title": "Please select the new date slot"
-		},
-		"add-patient": {
-			"title": "Add a New Patient",
-			"sub-title": "Fill out the form below with the patient’s details"
-		}
-	},
-	"chat": {
-		"greeting": "Hi! I’m Júpiter, your assistant to help set up your appointment schedule. Let’s build it together, step by step 🧘‍♀️! Shall we?",
-		"let-start": "What types of therapy do you offer?",
-		"system-instruction": "You are a kind assistant helping therapists build their schedule, step by step. Always respond with the next question and any information extracted so far. For example, if the question is regarding the reccurencePattern, you should explain that weekly it’s until the current month, and monthly is until the current year",
-		"error": "Oops! We couldn’t proceed  with your chat, please try again later"
-	},
-	"jupiter": {
-		"welcome": {
-			"title-line1": "I am Jupiter,",
-			"title-line2": "your Smart Assistant",
-			"subtitle": "I’ll help you set up your availability in just a few moments. Let’s make scheduling feel effortless.",
-			"cta": "Set up my schedule"
-		},
-		"specialty": {
-			"response": "What do you practice? Use the professional name for your work.",
-			"chip-occupational-therapist": "Occupational Therapist",
-			"chip-nutritionist": "Nutritionist",
-			"chip-other": "Other",
-			"chip-physiotherapist": "Physiotherapist",
-			"chip-psychiatrist": "Psychiatrist",
-			"chip-psychologist": "Psychologist",
-			"chip-speech-therapist": "Speech Therapist",
-			"continue": "Continue",
-			"other-placeholder": "Your specialty or professional title",
-			"acknowledged": "Got it! I'll set things up with that in mind.",
-			"error-rephrase": "I couldn't quite catch that — try using the professional name for what you practice.",
-			"error-rejected": "I'm not able to set up scheduling for that. If you have another specialty, I'd love to help you get started."
-		},
-		"calendar-choice": {
-			"msg1": "Hi! I’m Júpiter, your scheduling assistant. I’m here to help you set up your availability in a way that feels natural and effortless.",
-			"msg2": "Let’s start by setting up your calendar. How would you like to begin?",
-			"chip-google": "Connect Google Calendar",
-			"chip-manual": "Create manually",
-			"google-already-connected": "Your Google Calendar is already connected! Would you like to import your schedule from it?"
-		},
-		"working-days": {
-			"response": "Great! Which days do you usually work with your clients?",
-			"chip-mon": "Mon",
-			"chip-tue": "Tue",
-			"chip-wed": "Wed",
-			"chip-thu": "Thu",
-			"chip-fri": "Fri",
-			"chip-sat": "Sat",
-			"chip-sun": "Sun",
-			"back": "← Back",
-			"continue": "Continue",
-			"other-placeholder": "Or type your schedule..."
-		},
-		"time-range": {
-			"response": "Perfect! What time range works best for you on those days?",
-			"chip-1": "9:00 AM – 5:00 PM",
-			"chip-2": "10:00 AM – 6:00 PM",
-			"chip-3": "12:00 PM – 8:00 PM",
-			"chip-custom": "Custom",
-			"other-placeholder": "e.g. 8:30 AM – 4:00 PM"
-		},
-		"session-duration": {
-			"response": "How long is a typical session? You can always edit this later.",
-			"chip-45": "45 min",
-			"chip-60": "60 min",
-			"chip-custom": "Custom",
-			"other-placeholder": "e.g. 90 minutes"
-		},
-		"session-type": {
-			"response": "How do you usually conduct your sessions?",
-			"response-with-suggestion": "How do you usually conduct your sessions? I have a suggestion based on your specialty — pick what works best for you.",
-			"chip-online": "Online only",
-			"chip-in-person": "In person only",
-			"chip-both": "Both online and in person"
-		},
-		"timezone": {
-			"response": "Almost there! I’ll use your device’s timezone to schedule appointments accurately. This helps ensure your clients book at the right time for you. Sound good?",
-			"chip-yes": "Yes",
-			"chip-no": "No",
-			"follow-up": "No problem! Please select your timezone:",
-			"search-placeholder": "Search timezone..."
-		},
-		"recurrence-pattern": {
-			"response": "One last thing — how often would you like your availability to repeat?",
-			"chip-weekly": "Weekly (until end of month)",
-			"chip-monthly": "Monthly (until end of year)",
-			"summary-weekly": "Got it! Your slots will repeat every week until the end of this month. You can always extend from your dashboard.",
-			"summary-monthly": "Perfect! Your availability will repeat monthly until the end of the year — giving you full-year scheduling coverage.",
-			"value-weekly": "Weekly (until end of month)",
-			"value-monthly": "Monthly (until end of year)"
-		},
-		"preview": {
-			"title": "Your Availability Preview",
-			"label-days": "Working days:",
-			"label-hours": "Hours:",
-			"label-duration": "Duration:",
-			"label-recurrence": "Repeat:",
-			"label-session-type": "Session type:",
-			"label-timezone": "Timezone:",
-			"footer": "You can edit your availability anytime from your dashboard.",
-			"cta": "Publish Availability",
-			"loading": "Publishing...",
-			"reset": "Start over"
-		},
-		"post-publish": {
-			"page-title": "Availability",
-			"page-subtitle": "Manage your availability and scheduling preferences",
-			"success-toast": "Your availability is now live. Clients can start booking sessions with you right away.",
-			"welcome-toast": "Welcome to Psycron!",
-			"tip-title": "Jupiter’s tip",
-			"tip-text": "Your availability looks great. Adding a cancellation policy helps reduce no-shows and sets clear expectations with clients.",
-			"tip-cta": "Set cancellation policy",
-			"status-active-hours": "Active hours",
-			"status-bookings": "Upcoming bookings",
-			"status-this-week": "This week",
-			"status-booked-label": "{{percent}}% Booked",
-			"checklist-title": "Complete your availability",
-			"checklist-subtitle": "Enhance your scheduling setup for a better experience",
-			"checklist-session-types": "Define session types",
-			"checklist-session-types-desc": "Create different appointment types and durations",
-			"checklist-price": "Add session price",
-			"checklist-price-desc": "Set your consultation rates and payment terms",
-			"checklist-price-badge": "Recommended",
-			"checklist-buffer": "Add buffer time",
-			"checklist-buffer-desc": "Set time between appointments for preparation",
-			"checklist-cancel-policy": "Configure cancellation policy",
-			"checklist-cancel-desc": "Define how clients can cancel or reschedule",
-			"checklist-calendar-sync": "Sync with your existing calendar",
-			"checklist-calendar-desc": "Connect your calendar to prevent conflicts",
-			"help-title": "Need help?",
-			"help-text": "Jupiter can guide you through completing your setup",
-			"help-cta": "Talk to Jupiter",
-			"banner-dismiss": "Dismiss",
-			"buffer-drawer-desc": "Buffer time adds a gap between sessions so you can prepare, take notes, or simply breathe between appointments.",
-			"buffer-drawer-title": "Buffer time",
-			"buffer-input-helper": "Enter a value between 0 and 120 minutes",
-			"buffer-input-label": "Minutes between sessions",
-			"buffer-save": "Save",
-			"buffer-save-fail": "Could not save buffer time. Please try again.",
-			"buffer-save-success": "Buffer time saved successfully.",
-			"checklist-action-configure": "Configure",
-			"checklist-action-edit": "Edit",
-			"checklist-action-soon": "Coming soon",
-			"checklist-action-view": "View",
-			"checklist-badge-recommended": "Recommended",
-			"checklist-duration": "Session duration",
-			"checklist-duration-desc": "Set the length of each appointment",
-			"checklist-progress-label": "{{count}} of {{total}} completed",
-			"checklist-session-type": "Session type",
-			"checklist-session-type-desc": "How do you conduct your sessions",
-			"checklist-timezone": "Time zone",
-			"checklist-timezone-desc": "Ensure all bookings use the correct time zone",
-			"checklist-working-hours": "Working hours",
-			"checklist-working-hours-desc": "Your available days and hours for appointments",
-			"tip-buffer-time": "Adding buffer time between sessions helps you prepare, take notes, and avoid running late. Even 10 minutes makes a difference."
-		},
-		"google-calendar": {
-			"permissions-intro": "We’ll securely connect to your Google Calendar to:",
-			"permission-1": "Read your busy times",
-			"permission-2": "Prevent double bookings",
-			"permission-3": "Keep everything in sync",
-			"privacy-note": "We never edit or delete events without your permission.",
-			"back": "← Back",
-			"continue": "Continue",
-			"success-line1": "Perfect! 🎉",
-			"success-line2": "Your Google Calendar is now connected.",
-			"success-line3": "I’ll automatically block times when you’re already busy.",
-			"next-choice": "Would you like to:",
-			"chip-use-existing": "Use my existing schedule as availability",
-			"chip-define-hours": "Define specific working hours",
-			"define-hours-fallback": "Got it! Google Calendar import is coming soon. Let’s set your working hours manually for now.",
-			"importing": "Give me a moment — I’m importing your schedule from Google Calendar...",
-			"imported": "Done! I found your working days and hours. Just a couple more things to set up.",
-			"import-failed": "I couldn’t read your calendar schedule. Let’s set your working hours manually."
-		},
-		"errors": {
-			"network": "Something went wrong. Let’s try that again.",
-			"retry": "Try again",
-			"google-oauth-fail": "I couldn’t connect to Google Calendar. Please try again or set up manually.",
-			"google-oauth-cancel": "No problem! You can always connect your calendar later. Let’s set things up manually.",
-			"save-fail": "I couldn’t save your availability. Please try again.",
-			"session-timeout": "It looks like you’ve been away. Your progress is saved — pick up where you left off.",
-			"empty-days": "Please select at least one working day to continue.",
-			"invalid-time-range": "The end time must be after the start time.",
-			"invalid-input": "I didn’t quite get that. Could you try again?",
-			"ai-fallback": "Thanks! Let me process that for you.",
-			"ai-thinking": "Thinking...",
-			"no-timezone": "I couldn’t detect your timezone automatically. Please select it below.",
-			"publish-success": "All set! Your availability is live.",
-			"publish-redirect": "Redirecting to your dashboard..."
-		},
-		"subtitle": "Your scheduling assistant",
-		"days": {
-			"MONDAY": "Monday",
-			"TUESDAY": "Tuesday",
-			"WEDNESDAY": "Wednesday",
-			"THURSDAY": "Thursday",
-			"FRIDAY": "Friday",
-			"SATURDAY": "Saturday",
-			"SUNDAY": "Sunday"
-		}
-	},
-	"availability": {
-		"calendar": {
-			"legend-available": "Available",
-			"legend-busy": "Busy",
-			"legend-empty": "Unavailable",
-			"legend-full": "Full",
-			"legend-partial": "Partial",
-			"legend-today": "Today",
-			"page-title": "Availability",
-			"source-google": "Google",
-			"source-jupiter": "Júpiter",
-			"subtitle": "Your availability calendar",
-			"settings": "Availability settings"
-		},
-		"week": {
-			"drawer": {
-				"book-slot": "Book this slot",
-				"cancel": "Cancel",
-				"cancel-appointment": "Cancel",
-				"confirm-booking": "Confirm",
-				"confirmed": "Confirmed",
-				"status-cancelled": "Cancelled",
-				"status-confirmed": "Confirmed",
-				"date": "Date",
-				"edit": "Edit",
-				"minutes": "minutes",
-				"notes": "Notes",
-				"patient-email": "Patient's email",
-				"patient-first-name": "Patient's first name",
-				"patient-last-name": "Patient's last name",
-				"patient-time": "Patient time",
-				"session-duration": "Duration: ",
-				"session-type": "Session type",
-				"your-time": "Your time"
-			},
-			"legend-available": "Available",
-			"legend-booked-google": "Google",
-			"legend-booked-jupiter": "Manual",
-			"legend-cancelled": "Cancelled",
-			"next-week": "Next week",
-			"no-appointments": "No appointments",
-			"page-title": "Availability",
-			"prev-week": "Previous week",
-			"filter-clear": "Clear filters",
-			"filter-delivery-in-person": "In person",
-			"filter-delivery-online": "Online",
-			"filter-hide-free": "Hide free slots",
-			"filter-label-cancelled": "Cancelled slots",
-			"filter-label-free": "Free slots",
-			"filter-section-delivery": "Delivery",
-			"filter-section-session-type": "Session type",
-			"filter-section-source": "Source",
-			"filter-section-status": "Slot status",
-			"filter-section-time": "Time of day",
-			"filter-show-free": "Show free slots",
-			"filter-source-google": "Google",
-			"filter-source-jupiter": "Jupiter",
-			"filter-time-afternoon": "Afternoon",
-			"filter-time-evening": "Evening",
-			"filter-time-morning": "Morning",
-			"filters": "Filters",
-			"collapse-day": "Show less",
-			"expand-day": "+{{count}} more",
-			"slot": "slot",
-			"slots": "slots",
-			"title": "Week Schedule",
-			"extend": {
-				"confirm": "Extend availability",
-				"end-of-month": "End of the month",
-				"end-of-year": "End of the year",
-				"success": "Availability extended successfully",
-				"title": "How long would you like to extend it?",
-				"review-settings": "Review settings"
-			},
-			"settings": "Settings"
-		},
-		"gate": {
-			"deleted-notice": "You no longer have availability set up. Head to Jupiter to create a new one."
-		},
-		"settings": {
-			"google-calendar-connect-btn": "Connect Google Calendar",
-			"google-calendar-connect-error": "Could not start Google Calendar connection. Please try again.",
-			"google-calendar-connected": "Your Google Calendar is connected.",
-			"google-calendar-desc": "Sync your Google Calendar to import your existing schedule, block busy times automatically, and keep your Psycron sessions in sync.",
-			"google-calendar-drawer-title": "Google Calendar",
-			"live-alert": "Your availability is now live. Clients can start booking sessions with you right away.",
-			"page-title": "Availability Settings",
-			"save-error": "Could not save settings. Please try again.",
-			"save-success": "Settings saved successfully.",
-			"session-duration-desc": "Set the default length for each appointment.",
-			"session-duration-drawer-title": "Session duration",
-			"session-type-both": "Both",
-			"session-type-desc": "Choose how you conduct your sessions.",
-			"session-type-drawer-title": "Session type",
-			"session-type-in-person": "In person",
-			"session-type-online": "Online",
-			"feature-disabled-tooltip": "This feature is coming soon",
-			"jupiter-cta-disabled-tooltip": "Júpiter is not available yet — we're rolling this out gradually",
-			"jupiter-help-action": "Talk to Júpiter",
-			"jupiter-help-description": "Júpiter can guide you through completing your setup",
-			"jupiter-help-title": "Need help?",
-			"talk-to-jupiter": "Edit with Jupiter",
-			"timezone-desc": "All bookings will be displayed and scheduled in this time zone.",
-			"timezone-drawer-title": "Time zone",
-			"timezone-input-label": "Time zone",
-			"timezone-warning-body": "Your existing appointments won't move — they'll continue at the same UTC time but displayed in the new time zone.",
-			"timezone-warning-confirm": "Change time zone",
-			"timezone-warning-title": "Change time zone?",
-			"working-hours-days-label": "Working days",
-			"working-hours-desc": "Set your available days and the time range for appointments.",
-			"working-hours-drawer-title": "Working hours",
-			"working-hours-end-label": "End",
-			"working-hours-start-label": "Start",
-			"working-hours-time-label": "Time range"
-		}
-	}
+  "common": {
+    "close": "Close",
+    "today": "Today",
+    "save": "Save",
+    "saving": "Saving...",
+    "cancel": "Cancel"
+  },
+  "auth": {
+    "error": {
+      "login-failed": "Invalid email or password. Please check your credentials and try again.",
+      "registration-failed": "Unable to complete registration. Please check your information and try again.",
+      "password-reset-request": "If this email is registered, you will receive password reset instructions.",
+      "password-reset-failed": "Unable to reset password. The link may have expired. Please request a new one.",
+      "session-expired": "Your session has expired. Please sign in again.",
+      "rate-limited": "Too many attempts. Please wait a moment before trying again.",
+      "generic": "Something went wrong. Please try again later.",
+      "not-found": "User ID not found",
+      "not-allowed": "You can't delete this account."
+    },
+    "success": {
+      "password-reset-request": "If this email is registered, you will receive password reset instructions shortly.",
+      "password-reset": "Your password has been changed successfully. You can now sign in.",
+      "logout": "You have been signed out successfully."
+    },
+    "continue-google": "Continue with Google",
+    "continue-email": "Continue with email"
+  },
+  "globals": {
+    "email": "Email",
+    "name": "Name",
+    "password": "Password",
+    "phone": "Phone",
+    "whatsapp": "Whatsapp",
+    "address": "Address",
+    "patients": "Patients",
+    "patient": "Patient",
+    "registered-patients": "Registered patients",
+    "patients-manager": "Patients manager",
+    "billing-manager": "Billing manager",
+    "subscription-manager": "Subscription manager",
+    "appointments": "Appointments",
+    "appointments-manager": "Manage your appointments",
+    "change-language": "Change language",
+    "help": "Help center",
+    "logout": "Logout",
+    "plan": "Plan",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "date-time-format": "{{format}}",
+    "time-remaining": {
+      "days": "In {{count}} day(s)",
+      "hours": "In {{count}} hour(s)",
+      "minutes": "In {{count}} minute(s)",
+      "less-than-a-minute": "Session {{status}}"
+    },
+    "in-progress": "In progress",
+    "paused": "Paused",
+    "proceed": "Proceed",
+    "resume": "Resume",
+    "reason": "Reason",
+    "global-reason": "Global reason",
+    "custom-reason": "Describe the reason",
+    "select": "Select",
+    "unselect": "Unselect",
+    "error": {
+      "already-subscribed": "Your email is already subscribed",
+      "internal-server-error": "Something went wrong, please try again later",
+      "invalid-user": "Invalid email or password"
+    },
+    "success": {
+      "subscribed": "You were successfully subscribed. Please check your email!"
+    },
+    "date": "Date",
+    "time": "Time",
+    "at": "at",
+    "date-time": "Date and Time: ",
+    "therapist": "Therapist",
+    "appointment-status": {
+      "booked": "Booked",
+      "available": "Available",
+      "onhold": "on Hold",
+      "blocked": "Blocked",
+      "cancelled": "Cancelled"
+    },
+    "contacts": "Contacts",
+    "starts": "Starts",
+    "ends": "Ends",
+    "time-range": {
+      "time-from-to": "from {{start}} to {{end}}",
+      "time-range-date": "{{date}} from {{start}} to {{end}}",
+      "your-time": "Your local time",
+      "patient-time": "Patient's time",
+      "therapist-time": "Therapist's time"
+    },
+    "notification": {
+      "email": "Send email",
+      "phone": "Call patient",
+      "whatsapp": "Send WhatsApp message"
+    },
+    "cancellation-title": "Please choose the reason you are cancelling your appointment",
+    "cancellation-reason": {
+      "1": "Emergency (Personal/Health Issue)",
+      "2": "Schedule Conflict",
+      "3": "Financial Issues",
+      "4": "Mental Issues",
+      "5": "No-Show",
+      "6": "Other"
+    },
+    "cancellation-other-title": "Please specify the reason",
+    "status": "Status",
+    "close": "Close",
+    "read-only": "Read-only",
+    "auth-method": "Auth method",
+    "privacy-policy": "Privacy Policy",
+    "terms-of-service": "Terms of Use",
+    "privacy": "Privacy"
+  },
+  "components": {
+    "form": {
+      "confirm-password": "Confirm password",
+      "keep-loggedin": "Keep me logged in",
+      "not-valid": "Some fields are missing",
+      "signup": {
+        "sign-up": "Sign up",
+        "title-email": "Create your account",
+        "title": "Create your Psycron account",
+        "first-name": "First name",
+        "last-name": "Last name",
+        "already-have-acc": "Already have an account?",
+        "signin-here-link": "Sign in here"
+      },
+      "signin": {
+        "sign-in": "Sign in",
+        "title": "Welcome back",
+        "dont-have-acc": "Don't have an account?",
+        "signup-here-link": "Sign up here",
+        "forgot-password": "Forgot your password?"
+      },
+      "validation": {
+        "required": "{{name}} is required",
+        "invalid": "{{name}} is invalid",
+        "characters": "Password must be at least {{numChar}} characters",
+        "pass-rules": "Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character",
+        "at-least-one-contact": "Please provide an email or phone number",
+        "match": "{{name}} must match"
+      },
+      "address-form": {
+        "search": "Search the address here",
+        "search-note": "You can start searching for the address, or type it in the below fields.",
+        "street": "Street",
+        "number": "Nº",
+        "hood": "Neighbourhood",
+        "more-info": "Complementary info",
+        "city": "City",
+        "state": "State / Province",
+        "zip": "Zip Code",
+        "country": "Country",
+        "more-info-bttn": "Add more info"
+      },
+      "add-patient": {
+        "name": "Add patient"
+      },
+      "contacts-form": {
+        "contact-via": "Contact via {{method}}?",
+        "contact-via-same": "Is phone number the same as whatsapp?"
+      },
+      "consent": {
+        "terms": "I agree to the <privacyLink>Privacy Policy</privacyLink> and <termsLink>Terms of Use.</termsLink>",
+        "marketing": "I consent to receive <marketingLink>marketing communications.</marketingLink>",
+        "info": "By continuing, you agree to Psycron's <privacyLink>Privacy Policy</privacyLink> and <termsLink>Terms of Use.</termsLink>"
+      }
+    },
+    "input": {
+      "phone-input": {
+        "select-label": "Country",
+        "phone-num-label": "{{registerName}} number here",
+        "phone-number-guide": "Please provide a phone number including the city code if applicable."
+      },
+      "text": {
+        "first-name": "Your first name here",
+        "last-name": "Your last name here",
+        "email": "Your email here"
+      }
+    },
+    "navbar": {
+      "dashboard": "Dashboard",
+      "user-settings": "User settings",
+      "test": "Tests"
+    },
+    "user-details": {
+      "edit": "Edit details",
+      "edit-contacts": "Edit contacts",
+      "edit-success": "Details updated",
+      "add-contacts": "Add your {{contactValue}} number",
+      "change": "Change {{name}}",
+      "save": "Save details",
+      "address-not-found": "Address not found. Please add your info.",
+      "detail-not-found": "{{detail}} is not registered yet",
+      "delete": {
+        "title": "Delete account",
+        "description": "Your account will be deactivated and your personal data anonymised within 30 days. You can contact support to cancel this request.",
+        "confirmation": "Delete permanently"
+      },
+      "section": {
+        "title": {
+          "account": "Account",
+          "security": "Security & Privacy",
+          "contact": "Contact",
+          "subscription": "Subscription",
+          "patients": "Patients"
+        },
+        "local": "Email & Password",
+        "security": {
+          "google-mgmt": "Managed by Google - Your password is securely handled through Google's authentication system.",
+          "accepted": "By creating your Psycron account, you agreed to our <privacyLink>Privacy Policy</privacyLink> and <termsLink>Terms of Use.</termsLink>",
+          "accepted-info": "You can review these documents at any time.",
+          "marketing": "Receive marketing communications"
+        },
+        "contact": {
+          "title-empty": "Add your phone number to enable SMS or WhatsApp notifications."
+        }
+      }
+    },
+    "dashboard": {
+      "card": {
+        "delay-notification": "Pausing the timer will delay all your remaining appointments for today by the duration of this pause.",
+        "delay-confirmation": "Are you sure you want to pause the timer?",
+        "pause": "Sause timer",
+        "session-progress": "Session progress:"
+      },
+      "availability-card": {
+        "first-availability": "Please create your first availability here"
+      }
+    },
+    "appointments": {
+      "card-title": "Appointments of the day",
+      "manager": "Appointments manager"
+    },
+    "patients-table": {
+      "name": "Patient name",
+      "next-session": "Next session",
+      "payment-status": "Payment status",
+      "sessions-month": "Sessions per Month",
+      "value": "Value per session",
+      "discount": "Discount?",
+      "discount-val": "Discount value",
+      "amount": "Full amount",
+      "currency": "Currency",
+      "latest-payment": "Latest payment",
+      "manage": "Manage patient"
+    },
+    "progress": {
+      "received": "You have already received {{progress}}% of your payments 🥳",
+      "missing": "You are missing {{progress}}% of your payments",
+      "not-received": "You haven't received any payments yet",
+      "received-all": "You have received 100% of your payments for this period 🥳 😎"
+    },
+    "c2-action": {
+      "join-waitlist": "Join our <strong>waitlist</strong> today to streamline your therapy practice and focus more on your patients.",
+      "email": "Your email",
+      "join-now": "Join now"
+    },
+    "hero": {
+      "heading": "Revolutionize your therapy practice with a seamless all-in-one solution",
+      "helper": "Easily manage your appointments, payments, patient records, billing, and more."
+    },
+    "header": {
+      "join": "Join now",
+      "benefits": "Benefits",
+      "contact": "Contact",
+      "language": "Language"
+    },
+    "link": {
+      "navigate": {
+        "back": "Back",
+        "next": "Proceed",
+        "finish": "Finish",
+        "confirm": "Confirm",
+        "cancel": "Cancel"
+      }
+    },
+    "footer": {
+      "contact": "Would you like to get in touch? <a>Find us here</a>",
+      "find-me": "Find us here",
+      "credit": {
+        "illustration": "Illustrations by <owner>Icons 8</owner> from <page>Ouch!</page>"
+      }
+    },
+    "share-button": {
+      "alert": {
+        "success": "Shared successfully!",
+        "success-copy": "Link copied successfully!",
+        "error": "Someting went wrong, please try again later.",
+        "error-copy": "We couldn't copy the link, please try again later."
+      },
+      "tooltip-tile": "Share {{with}}",
+      "share-with-patients": "with your patients",
+      "share-infos": {
+        "availability": {
+          "title": "{{therapistName}} shared with you their availability",
+          "text": "Enter here to book an appointment"
+        }
+      }
+    },
+    "agenda": {
+      "modal": "You are booking for {{appointment}}",
+      "your-details": "Your details",
+      "next-week": "Next week",
+      "previous-week": "Previous week",
+      "today": "Today",
+      "month": "Month",
+      "appointment-details": {
+        "title": "Appointment Details",
+        "mailto-subject": "🔔 About your appointment with {{therapistName}} 🔔",
+        "whatsapp-subject": "Hello, how is it going? I am sending this message regarding your appointment with me, {{therapistName}}",
+        "next-sessions": "Other appointments",
+        "edit-patient-details": "Edit Patient Details",
+        "edit-patient-appointment": "Edit appointment",
+        "edit-availability": "Edit availability",
+        "text-status": "This is slot is {{status}}"
+      },
+      "edit-appointment": {
+        "title": "Edit appointment",
+        "confirmation": "Are you sure you want to reschedule this appointment?"
+      },
+      "cancel-appointment": {
+        "title": "Cancel appointment(s)",
+        "select-all": "{{select}} All",
+        "global-reason": "Please, select a global reason:",
+        "confirmation": "Are you sure you want to cancel all appointments?",
+        "review": "Review the dates you selected"
+      },
+      "book-appointment": {
+        "title": "Booking your appointment"
+      }
+    }
+  },
+  "page": {
+    "landing": {
+      "seo": {
+        "title": "Psycron - Innovative Therapist Management App",
+        "description": "Revolutionize your therapy practice with a seamless all-in-one solution. With our app you can easily manage your appointments, payments, patient records, billing, and more.",
+        "ogTitle": "Psycron - Innovative Therapist Management App",
+        "ogDescription": "Revolutionize your therapy practice with a seamless all-in-one solution. With our app you can easily manage your appointments, payments, patient records, billing, and more."
+      },
+      "values": {
+        "all-in-one": "All-in-one solution",
+        "text": "From scheduling appointments to processing payments, maintaining patient records, and handling billing, we help you with your daily tasks, and you will have much more time to take care of your patients. Our solution can transform your practice management, integrating everything into a single, intuitive platform.",
+        "text-focus": "Now you can focus on what truly matters and let us handle the rest for you."
+      },
+      "benefits": {
+        "increased-efficiency": {
+          "name": "Increased Efficiency",
+          "description": "Spend less time on admin tasks. Automate reminders, schedule appointments, and manage patient records seamlessly. Focus more on your patients, not paperwork"
+        },
+        "better-patient-management": {
+          "name": "Better Patient Management",
+          "description": "Easily track patient history and appointments. Enhance care with organized, up-to-date records."
+        },
+        "reduced-administrative-burden": {
+          "name": "Reduced Administrative Burden",
+          "description": "We simplified your workflow"
+        },
+        "enhanced-financial-control": {
+          "name": "Enhanced Financial Control",
+          "description": "Take control of your finances with secure and efficient billing"
+        }
+      },
+      "ct-action": {
+        "heading": "Ready to revolutionize your practice?",
+        "join-waitlist": "<strong>Join our waitlist</strong> today and <strong>be the first</strong> to <strong>experience</strong> <strong>cutting-edge</strong> therapy practice management. <strong>Unlock</strong> <strong>new levels</strong> of <strong>efficiency</strong> and <strong>patient care</strong> with <strong>a product made for you</strong>."
+      }
+    },
+    "not-found": {
+      "title": "Oops, something went wrong!",
+      "sub-title": "But we promise we are working hard to fix it!",
+      "note": "Yes... both of us :)"
+    },
+    "unsubscribe": {
+      "title": "Goodbye for now, {{email}}!",
+      "body-text": "Thank you for being a part of our journey. While we’re sad to see you go, we completely understand your decision. We’ll keep working hard to bring you the best we’ve got, and just know, you’re always welcome back whenever you’re ready.",
+      "see-you": "Hope to see you again soon! ❤️",
+      "confirm": "Click here to complete and unsubscribe"
+    },
+    "reset-password": {
+      "reset": "Reset password",
+      "change-password": "Change password",
+      "password-rule": "Your password must contain at least:",
+      "password-example": "Example:",
+      "item-letter": "One letter {{rule}}",
+      "item-number": "One number {{rule}}",
+      "item-special": "One special character {{rule}}",
+      "item-minimum": "9 characters long",
+      "current-password": "Current password"
+    },
+    "availability": {
+      "wizard": {
+        "wizard-items": {
+          "intro": {
+            "label": "Intro",
+            "title": "Let's setup your availability. Are you ready?",
+            "alert": "You will need to finish your availability setup later"
+          },
+          "weekdays": {
+            "label": "Choose weekdays",
+            "title": "Tell us the days you usually see patients."
+          },
+          "duration": {
+            "label": "Appointment duration",
+            "title": "Let us know how long your sessions are."
+          },
+          "week-slots": {
+            "label": "Weekly time slots"
+          }
+        },
+        "intro": {
+          "options": {
+            "proceed": "Yes!",
+            "finish-later": "Set availability later"
+          }
+        },
+        "availability-days": {
+          "days": {
+            "mon": "Monday",
+            "tue": "Tuesday",
+            "wed": "Wednesday",
+            "thu": "Thursday",
+            "fri": "Friday"
+          },
+          "options": {
+            "all": "Include all days",
+            "weekends": "Don't include weekends",
+            "specific": "Select specific days"
+          }
+        },
+        "duration": {
+          "label": "Appointment duration",
+          "note": "If you have more than one type of appointment, please let us know the duration you use most often. You will be able to change this in the future without any issues!"
+        },
+        "hours": {
+          "no-session": "No session was found"
+        },
+        "modal-title": "Repeat your weekly availability",
+        "modal-info": "Please choose one of the options below. If you pick 'weekly,' your availability will be repeated until the end of the month. If you pick 'monthly,' it will be repeated until the end of the year.",
+        "complete": "Availability created with success"
+      },
+      "agenda": {
+        "status": {
+          "available": "Available",
+          "unavailable": "Unavailable",
+          "booked": "Booked",
+          "empty": "Empty",
+          "blocked": "Blocked",
+          "cancelled": "Cancelled",
+          "onhold": "On hold"
+        },
+        "therapist-edit-modal": {
+          "title": "Edit your availability"
+        }
+      }
+    },
+    "book-appointment": {
+      "title": "{{therapisName}}'s Open Appointments",
+      "description": "Quickly schedule your therapy session. Check available times and choose the best slot to book your appointment easily and conveniently.",
+      "confirmation-should-replicate": "Would you like to set this day as your default choice for future appointments?",
+      "recurrence-pattern": {
+        "month": "Weekly until month ends",
+        "year": "Weekly until year ends",
+        "single": "Only this appointment",
+        "all-future": "All future appointments"
+      },
+      "confirm-edit": "Please confirm that you want to change your appointment from {{previousDate}} to:",
+      "edit-recurrence-title": "Do you want to update only this appointment or all future appointments?",
+      "edit-appointment-title": "You are editing your appointment on {{formattedDate}} at {{startTime}}."
+    },
+    "booking-confirmation": {
+      "title": "Your Appointment with <strong>{{therapistName}}</strong> is confirmed 🎉",
+      "title-plain": "Your Appointment with {{therapistName}} is confirmed 🎉",
+      "subtitle": "We're excited to see you soon!",
+      "whats-next": "<strong>{{therapistName}}</strong> will reach out with additional details as the appointment date approaches.",
+      "advise": "Please be available a few minutes early.",
+      "reschedule": "You can reschedule your appointment up to 1 day before the session.",
+      "cancel": "To reschedule or cancel , please <strong>click here</strong>",
+      "help": "If you have any questions or need assistance, feel free to contact us at",
+      "thanks": "Thank you! We’re here to support you. Looking forward to your session!",
+      "cancel-or-edit": {
+        "title": "Need to make changes?",
+        "sub": "You can either reschedule or cancel your appointment here.",
+        "appointment-info": "Your appointment on {{date}} at {{startTime}}",
+        "donwload-ics": "Add to calendar 📅"
+      },
+      "no-appointments-title": "You dont have any appointments yet",
+      "no-appointments-link": "Click here to start booking an appointment"
+    },
+    "appointment-list": {
+      "date": "Date",
+      "starts": "Starts at",
+      "ends": "Ends at",
+      "modal": {
+        "title": "Are you sure you want to {{action}} this appointment"
+      },
+      "description": "Here you can set up your availability for appointments and share it with your patients. We will guide you through a simple process to define your available times, which will be replicated across the weeks or until the end of the year. The process is flexible, and you will be able to adjust the information at any time in the future.",
+      "guide": {
+        "step1": {
+          "title": "Decide if you want to start now or later",
+          "description": "If you prefer, you can return to this step later. We understand that it’s not always possible to set everything up immediately, so you will have the option to resume the process at a more convenient time."
+        },
+        "step2": {
+          "title": "Set your off days",
+          "description": "Let us know which days of the week you will not be available for appointments. These days will be blocked, but you can change them in the future, if necessary."
+        },
+        "step3": {
+          "title": "Session duration",
+          "description": "Provide the average duration of your appointments. If you offer more than one type of session, we will set a default now, and you can adjust the times later according to the patient and type of therapy."
+        },
+        "step4": {
+          "title": "Choose your available times",
+          "description": "In a visual and interactive way, you can select the times you will be available for appointments throughout the week. It’s a flexible process: if your preferences change, you can adjust your schedule at any time."
+        }
+      },
+      "session-past": "Past session"
+    },
+    "cancel-appointment": {
+      "title": "Cancel Appointment(s)",
+      "sub-title": "Please select the appointment(s) you want to cancel"
+    },
+    "edit-appointment": {
+      "title": "Edit Appointment",
+      "sub-title": "Please select the new date slot"
+    },
+    "add-patient": {
+      "title": "Add a New Patient",
+      "sub-title": "Fill out the form below with the patient’s details"
+    }
+  },
+  "chat": {
+    "greeting": "Hi! I’m Júpiter, your assistant to help set up your appointment schedule. Let’s build it together, step by step 🧘‍♀️! Shall we?",
+    "let-start": "What types of therapy do you offer?",
+    "system-instruction": "You are a kind assistant helping therapists build their schedule, step by step. Always respond with the next question and any information extracted so far. For example, if the question is regarding the reccurencePattern, you should explain that weekly it’s until the current month, and monthly is until the current year",
+    "error": "Oops! We couldn’t proceed  with your chat, please try again later"
+  },
+  "jupiter": {
+    "welcome": {
+      "title-line1": "I am Jupiter,",
+      "title-line2": "your Smart Assistant",
+      "subtitle": "I’ll help you set up your availability in just a few moments. Let’s make scheduling feel effortless.",
+      "cta": "Set up my schedule"
+    },
+    "specialty": {
+      "response": "What do you practice? Use the professional name for your work.",
+      "chip-occupational-therapist": "Occupational Therapist",
+      "chip-nutritionist": "Nutritionist",
+      "chip-other": "Other",
+      "chip-physiotherapist": "Physiotherapist",
+      "chip-psychiatrist": "Psychiatrist",
+      "chip-psychologist": "Psychologist",
+      "chip-speech-therapist": "Speech Therapist",
+      "continue": "Continue",
+      "other-placeholder": "Your specialty or professional title",
+      "acknowledged": "Got it! I'll set things up with that in mind.",
+      "error-rephrase": "I couldn't quite catch that — try using the professional name for what you practice.",
+      "error-rejected": "I'm not able to set up scheduling for that. If you have another specialty, I'd love to help you get started."
+    },
+    "calendar-choice": {
+      "msg1": "Hi! I’m Júpiter, your scheduling assistant. I’m here to help you set up your availability in a way that feels natural and effortless.",
+      "msg2": "Let’s start by setting up your calendar. How would you like to begin?",
+      "chip-google": "Connect Google Calendar",
+      "chip-manual": "Create manually",
+      "google-already-connected": "Your Google Calendar is already connected! Would you like to import your schedule from it?"
+    },
+    "working-days": {
+      "response": "Great! Which days do you usually work with your clients?",
+      "chip-mon": "Mon",
+      "chip-tue": "Tue",
+      "chip-wed": "Wed",
+      "chip-thu": "Thu",
+      "chip-fri": "Fri",
+      "chip-sat": "Sat",
+      "chip-sun": "Sun",
+      "back": "← Back",
+      "continue": "Continue",
+      "other-placeholder": "Or type your schedule..."
+    },
+    "time-range": {
+      "response": "Perfect! What time range works best for you on those days?",
+      "chip-1": "9:00 AM – 5:00 PM",
+      "chip-2": "10:00 AM – 6:00 PM",
+      "chip-3": "12:00 PM – 8:00 PM",
+      "chip-custom": "Custom",
+      "other-placeholder": "e.g. 8:30 AM – 4:00 PM"
+    },
+    "session-duration": {
+      "response": "How long is a typical session? You can always edit this later.",
+      "chip-45": "45 min",
+      "chip-60": "60 min",
+      "chip-custom": "Custom",
+      "other-placeholder": "e.g. 90 minutes"
+    },
+    "session-type": {
+      "response": "How do you usually conduct your sessions?",
+      "response-with-suggestion": "How do you usually conduct your sessions? I have a suggestion based on your specialty — pick what works best for you.",
+      "chip-online": "Online only",
+      "chip-in-person": "In person only",
+      "chip-both": "Both online and in person"
+    },
+    "timezone": {
+      "response": "Almost there! I’ll use your device’s timezone to schedule appointments accurately. This helps ensure your clients book at the right time for you. Sound good?",
+      "chip-yes": "Yes",
+      "chip-no": "No",
+      "follow-up": "No problem! Please select your timezone:",
+      "search-placeholder": "Search timezone..."
+    },
+    "recurrence-pattern": {
+      "response": "One last thing — how often would you like your availability to repeat?",
+      "chip-weekly": "Weekly (until end of month)",
+      "chip-monthly": "Monthly (until end of year)",
+      "summary-weekly": "Got it! Your slots will repeat every week until the end of this month. You can always extend from your dashboard.",
+      "summary-monthly": "Perfect! Your availability will repeat monthly until the end of the year — giving you full-year scheduling coverage.",
+      "value-weekly": "Weekly (until end of month)",
+      "value-monthly": "Monthly (until end of year)"
+    },
+    "preview": {
+      "title": "Your Availability Preview",
+      "label-days": "Working days:",
+      "label-hours": "Hours:",
+      "label-duration": "Duration:",
+      "label-recurrence": "Repeat:",
+      "label-session-type": "Session type:",
+      "label-timezone": "Timezone:",
+      "footer": "You can edit your availability anytime from your dashboard.",
+      "cta": "Publish Availability",
+      "loading": "Publishing...",
+      "reset": "Start over"
+    },
+    "post-publish": {
+      "page-title": "Availability",
+      "page-subtitle": "Manage your availability and scheduling preferences",
+      "success-toast": "Your availability is now live. Clients can start booking sessions with you right away.",
+      "welcome-toast": "Welcome to Psycron!",
+      "tip-title": "Jupiter’s tip",
+      "tip-text": "Your availability looks great. Adding a cancellation policy helps reduce no-shows and sets clear expectations with clients.",
+      "tip-cta": "Set cancellation policy",
+      "status-active-hours": "Active hours",
+      "status-bookings": "Upcoming bookings",
+      "status-this-week": "This week",
+      "status-booked-label": "{{percent}}% Booked",
+      "checklist-title": "Complete your availability",
+      "checklist-subtitle": "Enhance your scheduling setup for a better experience",
+      "checklist-session-types": "Define session types",
+      "checklist-session-types-desc": "Create different appointment types and durations",
+      "checklist-price": "Add session price",
+      "checklist-price-desc": "Set your consultation rates and payment terms",
+      "checklist-price-badge": "Recommended",
+      "checklist-buffer": "Add buffer time",
+      "checklist-buffer-desc": "Set time between appointments for preparation",
+      "checklist-cancel-policy": "Configure cancellation policy",
+      "checklist-cancel-desc": "Define how clients can cancel or reschedule",
+      "checklist-calendar-sync": "Sync with your existing calendar",
+      "checklist-calendar-desc": "Connect your calendar to prevent conflicts",
+      "help-title": "Need help?",
+      "help-text": "Jupiter can guide you through completing your setup",
+      "help-cta": "Talk to Jupiter",
+      "banner-dismiss": "Dismiss",
+      "buffer-drawer-desc": "Buffer time adds a gap between sessions so you can prepare, take notes, or simply breathe between appointments.",
+      "buffer-drawer-title": "Buffer time",
+      "buffer-input-helper": "Enter a value between 0 and 120 minutes",
+      "buffer-input-label": "Minutes between sessions",
+      "buffer-save": "Save",
+      "buffer-save-fail": "Could not save buffer time. Please try again.",
+      "buffer-save-success": "Buffer time saved successfully.",
+      "checklist-action-configure": "Configure",
+      "checklist-action-edit": "Edit",
+      "checklist-action-soon": "Coming soon",
+      "checklist-action-view": "View",
+      "checklist-badge-recommended": "Recommended",
+      "checklist-duration": "Session duration",
+      "checklist-duration-desc": "Set the length of each appointment",
+      "checklist-progress-label": "{{count}} of {{total}} completed",
+      "checklist-session-type": "Session type",
+      "checklist-session-type-desc": "How do you conduct your sessions",
+      "checklist-timezone": "Time zone",
+      "checklist-timezone-desc": "Ensure all bookings use the correct time zone",
+      "checklist-working-hours": "Working hours",
+      "checklist-working-hours-desc": "Your available days and hours for appointments",
+      "tip-buffer-time": "Adding buffer time between sessions helps you prepare, take notes, and avoid running late. Even 10 minutes makes a difference."
+    },
+    "google-calendar": {
+      "permissions-intro": "We’ll securely connect to your Google Calendar to:",
+      "permission-1": "Read your busy times",
+      "permission-2": "Prevent double bookings",
+      "permission-3": "Keep everything in sync",
+      "privacy-note": "We never edit or delete events without your permission.",
+      "back": "← Back",
+      "continue": "Continue",
+      "success-line1": "Perfect! 🎉",
+      "success-line2": "Your Google Calendar is now connected.",
+      "success-line3": "I’ll automatically block times when you’re already busy.",
+      "next-choice": "Would you like to:",
+      "chip-use-existing": "Use my existing schedule as availability",
+      "chip-define-hours": "Define specific working hours",
+      "define-hours-fallback": "Got it! Google Calendar import is coming soon. Let’s set your working hours manually for now.",
+      "importing": "Give me a moment — I’m importing your schedule from Google Calendar...",
+      "imported": "Done! I found your working days and hours. Just a couple more things to set up.",
+      "import-failed": "I couldn’t read your calendar schedule. Let’s set your working hours manually."
+    },
+    "errors": {
+      "network": "Something went wrong. Let’s try that again.",
+      "retry": "Try again",
+      "google-oauth-fail": "I couldn’t connect to Google Calendar. Please try again or set up manually.",
+      "google-oauth-cancel": "No problem! You can always connect your calendar later. Let’s set things up manually.",
+      "save-fail": "I couldn’t save your availability. Please try again.",
+      "session-timeout": "It looks like you’ve been away. Your progress is saved — pick up where you left off.",
+      "empty-days": "Please select at least one working day to continue.",
+      "invalid-time-range": "The end time must be after the start time.",
+      "invalid-input": "I didn’t quite get that. Could you try again?",
+      "ai-fallback": "Thanks! Let me process that for you.",
+      "ai-thinking": "Thinking...",
+      "no-timezone": "I couldn’t detect your timezone automatically. Please select it below.",
+      "publish-success": "All set! Your availability is live.",
+      "publish-redirect": "Redirecting to your dashboard..."
+    },
+    "subtitle": "Your scheduling assistant",
+    "days": {
+      "MONDAY": "Monday",
+      "TUESDAY": "Tuesday",
+      "WEDNESDAY": "Wednesday",
+      "THURSDAY": "Thursday",
+      "FRIDAY": "Friday",
+      "SATURDAY": "Saturday",
+      "SUNDAY": "Sunday"
+    }
+  },
+  "availability": {
+    "calendar": {
+      "legend-available": "Available",
+      "legend-busy": "Busy",
+      "legend-empty": "Unavailable",
+      "legend-full": "Full",
+      "legend-partial": "Partial",
+      "legend-today": "Today",
+      "page-title": "Availability",
+      "source-google": "Google",
+      "source-jupiter": "Júpiter",
+      "subtitle": "Your availability calendar",
+      "settings": "Availability settings"
+    },
+    "week": {
+      "drawer": {
+        "book-slot": "Book this slot",
+        "cancel": "Cancel",
+        "cancel-appointment": "Cancel appointment",
+        "cancel-back": "Go back",
+        "cancel-confirm": "Confirm cancellation",
+        "cancel-custom-reason-label": "Additional details (optional)",
+        "cancel-error": "Failed to cancel appointment. Please try again.",
+        "cancel-reason-label": "Reason for cancellation",
+        "cancel-success": "Appointment cancelled successfully.",
+        "confirm-booking": "Confirm",
+        "confirmed": "Confirmed",
+        "status-cancelled": "Cancelled",
+        "status-confirmed": "Confirmed",
+        "date": "Date",
+        "edit": "Edit",
+        "edit-end-time": "End time",
+        "edit-error": "Failed to save changes. Please try again.",
+        "edit-note": "Notes",
+        "edit-save": "Save changes",
+        "edit-start-time": "Start time",
+        "edit-success": "Slot updated successfully.",
+        "edit-success-booked": "Slot updated. Note: this session had an active booking.",
+        "minutes": "minutes",
+        "notes": "Notes",
+        "patient-email": "Patient's email",
+        "patient-first-name": "Patient's first name",
+        "patient-last-name": "Patient's last name",
+        "patient-time": "Patient time",
+        "session-duration": "Duration: ",
+        "session-type": "Session type",
+        "your-time": "Your time",
+        "block-confirm": "Confirm block",
+        "block-confirm-body": "This slot will no longer be available for patients to book.",
+        "block-error": "Failed to block slot. Please try again.",
+        "block-slot": "Block slot",
+        "block-success": "Slot blocked successfully.",
+        "cancel-choice-sub": "Cancel this appointment permanently",
+        "reschedule": "Reschedule",
+        "reschedule-choice-sub": "Move to a different time slot",
+        "reschedule-confirm": "Confirm reschedule",
+        "reschedule-error": "Failed to reschedule appointment. Please try again.",
+        "reschedule-select-prompt": "Select a new time slot for this appointment.",
+        "reschedule-success": "Appointment rescheduled successfully."
+      },
+      "buffer-label": "Buffer",
+      "legend-available": "Available",
+      "legend-booked-google": "Google",
+      "legend-booked-jupiter": "Manual",
+      "legend-buffer": "Buffer",
+      "legend-cancelled": "Cancelled",
+      "next-week": "Next week",
+      "no-appointments": "No appointments",
+      "page-title": "Availability",
+      "prev-week": "Previous week",
+      "filter-clear": "Clear filters",
+      "filter-delivery-in-person": "In person",
+      "filter-delivery-online": "Online",
+      "filter-hide-free": "Hide free slots",
+      "filter-label-cancelled": "Cancelled slots",
+      "filter-label-free": "Free slots",
+      "filter-section-delivery": "Delivery",
+      "filter-section-session-type": "Session type",
+      "filter-section-source": "Source",
+      "filter-section-status": "Slot status",
+      "filter-section-time": "Time of day",
+      "filter-show-free": "Show free slots",
+      "filter-source-google": "Google",
+      "filter-source-jupiter": "Jupiter",
+      "filter-time-afternoon": "Afternoon",
+      "filter-time-evening": "Evening",
+      "filter-time-morning": "Morning",
+      "filters": "Filters",
+      "collapse-day": "Show less",
+      "expand-day": "+{{count}} more",
+      "slot": "slot",
+      "slots": "slots",
+      "title": "Week Schedule",
+      "extend": {
+        "confirm": "Extend availability",
+        "end-of-month": "End of the month",
+        "end-of-year": "End of the year",
+        "success": "Availability extended successfully",
+        "title": "How long would you like to extend it?",
+        "review-settings": "Review settings"
+      },
+      "settings": "Settings"
+    },
+    "gate": {
+      "deleted-notice": "You no longer have availability set up. Head to Jupiter to create a new one."
+    },
+    "settings": {
+      "google-calendar-connect-btn": "Connect Google Calendar",
+      "google-calendar-connect-error": "Could not start Google Calendar connection. Please try again.",
+      "google-calendar-connected": "Your Google Calendar is connected.",
+      "google-calendar-desc": "Sync your Google Calendar to import your existing schedule, block busy times automatically, and keep your Psycron sessions in sync.",
+      "google-calendar-drawer-title": "Google Calendar",
+      "live-alert": "Your availability is now live. Clients can start booking sessions with you right away.",
+      "page-title": "Availability Settings",
+      "save-error": "Could not save settings. Please try again.",
+      "save-success": "Settings saved successfully.",
+      "session-duration-desc": "Set the default length for each appointment.",
+      "session-duration-drawer-title": "Session duration",
+      "session-type-both": "Both",
+      "session-type-desc": "Choose how you conduct your sessions.",
+      "session-type-drawer-title": "Session type",
+      "session-type-in-person": "In person",
+      "session-type-online": "Online",
+      "feature-disabled-tooltip": "This feature is coming soon",
+      "jupiter-cta-disabled-tooltip": "Júpiter is not available yet — we're rolling this out gradually",
+      "jupiter-help-action": "Talk to Júpiter",
+      "jupiter-help-description": "Júpiter can guide you through completing your setup",
+      "jupiter-help-title": "Need help?",
+      "talk-to-jupiter": "Edit with Jupiter",
+      "timezone-desc": "All bookings will be displayed and scheduled in this time zone.",
+      "timezone-drawer-title": "Time zone",
+      "timezone-input-label": "Time zone",
+      "timezone-warning-body": "Your existing appointments won't move — they'll continue at the same UTC time but displayed in the new time zone.",
+      "timezone-warning-confirm": "Change time zone",
+      "timezone-warning-title": "Change time zone?",
+      "working-hours-days-label": "Working days",
+      "working-hours-desc": "Set your available days and the time range for appointments.",
+      "working-hours-drawer-title": "Working hours",
+      "working-hours-end-label": "End",
+      "working-hours-start-label": "Start",
+      "working-hours-time-label": "Time range"
+    }
+  }
 }

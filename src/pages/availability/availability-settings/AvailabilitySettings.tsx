@@ -137,7 +137,7 @@ export const AvailabilitySettings = () => {
 					<ChecklistRowContent>
 						<ChecklistRowTitle>
 							{t(item.titleKey)}
-							{item.isRecommended && !item.isConfigured && (
+							{item.isRecommended && !item.isConfigured && !item.isDisabled && (
 								<RecommendedBadge component='span'>
 									{t('jupiter.post-publish.checklist-badge-recommended')}
 								</RecommendedBadge>

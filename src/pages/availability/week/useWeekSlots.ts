@@ -10,6 +10,14 @@ const computeDuration = (startTime: string, endTime: string): number => {
 	return eh * 60 + em - (sh * 60 + sm);
 };
 
+const addMinutes = (time: string, minutes: number): string => {
+	const [h, m] = time.split(':').map(Number);
+	const total = h * 60 + m + minutes;
+	const newH = Math.floor(total / 60) % 24;
+	const newM = total % 60;
+	return `${String(newH).padStart(2, '0')}:${String(newM).padStart(2, '0')}`;
+};
+
 const toSlotStatus = (status: string): SlotStatus | null => {
 	if (status === 'AVAILABLE') return 'available';
 	if (status === 'BOOKED') return 'booked-jupiter';
@@ -17,7 +25,7 @@ const toSlotStatus = (status: string): SlotStatus | null => {
 	return null;
 };
 
-export const useWeekSlots = (weekStart: Date, weekEnd: Date) => {
+export const useWeekSlots = (weekStart: Date, weekEnd: Date, bufferTimeMinutes: number) => {
 	const { availabilityData, availabilityDataIsLoading, isAvailabilityDatesEmpty } = useAvailability();
 
 	const weekDates = (availabilityData?.dates ?? [] as IAvailabilityDateRef[]).filter((d) =>
@@ -32,7 +40,7 @@ export const useWeekSlots = (weekStart: Date, weekEnd: Date) => {
 
 		const dayStr = format(parseISO(d.date), 'yyyy-MM-dd');
 
-		weekData[dayStr] = slots
+		const realSlots = slots
 			.map((slot, j): IWeekSlot | null => {
 				const status = toSlotStatus(slot.status);
 				if (!status) return null;
@@ -43,11 +51,41 @@ export const useWeekSlots = (weekStart: Date, weekEnd: Date) => {
 					duration: computeDuration(slot.startTime, slot.endTime),
 					id: slot._id ?? `${dayStr}-${j}`,
 					notes: slot.note,
+					patientId: slot.patientId ? String(slot.patientId) : undefined,
 					startTime: slot.startTime,
 					status,
 				};
 			})
 			.filter((s): s is IWeekSlot => s !== null);
+
+		if (bufferTimeMinutes > 0) {
+			const occupiedTimes = new Set(realSlots.map((s) => s.startTime));
+			const bufferSlots: IWeekSlot[] = [];
+
+			realSlots.forEach((slot) => {
+				if (slot.status !== 'booked-jupiter' && slot.status !== 'booked-google') return;
+
+				const bufferStart = addMinutes(slot.startTime, slot.duration);
+				const [h] = bufferStart.split(':').map(Number);
+				if (h >= 24) return;
+				if (occupiedTimes.has(bufferStart)) return;
+
+				bufferSlots.push({
+					bufferFor: slot.status,
+					date: dayStr,
+					duration: bufferTimeMinutes,
+					id: `buffer-${slot.id}`,
+					startTime: bufferStart,
+					status: 'buffer',
+				});
+			});
+
+			weekData[dayStr] = [...realSlots, ...bufferSlots].sort((a, b) =>
+				a.startTime.localeCompare(b.startTime)
+			);
+		} else {
+			weekData[dayStr] = realSlots;
+		}
 	});
 
 	return { isAvailabilityDatesEmpty, isLoading: availabilityDataIsLoading, weekData };
