@@ -32,13 +32,16 @@ export interface ChecklistConfig {
 }
 
 export interface UseAvailabilitySettingsReturn {
+	activeCount: number;
 	activeDrawer: DrawerKey;
 	availability: IAvailabilityRecord | null | undefined;
 	bannerDismissed: boolean;
 	bufferInput: string;
+	cancelTimezoneWarning: () => void;
 	checklistItems: ChecklistItem[];
 	closeDrawer: () => void;
 	configuredCount: number;
+	confirmTimezoneSave: () => void;
 	endTimeInput: string;
 	firstMissingRecommended: ChecklistItem | undefined;
 	handleBufferSave: () => void;
@@ -48,6 +51,7 @@ export interface UseAvailabilitySettingsReturn {
 	handleSessionTypeSave: () => void;
 	handleTimezoneSave: () => void;
 	handleWorkingHoursSave: () => void;
+	isConnecting: boolean;
 	isJupiterCtaEnabled: boolean;
 	isLoading: boolean;
 	isSaving: boolean;
@@ -63,6 +67,7 @@ export interface UseAvailabilitySettingsReturn {
 	setSessionTypeInput: (value: string) => void;
 	setStartTimeInput: (value: string) => void;
 	setTimezoneInput: (value: string) => void;
+	showTimezoneWarning: boolean;
 	startTimeInput: string;
 	timezoneInput: string;
 	toggleWorkingDay: (day: string) => void;

@@ -1,7 +1,8 @@
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { useFeatureFlagEnabled } from '@posthog/react';
+import { getGoogleCalendarConnectUrl } from '@psycron/api/auth';
 import { updateAvailabilitySettings } from '@psycron/api/availability';
 import type { IAvailabilityRecord } from '@psycron/api/availability/index.types';
 import { useAlert } from '@psycron/context/alert/AlertContext';
@@ -9,7 +10,7 @@ import {
 	JUPITER_AVAILABILITY_CONFIG_KEY,
 	useJupiterAvailabilityConfig,
 } from '@psycron/hooks/useJupiterAvailabilityConfig';
-import { AVAILABILITYGENERATE } from '@psycron/pages/urls';
+import { AVAILABILITYGENERATE, AVAILABILITYSETTINGS } from '@psycron/pages/urls';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 import type {
@@ -102,7 +103,7 @@ const CHECKLIST_CONFIG: ChecklistConfig[] = [
 		configuredBy: (a) => !!a.googleCalendarConnected,
 		descKey: 'jupiter.post-publish.checklist-calendar-desc',
 		id: 'google-calendar',
-		isRecommended: false,
+		isRecommended: true,
 		onConfigureDrawer: 'google-calendar',
 		titleKey: 'jupiter.post-publish.checklist-calendar-sync',
 	},
@@ -111,14 +112,17 @@ const CHECKLIST_CONFIG: ChecklistConfig[] = [
 // ─── Hook ─────────────────────────────────────────────────────────────────────
 
 export const useAvailabilitySettings = (): UseAvailabilitySettingsReturn => {
-	const { t } = useTranslation();
+	const { t, i18n } = useTranslation();
 	const { locale } = useParams<{ locale: string }>();
 	const navigate = useNavigate();
+	const [searchParams, setSearchParams] = useSearchParams();
 	const { showAlert } = useAlert();
 	const queryClient = useQueryClient();
 
 	const [activeDrawer, setActiveDrawer] = useState<DrawerKey>(null);
 	const [bannerDismissed, setBannerDismissed] = useState(false);
+	const [isConnecting, setIsConnecting] = useState(false);
+	const [showTimezoneWarning, setShowTimezoneWarning] = useState(false);
 
 	// Buffer time
 	const [bufferInput, setBufferInput] = useState('');
@@ -140,7 +144,6 @@ export const useAvailabilitySettings = (): UseAvailabilitySettingsReturn => {
 	const { availability, isLoading } = useJupiterAvailabilityConfig();
 
 	const isCancellationPolicyEnabled = useFeatureFlagEnabled('availability_cancellation_policy');
-	const isGoogleCalendarEnabled = useFeatureFlagEnabled('availability_google_calendar');
 	const isJupiterCtaEnabled = useFeatureFlagEnabled('jupiter_cta_availability');
 
 	const openDrawer = useCallback(
@@ -179,9 +182,7 @@ export const useAvailabilitySettings = (): UseAvailabilitySettingsReturn => {
 		if (!availability) return [];
 
 		return CHECKLIST_CONFIG.map((config): ChecklistItem => {
-			const isFlagDisabled =
-				(config.id === 'cancellation-policy' && !isCancellationPolicyEnabled) ||
-				(config.id === 'google-calendar' && !isGoogleCalendarEnabled);
+			const isFlagDisabled = config.id === 'cancellation-policy' && !isCancellationPolicyEnabled;
 
 			const isDisabled = isFlagDisabled || (config.disabled ?? false);
 
@@ -197,18 +198,28 @@ export const useAvailabilitySettings = (): UseAvailabilitySettingsReturn => {
 						: undefined,
 				titleKey: config.titleKey,
 			};
+		}).sort((a, b) => {
+			const rank = (item: ChecklistItem) => {
+				if (item.isConfigured) return 0;
+				if (!item.isDisabled) return 1;
+				return 2;
+			};
+
+			return rank(a) - rank(b);
 		});
-	}, [availability, isCancellationPolicyEnabled, isGoogleCalendarEnabled, openDrawer]);
+	}, [availability, isCancellationPolicyEnabled, openDrawer]);
+
+	const activeCount = useMemo(
+		() => checklistItems.filter((item) => !item.isDisabled).length,
+		[checklistItems]
+	);
 
 	const configuredCount = useMemo(
 		() => checklistItems.filter((item) => item.isConfigured).length,
 		[checklistItems]
 	);
 
-	const progress =
-		checklistItems.length > 0
-			? Math.round((configuredCount / checklistItems.length) * 100)
-			: 0;
+	const progress = activeCount > 0 ? Math.round((configuredCount / activeCount) * 100) : 0;
 
 	const firstMissingRecommended = useMemo(
 		() => checklistItems.find((item) => item.isRecommended && !item.isConfigured),
@@ -256,8 +267,21 @@ export const useAvailabilitySettings = (): UseAvailabilitySettingsReturn => {
 
 	const handleTimezoneSave = useCallback(() => {
 		if (!timezoneInput) return;
+		if (availability?.timezone && timezoneInput !== availability.timezone) {
+			setShowTimezoneWarning(true);
+			return;
+		}
+		settingsMutation.mutate({ timezone: timezoneInput });
+	}, [availability?.timezone, settingsMutation, timezoneInput]);
+
+	const confirmTimezoneSave = useCallback(() => {
+		setShowTimezoneWarning(false);
 		settingsMutation.mutate({ timezone: timezoneInput });
 	}, [settingsMutation, timezoneInput]);
+
+	const cancelTimezoneWarning = useCallback(() => {
+		setShowTimezoneWarning(false);
+	}, []);
 
 	const toggleWorkingDay = useCallback((day: string) => {
 		setWorkingDaysInput((prev) =>
@@ -265,9 +289,32 @@ export const useAvailabilitySettings = (): UseAvailabilitySettingsReturn => {
 		);
 	}, []);
 
-	const handleGoogleCalendarConnect = useCallback(() => {
-		navigate(`/${locale}/${AVAILABILITYGENERATE}`);
-	}, [locale, navigate]);
+	useEffect(() => {
+		if (searchParams.get('calendar') !== 'connected') return;
+
+		queryClient.invalidateQueries({ queryKey: [JUPITER_AVAILABILITY_CONFIG_KEY] });
+		showAlert({ message: t('availability.settings.google-calendar-connected'), severity: 'success' });
+
+		setSearchParams((prev) => {
+			const next = new URLSearchParams(prev);
+			next.delete('calendar');
+			return next;
+		}, { replace: true });
+	}, [queryClient, searchParams, setSearchParams, showAlert, t]);
+
+	const handleGoogleCalendarConnect = useCallback(async () => {
+		setIsConnecting(true);
+		try {
+			const { url } = await getGoogleCalendarConnectUrl({
+				locale: i18n.language,
+				returnTo: `/${AVAILABILITYSETTINGS}?calendar=connected`,
+			});
+			window.location.assign(url);
+		} catch {
+			showAlert({ message: t('availability.settings.google-calendar-connect-error'), severity: 'error' });
+			setIsConnecting(false);
+		}
+	}, [i18n.language, showAlert, t]);
 
 	const handleJupiterCta = useCallback(() => {
 		navigate(`/${locale}/${AVAILABILITYGENERATE}`);
@@ -283,9 +330,12 @@ export const useAvailabilitySettings = (): UseAvailabilitySettingsReturn => {
 	);
 
 	return {
+		activeCount,
 		activeDrawer,
 		availability,
 		bannerDismissed,
+		cancelTimezoneWarning,
+		confirmTimezoneSave,
 		isJupiterCtaEnabled: !!isJupiterCtaEnabled,
 		bufferInput,
 		checklistItems,
@@ -300,8 +350,10 @@ export const useAvailabilitySettings = (): UseAvailabilitySettingsReturn => {
 		handleSessionTypeSave,
 		handleTimezoneSave,
 		handleWorkingHoursSave,
+		isConnecting,
 		isLoading,
 		isSaving: settingsMutation.isPending,
+		showTimezoneWarning,
 		openDrawer,
 		progress,
 		renderActionLabel,

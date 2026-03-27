@@ -4,7 +4,7 @@ import type { CSSObject } from '@mui/system';
 import type { Palette } from '../palette/palette.types';
 import { shadowSmall } from '../shadow/shadow.theme';
 import { spacing } from '../spacing/spacing.theme';
-import { zIndexPopover } from '../zIndex';
+import { zIndexAlert } from '../zIndex';
 
 export const alertStyles = ({ palette }: Theme): Record<string, CSSObject> => {
 	const { success, error, info, alert } = palette as unknown as Palette;
@@ -14,7 +14,7 @@ export const alertStyles = ({ palette }: Theme): Record<string, CSSObject> => {
 			borderRadius: `${spacing.mediumSmall}`,
 			margin: `${spacing.mediumSmall}`,
 			boxShadow: shadowSmall,
-			zIndex: zIndexPopover,
+			zIndex: zIndexAlert,
 		},
 		standardSuccess: {
 			backgroundColor: success.surface.light,
@@ -38,7 +38,7 @@ export const alertStyles = ({ palette }: Theme): Record<string, CSSObject> => {
 export const snackBarStyles = (): Record<string, CSSObject> => {
 	return {
 		root: {
-			zIndex: zIndexPopover,
+			zIndex: zIndexAlert,
 		},
 	};
 };

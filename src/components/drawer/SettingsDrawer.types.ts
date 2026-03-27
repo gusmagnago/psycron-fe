@@ -8,6 +8,7 @@ export interface ISettingsDrawer {
 	onClose: () => void;
 	onSave: () => void;
 	saveDisabled?: boolean;
+	saveLabel?: string;
 	showCancel?: boolean;
 	title: string;
 }

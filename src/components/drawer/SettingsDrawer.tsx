@@ -13,6 +13,7 @@ export const SettingsDrawer = ({
 	onClose,
 	onSave,
 	saveDisabled,
+	saveLabel,
 	showCancel,
 	title,
 }: ISettingsDrawer) => {
@@ -31,7 +32,7 @@ export const SettingsDrawer = ({
 						onClick={onSave}
 						variant='contained'
 					>
-						{isSaving ? t('common.saving') : t('common.save')}
+						{isSaving ? t('common.saving') : (saveLabel ?? t('common.save'))}
 					</Button>
 					{showCancel && (
 						<Button fullWidth onClick={onClose} variant='outlined'>

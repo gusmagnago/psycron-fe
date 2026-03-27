@@ -7,6 +7,7 @@ import { SettingsDrawer } from '@psycron/components/drawer/SettingsDrawer';
 import { CheckSuccess } from '@psycron/components/icons';
 import { JupiterHelpCard } from '@psycron/components/jupiter-help-card/JupiterHelpCard';
 import { JupiterTip } from '@psycron/components/jupiter-tip/JupiterTip';
+import { Modal } from '@psycron/components/modal/Modal';
 import { PageLayout } from '@psycron/layouts/app/pages-layout/PageLayout';
 import { AVAILABILITYGENERATE } from '@psycron/pages/urls';
 
@@ -52,7 +53,10 @@ const WORKING_DAYS = [
 
 const SESSION_TYPE_OPTIONS = [
 	{ key: 'ONLINE', labelKey: 'availability.settings.session-type-online' },
-	{ key: 'IN_PERSON', labelKey: 'availability.settings.session-type-in-person' },
+	{
+		key: 'IN_PERSON',
+		labelKey: 'availability.settings.session-type-in-person',
+	},
 	{ key: 'BOTH', labelKey: 'availability.settings.session-type-both' },
 ];
 
@@ -75,26 +79,32 @@ export const AvailabilitySettings = () => {
 	const { locale } = useParams<{ locale: string }>();
 
 	const {
+		activeCount,
 		activeDrawer,
 		availability,
 		bannerDismissed,
 		bufferInput,
+		cancelTimezoneWarning,
 		checklistItems,
 		closeDrawer,
 		configuredCount,
+		confirmTimezoneSave,
 		endTimeInput,
 		firstMissingRecommended,
 		handleBufferSave,
 		handleGoogleCalendarConnect,
 		handleJupiterCta,
 		handleSessionDurationSave,
+		isConnecting,
 		isJupiterCtaEnabled,
 		handleSessionTypeSave,
 		handleTimezoneSave,
 		handleWorkingHoursSave,
 		isSaving,
 		isLoading,
+		progress,
 		renderActionLabel,
+		showTimezoneWarning,
 		sessionDurationInput,
 		sessionTypeInput,
 		setBannerDismissed,
@@ -138,7 +148,11 @@ export const AvailabilitySettings = () => {
 
 					<Tooltip
 						arrow
-						title={item.isDisabled && !item.isConfigured ? t('availability.settings.feature-disabled-tooltip') : ''}
+						title={
+							item.isDisabled && !item.isConfigured
+								? t('availability.settings.feature-disabled-tooltip')
+								: ''
+						}
 					>
 						<span>
 							<Button
@@ -161,270 +175,294 @@ export const AvailabilitySettings = () => {
 		));
 
 	return (
-		<PageLayout
-			isLoading={isLoading}
-			backButton
-			title={t('availability.settings.page-title')}
-		>
-			<SettingsWrapper>
-				<ChecklistCard>
-					<ChecklistHeader>
-						<ChecklistTitle>
-							{t('jupiter.post-publish.checklist-title')}
-						</ChecklistTitle>
-						<ChecklistSubtitle>
-							{t('jupiter.post-publish.checklist-subtitle')}
-						</ChecklistSubtitle>
-						<ChecklistProgress>
-							<ChecklistProgressBar
-								aria-label={t('jupiter.post-publish.checklist-progress-label', {
-									count: configuredCount,
-									total: checklistItems.length,
-								})}
-								value={
-									checklistItems.length > 0
-										? Math.round(
-												(configuredCount / checklistItems.length) * 100
-											)
-										: 0
+		<>
+			<PageLayout
+				isLoading={isLoading}
+				backButton
+				title={t('availability.settings.page-title')}
+			>
+				<SettingsWrapper>
+					<ChecklistCard>
+						<ChecklistHeader>
+							<ChecklistTitle>
+								{t('jupiter.post-publish.checklist-title')}
+							</ChecklistTitle>
+							<ChecklistSubtitle>
+								{t('jupiter.post-publish.checklist-subtitle')}
+							</ChecklistSubtitle>
+							<ChecklistProgress>
+								<ChecklistProgressBar
+									aria-label={t(
+										'jupiter.post-publish.checklist-progress-label',
+										{
+											count: configuredCount,
+											total: activeCount,
+										}
+									)}
+									value={progress}
+									variant='determinate'
+								/>
+								<ChecklistProgressLabel>
+									{configuredCount}/{activeCount}
+								</ChecklistProgressLabel>
+							</ChecklistProgress>
+						</ChecklistHeader>
+
+						<ChecklistDivider />
+
+						{renderChecklist()}
+					</ChecklistCard>
+					<JupiterAvailabilityPanel>
+						{!bannerDismissed && firstMissingRecommended && (
+							<JupiterTip
+								ariaLabel={t('jupiter.post-publish.tip-title')}
+								title={t('jupiter.post-publish.tip-title')}
+								text={t(
+									`jupiter.post-publish.tip-${firstMissingRecommended.id}`
+								)}
+								actionLabel={
+									firstMissingRecommended.onConfigure
+										? t('jupiter.post-publish.checklist-action-configure')
+										: undefined
 								}
-								variant='determinate'
+								onAction={firstMissingRecommended.onConfigure}
+								onDismiss={() => setBannerDismissed(true)}
 							/>
-							<ChecklistProgressLabel>
-								{configuredCount}/{checklistItems.length}
-							</ChecklistProgressLabel>
-						</ChecklistProgress>
-					</ChecklistHeader>
-
-					<ChecklistDivider />
-
-					{renderChecklist()}
-				</ChecklistCard>
-				<JupiterAvailabilityPanel>
-					{!bannerDismissed && firstMissingRecommended && (
-						<JupiterTip
-							ariaLabel={t('jupiter.post-publish.tip-title')}
-							title={t('jupiter.post-publish.tip-title')}
-							text={t(`jupiter.post-publish.tip-${firstMissingRecommended.id}`)}
-							actionLabel={
-								firstMissingRecommended.onConfigure
-									? t('jupiter.post-publish.checklist-action-configure')
-									: undefined
-							}
-							onAction={firstMissingRecommended.onConfigure}
-							onDismiss={() => setBannerDismissed(true)}
+						)}
+						<JupiterHelpCard
+							actionLabel={t('availability.settings.jupiter-help-action')}
+							description={t('availability.settings.jupiter-help-description')}
+							disabled={!isJupiterCtaEnabled}
+							disabledTooltip={t(
+								'availability.settings.jupiter-cta-disabled-tooltip'
+							)}
+							onAction={handleJupiterCta}
+							title={t('availability.settings.jupiter-help-title')}
 						/>
-					)}
-					<JupiterHelpCard
-					actionLabel={t('availability.settings.jupiter-help-action')}
-					description={t('availability.settings.jupiter-help-description')}
-					disabled={!isJupiterCtaEnabled}
-					disabledTooltip={t('availability.settings.jupiter-cta-disabled-tooltip')}
-					onAction={handleJupiterCta}
-					title={t('availability.settings.jupiter-help-title')}
-				/>
-				</JupiterAvailabilityPanel>
-			</SettingsWrapper>
+					</JupiterAvailabilityPanel>
+				</SettingsWrapper>
 
-			{/* ─── Working hours drawer ─────────────────────────────────────── */}
-			{activeDrawer === 'working-hours' && (
-				<SettingsDrawer
-					ariaLabel={t('availability.settings.working-hours-drawer-title')}
-					title={t('availability.settings.working-hours-drawer-title')}
-					desc={t('availability.settings.working-hours-desc')}
-					isSaving={isSaving}
-					onClose={closeDrawer}
-					onSave={handleWorkingHoursSave}
-					saveDisabled={
-						workingDaysInput.length === 0 || !startTimeInput || !endTimeInput
-					}
-				>
-					<DrawerFieldGroup>
-						<DrawerFieldLabel>
-							{t('availability.settings.working-hours-days-label')}
-						</DrawerFieldLabel>
+				{/* ─── Working hours drawer ─────────────────────────────────────── */}
+				{activeDrawer === 'working-hours' && (
+					<SettingsDrawer
+						ariaLabel={t('availability.settings.working-hours-drawer-title')}
+						title={t('availability.settings.working-hours-drawer-title')}
+						desc={t('availability.settings.working-hours-desc')}
+						isSaving={isSaving}
+						onClose={closeDrawer}
+						onSave={handleWorkingHoursSave}
+						saveDisabled={
+							workingDaysInput.length === 0 || !startTimeInput || !endTimeInput
+						}
+					>
+						<DrawerFieldGroup>
+							<DrawerFieldLabel>
+								{t('availability.settings.working-hours-days-label')}
+							</DrawerFieldLabel>
+							<OptionChipsRow
+								aria-label={t('availability.settings.working-hours-days-label')}
+								role='group'
+							>
+								{WORKING_DAYS.map((day) => (
+									<OptionChip
+										key={day.key}
+										aria-checked={workingDaysInput.includes(day.key)}
+										isSelected={workingDaysInput.includes(day.key)}
+										onClick={() => toggleWorkingDay(day.key)}
+										role='checkbox'
+									>
+										{t(day.labelKey)}
+									</OptionChip>
+								))}
+							</OptionChipsRow>
+						</DrawerFieldGroup>
+
+						<DrawerFieldGroup>
+							<DrawerFieldLabel>
+								{t('availability.settings.working-hours-time-label')}
+							</DrawerFieldLabel>
+							<TimeRangeRow>
+								<TextField
+									fullWidth
+									label={t('availability.settings.working-hours-start-label')}
+									onChange={(e) => setStartTimeInput(e.target.value)}
+									size='small'
+									type='time'
+									value={startTimeInput}
+								/>
+								<TimeRangeSeparator>–</TimeRangeSeparator>
+								<TextField
+									fullWidth
+									label={t('availability.settings.working-hours-end-label')}
+									onChange={(e) => setEndTimeInput(e.target.value)}
+									size='small'
+									type='time'
+									value={endTimeInput}
+								/>
+							</TimeRangeRow>
+						</DrawerFieldGroup>
+					</SettingsDrawer>
+				)}
+
+				{/* ─── Session type drawer ──────────────────────────────────────── */}
+				{activeDrawer === 'session-type' && (
+					<SettingsDrawer
+						ariaLabel={t('availability.settings.session-type-drawer-title')}
+						title={t('availability.settings.session-type-drawer-title')}
+						desc={t('availability.settings.session-type-desc')}
+						isSaving={isSaving}
+						onClose={closeDrawer}
+						onSave={handleSessionTypeSave}
+						saveDisabled={!sessionTypeInput}
+					>
 						<OptionChipsRow
-							aria-label={t('availability.settings.working-hours-days-label')}
-							role='group'
+							aria-label={t('availability.settings.session-type-drawer-title')}
+							role='radiogroup'
 						>
-							{WORKING_DAYS.map((day) => (
+							{SESSION_TYPE_OPTIONS.map((option) => (
 								<OptionChip
-									key={day.key}
-									aria-checked={workingDaysInput.includes(day.key)}
-									isSelected={workingDaysInput.includes(day.key)}
-									onClick={() => toggleWorkingDay(day.key)}
-									role='checkbox'
+									key={option.key}
+									aria-checked={sessionTypeInput === option.key}
+									isSelected={sessionTypeInput === option.key}
+									onClick={() => setSessionTypeInput(option.key)}
+									role='radio'
 								>
-									{t(day.labelKey)}
+									{t(option.labelKey)}
 								</OptionChip>
 							))}
 						</OptionChipsRow>
-					</DrawerFieldGroup>
+					</SettingsDrawer>
+				)}
 
-					<DrawerFieldGroup>
-						<DrawerFieldLabel>
-							{t('availability.settings.working-hours-time-label')}
-						</DrawerFieldLabel>
-						<TimeRangeRow>
-							<TextField
-								fullWidth
-								label={t('availability.settings.working-hours-start-label')}
-								onChange={(e) => setStartTimeInput(e.target.value)}
-								size='small'
-								type='time'
-								value={startTimeInput}
-							/>
-							<TimeRangeSeparator>–</TimeRangeSeparator>
-							<TextField
-								fullWidth
-								label={t('availability.settings.working-hours-end-label')}
-								onChange={(e) => setEndTimeInput(e.target.value)}
-								size='small'
-								type='time'
-								value={endTimeInput}
-							/>
-						</TimeRangeRow>
-					</DrawerFieldGroup>
-				</SettingsDrawer>
-			)}
-
-			{/* ─── Session type drawer ──────────────────────────────────────── */}
-			{activeDrawer === 'session-type' && (
-				<SettingsDrawer
-					ariaLabel={t('availability.settings.session-type-drawer-title')}
-					title={t('availability.settings.session-type-drawer-title')}
-					desc={t('availability.settings.session-type-desc')}
-					isSaving={isSaving}
-					onClose={closeDrawer}
-					onSave={handleSessionTypeSave}
-					saveDisabled={!sessionTypeInput}
-				>
-					<OptionChipsRow
-						aria-label={t('availability.settings.session-type-drawer-title')}
-						role='radiogroup'
+				{/* ─── Session duration drawer ──────────────────────────────────── */}
+				{activeDrawer === 'session-duration' && (
+					<SettingsDrawer
+						ariaLabel={t('availability.settings.session-duration-drawer-title')}
+						title={t('availability.settings.session-duration-drawer-title')}
+						desc={t('availability.settings.session-duration-desc')}
+						isSaving={isSaving}
+						onClose={closeDrawer}
+						onSave={handleSessionDurationSave}
+						saveDisabled={!sessionDurationInput}
 					>
-						{SESSION_TYPE_OPTIONS.map((option) => (
-							<OptionChip
-								key={option.key}
-								aria-checked={sessionTypeInput === option.key}
-								isSelected={sessionTypeInput === option.key}
-								onClick={() => setSessionTypeInput(option.key)}
-								role='radio'
-							>
-								{t(option.labelKey)}
-							</OptionChip>
-						))}
-					</OptionChipsRow>
-				</SettingsDrawer>
-			)}
+						<OptionChipsRow
+							aria-label={t(
+								'availability.settings.session-duration-drawer-title'
+							)}
+							role='radiogroup'
+						>
+							{SESSION_DURATION_OPTIONS.map((minutes) => (
+								<OptionChip
+									key={minutes}
+									aria-checked={sessionDurationInput === minutes}
+									isSelected={sessionDurationInput === minutes}
+									onClick={() => setSessionDurationInput(minutes)}
+									role='radio'
+								>
+									{minutes} min
+								</OptionChip>
+							))}
+						</OptionChipsRow>
+					</SettingsDrawer>
+				)}
 
-			{/* ─── Session duration drawer ──────────────────────────────────── */}
-			{activeDrawer === 'session-duration' && (
-				<SettingsDrawer
-					ariaLabel={t('availability.settings.session-duration-drawer-title')}
-					title={t('availability.settings.session-duration-drawer-title')}
-					desc={t('availability.settings.session-duration-desc')}
-					isSaving={isSaving}
-					onClose={closeDrawer}
-					onSave={handleSessionDurationSave}
-					saveDisabled={!sessionDurationInput}
-				>
-					<OptionChipsRow
-						aria-label={t(
-							'availability.settings.session-duration-drawer-title'
-						)}
-						role='radiogroup'
+				{/* ─── Timezone drawer ──────────────────────────────────────────── */}
+				{activeDrawer === 'timezone' && (
+					<SettingsDrawer
+						ariaLabel={t('availability.settings.timezone-drawer-title')}
+						title={t('availability.settings.timezone-drawer-title')}
+						desc={t('availability.settings.timezone-desc')}
+						isSaving={isSaving}
+						onClose={closeDrawer}
+						onSave={handleTimezoneSave}
+						saveDisabled={!timezoneInput}
 					>
-						{SESSION_DURATION_OPTIONS.map((minutes) => (
-							<OptionChip
-								key={minutes}
-								aria-checked={sessionDurationInput === minutes}
-								isSelected={sessionDurationInput === minutes}
-								onClick={() => setSessionDurationInput(minutes)}
-								role='radio'
-							>
-								{minutes} min
-							</OptionChip>
-						))}
-					</OptionChipsRow>
-				</SettingsDrawer>
-			)}
+						<Autocomplete
+							disableClearable
+							onChange={(_, value) => value && setTimezoneInput(value)}
+							options={TIMEZONES}
+							renderInput={(params) => (
+								<TextField
+									{...params}
+									label={t('availability.settings.timezone-input-label')}
+									size='small'
+								/>
+							)}
+							value={timezoneInput || null}
+						/>
+					</SettingsDrawer>
+				)}
 
-			{/* ─── Timezone drawer ──────────────────────────────────────────── */}
-			{activeDrawer === 'timezone' && (
-				<SettingsDrawer
-					ariaLabel={t('availability.settings.timezone-drawer-title')}
-					title={t('availability.settings.timezone-drawer-title')}
-					desc={t('availability.settings.timezone-desc')}
-					isSaving={isSaving}
-					onClose={closeDrawer}
-					onSave={handleTimezoneSave}
-					saveDisabled={!timezoneInput}
-				>
-					<Autocomplete
-						disableClearable
-						onChange={(_, value) => value && setTimezoneInput(value)}
-						options={TIMEZONES}
-						renderInput={(params) => (
-							<TextField
-								{...params}
-								label={t('availability.settings.timezone-input-label')}
-								size='small'
-							/>
+				{/* ─── Buffer time drawer ───────────────────────────────────────── */}
+				{activeDrawer === 'buffer-time' && (
+					<SettingsDrawer
+						ariaLabel={t('jupiter.post-publish.buffer-drawer-title')}
+						title={t('jupiter.post-publish.buffer-drawer-title')}
+						isSaving={isSaving}
+						onClose={closeDrawer}
+						onSave={handleBufferSave}
+						saveDisabled={
+							!bufferInput ||
+							isNaN(parseInt(bufferInput, 10)) ||
+							parseInt(bufferInput, 10) < 0 ||
+							parseInt(bufferInput, 10) > 120
+						}
+						showCancel
+					>
+						<TextField
+							autoFocus
+							fullWidth
+							helperText={t('jupiter.post-publish.buffer-input-helper')}
+							label={t('jupiter.post-publish.buffer-input-label')}
+							onChange={(e) => setBufferInput(e.target.value)}
+							size='small'
+							type='number'
+							value={bufferInput}
+						/>
+					</SettingsDrawer>
+				)}
+
+				{/* ─── Google Calendar drawer ───────────────────────────────────── */}
+				{activeDrawer === 'google-calendar' && (
+					<SettingsDrawer
+						ariaLabel={t('availability.settings.google-calendar-drawer-title')}
+						title={t('availability.settings.google-calendar-drawer-title')}
+						desc={
+							availability.googleCalendarConnected
+								? undefined
+								: t('availability.settings.google-calendar-desc')
+						}
+						isSaving={isConnecting}
+						onClose={closeDrawer}
+						onSave={handleGoogleCalendarConnect}
+						saveDisabled={availability.googleCalendarConnected}
+						saveLabel={t('availability.settings.google-calendar-connect-btn')}
+						showCancel
+					>
+						{availability.googleCalendarConnected && (
+							<GoogleCalendarStatus>
+								<CheckSuccess />
+								{t('availability.settings.google-calendar-connected')}
+							</GoogleCalendarStatus>
 						)}
-						value={timezoneInput || null}
-					/>
-				</SettingsDrawer>
-			)}
+					</SettingsDrawer>
+				)}
+			</PageLayout>
 
-			{/* ─── Buffer time drawer ───────────────────────────────────────── */}
-			{activeDrawer === 'buffer-time' && (
-				<SettingsDrawer
-					ariaLabel={t('jupiter.post-publish.buffer-drawer-title')}
-					title={t('jupiter.post-publish.buffer-drawer-title')}
-					isSaving={isSaving}
-					onClose={closeDrawer}
-					onSave={handleBufferSave}
-					saveDisabled={
-						!bufferInput ||
-						isNaN(parseInt(bufferInput, 10)) ||
-						parseInt(bufferInput, 10) < 0 ||
-						parseInt(bufferInput, 10) > 120
-					}
-					showCancel
-				>
-					<TextField
-						autoFocus
-						fullWidth
-						helperText={t('jupiter.post-publish.buffer-input-helper')}
-						label={t('jupiter.post-publish.buffer-input-label')}
-						onChange={(e) => setBufferInput(e.target.value)}
-						size='small'
-						type='number'
-						value={bufferInput}
-					/>
-				</SettingsDrawer>
-			)}
-
-			{/* ─── Google Calendar drawer ───────────────────────────────────── */}
-			{activeDrawer === 'google-calendar' && (
-				<SettingsDrawer
-					ariaLabel={t('availability.settings.google-calendar-drawer-title')}
-					title={t('availability.settings.google-calendar-drawer-title')}
-					onClose={closeDrawer}
-					onSave={handleGoogleCalendarConnect}
-					saveDisabled={availability.googleCalendarConnected}
-				>
-					{availability.googleCalendarConnected ? (
-						<GoogleCalendarStatus>
-							<CheckSuccess />
-							{t('availability.settings.google-calendar-connected')}
-						</GoogleCalendarStatus>
-					) : (
-						t('availability.settings.google-calendar-desc')
-					)}
-				</SettingsDrawer>
-			)}
-		</PageLayout>
+			<Modal
+				openModal={showTimezoneWarning}
+				title={t('availability.settings.timezone-warning-title')}
+				onClose={cancelTimezoneWarning}
+				cardActionsProps={{
+					actionName: t('availability.settings.timezone-warning-confirm'),
+					hasSecondAction: true,
+					onClick: confirmTimezoneSave,
+					secondAction: cancelTimezoneWarning,
+					secondActionName: t('common.cancel'),
+				}}
+			>
+				{t('availability.settings.timezone-warning-body')}
+			</Modal>
+		</>
 	);
 };
