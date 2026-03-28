@@ -30,7 +30,8 @@ export const ContactsForm = <T extends FieldValues>({
 	const { t } = useTranslation();
 	const { isSmallerThanTablet } = useViewport();
 
-	const { register, getFieldState, control, getValues, setValue } = useFormContext<T>();
+	const { register, getFieldState, control, getValues, setValue } =
+		useFormContext<T>();
 
 	const emailPath = (fields?.email ?? ('contacts.email' as Path<T>)) as Path<T>;
 	const phonePath = (fields?.phone ?? ('contacts.phone' as Path<T>)) as Path<T>;
@@ -66,16 +67,16 @@ export const ContactsForm = <T extends FieldValues>({
 							: undefined
 					}
 					{...register(emailPath, {
-					validate: atLeastOneContact
-						? (v) => {
-								const phone = getValues(phonePath) as string | undefined;
-								if (!v?.trim() && !phone?.trim()) {
-									return t('components.form.validation.at-least-one-contact');
+						validate: atLeastOneContact
+							? (v) => {
+									const phone = getValues(phonePath) as string | undefined;
+									if (!v?.trim() && !phone?.trim()) {
+										return t('components.form.validation.at-least-one-contact');
+									}
+									return true;
 								}
-								return true;
-							}
-						: undefined,
-				})}
+							: undefined,
+					})}
 					autoComplete='email'
 					error={Boolean(emailState.error)}
 					helperText={emailError}
@@ -92,7 +93,9 @@ export const ContactsForm = <T extends FieldValues>({
 								? (v) => {
 										const email = getValues(emailPath) as string | undefined;
 										if (!v?.trim() && !email?.trim()) {
-											return t('components.form.validation.at-least-one-contact');
+											return t(
+												'components.form.validation.at-least-one-contact'
+											);
 										}
 										return true;
 									}
@@ -133,31 +136,31 @@ export const ContactsForm = <T extends FieldValues>({
 					})}
 					disabled={disabled}
 				/>
-			</ContactsFormSwitchWrapper>
 
-			{hasWhatsApp ? (
-				<Switch
-					small={isSmallerThanTablet}
-					checked={isPhoneWpp}
-					onChange={(_, next) => {
-						if (disabled) return;
+				{hasWhatsApp ? (
+					<Switch
+						small={isSmallerThanTablet}
+						checked={isPhoneWpp}
+						onChange={(_, next) => {
+							if (disabled) return;
 
-						setValue(isPhoneWppPath, next as never, {
-							shouldDirty: true,
-							shouldTouch: true,
-						});
-
-						if (next) {
-							setValue(whatsappPath, '' as never, {
+							setValue(isPhoneWppPath, next as never, {
 								shouldDirty: true,
 								shouldTouch: true,
 							});
-						}
-					}}
-					label={t('components.form.contacts-form.contact-via-same')}
-					disabled={disabled}
-				/>
-			) : null}
+
+							if (next) {
+								setValue(whatsappPath, '' as never, {
+									shouldDirty: true,
+									shouldTouch: true,
+								});
+							}
+						}}
+						label={t('components.form.contacts-form.contact-via-same')}
+						disabled={disabled}
+					/>
+				) : null}
+			</ContactsFormSwitchWrapper>
 
 			<input type='hidden' {...register(hasWhatsAppPath)} />
 			<input type='hidden' {...register(isPhoneWppPath)} />
