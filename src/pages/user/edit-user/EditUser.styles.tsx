@@ -3,6 +3,7 @@ import { Text } from '@psycron/components/text/Text';
 import {
 	isBiggerThanTabletMedia,
 	isMobileMedia,
+	isSmallerThanTabletMedia,
 } from '@psycron/theme/media-queries/mediaQueries';
 import { palette } from '@psycron/theme/palette/palette.theme';
 import { shadowPress } from '@psycron/theme/shadow/shadow.theme';
@@ -13,14 +14,13 @@ export const EditUserFormContainer = styled(Box)`
 	flex-direction: column;
 	gap: ${spacing.medium};
 	max-width: 60%;
-
 	min-height: 0;
+	margin-bottom: -16.2rem;
 
-	${isMobileMedia} {
+	${isSmallerThanTabletMedia} {
 		overflow-y: auto;
 		max-height: calc(100dvh - 16.2rem);
-		min-width: 100%;
-		margin-bottom: ${spacing.mediumLarge};
+		max-width: 100%;
 	}
 `;
 
@@ -71,10 +71,12 @@ export const EditUserDetailsMarketingConsentLabel = styled(Text)`
 	overflow-wrap: anywhere;
 
 	${isMobileMedia} {
+		display: flex;
 		flex-direction: column;
 		justify-content: center;
 		width: 100%;
-		align-items: center;
+		align-items: flex-start;
+		text-align: left;
 	}
 `;
 

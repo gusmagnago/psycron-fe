@@ -109,7 +109,9 @@ export const EditUser = () => {
 	const editUserMutation = useMutation({
 		mutationFn: (payload: IEditUser) => editUserById(payload),
 		onSuccess: async () => {
-			await queryClient.invalidateQueries({ queryKey: ['userDetails', userId] });
+			await queryClient.invalidateQueries({
+				queryKey: ['userDetails', userId],
+			});
 			showAlert({
 				message: t('components.user-details.edit-success'),
 				severity: 'success',
@@ -146,7 +148,10 @@ export const EditUser = () => {
 			!effectiveEnabled.clinicAddress
 		) {
 			showAlert({
-				message: t('components.user-details.no-changes', 'Select something to edit'),
+				message: t(
+					'components.user-details.no-changes',
+					'Select something to edit'
+				),
 				severity: 'info',
 			});
 			return;

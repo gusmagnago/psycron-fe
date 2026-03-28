@@ -55,13 +55,6 @@ export const initPostHog = (): void => {
 		// ✅ Performance & UX metrics
 		capture_performance: true,
 
-		// ✅ Feature flags ready for experimentation
-		loaded: (ph) => {
-			if (APP_ENV !== 'production') {
-				ph.debug();
-			}
-		},
-
 		// ✅ Disable in development if desired
 		disable_session_recording: APP_ENV === 'development' ? true : false,
 	};

@@ -1,4 +1,7 @@
 // editUser.mapper.ts
+import type { IEditUser } from '@psycron/api/user/index.types';
+import type { IClinicAddress } from '@psycron/context/user/auth/UserAuthenticationContext.types';
+
 import type { EditUserFormValues } from './EditUser.types';
 
 type Contacts = {
@@ -7,15 +10,8 @@ type Contacts = {
 	whatsapp?: string;
 };
 
-type ClinicAddress = {
-	city?: string;
-	country?: string;
-	postcode?: string;
-	street?: string;
-};
-
 type UserDetailsLike = {
-	clinicAddress?: ClinicAddress;
+	clinicAddress?: Partial<IClinicAddress>;
 	contacts: Contacts;
 	firstName: string;
 	lastName: string;
@@ -46,10 +42,10 @@ export const buildEditUserPayload = (args: {
 	original: EditUserFormValues;
 	userId: string;
 	values: EditUserFormValues;
-}): { data: Partial<EditUserFormValues>; userId: string } => {
+}): IEditUser => {
 	const { userId, values, enabled, original } = args;
 
-	const data: Partial<EditUserFormValues> = {};
+	const data: IEditUser['data'] = {};
 
 	if (enabled.name) {
 		data.firstName = values.firstName.trim() || original.firstName;
@@ -62,7 +58,7 @@ export const buildEditUserPayload = (args: {
 			country: values.clinicAddress?.country?.trim() ?? '',
 			postcode: values.clinicAddress?.postcode?.trim() ?? '',
 			street: values.clinicAddress?.street?.trim() ?? '',
-		};
+		} satisfies IClinicAddress;
 	}
 
 	if (enabled.contacts) {

@@ -193,8 +193,8 @@ export type PostHogEventProps = {
 	};
 
 	[PostHogEvent.EditUserSubmitted]: {
-		sections: Array<'name' | 'contacts' | 'password'>;
-		session: 'default' | 'name' | 'contacts' | 'password';
+		sections: Array<'clinicAddress' | 'contacts' | 'name' | 'password'>;
+		session: 'clinicAddress' | 'contacts' | 'default' | 'name' | 'password';
 	};
 
 	[PostHogEvent.AvailabilitySettingSaved]: {
