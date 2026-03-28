@@ -1,4 +1,7 @@
 export const enum PostHogEvent {
+	AppointmentCancelled = 'appointment cancelled',
+
+	AppointmentRescheduled = 'appointment rescheduled',
 	AuthContinueWithEmailClicked = 'auth continue with email clicked',
 
 	AuthForgotPasswordClicked = 'auth forgot password clicked',
@@ -21,9 +24,9 @@ export const enum PostHogEvent {
 
 	AuthSignUpSucceeded = 'auth sign up succeeded',
 	AuthSwitchFormClicked = 'auth switch form clicked',
-
 	AuthVerifyEmailFailed = 'auth verify email failed',
 	AuthVerifyEmailSucceeded = 'auth verify email succeeded',
+	AvailabilitySlotBlocked = 'availability slot blocked',
 	BackofficeWorkerSessionFailed = 'backoffice worker session failed',
 
 	EditUserSubmitted = 'edit user submitted',
@@ -191,5 +194,19 @@ export type PostHogEventProps = {
 	[PostHogEvent.EditUserSubmitted]: {
 		sections: Array<'name' | 'contacts' | 'password'>;
 		session: 'default' | 'name' | 'contacts' | 'password';
+	};
+
+	[PostHogEvent.AvailabilitySlotBlocked]: {
+		slot_start_time: string;
+	};
+
+	[PostHogEvent.AppointmentCancelled]: {
+		reason_code: string;
+		triggered_by: 'therapist';
+	};
+
+	[PostHogEvent.AppointmentRescheduled]: {
+		new_slot_start_time: string;
+		reason_code: string;
 	};
 };

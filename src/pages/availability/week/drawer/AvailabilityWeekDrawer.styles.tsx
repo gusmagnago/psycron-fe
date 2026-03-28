@@ -196,6 +196,13 @@ export const SlotPickerChipsRow = styled(Box)`
 	gap: ${spacing.extraSmall};
 `;
 
+export const SlotPickerEmpty = styled(Box)`
+	padding: ${spacing.medium} 0;
+	text-align: center;
+	color: ${palette.text.secondary};
+	font-size: 0.875rem;
+`;
+
 export const SlotPickerChip = styled(Box, {
 	shouldForwardProp: (prop) => prop !== 'isSelected',
 })<{ isSelected?: boolean }>`

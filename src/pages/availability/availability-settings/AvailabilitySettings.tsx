@@ -31,8 +31,15 @@ import {
 	JupiterAvailabilityPanel,
 	OptionChip,
 	OptionChipsRow,
+	OptionDesc,
 	RecommendedBadge,
 	SettingsWrapper,
+	StatusCard,
+	StatusDivider,
+	StatusStat,
+	StatusStatLabel,
+	StatusStatSub,
+	StatusStatValue,
 	TimeRangeRow,
 	TimeRangeSeparator,
 } from './AvailabilitySettings.styles';
@@ -61,6 +68,19 @@ const SESSION_TYPE_OPTIONS = [
 ];
 
 const SESSION_DURATION_OPTIONS = ['30', '45', '60', '90'];
+
+const RECURRENCE_PATTERN_OPTIONS = [
+	{
+		descKey: 'availability.settings.recurrence-consistent-desc',
+		key: 'WEEKLY',
+		labelKey: 'availability.settings.recurrence-consistent',
+	},
+	{
+		descKey: 'availability.settings.recurrence-flexible-desc',
+		key: 'MONTHLY',
+		labelKey: 'availability.settings.recurrence-flexible',
+	},
+];
 
 const getTimezones = (): string[] => {
 	try {
@@ -94,6 +114,7 @@ export const AvailabilitySettings = () => {
 		handleBufferSave,
 		handleGoogleCalendarConnect,
 		handleJupiterCta,
+		handleRecurrencePatternSave,
 		handleSessionDurationSave,
 		isConnecting,
 		isJupiterCtaEnabled,
@@ -103,11 +124,14 @@ export const AvailabilitySettings = () => {
 		isSaving,
 		isLoading,
 		progress,
+		recurrencePatternInput,
 		renderActionLabel,
 		showTimezoneWarning,
 		sessionDurationInput,
 		sessionTypeInput,
 		setBannerDismissed,
+		setRecurrencePatternInput,
+		statusStats,
 		setBufferInput,
 		setEndTimeInput,
 		setSessionDurationInput,
@@ -213,6 +237,36 @@ export const AvailabilitySettings = () => {
 						{renderChecklist()}
 					</ChecklistCard>
 					<JupiterAvailabilityPanel>
+						<StatusCard>
+							<StatusStat>
+								<StatusStatValue>
+									{statusStats.activeHoursPerWeek}h
+								</StatusStatValue>
+								<StatusStatLabel>
+									{t('jupiter.post-publish.status-active-hours')}
+								</StatusStatLabel>
+								<StatusStatSub>
+									{t('jupiter.post-publish.status-this-week')}
+								</StatusStatSub>
+							</StatusStat>
+							<StatusDivider />
+							<StatusStat>
+								<StatusStatValue>
+									{statusStats.upcomingBookings}
+								</StatusStatValue>
+								<StatusStatLabel>
+									{t('jupiter.post-publish.status-bookings')}
+								</StatusStatLabel>
+								{statusStats.upcomingBookings > 0 && (
+									<StatusStatSub>
+										{t('jupiter.post-publish.status-booked-label', {
+											percent: statusStats.percentBooked,
+										})}
+									</StatusStatSub>
+								)}
+							</StatusStat>
+						</StatusCard>
+
 						{!bannerDismissed && firstMissingRecommended && (
 							<JupiterTip
 								ariaLabel={t('jupiter.post-publish.tip-title')}
@@ -422,7 +476,46 @@ export const AvailabilitySettings = () => {
 					</SettingsDrawer>
 				)}
 
-				{/* ─── Google Calendar drawer ───────────────────────────────────── */}
+				{/* ─── Recurrence pattern drawer ───────────────────────────────── */}
+			{activeDrawer === 'recurrence-pattern' && (
+				<SettingsDrawer
+					ariaLabel={t('availability.settings.recurrence-pattern-drawer-title')}
+					title={t('availability.settings.recurrence-pattern-drawer-title')}
+					desc={t('availability.settings.recurrence-pattern-desc')}
+					isSaving={isSaving}
+					onClose={closeDrawer}
+					onSave={handleRecurrencePatternSave}
+					saveDisabled={!recurrencePatternInput}
+				>
+					<OptionChipsRow
+						aria-label={t('availability.settings.recurrence-pattern-drawer-title')}
+						role='radiogroup'
+					>
+						{RECURRENCE_PATTERN_OPTIONS.map((option) => (
+							<OptionChip
+								key={option.key}
+								aria-checked={recurrencePatternInput === option.key}
+								isSelected={recurrencePatternInput === option.key}
+								onClick={() => setRecurrencePatternInput(option.key)}
+								role='radio'
+							>
+								{t(option.labelKey)}
+							</OptionChip>
+						))}
+					</OptionChipsRow>
+					{recurrencePatternInput && (
+						<OptionDesc>
+							{t(
+								RECURRENCE_PATTERN_OPTIONS.find(
+									(o) => o.key === recurrencePatternInput
+								)?.descKey ?? ''
+							)}
+						</OptionDesc>
+					)}
+				</SettingsDrawer>
+			)}
+
+			{/* ─── Google Calendar drawer ───────────────────────────────────── */}
 				{activeDrawer === 'google-calendar' && (
 					<SettingsDrawer
 						ariaLabel={t('availability.settings.google-calendar-drawer-title')}

@@ -6,10 +6,12 @@ import { getGoogleCalendarConnectUrl } from '@psycron/api/auth';
 import { updateAvailabilitySettings } from '@psycron/api/availability';
 import type { IAvailabilityRecord } from '@psycron/api/availability/index.types';
 import { useAlert } from '@psycron/context/alert/AlertContext';
+import { useAvailability } from '@psycron/context/appointment/availability/AvailabilityContext';
 import {
 	JUPITER_AVAILABILITY_CONFIG_KEY,
 	useJupiterAvailabilityConfig,
 } from '@psycron/hooks/useJupiterAvailabilityConfig';
+import { PUBLISHED_KEY } from '@psycron/pages/availability/jupiter-conversation/useJupiterFlow';
 import { AVAILABILITYGENERATE, AVAILABILITYSETTINGS } from '@psycron/pages/urls';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
@@ -107,6 +109,14 @@ const CHECKLIST_CONFIG: ChecklistConfig[] = [
 		onConfigureDrawer: 'google-calendar',
 		titleKey: 'jupiter.post-publish.checklist-calendar-sync',
 	},
+	{
+		configuredBy: (a) => !!a.recurrencePattern,
+		descKey: 'jupiter.post-publish.checklist-recurrence-desc',
+		id: 'recurrence-pattern',
+		isRecommended: false,
+		onConfigureDrawer: 'recurrence-pattern',
+		titleKey: 'jupiter.post-publish.checklist-recurrence',
+	},
 ];
 
 // ─── Hook ─────────────────────────────────────────────────────────────────────
@@ -138,10 +148,14 @@ export const useAvailabilitySettings = (): UseAvailabilitySettingsReturn => {
 	// Session duration
 	const [sessionDurationInput, setSessionDurationInput] = useState('');
 
+	// Recurrence pattern
+	const [recurrencePatternInput, setRecurrencePatternInput] = useState('');
+
 	// Timezone
 	const [timezoneInput, setTimezoneInput] = useState('');
 
 	const { availability, isLoading } = useJupiterAvailabilityConfig();
+	const { availabilityData } = useAvailability();
 
 	const isCancellationPolicyEnabled = useFeatureFlagEnabled('availability_cancellation_policy');
 	const isBufferTimeEnabled = useFeatureFlagEnabled('availability_buffer_time');
@@ -161,6 +175,8 @@ export const useAvailabilitySettings = (): UseAvailabilitySettingsReturn => {
 					setSessionDurationInput(parseDurationKey(availability.sessionDuration));
 				} else if (key === 'timezone') {
 					setTimezoneInput(availability.timezone);
+				} else if (key === 'recurrence-pattern') {
+					setRecurrencePatternInput(availability.recurrencePattern ?? '');
 				}
 			}
 			setActiveDrawer(key);
@@ -174,6 +190,7 @@ export const useAvailabilitySettings = (): UseAvailabilitySettingsReturn => {
 		setWorkingDaysInput([]);
 		setStartTimeInput('');
 		setEndTimeInput('');
+		setRecurrencePatternInput('');
 		setSessionTypeInput('');
 		setSessionDurationInput('');
 		setTimezoneInput('');
@@ -224,6 +241,38 @@ export const useAvailabilitySettings = (): UseAvailabilitySettingsReturn => {
 
 	const progress = activeCount > 0 ? Math.round((configuredCount / activeCount) * 100) : 0;
 
+	const statusStats = useMemo(() => {
+		const todayStr = new Date().toISOString().slice(0, 10);
+
+		const upcomingDates = (availabilityData?.dates ?? []).filter(
+			(d) => d.date >= todayStr && d.slots?.length
+		);
+		const upcomingBookings = upcomingDates.reduce(
+			(sum, d) => sum + (d.slots?.filter((s) => s.status === 'BOOKED').length ?? 0),
+			0
+		);
+		const totalUpcomingSlots = upcomingDates.reduce(
+			(sum, d) => sum + (d.slots?.length ?? 0),
+			0
+		);
+		const percentBooked = totalUpcomingSlots > 0
+			? Math.round((upcomingBookings / totalUpcomingSlots) * 100)
+			: 0;
+
+		let activeHoursPerWeek = 0;
+		if (availability?.timeRange && availability.workingDays?.length) {
+			const parts = availability.timeRange.split(/\s*[-–—]\s*/);
+			if (parts.length === 2) {
+				const [sh, sm] = parts[0].split(':').map(Number);
+				const [eh, em] = parts[1].split(':').map(Number);
+				const hoursPerDay = (eh * 60 + em - (sh * 60 + sm)) / 60;
+				activeHoursPerWeek = Math.round(hoursPerDay * availability.workingDays.length);
+			}
+		}
+
+		return { activeHoursPerWeek, percentBooked, upcomingBookings };
+	}, [availability?.timeRange, availability?.workingDays, availabilityData?.dates]);
+
 	const firstMissingRecommended = useMemo(
 		() => checklistItems.find((item) => item.isRecommended && !item.isConfigured && !item.isDisabled),
 		[checklistItems]
@@ -239,6 +288,8 @@ export const useAvailabilitySettings = (): UseAvailabilitySettingsReturn => {
 				[JUPITER_AVAILABILITY_CONFIG_KEY],
 				(prev) => (prev ? { ...prev, ...updated } : prev)
 			);
+			queryClient.refetchQueries({ queryKey: ['therapistAvailability'] });
+			queryClient.refetchQueries({ queryKey: ['jupiterAvailability'] });
 			showAlert({ message: t('availability.settings.save-success'), severity: 'success' });
 			closeDrawer();
 		},
@@ -286,6 +337,11 @@ export const useAvailabilitySettings = (): UseAvailabilitySettingsReturn => {
 		setShowTimezoneWarning(false);
 	}, []);
 
+	const handleRecurrencePatternSave = useCallback(() => {
+		if (!recurrencePatternInput) return;
+		settingsMutation.mutate({ recurrencePattern: recurrencePatternInput as 'WEEKLY' | 'MONTHLY' });
+	}, [recurrencePatternInput, settingsMutation]);
+
 	const toggleWorkingDay = useCallback((day: string) => {
 		setWorkingDaysInput((prev) =>
 			prev.includes(day) ? prev.filter((d) => d !== day) : [...prev, day]
@@ -304,6 +360,12 @@ export const useAvailabilitySettings = (): UseAvailabilitySettingsReturn => {
 			return next;
 		}, { replace: true });
 	}, [queryClient, searchParams, setSearchParams, showAlert, t]);
+
+	useEffect(() => {
+		if (!localStorage.getItem(PUBLISHED_KEY)) return;
+		localStorage.removeItem(PUBLISHED_KEY);
+		showAlert({ message: t('availability.settings.first-publish-alert'), severity: 'success' });
+	}, [showAlert, t]);
 
 	const handleGoogleCalendarConnect = useCallback(async () => {
 		setIsConnecting(true);
@@ -349,6 +411,7 @@ export const useAvailabilitySettings = (): UseAvailabilitySettingsReturn => {
 		handleBufferSave,
 		handleGoogleCalendarConnect,
 		handleJupiterCta,
+		handleRecurrencePatternSave,
 		handleSessionDurationSave,
 		handleSessionTypeSave,
 		handleTimezoneSave,
@@ -359,12 +422,15 @@ export const useAvailabilitySettings = (): UseAvailabilitySettingsReturn => {
 		showTimezoneWarning,
 		openDrawer,
 		progress,
+		recurrencePatternInput,
 		renderActionLabel,
+		statusStats,
 		sessionDurationInput,
 		sessionTypeInput,
 		setBannerDismissed,
 		setBufferInput,
 		setEndTimeInput,
+		setRecurrencePatternInput,
 		setSessionDurationInput,
 		setSessionTypeInput,
 		setStartTimeInput,

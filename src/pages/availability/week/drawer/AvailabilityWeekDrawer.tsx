@@ -3,6 +3,8 @@ import { FormProvider, useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { MenuItem, TextField } from '@mui/material';
 import { Box } from '@mui/material';
+import { capture } from '@psycron/analytics/posthog/events';
+import { PostHogEvent } from '@psycron/analytics/posthog/types';
 import { editSlot } from '@psycron/api/availability';
 import { bookAppointmentFromLink } from '@psycron/api/patient';
 import type { ICreatePatientForm } from '@psycron/api/patient/index.types';
@@ -65,6 +67,7 @@ import {
 	SlotPickerChip,
 	SlotPickerChipsRow,
 	SlotPickerDateLabel,
+	SlotPickerEmpty,
 	SlotPickerGroup,
 	SlotPickerList,
 	SourceBadge,
@@ -152,9 +155,18 @@ const useEditSlotForm = (
 	const { showAlert } = useAlert();
 	const queryClient = useQueryClient();
 
-	const [startTime, setStartTime] = useState(slot.startTime);
-	const [endTime, setEndTime] = useState(computeEndTime(slot.startTime, slot.duration));
-	const [note, setNote] = useState(slot.notes ?? '');
+	const initialStartTime = slot.startTime;
+	const initialEndTime = computeEndTime(slot.startTime, slot.duration);
+	const initialNote = slot.notes ?? '';
+
+	const [startTime, setStartTime] = useState(initialStartTime);
+	const [endTime, setEndTime] = useState(initialEndTime);
+	const [note, setNote] = useState(initialNote);
+
+	const isDirty =
+		startTime !== initialStartTime ||
+		endTime !== initialEndTime ||
+		note !== initialNote;
 
 	const mutation = useMutation({
 		mutationFn: () =>
@@ -181,7 +193,7 @@ const useEditSlotForm = (
 		},
 	});
 
-	return { endTime, mutation, note, setEndTime, setNote, setStartTime, startTime };
+	return { endTime, isDirty, mutation, note, setEndTime, setNote, setStartTime, startTime };
 };
 
 // ─── useBlockSlot ──────────────────────────────────────────────────────────────
@@ -207,6 +219,7 @@ const useBlockSlot = (
 			showAlert({ message: t('availability.week.drawer.block-error'), severity: 'error' });
 		},
 		onSuccess: () => {
+			capture(PostHogEvent.AvailabilitySlotBlocked, { slot_start_time: slot.startTime });
 			showAlert({ message: t('availability.week.drawer.block-success'), severity: 'success' });
 			queryClient.invalidateQueries({ queryKey: ['therapistAvailability'] });
 			onBlocked();
@@ -244,6 +257,10 @@ const useCancelSlot = (
 			showAlert({ message: t('availability.week.drawer.cancel-error'), severity: 'error' });
 		},
 		onSuccess: () => {
+			capture(PostHogEvent.AppointmentCancelled, {
+				reason_code: String(reasonCode),
+				triggered_by: 'therapist',
+			});
 			showAlert({ message: t('availability.week.drawer.cancel-success'), severity: 'success' });
 			queryClient.invalidateQueries({ queryKey: ['therapistAvailability'] });
 			onCancelled();
@@ -299,6 +316,10 @@ const useReschedule = (
 			showAlert({ message: t('availability.week.drawer.reschedule-error'), severity: 'error' });
 		},
 		onSuccess: () => {
+			capture(PostHogEvent.AppointmentRescheduled, {
+				new_slot_start_time: selectedSlot?.startTime ?? '',
+				reason_code: String(CancellationReasonEnum.SCHEDULE_CONFLICT),
+			});
 			showAlert({ message: t('availability.week.drawer.reschedule-success'), severity: 'success' });
 			queryClient.invalidateQueries({ queryKey: ['therapistAvailability'] });
 			onRescheduled();
@@ -323,6 +344,7 @@ export const AvailabilityWeekDrawer = ({
 	const { isSubmitting, methods, submitBooking } = useBookingForm(slot, therapistId);
 	const {
 		endTime: editEndTime,
+		isDirty: editIsDirty,
 		mutation: editMutation,
 		note: editNote,
 		setEndTime: setEditEndTime,
@@ -477,7 +499,7 @@ export const AvailabilityWeekDrawer = ({
 				<>
 					<Button
 						fullWidth
-						disabled={editMutation.isPending}
+						disabled={editMutation.isPending || !editIsDirty}
 						onClick={() => editMutation.mutate()}
 						tertiary
 						variant='contained'
@@ -732,6 +754,11 @@ export const AvailabilityWeekDrawer = ({
 						{t('availability.week.drawer.reschedule-select-prompt')}
 					</CancelViewBody>
 					<SlotPickerList>
+						{availableSlotGroups.length === 0 && (
+							<SlotPickerEmpty>
+								{t('availability.week.drawer.reschedule-no-slots')}
+							</SlotPickerEmpty>
+						)}
 						{availableSlotGroups.map((group) => (
 							<SlotPickerGroup key={group.date}>
 								<SlotPickerDateLabel>{group.formattedDate}</SlotPickerDateLabel>

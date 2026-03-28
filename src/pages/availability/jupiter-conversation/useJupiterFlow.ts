@@ -26,6 +26,7 @@ import {
 
 export const STORAGE_KEY = '_psy_jd';
 export const ONBOARDING_KEY = '_psy_ob';
+export const PUBLISHED_KEY = '_psy_pub';
 
 const SESSION_TYPE_CANONICAL: Record<string, string> = {
 	'chip-both': 'BOTH',
@@ -464,6 +465,7 @@ export const useJupiterFlow = ({
 			});
 			localStorage.removeItem(STORAGE_KEY);
 			localStorage.setItem(ONBOARDING_KEY, 'true');
+			localStorage.setItem(PUBLISHED_KEY, 'true');
 			const record: IAvailabilityRecord = {
 				availabilityId,
 				recurrencePattern: answers.recurrencePattern,

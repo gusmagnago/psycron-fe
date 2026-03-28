@@ -660,6 +660,8 @@
       "checklist-cancel-desc": "Defina como clientes podem cancelar ou remarcar",
       "checklist-calendar-sync": "Sincronizar com sua agenda existente",
       "checklist-calendar-desc": "Conecte sua agenda para evitar conflitos",
+      "checklist-recurrence": "Definir estilo de recorrência",
+      "checklist-recurrence-desc": "Escolha como sua agenda é gerada e gerenciada",
       "help-title": "Precisa de ajuda?",
       "help-text": "A Júpiter pode te ajudar a completar sua configuração",
       "help-cta": "Falar com a Júpiter",
@@ -791,6 +793,7 @@
         "reschedule-confirm": "Confirmar remarcação",
         "reschedule-error": "Falha ao remarcar a consulta. Tente novamente.",
         "reschedule-select-prompt": "Selecione um novo horário para esta consulta.",
+        "reschedule-no-slots": "Não há horários disponíveis para remarcar. Tente ajustar os seus horários de trabalho.",
         "reschedule-success": "Consulta remarcada com sucesso."
       },
       "buffer-label": "Buffer",
@@ -842,6 +845,7 @@
     "settings": {
       "google-calendar-connect-btn": "Conectar Google Agenda",
       "google-calendar-connect-error": "Não foi possível iniciar a conexão com o Google Agenda. Tente novamente.",
+      "first-publish-alert": "A sua disponibilidade está ativa! Complete o checklist abaixo para otimizar a sua configuração.",
       "google-calendar-connected": "Seu Google Agenda está conectado.",
       "google-calendar-desc": "Sincronize seu Google Agenda para importar sua agenda existente, bloquear horários ocupados automaticamente e manter suas sessões no Psycron sincronizadas.",
       "google-calendar-drawer-title": "Google Agenda",
@@ -872,6 +876,12 @@
       "working-hours-desc": "Defina seus dias disponíveis e o horário para atendimentos.",
       "working-hours-drawer-title": "Horário de trabalho",
       "working-hours-end-label": "Fim",
+      "recurrence-consistent": "Consistente",
+      "recurrence-consistent-desc": "Sua agenda repete os mesmos dias e horários toda semana, gerada mês a mês. Ideal para uma rotina previsível e consistente.",
+      "recurrence-flexible": "Flexível",
+      "recurrence-flexible-desc": "Os slots são gerados para o mês inteiro de uma vez. Ideal se sua disponibilidade varia — você pode editar slots individuais sem reconstruir toda a agenda.",
+      "recurrence-pattern-desc": "Alterar isso vai regenerar seus slots de disponibilidade abertos com o novo padrão. Todos os agendamentos já confirmados permanecem exatamente como estão.",
+      "recurrence-pattern-drawer-title": "Padrão de recorrência",
       "working-hours-start-label": "Início",
       "working-hours-time-label": "Intervalo de horário"
     }

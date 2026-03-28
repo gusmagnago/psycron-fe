@@ -659,6 +659,8 @@
       "checklist-cancel-desc": "Define how clients can cancel or reschedule",
       "checklist-calendar-sync": "Sync with your existing calendar",
       "checklist-calendar-desc": "Connect your calendar to prevent conflicts",
+      "checklist-recurrence": "Set recurrence style",
+      "checklist-recurrence-desc": "Choose how your schedule is generated and managed",
       "help-title": "Need help?",
       "help-text": "Jupiter can guide you through completing your setup",
       "help-cta": "Talk to Jupiter",
@@ -790,6 +792,7 @@
         "reschedule-confirm": "Confirm reschedule",
         "reschedule-error": "Failed to reschedule appointment. Please try again.",
         "reschedule-select-prompt": "Select a new time slot for this appointment.",
+        "reschedule-no-slots": "No available slots to reschedule to. Try adjusting your working hours.",
         "reschedule-success": "Appointment rescheduled successfully."
       },
       "buffer-label": "Buffer",
@@ -841,6 +844,7 @@
     "settings": {
       "google-calendar-connect-btn": "Connect Google Calendar",
       "google-calendar-connect-error": "Could not start Google Calendar connection. Please try again.",
+      "first-publish-alert": "Your availability is live! Complete the checklist below to optimize your setup.",
       "google-calendar-connected": "Your Google Calendar is connected.",
       "google-calendar-desc": "Sync your Google Calendar to import your existing schedule, block busy times automatically, and keep your Psycron sessions in sync.",
       "google-calendar-drawer-title": "Google Calendar",
@@ -871,6 +875,12 @@
       "working-hours-desc": "Set your available days and the time range for appointments.",
       "working-hours-drawer-title": "Working hours",
       "working-hours-end-label": "End",
+      "recurrence-consistent": "Consistent",
+      "recurrence-consistent-desc": "Your schedule repeats the same days and hours every week, generated one month at a time. Best for a consistent, predictable routine.",
+      "recurrence-flexible": "Flexible",
+      "recurrence-flexible-desc": "Slots are generated for the full month at once. Best if your availability varies — you can edit individual slots without rebuilding your entire schedule.",
+      "recurrence-pattern-desc": "Changing this will regenerate your open availability slots using the new pattern. Any already-booked appointments will remain exactly as scheduled.",
+      "recurrence-pattern-drawer-title": "Recurrence pattern",
       "working-hours-start-label": "Start",
       "working-hours-time-label": "Time range"
     }

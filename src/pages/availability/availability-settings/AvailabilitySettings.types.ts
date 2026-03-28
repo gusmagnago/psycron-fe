@@ -3,6 +3,7 @@ import type { IAvailabilityRecord } from '@psycron/api/availability/index.types'
 export type DrawerKey =
 	| 'buffer-time'
 	| 'google-calendar'
+	| 'recurrence-pattern'
 	| 'session-duration'
 	| 'session-type'
 	| 'timezone'
@@ -31,6 +32,12 @@ export interface ChecklistConfig {
 	titleKey: string;
 }
 
+export interface AvailabilityStatusStats {
+	activeHoursPerWeek: number;
+	percentBooked: number;
+	upcomingBookings: number;
+}
+
 export interface UseAvailabilitySettingsReturn {
 	activeCount: number;
 	activeDrawer: DrawerKey;
@@ -47,6 +54,7 @@ export interface UseAvailabilitySettingsReturn {
 	handleBufferSave: () => void;
 	handleGoogleCalendarConnect: () => void;
 	handleJupiterCta: () => void;
+	handleRecurrencePatternSave: () => void;
 	handleSessionDurationSave: () => void;
 	handleSessionTypeSave: () => void;
 	handleTimezoneSave: () => void;
@@ -57,18 +65,21 @@ export interface UseAvailabilitySettingsReturn {
 	isSaving: boolean;
 	openDrawer: (key: DrawerKey) => void;
 	progress: number;
+	recurrencePatternInput: string;
 	renderActionLabel: (item: ChecklistItem) => string;
 	sessionDurationInput: string;
 	sessionTypeInput: string;
 	setBannerDismissed: (dismissed: boolean) => void;
 	setBufferInput: (value: string) => void;
 	setEndTimeInput: (value: string) => void;
+	setRecurrencePatternInput: (value: string) => void;
 	setSessionDurationInput: (value: string) => void;
 	setSessionTypeInput: (value: string) => void;
 	setStartTimeInput: (value: string) => void;
 	setTimezoneInput: (value: string) => void;
 	showTimezoneWarning: boolean;
 	startTimeInput: string;
+	statusStats: AvailabilityStatusStats;
 	timezoneInput: string;
 	toggleWorkingDay: (day: string) => void;
 	workingDaysInput: string[];

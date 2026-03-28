@@ -200,6 +200,14 @@ export const OptionChip = styled(Box, {
 	}
 `;
 
+export const OptionDesc = styled(Text)`
+	font-size: 13px;
+	color: ${palette.text.secondary};
+	line-height: 1.5;
+	padding-top: ${spacing.xs};
+	text-align: left;
+`;
+
 // ─── Working hours time range ──────────────────────────────────────────────────
 
 export const TimeRangeRow = styled(Box)`
@@ -211,6 +219,55 @@ export const TimeRangeRow = styled(Box)`
 export const TimeRangeSeparator = styled(Text)`
 	color: ${palette.text.secondary};
 	flex-shrink: 0;
+`;
+
+// ─── Status card ──────────────────────────────────────────────────────────────
+
+export const StatusCard = styled(Box)`
+	border-radius: 16px;
+	border: 1px solid ${hexToRgba(palette.brand.purple, 0.15)};
+	padding: ${spacing.mediumSmall};
+	display: flex;
+	flex-direction: row;
+	gap: ${spacing.medium};
+
+	${isMobileMedia} {
+		padding: ${spacing.small};
+	}
+`;
+
+export const StatusStat = styled(Box)`
+	flex: 1;
+	display: flex;
+	flex-direction: column;
+	gap: ${spacing.xxs};
+`;
+
+export const StatusStatValue = styled(Text)`
+	font-size: 1.6rem;
+	font-weight: 700;
+	color: ${palette.brand.purple};
+	line-height: 1;
+`;
+
+export const StatusStatLabel = styled(Text)`
+	font-size: 0.75rem;
+	font-weight: 500;
+	color: ${palette.text.secondary};
+	text-transform: uppercase;
+	letter-spacing: 0.04em;
+`;
+
+export const StatusStatSub = styled(Text)`
+	font-size: 0.75rem;
+	color: ${palette.text.secondary};
+	margin-top: ${spacing.xxs};
+`;
+
+export const StatusDivider = styled(Box)`
+	width: 1px;
+	background-color: ${hexToRgba(palette.brand.purple, 0.1)};
+	align-self: stretch;
 `;
 
 // ─── Google Calendar connected state ──────────────────────────────────────────

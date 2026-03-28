@@ -18,6 +18,7 @@ export const getAvailability = async (params?: {
 
 export interface IUpdateAvailabilitySettingsPayload {
 	bufferTimeMinutes?: number;
+	recurrencePattern?: 'MONTHLY' | 'WEEKLY';
 	sessionDuration?: string;
 	sessionType?: string;
 	timeRange?: string;
