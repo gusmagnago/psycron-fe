@@ -59,6 +59,7 @@ export const WeekCard = styled(Box)`
 		box-shadow: none;
 		padding: 0;
 		overflow: visible;
+		margin-bottom: -140px;
 	}
 `;
 
@@ -116,7 +117,7 @@ export const WeekFeaturesActions = styled(Box)`
 	${isMobileMedia} {
 		flex-direction: row;
 		width: 100%;
-		justify-content: flex-end;
+		justify-content: center;
 	}
 `;
 
@@ -320,10 +321,8 @@ export const SlotCellBuffer = styled(Box, {
 	padding: ${spacing.xs} ${spacing.small};
 	display: flex;
 	align-items: center;
-	border-left: 3px solid
-		${({ bufferFor }) => BUFFER_COLORS[bufferFor]};
-	background: ${({ bufferFor }) =>
-		hexToRgba(BUFFER_COLORS[bufferFor], 0.07)};
+	border-left: 3px solid ${({ bufferFor }) => BUFFER_COLORS[bufferFor]};
+	background: ${({ bufferFor }) => hexToRgba(BUFFER_COLORS[bufferFor], 0.07)};
 `;
 
 export const SlotBufferLabel = styled(Text)`
@@ -447,10 +446,8 @@ export const MobileSlotBuffer = styled(Box, {
 	flex-direction: row;
 	align-items: center;
 	gap: ${spacing.small};
-	border-left: 3px solid
-		${({ bufferFor }) => BUFFER_COLORS[bufferFor]};
-	background: ${({ bufferFor }) =>
-		hexToRgba(BUFFER_COLORS[bufferFor], 0.07)};
+	border-left: 3px solid ${({ bufferFor }) => BUFFER_COLORS[bufferFor]};
+	background: ${({ bufferFor }) => hexToRgba(BUFFER_COLORS[bufferFor], 0.07)};
 `;
 
 export const MobileSlotTime = styled(Text)`
@@ -525,8 +522,4 @@ export const WeekFooter = styled(Box)`
 	flex-shrink: 0;
 	justify-content: space-between;
 	margin-bottom: 0;
-
-	${isMobileMedia} {
-		margin-bottom: 140px;
-	}
 `;

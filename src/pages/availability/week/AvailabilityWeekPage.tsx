@@ -289,8 +289,30 @@ export const AvailabilityWeekPage = () => {
 			variant='outlined'
 		>
 			{activeFilterCount > 0 ? <FilterFull /> : <Filter />}
-			{t('availability.week.filters')}
+			{!isMobile ? t('availability.week.filters') : null}
 		</FilterButton>
+	);
+
+	const navButtons = (
+		<>
+			<Button
+				small
+				tertiary
+				onClick={() => navigate(`/${i18n.language}/${AVAILABILITYPATH}`)}
+			>
+				<Calendar />
+				{!isMobile ? t('components.agenda.month') : null}
+			</Button>
+			<Button
+				small
+				tertiary
+				aria-label={t('availability.week.settings')}
+				onClick={() => navigate(`/${i18n.language}/${AVAILABILITYSETTINGS}`)}
+			>
+				<Edit />
+				{!isMobile ? t('availability.week.settings') : null}
+			</Button>
+		</>
 	);
 
 	const prevButton = (
@@ -311,7 +333,7 @@ export const AvailabilityWeekPage = () => {
 			<ChevronRight />
 		</NavButton>
 	);
-	const todayButton = <AvailabilityTodayButton />;
+	const todayButton = <AvailabilityTodayButton iconOnly={isMobile} />;
 
 	return (
 		<PageLayout
@@ -333,6 +355,7 @@ export const AvailabilityWeekPage = () => {
 						<WeekFeaturesActions>
 							{filterButton}
 							{todayButton}
+							{isMobile && navButtons}
 						</WeekFeaturesActions>
 					</WeekFeaturesWrapper>
 				</WeekHeader>
@@ -532,27 +555,9 @@ export const AvailabilityWeekPage = () => {
 
 				<WeekFooter>
 					<AvailabilityLegend items={legendItems} />
-					<Box sx={{ display: 'flex', gap: 1 }}>
-						<Button
-							small
-							tertiary
-							onClick={() => navigate(`/${i18n.language}/${AVAILABILITYPATH}`)}
-						>
-							<Calendar />
-							{t('components.agenda.month')}
-						</Button>
-						<Button
-							small
-							tertiary
-							aria-label={t('availability.week.settings')}
-							onClick={() =>
-								navigate(`/${i18n.language}/${AVAILABILITYSETTINGS}`)
-							}
-						>
-							<Edit />
-							{t('availability.week.settings')}
-						</Button>
-					</Box>
+					{!isMobile && (
+						<Box sx={{ display: 'flex', gap: 1 }}>{navButtons}</Box>
+					)}
 				</WeekFooter>
 			</WeekCard>
 
