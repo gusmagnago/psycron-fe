@@ -26,6 +26,7 @@ export const enum PostHogEvent {
 	AuthSwitchFormClicked = 'auth switch form clicked',
 	AuthVerifyEmailFailed = 'auth verify email failed',
 	AuthVerifyEmailSucceeded = 'auth verify email succeeded',
+	AvailabilitySettingSaved = 'availability setting saved',
 	AvailabilitySlotBlocked = 'availability slot blocked',
 	BackofficeWorkerSessionFailed = 'backoffice worker session failed',
 
@@ -194,6 +195,11 @@ export type PostHogEventProps = {
 	[PostHogEvent.EditUserSubmitted]: {
 		sections: Array<'name' | 'contacts' | 'password'>;
 		session: 'default' | 'name' | 'contacts' | 'password';
+	};
+
+	[PostHogEvent.AvailabilitySettingSaved]: {
+		new_value: string;
+		setting: 'working_hours' | 'session_type' | 'session_duration' | 'timezone' | 'buffer_time' | 'recurrence_pattern' | 'google_calendar';
 	};
 
 	[PostHogEvent.AvailabilitySlotBlocked]: {

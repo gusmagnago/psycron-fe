@@ -2,6 +2,8 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { useFeatureFlagEnabled } from '@posthog/react';
+import { capture } from '@psycron/analytics/posthog/events';
+import { PostHogEvent } from '@psycron/analytics/posthog/types';
 import { getGoogleCalendarConnectUrl } from '@psycron/api/auth';
 import { updateAvailabilitySettings } from '@psycron/api/availability';
 import type { IAvailabilityRecord } from '@psycron/api/availability/index.types';
@@ -283,13 +285,38 @@ export const useAvailabilitySettings = (): UseAvailabilitySettingsReturn => {
 		onError: () => {
 			showAlert({ message: t('availability.settings.save-error'), severity: 'error' });
 		},
-		onSuccess: (updated) => {
+		onSuccess: (updated, variables) => {
 			queryClient.setQueryData<IAvailabilityRecord>(
 				[JUPITER_AVAILABILITY_CONFIG_KEY],
 				(prev) => (prev ? { ...prev, ...updated } : prev)
 			);
 			queryClient.refetchQueries({ queryKey: ['therapistAvailability'] });
 			queryClient.refetchQueries({ queryKey: ['jupiterAvailability'] });
+
+			const setting = variables.workingDays || variables.timeRange
+				? 'working_hours'
+				: variables.sessionType
+					? 'session_type'
+					: variables.sessionDuration
+						? 'session_duration'
+						: variables.timezone
+							? 'timezone'
+							: variables.bufferTimeMinutes !== undefined
+								? 'buffer_time'
+								: 'recurrence_pattern';
+
+			const newValue = variables.workingDays
+				? variables.workingDays.join(',')
+				: variables.timeRange
+					?? variables.sessionType
+					?? variables.sessionDuration
+					?? variables.timezone
+					?? String(variables.bufferTimeMinutes ?? '')
+					?? variables.recurrencePattern
+					?? '';
+
+			capture(PostHogEvent.AvailabilitySettingSaved, { new_value: newValue, setting });
+
 			showAlert({ message: t('availability.settings.save-success'), severity: 'success' });
 			closeDrawer();
 		},
