@@ -804,6 +804,12 @@
         "reschedule-select-prompt": "Selecione um novo horário para esta consulta.",
         "reschedule-no-slots": "Não há horários disponíveis para remarcar. Tente ajustar os seus horários de trabalho.",
         "reschedule-success": "Consulta remarcada com sucesso.",
+        "address-override": "Local da sessão",
+        "address-override-question": "Usar um local diferente para esta sessão?",
+        "address-reset": "Repor padrão",
+        "address-save": "Guardar local",
+        "address-save-error": "Falha ao guardar o local da sessão. Tente novamente.",
+        "address-saved": "Local da sessão guardado.",
         "share-address": "Partilhar endereço do consultório com o paciente"
       },
       "buffer-label": "Buffer",

@@ -46,6 +46,7 @@ export const useWeekSlots = (weekStart: Date, weekEnd: Date, bufferTimeMinutes: 
 				if (!status) return null;
 				return {
 					_id: slot._id,
+					address: slot.address ?? null,
 					availabilityDayId: String(d.dateId),
 					date: dayStr,
 					duration: computeDuration(slot.startTime, slot.endTime),

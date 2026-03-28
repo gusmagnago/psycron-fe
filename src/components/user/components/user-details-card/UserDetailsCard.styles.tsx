@@ -6,7 +6,10 @@ import {
 	keyframes,
 	styled,
 } from '@mui/material';
-import { isMobileMedia } from '@psycron/theme/media-queries/mediaQueries';
+import {
+	isMobileMedia,
+	isSmallerThanTabletMedia,
+} from '@psycron/theme/media-queries/mediaQueries';
 import { hexToRgba, palette } from '@psycron/theme/palette/palette.theme';
 import {
 	shadowMain,
@@ -34,7 +37,7 @@ export const UserDetailsCardWrapper = styled(Box, {
 	left: 0;
 	right: auto;
 
-	width: ${({ isPage }) => (!isPage ? '34.375rem' : '100%')};
+	width: ${({ isPage }) => (!isPage ? '34.375rem' : 'auto')};
 	max-height: calc(98dvh - (2 * ${spacing.medium}));
 	min-height: 0;
 
@@ -58,11 +61,10 @@ export const UserDetailsCardWrapper = styled(Box, {
 			animation: ${blurIn} 0.09s linear both;
 		`}
 
-	${isMobileMedia} {
-		left: 0;
-		top: 0;
+	${isSmallerThanTabletMedia} {
 		width: 100%;
-		max-height: calc(98dvh - (2 * ${spacing.xl}));
+		max-height: calc(100vh - (2 * ${spacing.xl}));
+		border-radius: 0;
 	}
 `;
 
@@ -87,6 +89,11 @@ export const UserDestailsTopInfo = styled(Box)`
 	display: flex;
 	flex-direction: column;
 	align-items: flex-start;
+	height: 100%;
+
+	${isSmallerThanTabletMedia} {
+		justify-content: center;
+	}
 `;
 
 export const UserDestailsTopInfoWrapper = styled(Box)`
@@ -133,7 +140,7 @@ export const UserDetailsBody = styled(Box, {
 
 	width: ${({ isPage }) => (isPage ? '34.375rem' : '100%')};
 
-	${isMobileMedia} {
+	${isSmallerThanTabletMedia} {
 		width: 100%;
 	}
 `;

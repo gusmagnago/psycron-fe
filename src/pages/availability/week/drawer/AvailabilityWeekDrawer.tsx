@@ -1,33 +1,11 @@
 import { useMemo, useState } from 'react';
-import { FormProvider, useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import { MenuItem, TextField } from '@mui/material';
-import { Box } from '@mui/material';
-import { capture } from '@psycron/analytics/posthog/events';
-import { PostHogEvent } from '@psycron/analytics/posthog/types';
-import { editSlot } from '@psycron/api/availability';
-import { bookAppointmentFromLink } from '@psycron/api/patient';
-import type { ICreatePatientForm } from '@psycron/api/patient/index.types';
-import {
-	cancelAppointmentByPatient,
-	editSlotStatus,
-	getAppointmentDetailsBySlotId,
-} from '@psycron/api/user/availability';
-import type {
-	AppointmentDetailsBySlotIdResponse,
-	CancellationReasonEnum as CancellationReasonType,
-} from '@psycron/api/user/availability/index.types';
-import {
-	CancellationReasonEnum,
-	StatusEnum,
-} from '@psycron/api/user/availability/index.types';
+import { getAppointmentDetailsBySlotId } from '@psycron/api/user/availability';
+import { StatusEnum } from '@psycron/api/user/availability/index.types';
 import { Button } from '@psycron/components/button/Button';
 import { Drawer } from '@psycron/components/drawer/Drawer';
-import { ContactsForm } from '@psycron/components/form/components/contacts/ContactsForm';
-import { NameForm } from '@psycron/components/form/components/name/NameForm';
 import {
 	Account,
-	Address,
 	Appointment,
 	Calendar,
 	Google,
@@ -35,308 +13,52 @@ import {
 	MapPin,
 	Watch,
 } from '@psycron/components/icons';
-import { Switch } from '@psycron/components/switch/components/item/Switch';
-import { useAlert } from '@psycron/context/alert/AlertContext';
 import { useAvailability } from '@psycron/context/appointment/availability/AvailabilityContext';
-import { usePatient } from '@psycron/context/patient/PatientContext';
+import type { ISlotAddress } from '@psycron/context/user/auth/UserAuthenticationContext.types';
 import { useUserDetails } from '@psycron/context/user/details/UserDetailsContext';
-import { getFormattedContacts } from '@psycron/hooks/useFormattedContacts';
 import { useJupiterAvailabilityConfig } from '@psycron/hooks/useJupiterAvailabilityConfig';
 import { useSecureStorage } from '@psycron/hooks/useSecureStorage';
 import i18n from '@psycron/i18n';
 import { palette } from '@psycron/theme/palette/palette.theme';
 import { THERAPIST_ID } from '@psycron/utils/tokens';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 import { format, parseISO } from 'date-fns';
 import { enGB, ptBR } from 'date-fns/locale';
 
+import { useBookingForm } from './hooks/useBookingForm';
+import { useEditSlotForm } from './hooks/useEditSlotForm';
 import {
-	CancelChoiceCard,
-	CancelChoiceCardSub,
-	CancelChoiceCardTitle,
-	CancelChoiceWrapper,
+	useBlockSlot,
+	useCancelSlot,
+	useReschedule,
+} from './hooks/useSlotActions';
+import { useSlotAddress } from './hooks/useSlotAddress';
+import { SlotAvailableBody } from './views/SlotAvailableBody';
+import { SlotCancelChoiceView } from './views/SlotCancelChoiceView';
+import { SlotCancelReasonForm } from './views/SlotCancelReasonForm';
+import { SlotDetailView } from './views/SlotDetailView';
+import { SlotEditForm } from './views/SlotEditForm';
+import { SlotReschedulePicker } from './views/SlotReschedulePicker';
+import {
 	CancelViewBody,
 	ConfirmedBadge,
 	ConfirmedBadgeText,
 	DrawerBadgeRow,
-	DrawerDetailIcon,
 	DrawerDetailLabel,
-	DrawerDetailRow,
-	DrawerDetailsList,
-	DrawerDetailSub,
-	DrawerDetailValue,
-	DrawerDetailWrapper,
-	FormWrapper,
-	ShareAddressLabel,
-	ShareAddressRow,
-	SlotPickerChip,
-	SlotPickerChipsRow,
-	SlotPickerDateLabel,
-	SlotPickerEmpty,
-	SlotPickerGroup,
-	SlotPickerList,
 	SourceBadge,
 	SourceBadgeText,
 } from './AvailabilityWeekDrawer.styles';
 import type {
+	DrawerView,
 	IAvailabilityWeekDrawerProps,
 	IDrawerDetail,
+	IRescheduleSlot,
 } from './AvailabilityWeekDrawer.types';
 import {
 	computeEndTime,
 	computeTimeStrings,
 	STATUS_CONFIG,
 } from './AvailabilityWeekDrawer.utils';
-
-type CancelView =
-	| 'block-confirm'
-	| 'cancel-reason'
-	| 'reschedule-or-cancel'
-	| 'reschedule-slots';
-
-interface IRescheduleSlot {
-	availabilityDayId: string;
-	slotId: string;
-	startTime: string;
-}
-
-const CANCEL_REASONS = [
-	CancellationReasonEnum.EMERGENCY,
-	CancellationReasonEnum.SCHEDULE_CONFLICT,
-	CancellationReasonEnum.FINANCIAL_ISSUES,
-	CancellationReasonEnum.MENTAL_HEALTH,
-	CancellationReasonEnum.NO_SHOW,
-	CancellationReasonEnum.OTHER,
-] as const;
-
-// ─── useBookingForm ────────────────────────────────────────────────────────────
-
-const useBookingForm = (
-	slot: IAvailabilityWeekDrawerProps['slot'],
-	therapistId: string | null,
-	shareAddress: boolean
-) => {
-	const { bookAppointmentWithLink } = usePatient();
-	const methods = useForm<ICreatePatientForm>({ mode: 'onChange' });
-	const {
-		handleSubmit,
-		formState: { isSubmitting },
-	} = methods;
-
-	const onSubmit = (formData: ICreatePatientForm) => {
-		const { email, firstName, lastName } = formData;
-		const { fullPhone, fullWhatsapp } = getFormattedContacts(formData);
-
-		bookAppointmentWithLink({
-			therapistId,
-			data: {
-				availabilityDayId: slot.availabilityDayId ?? '',
-				slotId: slot._id ?? slot.id,
-				patient: {
-					firstName,
-					lastName,
-					contacts: {
-						email,
-						phone: fullPhone,
-						...(fullWhatsapp ? { whatsapp: fullWhatsapp } : {}),
-					},
-				},
-				timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-				shouldReplicate: false,
-				shareAddress,
-			},
-		});
-	};
-
-	return { isSubmitting, methods, submitBooking: handleSubmit(onSubmit) };
-};
-
-// ─── useEditSlotForm ───────────────────────────────────────────────────────────
-
-const useEditSlotForm = (
-	slot: IAvailabilityWeekDrawerProps['slot'],
-	therapistId: string | null,
-	onSaved: (patch: { endTime?: string; note?: string; startTime?: string }) => void
-) => {
-	const { t } = useTranslation();
-	const { showAlert } = useAlert();
-	const queryClient = useQueryClient();
-
-	const initialStartTime = slot.startTime;
-	const initialEndTime = computeEndTime(slot.startTime, slot.duration);
-	const initialNote = slot.notes ?? '';
-
-	const [startTime, setStartTime] = useState(initialStartTime);
-	const [endTime, setEndTime] = useState(initialEndTime);
-	const [note, setNote] = useState(initialNote);
-
-	const isDirty =
-		startTime !== initialStartTime ||
-		endTime !== initialEndTime ||
-		note !== initialNote;
-
-	const mutation = useMutation({
-		mutationFn: () =>
-			editSlot({
-				availabilityDayId: slot.availabilityDayId ?? '',
-				endTime,
-				note: note || undefined,
-				slotId: slot._id ?? slot.id,
-				startTime,
-				therapistId: therapistId ?? '',
-			}),
-		onError: () => {
-			showAlert({ message: t('availability.week.drawer.edit-error'), severity: 'error' });
-		},
-		onSuccess: (data) => {
-			showAlert({
-				message: data.wasBooked
-					? t('availability.week.drawer.edit-success-booked')
-					: t('availability.week.drawer.edit-success'),
-				severity: data.wasBooked ? 'warning' : 'success',
-			});
-			queryClient.invalidateQueries({ queryKey: ['therapistAvailability'] });
-			onSaved({ endTime, note: note || undefined, startTime });
-		},
-	});
-
-	return { endTime, isDirty, mutation, note, setEndTime, setNote, setStartTime, startTime };
-};
-
-// ─── useBlockSlot ──────────────────────────────────────────────────────────────
-
-const useBlockSlot = (
-	slot: IAvailabilityWeekDrawerProps['slot'],
-	therapistId: string | null,
-	onBlocked: () => void
-) => {
-	const { t } = useTranslation();
-	const { showAlert } = useAlert();
-	const queryClient = useQueryClient();
-
-	const mutation = useMutation({
-		mutationFn: () =>
-			editSlotStatus({
-				availabilityDayId: slot.availabilityDayId ?? '',
-				data: { newStatus: 'BLOCKED', startTime: slot.startTime },
-				slotId: slot._id ?? slot.id,
-				therapistId: therapistId ?? '',
-			}),
-		onError: () => {
-			showAlert({ message: t('availability.week.drawer.block-error'), severity: 'error' });
-		},
-		onSuccess: () => {
-			capture(PostHogEvent.AvailabilitySlotBlocked, { slot_start_time: slot.startTime });
-			showAlert({ message: t('availability.week.drawer.block-success'), severity: 'success' });
-			queryClient.invalidateQueries({ queryKey: ['therapistAvailability'] });
-			onBlocked();
-		},
-	});
-
-	return { mutation };
-};
-
-// ─── useCancelSlot ─────────────────────────────────────────────────────────────
-
-const useCancelSlot = (
-	slot: IAvailabilityWeekDrawerProps['slot'],
-	therapistId: string | null,
-	onCancelled: () => void
-) => {
-	const { t } = useTranslation();
-	const { showAlert } = useAlert();
-	const queryClient = useQueryClient();
-
-	const [reasonCode, setReasonCode] = useState<CancellationReasonType | null>(null);
-	const [customReason, setCustomReason] = useState('');
-
-	const mutation = useMutation({
-		mutationFn: () =>
-			cancelAppointmentByPatient({
-				...(customReason ? { customReason } : {}),
-				patientId: slot.patientId ?? '',
-				reasonCode: reasonCode!,
-				slotId: slot._id ?? slot.id,
-				therapistId: therapistId ?? '',
-				triggeredBy: 'THERAPIST',
-			}),
-		onError: () => {
-			showAlert({ message: t('availability.week.drawer.cancel-error'), severity: 'error' });
-		},
-		onSuccess: () => {
-			capture(PostHogEvent.AppointmentCancelled, {
-				reason_code: String(reasonCode),
-				triggered_by: 'therapist',
-			});
-			showAlert({ message: t('availability.week.drawer.cancel-success'), severity: 'success' });
-			queryClient.invalidateQueries({ queryKey: ['therapistAvailability'] });
-			onCancelled();
-		},
-	});
-
-	const reset = () => {
-		setReasonCode(null);
-		setCustomReason('');
-	};
-
-	return { customReason, mutation, reasonCode, reset, setCustomReason, setReasonCode };
-};
-
-// ─── useReschedule ─────────────────────────────────────────────────────────────
-
-const useReschedule = (
-	currentSlot: IAvailabilityWeekDrawerProps['slot'],
-	therapistId: string | null,
-	appointmentDetails: AppointmentDetailsBySlotIdResponse | undefined,
-	onRescheduled: () => void
-) => {
-	const { t } = useTranslation();
-	const { showAlert } = useAlert();
-	const queryClient = useQueryClient();
-
-	const [selectedSlot, setSelectedSlot] = useState<IRescheduleSlot | null>(null);
-
-	const mutation = useMutation({
-		mutationFn: async () => {
-			if (!selectedSlot || !currentSlot.patientId || !appointmentDetails) return;
-
-			await cancelAppointmentByPatient({
-				patientId: currentSlot.patientId,
-				reasonCode: CancellationReasonEnum.SCHEDULE_CONFLICT,
-				slotId: currentSlot._id ?? currentSlot.id,
-				therapistId: therapistId ?? '',
-				triggeredBy: 'THERAPIST',
-			});
-
-			await bookAppointmentFromLink({
-				therapistId: therapistId ?? '',
-				data: {
-					availabilityDayId: selectedSlot.availabilityDayId,
-					patient: appointmentDetails.appointment.patient,
-					shouldReplicate: false,
-					slotId: selectedSlot.slotId,
-					timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-				},
-			});
-		},
-		onError: () => {
-			showAlert({ message: t('availability.week.drawer.reschedule-error'), severity: 'error' });
-		},
-		onSuccess: () => {
-			capture(PostHogEvent.AppointmentRescheduled, {
-				new_slot_start_time: selectedSlot?.startTime ?? '',
-				reason_code: String(CancellationReasonEnum.SCHEDULE_CONFLICT),
-			});
-			showAlert({ message: t('availability.week.drawer.reschedule-success'), severity: 'success' });
-			queryClient.invalidateQueries({ queryKey: ['therapistAvailability'] });
-			onRescheduled();
-		},
-	});
-
-	return { mutation, selectedSlot, setSelectedSlot };
-};
-
-// ─── AvailabilityWeekDrawer ────────────────────────────────────────────────────
 
 export const AvailabilityWeekDrawer = ({
 	slot,
@@ -346,48 +68,123 @@ export const AvailabilityWeekDrawer = ({
 	const therapistId = useSecureStorage(THERAPIST_ID);
 	const { userDetails } = useUserDetails(therapistId ?? undefined);
 	const { availability } = useJupiterAvailabilityConfig();
-	const [isEditing, setIsEditing] = useState(false);
-	const [cancelView, setCancelView] = useState<CancelView | null>(null);
-	const [shareAddress, setShareAddress] = useState(false);
 
-	const { isSubmitting, methods, submitBooking } = useBookingForm(slot, therapistId, shareAddress);
-	const {
-		endTime: editEndTime,
-		isDirty: editIsDirty,
-		mutation: editMutation,
-		note: editNote,
-		setEndTime: setEditEndTime,
-		setNote: setEditNote,
-		setStartTime: setEditStartTime,
-		startTime: editStartTime,
-	} = useEditSlotForm(slot, therapistId, () => setIsEditing(false));
+	// ─── View state ───────────────────────────────────────────────────────────
+	const [view, setView] = useState<DrawerView>('default');
+	const [shareAddress, setShareAddress] = useState(false);
+	const [overrideAddress, setOverrideAddress] = useState(
+		() => !!slot.address
+	);
+
+	// ─── Slot flags ───────────────────────────────────────────────────────────
+	const isAvailable = slot.status === 'available';
+	const isBooked =
+		slot.status === 'booked-jupiter' || slot.status === 'booked-google';
+	const isGoogle = slot.status === 'booked-google';
+	const sessionType = availability?.sessionType;
+	const hasInPersonAddress = !!userDetails?.clinicAddress?.street;
+	const isInPersonSession =
+		sessionType === 'IN_PERSON' || sessionType === 'BOTH';
+	const showSessionLocation =
+		isAvailable && isInPersonSession && hasInPersonAddress;
+	const showAddressInEdit =
+		isBooked && isInPersonSession && hasInPersonAddress;
+
+	// ─── Hooks ────────────────────────────────────────────────────────────────
+	const slotAddress = useSlotAddress(slot, therapistId);
+
+	const { isSubmitting, methods, submitBooking } = useBookingForm(
+		slot,
+		therapistId,
+		shareAddress
+	);
+
+	const editSlotForm = useEditSlotForm(
+		slot,
+		therapistId,
+		showAddressInEdit,
+		() => setView('default')
+	);
 
 	const blockSlot = useBlockSlot(slot, therapistId, onClose);
 	const cancelSlot = useCancelSlot(slot, therapistId, onClose);
 
-	const isAvailable = slot.status === 'available';
-	const isBooked = slot.status === 'booked-jupiter' || slot.status === 'booked-google';
-	const sessionType = availability?.sessionType;
-	const showShareAddress =
-		isAvailable &&
-		(sessionType === 'IN_PERSON' || sessionType === 'BOTH') &&
-		!!userDetails?.clinicAddress?.street;
-	const isGoogle = slot.status === 'booked-google';
-
 	const slotId = slot._id ?? slot.id;
 	const { data: appointmentDetails } = useQuery({
-		queryKey: ['slotAppointmentDetails', slotId],
+		enabled: isBooked && !!therapistId && !!slotId && !!slot.availabilityDayId,
 		queryFn: () =>
 			getAppointmentDetailsBySlotId(
 				therapistId ?? '',
 				slot.availabilityDayId ?? '',
 				slotId
 			),
-		enabled: isBooked && !!therapistId && !!slotId && !!slot.availabilityDayId,
+		queryKey: ['slotAppointmentDetails', slotId],
 		staleTime: 1000 * 60 * 5,
 	});
 
-	const reschedule = useReschedule(slot, therapistId, appointmentDetails, onClose);
+	const reschedule = useReschedule(
+		slot,
+		therapistId,
+		appointmentDetails,
+		onClose
+	);
+
+	// ─── Toggle handlers ──────────────────────────────────────────────────────
+	const handleShareAddressToggle = (val: boolean) => {
+		setShareAddress(val);
+		if (val) {
+			setOverrideAddress(false);
+			slotAddress.clear();
+		}
+	};
+
+	const handleOverrideAddressToggle = (val: boolean) => {
+		setOverrideAddress(val);
+		if (!val) slotAddress.clear();
+	};
+
+	// ─── Address field updaters ───────────────────────────────────────────────
+	const emptyAddress: ISlotAddress = {
+		city: '',
+		country: '',
+		postcode: '',
+		street: '',
+	};
+
+	const handleSlotAddressChange = (
+		field: keyof ISlotAddress,
+		value: string
+	) => {
+		slotAddress.setAddress({
+			...(slotAddress.address ?? emptyAddress),
+			[field]: value,
+		});
+	};
+
+	const handleEditAddressChange = (
+		field: keyof ISlotAddress,
+		value: string
+	) => {
+		editSlotForm.setAddress({
+			...(editSlotForm.address ?? emptyAddress),
+			[field]: value,
+		});
+	};
+
+	// ─── Derived data ─────────────────────────────────────────────────────────
+	const dateLocale = i18n.language.startsWith('pt') ? ptBR : enGB;
+	const endTime = computeEndTime(slot.startTime, slot.duration);
+	const formattedDate = format(parseISO(slot.date), 'PPPP', {
+		locale: dateLocale,
+	});
+
+	const { therapistTimeStr, patientTimeStr } = useMemo(() => {
+		const therapistTZ =
+			userDetails?.timeZone ?? Intl.DateTimeFormat().resolvedOptions().timeZone;
+		return computeTimeStrings(slot, endTime, therapistTZ, dateLocale);
+	}, [slot, endTime, userDetails?.timeZone, dateLocale]);
+
+	const timeSub = `${t('availability.week.drawer.session-duration')}${slot.duration} ${t('availability.week.drawer.minutes')}`;
 
 	const patientName = appointmentDetails?.appointment?.patient
 		? [
@@ -398,9 +195,8 @@ export const AvailabilityWeekDrawer = ({
 				.join(' ') || undefined
 		: undefined;
 
-	// ─── Available slots for reschedule picker ────────────────────────────────
+	// ─── Available slot groups for reschedule picker ──────────────────────────
 	const { availabilityData } = useAvailability();
-	const dateLocale = i18n.language.startsWith('pt') ? ptBR : enGB;
 	const todayStr = format(new Date(), 'yyyy-MM-dd');
 
 	const availableSlotGroups = useMemo(() => {
@@ -435,21 +231,7 @@ export const AvailabilityWeekDrawer = ({
 			}, []);
 	}, [availabilityData?.dates, todayStr, dateLocale]);
 
-	// ─── Slot details ─────────────────────────────────────────────────────────
-	const statusCfg = STATUS_CONFIG[slot.status];
-	const endTime = computeEndTime(slot.startTime, slot.duration);
-	const formattedDate = format(parseISO(slot.date), 'PPPP', {
-		locale: dateLocale,
-	});
-
-	const { therapistTimeStr, patientTimeStr } = useMemo(() => {
-		const therapistTZ =
-			userDetails?.timeZone ?? Intl.DateTimeFormat().resolvedOptions().timeZone;
-		return computeTimeStrings(slot, endTime, therapistTZ, dateLocale);
-	}, [slot, endTime, userDetails?.timeZone, dateLocale]);
-
-	const timeSub = `${t('availability.week.drawer.session-duration')}${slot.duration} ${t('availability.week.drawer.minutes')}`;
-
+	// ─── Detail rows ──────────────────────────────────────────────────────────
 	const details: IDrawerDetail[] = isAvailable
 		? [
 				{
@@ -506,376 +288,248 @@ export const AvailabilityWeekDrawer = ({
 					: []),
 			];
 
-	// ─── Actions ──────────────────────────────────────────────────────────────
-	const getActions = () => {
-		if (isEditing) {
-			return (
-				<>
-					<Button
-						fullWidth
-						disabled={editMutation.isPending || !editIsDirty}
-						onClick={() => editMutation.mutate()}
-						tertiary
-						variant='contained'
-					>
-						{t('availability.week.drawer.edit-save')}
-					</Button>
-					<Button
-						fullWidth
-						disabled={editMutation.isPending}
-						onClick={() => setIsEditing(false)}
-					>
-						{t('common.cancel')}
-					</Button>
-				</>
-			);
-		}
-
-		if (cancelView === 'block-confirm') {
-			return (
-				<>
-					<Button
-						fullWidth
-						disabled={blockSlot.mutation.isPending}
-						onClick={() => blockSlot.mutation.mutate()}
-						severity='error'
-						variant='contained'
-					>
-						{t('availability.week.drawer.block-confirm')}
-					</Button>
-					<Button
-						fullWidth
-						disabled={blockSlot.mutation.isPending}
-						onClick={() => setCancelView(null)}
-					>
-						{t('availability.week.drawer.cancel-back')}
-					</Button>
-				</>
-			);
-		}
-
-		if (cancelView === 'reschedule-or-cancel') {
-			return (
-				<Button fullWidth onClick={() => setCancelView(null)}>
-					{t('availability.week.drawer.cancel-back')}
-				</Button>
-			);
-		}
-
-		if (cancelView === 'cancel-reason') {
-			return (
-				<>
-					<Button
-						fullWidth
-						disabled={!cancelSlot.reasonCode || cancelSlot.mutation.isPending}
-						onClick={() => cancelSlot.mutation.mutate()}
-						severity='error'
-						variant='contained'
-					>
-						{t('availability.week.drawer.cancel-confirm')}
-					</Button>
-					<Button
-						fullWidth
-						disabled={cancelSlot.mutation.isPending}
-						onClick={() => {
-							setCancelView('reschedule-or-cancel');
-							cancelSlot.reset();
-						}}
-					>
-						{t('availability.week.drawer.cancel-back')}
-					</Button>
-				</>
-			);
-		}
-
-		if (cancelView === 'reschedule-slots') {
-			return (
-				<>
-					<Button
-						fullWidth
-						disabled={!reschedule.selectedSlot || reschedule.mutation.isPending}
-						onClick={() => reschedule.mutation.mutate()}
-						tertiary
-						variant='contained'
-					>
-						{t('availability.week.drawer.reschedule-confirm')}
-					</Button>
-					<Button
-						fullWidth
-						disabled={reschedule.mutation.isPending}
-						onClick={() => {
-							setCancelView('reschedule-or-cancel');
-							reschedule.setSelectedSlot(null);
-						}}
-					>
-						{t('availability.week.drawer.cancel-back')}
-					</Button>
-				</>
-			);
-		}
-
-		if (isAvailable) {
-			return (
-				<>
-					<Button
-						fullWidth
-						disabled={isSubmitting}
-						onClick={submitBooking}
-						tertiary
-						variant='contained'
-					>
-						{t('availability.week.drawer.confirm-booking')}
-					</Button>
-					<Button
-						fullWidth
-						severity='error'
-						onClick={() => setCancelView('block-confirm')}
-					>
-						{t('availability.week.drawer.block-slot')}
-					</Button>
-				</>
-			);
-		}
-
-		return (
-			<>
-				<Button
-					fullWidth
-					tertiary
-					onClick={() => {
-						setIsEditing(true);
-						setCancelView(null);
-					}}
-				>
-					{t('availability.week.drawer.edit')}
-				</Button>
-				<Button
-					fullWidth
-					severity='error'
-					onClick={() => setCancelView('reschedule-or-cancel')}
-				>
-					{t('availability.week.drawer.cancel-appointment')}
-				</Button>
-			</>
-		);
-	};
-
 	// ─── Body ─────────────────────────────────────────────────────────────────
-	const getBody = () => {
-		if (isEditing) {
-			return (
-				<FormWrapper>
-					<TextField
-						fullWidth
-						label={t('availability.week.drawer.edit-start-time')}
-						onChange={(e) => setEditStartTime(e.target.value)}
-						size='small'
-						type='time'
-						value={editStartTime}
+	const renderBody = () => {
+		switch (view) {
+			case 'editing':
+				return (
+					<SlotEditForm
+						address={editSlotForm.address}
+						endTime={editSlotForm.endTime}
+						note={editSlotForm.note}
+						onAddressChange={handleEditAddressChange}
+						onAddressClear={() => editSlotForm.setAddress(null)}
+						onEndTimeChange={editSlotForm.setEndTime}
+						onNoteChange={editSlotForm.setNote}
+						onOverrideAddressToggle={(val) => {
+							setOverrideAddress(val);
+							if (!val) editSlotForm.setAddress(null);
+						}}
+						onStartTimeChange={editSlotForm.setStartTime}
+						overrideAddress={overrideAddress}
+						showAddressSection={showAddressInEdit}
+						startTime={editSlotForm.startTime}
 					/>
-					<TextField
-						fullWidth
-						label={t('availability.week.drawer.edit-end-time')}
-						onChange={(e) => setEditEndTime(e.target.value)}
-						size='small'
-						type='time'
-						value={editEndTime}
-					/>
-					<TextField
-						fullWidth
-						label={t('availability.week.drawer.edit-note')}
-						maxRows={4}
-						multiline
-						onChange={(e) => setEditNote(e.target.value)}
-						size='small'
-						value={editNote}
-					/>
-				</FormWrapper>
-			);
-		}
-
-		if (cancelView === 'block-confirm') {
-			return (
-				<CancelViewBody>
-					{t('availability.week.drawer.block-confirm-body')}
-				</CancelViewBody>
-			);
-		}
-
-		if (cancelView === 'reschedule-or-cancel') {
-			return (
-				<CancelChoiceWrapper>
-					<CancelChoiceCard onClick={() => setCancelView('reschedule-slots')}>
-						<CancelChoiceCardTitle>
-							{t('availability.week.drawer.reschedule')}
-						</CancelChoiceCardTitle>
-						<CancelChoiceCardSub>
-							{t('availability.week.drawer.reschedule-choice-sub')}
-						</CancelChoiceCardSub>
-					</CancelChoiceCard>
-					<CancelChoiceCard isDanger onClick={() => setCancelView('cancel-reason')}>
-						<CancelChoiceCardTitle>
-							{t('availability.week.drawer.cancel-appointment')}
-						</CancelChoiceCardTitle>
-						<CancelChoiceCardSub>
-							{t('availability.week.drawer.cancel-choice-sub')}
-						</CancelChoiceCardSub>
-					</CancelChoiceCard>
-				</CancelChoiceWrapper>
-			);
-		}
-
-		if (cancelView === 'cancel-reason') {
-			return (
-				<FormWrapper>
-					<TextField
-						select
-						fullWidth
-						label={t('availability.week.drawer.cancel-reason-label')}
-						onChange={(e) =>
-							cancelSlot.setReasonCode(
-								Number(e.target.value) as CancellationReasonType
-							)
-						}
-						size='small'
-						value={cancelSlot.reasonCode ?? ''}
-					>
-						{CANCEL_REASONS.map((val) => (
-							<MenuItem key={val} value={val}>
-								{t(`globals.cancellation-reason.${val}`)}
-							</MenuItem>
-						))}
-					</TextField>
-					{cancelSlot.reasonCode === CancellationReasonEnum.OTHER && (
-						<TextField
-							fullWidth
-							label={t('availability.week.drawer.cancel-custom-reason-label')}
-							maxRows={3}
-							multiline
-							onChange={(e) => cancelSlot.setCustomReason(e.target.value)}
-							size='small'
-							value={cancelSlot.customReason}
-						/>
-					)}
-				</FormWrapper>
-			);
-		}
-
-		if (cancelView === 'reschedule-slots') {
-			return (
-				<>
+				);
+			case 'block-confirm':
+				return (
 					<CancelViewBody>
-						{t('availability.week.drawer.reschedule-select-prompt')}
+						{t('availability.week.drawer.block-confirm-body')}
 					</CancelViewBody>
-					<SlotPickerList>
-						{availableSlotGroups.length === 0 && (
-							<SlotPickerEmpty>
-								{t('availability.week.drawer.reschedule-no-slots')}
-							</SlotPickerEmpty>
-						)}
-						{availableSlotGroups.map((group) => (
-							<SlotPickerGroup key={group.date}>
-								<SlotPickerDateLabel>{group.formattedDate}</SlotPickerDateLabel>
-								<SlotPickerChipsRow>
-									{group.slots.map((s) => {
-										const isSelected =
-											reschedule.selectedSlot?.slotId === s.slotId;
-										return (
-											<SlotPickerChip
-												key={s.slotId}
-												isSelected={isSelected}
-												onClick={() => reschedule.setSelectedSlot(s)}
-											>
-												{s.startTime}
-											</SlotPickerChip>
-										);
-									})}
-								</SlotPickerChipsRow>
-							</SlotPickerGroup>
-						))}
-					</SlotPickerList>
-				</>
-			);
-		}
-
-		return (
-			<>
-				<DrawerDetailsList>
-					{details.map(({ icon, key, label, sub, value }) => (
-						<DrawerDetailRow key={key}>
-							<DrawerDetailIcon>{icon}</DrawerDetailIcon>
-							<DrawerDetailWrapper>
-								<DrawerDetailLabel>{label}</DrawerDetailLabel>
-								<DrawerDetailValue>{value}</DrawerDetailValue>
-								{sub && <DrawerDetailSub>{sub}</DrawerDetailSub>}
-							</DrawerDetailWrapper>
-						</DrawerDetailRow>
-					))}
-				</DrawerDetailsList>
-
-				{isAvailable && (
+				);
+			case 'reschedule-or-cancel':
+				return (
+					<SlotCancelChoiceView
+						onCancel={() => setView('cancel-reason')}
+						onReschedule={() => setView('reschedule-slots')}
+					/>
+				);
+			case 'cancel-reason':
+				return (
+					<SlotCancelReasonForm
+						customReason={cancelSlot.customReason}
+						onCustomReasonChange={cancelSlot.setCustomReason}
+						onReasonChange={cancelSlot.setReasonCode}
+						reasonCode={cancelSlot.reasonCode}
+					/>
+				);
+			case 'reschedule-slots':
+				return (
+					<SlotReschedulePicker
+						availableSlotGroups={availableSlotGroups}
+						onSelectSlot={reschedule.setSelectedSlot}
+						selectedSlot={reschedule.selectedSlot}
+					/>
+				);
+			default:
+				return (
 					<>
-						<FormProvider {...methods}>
-							<Box component='form'>
-								<FormWrapper>
-									<NameForm<ICreatePatientForm>
-										required
-										fields={{ firstName: 'firstName', lastName: 'lastName' }}
-										labelFirstName={t(
-											'availability.week.drawer.patient-first-name'
-										)}
-										labelLastName={t('availability.week.drawer.patient-last-name')}
-										placeholderFirstName={t(
-											'availability.week.drawer.patient-first-name'
-										)}
-										placeholderLastName={t(
-											'availability.week.drawer.patient-last-name'
-										)}
-									/>
-									<ContactsForm<ICreatePatientForm>
-										atLeastOneContact
-										fullWidth
-										labelEmail={t('availability.week.drawer.patient-email')}
-										placeholderEmail={t('availability.week.drawer.patient-email')}
-										fields={{
-											email: 'email',
-											hasWhatsApp: 'hasWhatsApp',
-											isPhoneWpp: 'isPhoneWpp',
-											phone: 'phone',
-											whatsapp: 'whatsapp',
-										}}
-									/>
-								</FormWrapper>
-							</Box>
-						</FormProvider>
-						{showShareAddress && (
-							<ShareAddressRow>
-								<DrawerDetailIcon>
-									<Address color={palette.brand.purple} />
-								</DrawerDetailIcon>
-								<ShareAddressLabel>
-									{t('availability.week.drawer.share-address')}
-								</ShareAddressLabel>
-								<Switch
-									checked={shareAddress}
-									onChange={(e) => setShareAddress(e.target.checked)}
-								/>
-							</ShareAddressRow>
+						<SlotDetailView details={details} />
+						{isAvailable && (
+							<SlotAvailableBody
+								address={slotAddress.address}
+								isAddressDirty={slotAddress.isDirty}
+								isAddressSaving={slotAddress.mutation.isPending}
+								methods={methods}
+								onAddressChange={handleSlotAddressChange}
+								onAddressSave={() => slotAddress.mutation.mutate()}
+								onOverrideAddressToggle={handleOverrideAddressToggle}
+								onShareAddressToggle={handleShareAddressToggle}
+								overrideAddress={overrideAddress}
+								shareAddress={shareAddress}
+								showSessionLocation={showSessionLocation}
+							/>
 						)}
 					</>
-				)}
-			</>
-		);
+				);
+		}
 	};
+
+	// ─── Actions ──────────────────────────────────────────────────────────────
+	const renderActions = () => {
+		switch (view) {
+			case 'editing':
+				return (
+					<>
+						<Button
+							fullWidth
+							disabled={
+								editSlotForm.mutation.isPending || !editSlotForm.isDirty
+							}
+							onClick={() => editSlotForm.mutation.mutate()}
+							tertiary
+							variant='contained'
+						>
+							{t('availability.week.drawer.edit-save')}
+						</Button>
+						<Button
+							fullWidth
+							disabled={editSlotForm.mutation.isPending}
+							onClick={() => setView('default')}
+						>
+							{t('common.cancel')}
+						</Button>
+					</>
+				);
+			case 'block-confirm':
+				return (
+					<>
+						<Button
+							fullWidth
+							disabled={blockSlot.mutation.isPending}
+							onClick={() => blockSlot.mutation.mutate()}
+							severity='error'
+							variant='contained'
+						>
+							{t('availability.week.drawer.block-confirm')}
+						</Button>
+						<Button
+							fullWidth
+							disabled={blockSlot.mutation.isPending}
+							onClick={() => setView('default')}
+						>
+							{t('availability.week.drawer.cancel-back')}
+						</Button>
+					</>
+				);
+			case 'reschedule-or-cancel':
+				return (
+					<Button fullWidth onClick={() => setView('default')}>
+						{t('availability.week.drawer.cancel-back')}
+					</Button>
+				);
+			case 'cancel-reason':
+				return (
+					<>
+						<Button
+							fullWidth
+							disabled={
+								!cancelSlot.reasonCode || cancelSlot.mutation.isPending
+							}
+							onClick={() => cancelSlot.mutation.mutate()}
+							severity='error'
+							variant='contained'
+						>
+							{t('availability.week.drawer.cancel-confirm')}
+						</Button>
+						<Button
+							fullWidth
+							disabled={cancelSlot.mutation.isPending}
+							onClick={() => {
+								setView('reschedule-or-cancel');
+								cancelSlot.reset();
+							}}
+						>
+							{t('availability.week.drawer.cancel-back')}
+						</Button>
+					</>
+				);
+			case 'reschedule-slots':
+				return (
+					<>
+						<Button
+							fullWidth
+							disabled={
+								!reschedule.selectedSlot || reschedule.mutation.isPending
+							}
+							onClick={() => reschedule.mutation.mutate()}
+							tertiary
+							variant='contained'
+						>
+							{t('availability.week.drawer.reschedule-confirm')}
+						</Button>
+						<Button
+							fullWidth
+							disabled={reschedule.mutation.isPending}
+							onClick={() => {
+								setView('reschedule-or-cancel');
+								reschedule.setSelectedSlot(null);
+							}}
+						>
+							{t('availability.week.drawer.cancel-back')}
+						</Button>
+					</>
+				);
+			default:
+				if (isAvailable) {
+					return (
+						<>
+							<Button
+								fullWidth
+								disabled={isSubmitting}
+								onClick={submitBooking}
+								tertiary
+								variant='contained'
+							>
+								{t('availability.week.drawer.confirm-booking')}
+							</Button>
+							<Button
+								fullWidth
+								severity='error'
+								onClick={() => setView('block-confirm')}
+							>
+								{t('availability.week.drawer.block-slot')}
+							</Button>
+						</>
+					);
+				}
+				return (
+					<>
+						<Button
+							fullWidth
+							tertiary
+							onClick={() => setView('editing')}
+						>
+							{t('availability.week.drawer.edit')}
+						</Button>
+						<Button
+							fullWidth
+							severity='error'
+							onClick={() => setView('reschedule-or-cancel')}
+						>
+							{t('availability.week.drawer.cancel-appointment')}
+						</Button>
+					</>
+				);
+		}
+	};
+
+	// ─── Header badges ────────────────────────────────────────────────────────
+	const statusCfg = STATUS_CONFIG[slot.status];
 
 	return (
 		<Drawer
 			ariaLabel={
-				isAvailable ? t('availability.week.drawer.book-slot') : (patientName ?? '')
+				isAvailable
+					? t('availability.week.drawer.book-slot')
+					: (patientName ?? '')
 			}
 			title={
-				isAvailable ? t('availability.week.drawer.book-slot') : (patientName ?? '')
+				isAvailable
+					? t('availability.week.drawer.book-slot')
+					: (patientName ?? '')
 			}
+			actions={renderActions()}
 			headerExtra={
 				<>
 					{!isAvailable && (
@@ -913,9 +567,8 @@ export const AvailabilityWeekDrawer = ({
 				</>
 			}
 			onClose={onClose}
-			actions={getActions()}
 		>
-			{getBody()}
+			{renderBody()}
 		</Drawer>
 	);
 };

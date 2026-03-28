@@ -116,6 +116,33 @@ export const FormWrapper = styled(Box)`
 	gap: ${spacing.small};
 `;
 
+// ─── Address override ──────────────────────────────────────────────────────────
+
+export const AddressOverrideSection = styled(Box)`
+	display: flex;
+	flex-direction: column;
+	gap: ${spacing.small};
+	padding-top: ${spacing.small};
+`;
+
+export const AddressOverrideHeader = styled(Box)`
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+`;
+
+export const AddressOverrideLabel = styled(Text)`
+	font-size: 0.85rem;
+	color: ${palette.gray['05']};
+`;
+
+export const AddressResetLink = styled(Text)`
+	font-size: 0.8rem;
+	color: ${palette.brand.purple};
+	cursor: pointer;
+	text-decoration: underline;
+`;
+
 // ─── Share address ────────────────────────────────────────────────────────────
 
 export const ShareAddressRow = styled(Box)`

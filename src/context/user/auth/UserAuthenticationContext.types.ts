@@ -134,8 +134,16 @@ export interface INotification {
 	sentAt: ISODateString;
 }
 
+export interface ISlotAddress {
+	city: string;
+	country: string;
+	postcode: string;
+	street: string;
+}
+
 export interface ISlot {
 	_id: MongoId;
+	address?: ISlotAddress | null;
 	canceledAt?: ISODateString | null;
 	customReason?: string | null;
 	endTime: string;

@@ -26,7 +26,15 @@ export interface IUpdateAvailabilitySettingsPayload {
 	workingDays?: string[];
 }
 
+export interface ISlotAddressPayload {
+	city: string;
+	country: string;
+	postcode: string;
+	street: string;
+}
+
 export interface IEditSlotPayload {
+	address?: ISlotAddressPayload | null;
 	availabilityDayId: string;
 	endTime?: string;
 	note?: string;
@@ -47,6 +55,7 @@ export interface IEditSlotResponse {
 }
 
 export const editSlot = async ({
+	address,
 	availabilityDayId,
 	endTime,
 	note,
@@ -56,7 +65,7 @@ export const editSlot = async ({
 }: IEditSlotPayload): Promise<IEditSlotResponse> => {
 	const response = await apiClient.patch<IEditSlotResponse>(
 		`/users/${therapistId}/availability/${availabilityDayId}/slot/${slotId}`,
-		{ endTime, note, startTime }
+		{ address, endTime, note, startTime }
 	);
 	return response.data;
 };

@@ -4,6 +4,7 @@ import {
 	isMobileMedia,
 } from '@psycron/theme/media-queries/mediaQueries';
 import { spacing } from '@psycron/theme/spacing/spacing.theme';
+import { zIndexHover } from '@psycron/theme/zIndex';
 
 export const EditUserFooter = styled(Box)`
 	position: fixed;
@@ -11,6 +12,7 @@ export const EditUserFooter = styled(Box)`
 	right: 0;
 	padding: ${spacing.mediumSmall};
 	width: auto;
+	z-index: ${zIndexHover};
 
 	${isMobileMedia} {
 		width: 100%;

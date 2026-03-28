@@ -803,6 +803,12 @@
         "reschedule-select-prompt": "Select a new time slot for this appointment.",
         "reschedule-no-slots": "No available slots to reschedule to. Try adjusting your working hours.",
         "reschedule-success": "Appointment rescheduled successfully.",
+        "address-override": "Session location",
+        "address-override-question": "Use a different location for this session?",
+        "address-reset": "Reset to default",
+        "address-save": "Save location",
+        "address-save-error": "Failed to save session location. Please try again.",
+        "address-saved": "Session location saved.",
         "share-address": "Share clinic address with patient"
       },
       "buffer-label": "Buffer",
