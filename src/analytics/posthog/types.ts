@@ -199,7 +199,7 @@ export type PostHogEventProps = {
 
 	[PostHogEvent.AvailabilitySettingSaved]: {
 		new_value: string;
-		setting: 'working_hours' | 'session_type' | 'session_duration' | 'timezone' | 'buffer_time' | 'recurrence_pattern' | 'google_calendar';
+		setting: 'working_hours' | 'session_type' | 'session_duration' | 'timezone' | 'buffer_time' | 'recurrence_pattern' | 'google_calendar' | 'session_address';
 	};
 
 	[PostHogEvent.AvailabilitySlotBlocked]: {

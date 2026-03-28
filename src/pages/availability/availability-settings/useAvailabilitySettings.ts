@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { useFeatureFlagEnabled } from '@posthog/react';
@@ -7,8 +8,11 @@ import { PostHogEvent } from '@psycron/analytics/posthog/types';
 import { getGoogleCalendarConnectUrl } from '@psycron/api/auth';
 import { updateAvailabilitySettings } from '@psycron/api/availability';
 import type { IAvailabilityRecord } from '@psycron/api/availability/index.types';
+import { editUserById } from '@psycron/api/user';
 import { useAlert } from '@psycron/context/alert/AlertContext';
 import { useAvailability } from '@psycron/context/appointment/availability/AvailabilityContext';
+import type { IClinicAddress } from '@psycron/context/user/auth/UserAuthenticationContext.types';
+import { useUserDetails } from '@psycron/context/user/details/UserDetailsContext';
 import {
 	JUPITER_AVAILABILITY_CONFIG_KEY,
 	useJupiterAvailabilityConfig,
@@ -18,6 +22,7 @@ import { AVAILABILITYGENERATE, AVAILABILITYSETTINGS } from '@psycron/pages/urls'
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 import type {
+	AddressFormValues,
 	ChecklistConfig,
 	ChecklistItem,
 	DrawerKey,
@@ -158,6 +163,12 @@ export const useAvailabilitySettings = (): UseAvailabilitySettingsReturn => {
 
 	const { availability, isLoading } = useJupiterAvailabilityConfig();
 	const { availabilityData } = useAvailability();
+	const { userDetails, therapistId } = useUserDetails();
+
+	const emptyAddress: IClinicAddress = { city: '', country: '', postcode: '', street: '' };
+	const addressFormMethods = useForm<AddressFormValues>({
+		defaultValues: { clinicAddress: emptyAddress },
+	});
 
 	const isCancellationPolicyEnabled = useFeatureFlagEnabled('availability_cancellation_policy');
 	const isBufferTimeEnabled = useFeatureFlagEnabled('availability_buffer_time');
@@ -179,11 +190,16 @@ export const useAvailabilitySettings = (): UseAvailabilitySettingsReturn => {
 					setTimezoneInput(availability.timezone);
 				} else if (key === 'recurrence-pattern') {
 					setRecurrencePatternInput(availability.recurrencePattern ?? '');
+				} else if (key === 'session-address') {
+					addressFormMethods.reset({
+						clinicAddress: userDetails?.clinicAddress ?? emptyAddress,
+					});
 				}
 			}
 			setActiveDrawer(key);
 		},
-		[availability]
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+		[availability, addressFormMethods, userDetails?.clinicAddress]
 	);
 
 	const closeDrawer = useCallback(() => {
@@ -201,7 +217,7 @@ export const useAvailabilitySettings = (): UseAvailabilitySettingsReturn => {
 	const checklistItems = useMemo<ChecklistItem[]>(() => {
 		if (!availability) return [];
 
-		return CHECKLIST_CONFIG.map((config): ChecklistItem => {
+		const items = CHECKLIST_CONFIG.map((config): ChecklistItem => {
 			const isFlagDisabled =
 				(config.id === 'cancellation-policy' && !isCancellationPolicyEnabled) ||
 				(config.id === 'buffer-time' && !isBufferTimeEnabled);
@@ -220,7 +236,22 @@ export const useAvailabilitySettings = (): UseAvailabilitySettingsReturn => {
 						: undefined,
 				titleKey: config.titleKey,
 			};
-		}).sort((a, b) => {
+		});
+
+		if (availability.sessionType === 'IN_PERSON' || availability.sessionType === 'BOTH') {
+			const clinicAddress = userDetails?.clinicAddress;
+			items.push({
+				descKey: 'availability.settings.session-address-desc',
+				id: 'session-address',
+				isConfigured: !!clinicAddress?.street && !!clinicAddress?.city,
+				isDisabled: false,
+				isRecommended: true,
+				onConfigure: () => openDrawer('session-address'),
+				titleKey: 'availability.settings.session-address-title',
+			});
+		}
+
+		return items.sort((a, b) => {
 			const rank = (item: ChecklistItem) => {
 				if (item.isConfigured) return 0;
 				if (!item.isDisabled) return 1;
@@ -229,7 +260,7 @@ export const useAvailabilitySettings = (): UseAvailabilitySettingsReturn => {
 
 			return rank(a) - rank(b);
 		});
-	}, [availability, isBufferTimeEnabled, isCancellationPolicyEnabled, openDrawer]);
+	}, [availability, isBufferTimeEnabled, isCancellationPolicyEnabled, openDrawer, userDetails?.clinicAddress]);
 
 	const activeCount = useMemo(
 		() => checklistItems.filter((item) => !item.isDisabled).length,
@@ -369,6 +400,27 @@ export const useAvailabilitySettings = (): UseAvailabilitySettingsReturn => {
 		settingsMutation.mutate({ recurrencePattern: recurrencePatternInput as 'WEEKLY' | 'MONTHLY' });
 	}, [recurrencePatternInput, settingsMutation]);
 
+	const addressMutation = useMutation({
+		mutationFn: (data: AddressFormValues) =>
+			editUserById({ data: { clinicAddress: data.clinicAddress }, userId: therapistId }),
+		onError: () => {
+			showAlert({ message: t('availability.settings.save-error'), severity: 'error' });
+		},
+		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: ['userDetails', therapistId] });
+			capture(PostHogEvent.AvailabilitySettingSaved, {
+				new_value: '',
+				setting: 'session_address',
+			});
+			showAlert({ message: t('availability.settings.save-success'), severity: 'success' });
+			closeDrawer();
+		},
+	});
+
+	const handleAddressSave = useCallback(() => {
+		addressFormMethods.handleSubmit((data) => addressMutation.mutate(data))();
+	}, [addressFormMethods, addressMutation]);
+
 	const toggleWorkingDay = useCallback((day: string) => {
 		setWorkingDaysInput((prev) =>
 			prev.includes(day) ? prev.filter((d) => d !== day) : [...prev, day]
@@ -424,6 +476,7 @@ export const useAvailabilitySettings = (): UseAvailabilitySettingsReturn => {
 	return {
 		activeCount,
 		activeDrawer,
+		addressFormMethods,
 		availability,
 		bannerDismissed,
 		cancelTimezoneWarning,
@@ -435,6 +488,7 @@ export const useAvailabilitySettings = (): UseAvailabilitySettingsReturn => {
 		configuredCount,
 		endTimeInput,
 		firstMissingRecommended,
+		handleAddressSave,
 		handleBufferSave,
 		handleGoogleCalendarConnect,
 		handleJupiterCta,
@@ -443,6 +497,7 @@ export const useAvailabilitySettings = (): UseAvailabilitySettingsReturn => {
 		handleSessionTypeSave,
 		handleTimezoneSave,
 		handleWorkingHoursSave,
+		isAddressSaving: addressMutation.isPending,
 		isConnecting,
 		isLoading,
 		isSaving: settingsMutation.isPending,

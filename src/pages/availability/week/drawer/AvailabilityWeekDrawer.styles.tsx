@@ -116,6 +116,23 @@ export const FormWrapper = styled(Box)`
 	gap: ${spacing.small};
 `;
 
+// ─── Share address ────────────────────────────────────────────────────────────
+
+export const ShareAddressRow = styled(Box)`
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: ${spacing.small};
+	padding-top: ${spacing.small};
+`;
+
+export const ShareAddressLabel = styled(Text)`
+	font-size: 0.9rem;
+	color: ${palette.text.primary};
+	flex: 1;
+	text-align: left;
+`;
+
 // ─── Cancel/block views ────────────────────────────────────────────────────────
 
 export const CancelViewBody = styled(Text)`
@@ -135,23 +152,25 @@ export const CancelChoiceCard = styled(Box, {
 })<{ isDanger?: boolean }>`
 	border: 1.5px solid
 		${({ isDanger }) =>
-		isDanger
-			? hexToRgba(palette.error.main, 0.4)
-			: hexToRgba(palette.brand.purple, 0.35)};
+			isDanger
+				? hexToRgba(palette.error.main, 0.4)
+				: hexToRgba(palette.brand.purple, 0.35)};
 	border-radius: ${spacing.extraSmall};
 	padding: ${spacing.medium};
 	cursor: pointer;
 	display: flex;
 	flex-direction: column;
 	gap: ${spacing.space};
-	transition: background 0.15s ease, border-color 0.15s ease;
+	transition:
+		background 0.15s ease,
+		border-color 0.15s ease;
 	&:hover {
 		border-color: ${({ isDanger }) =>
-		isDanger ? palette.error.main : palette.brand.purple};
+			isDanger ? palette.error.main : palette.brand.purple};
 		background: ${({ isDanger }) =>
-		isDanger
-			? hexToRgba(palette.error.main, 0.04)
-			: hexToRgba(palette.brand.purple, 0.04)};
+			isDanger
+				? hexToRgba(palette.error.main, 0.04)
+				: hexToRgba(palette.brand.purple, 0.04)};
 	}
 `;
 
@@ -210,7 +229,7 @@ export const SlotPickerChip = styled(Box, {
 	border-radius: ${spacing.extraSmall};
 	border: 1.5px solid
 		${({ isSelected }) =>
-		isSelected ? palette.brand.purple : palette.gray['03']};
+			isSelected ? palette.brand.purple : palette.gray['03']};
 	background: ${({ isSelected }) =>
 		isSelected ? hexToRgba(palette.brand.purple, 0.1) : 'transparent'};
 	color: ${({ isSelected }) =>
@@ -219,7 +238,9 @@ export const SlotPickerChip = styled(Box, {
 	font-weight: ${({ isSelected }) => (isSelected ? '600' : '400')};
 	cursor: pointer;
 	user-select: none;
-	transition: border-color 0.15s ease, background 0.15s ease;
+	transition:
+		border-color 0.15s ease,
+		background 0.15s ease;
 	&:hover {
 		border-color: ${palette.brand.purple};
 		background: ${hexToRgba(palette.brand.purple, 0.05)};

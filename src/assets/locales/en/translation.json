@@ -198,6 +198,7 @@
       "save": "Save details",
       "address-not-found": "Address not found. Please add your info.",
       "detail-not-found": "{{detail}} is not registered yet",
+      "no-changes": "Select a section to edit before saving.",
       "delete": {
         "title": "Delete account",
         "description": "Your account will be deactivated and your personal data anonymised within 30 days. You can contact support to cancel this request.",
@@ -206,10 +207,11 @@
       "section": {
         "title": {
           "account": "Account",
-          "security": "Security & Privacy",
+          "clinic": "Clinic Address",
           "contact": "Contact",
-          "subscription": "Subscription",
-          "patients": "Patients"
+          "patients": "Patients",
+          "security": "Security & Privacy",
+          "subscription": "Subscription"
         },
         "local": "Email & Password",
         "security": {
@@ -217,6 +219,12 @@
           "accepted": "By creating your Psycron account, you agreed to our <privacyLink>Privacy Policy</privacyLink> and <termsLink>Terms of Use.</termsLink>",
           "accepted-info": "You can review these documents at any time.",
           "marketing": "Receive marketing communications"
+        },
+        "clinic": {
+          "add-address": "Add clinic address",
+          "address-label": "Address",
+          "edit-address": "Edit address",
+          "title-empty": "Add your clinic address so patients can receive it in their booking confirmation."
         },
         "contact": {
           "title-empty": "Add your phone number to enable SMS or WhatsApp notifications."
@@ -686,7 +694,8 @@
       "checklist-timezone-desc": "Ensure all bookings use the correct time zone",
       "checklist-working-hours": "Working hours",
       "checklist-working-hours-desc": "Your available days and hours for appointments",
-      "tip-buffer-time": "Adding buffer time between sessions helps you prepare, take notes, and avoid running late. Even 10 minutes makes a difference."
+      "tip-buffer-time": "Adding buffer time between sessions helps you prepare, take notes, and avoid running late. Even 10 minutes makes a difference.",
+      "tip-session-address": "Let your patients know where to find you. Add your clinic or office address so in-person sessions are easy to locate."
     },
     "google-calendar": {
       "permissions-intro": "We’ll securely connect to your Google Calendar to:",
@@ -793,7 +802,8 @@
         "reschedule-error": "Failed to reschedule appointment. Please try again.",
         "reschedule-select-prompt": "Select a new time slot for this appointment.",
         "reschedule-no-slots": "No available slots to reschedule to. Try adjusting your working hours.",
-        "reschedule-success": "Appointment rescheduled successfully."
+        "reschedule-success": "Appointment rescheduled successfully.",
+        "share-address": "Share clinic address with patient"
       },
       "buffer-label": "Buffer",
       "legend-available": "Available",
@@ -859,6 +869,10 @@
       "session-type-drawer-title": "Session type",
       "session-type-in-person": "In person",
       "session-type-online": "Online",
+      "session-address-desc": "Enter your clinic or office address so patients can find you.",
+      "session-type-address-hint": "In-person sessions require a clinic address. You'll be prompted to add it after saving.",
+      "session-address-drawer-title": "Session address",
+      "session-address-title": "Clinic address",
       "feature-disabled-tooltip": "This feature is coming soon",
       "jupiter-cta-disabled-tooltip": "Júpiter is not available yet — we're rolling this out gradually",
       "jupiter-help-action": "Talk to Júpiter",

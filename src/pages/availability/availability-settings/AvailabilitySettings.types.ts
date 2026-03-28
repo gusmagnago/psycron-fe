@@ -1,14 +1,21 @@
+import type { UseFormReturn } from 'react-hook-form';
 import type { IAvailabilityRecord } from '@psycron/api/availability/index.types';
+import type { IClinicAddress } from '@psycron/context/user/auth/UserAuthenticationContext.types';
 
 export type DrawerKey =
 	| 'buffer-time'
 	| 'google-calendar'
 	| 'recurrence-pattern'
+	| 'session-address'
 	| 'session-duration'
 	| 'session-type'
 	| 'timezone'
 	| 'working-hours'
 	| null;
+
+export interface AddressFormValues {
+	clinicAddress: IClinicAddress;
+}
 
 export interface ChecklistItem {
 	descKey: string;
@@ -41,6 +48,7 @@ export interface AvailabilityStatusStats {
 export interface UseAvailabilitySettingsReturn {
 	activeCount: number;
 	activeDrawer: DrawerKey;
+	addressFormMethods: UseFormReturn<AddressFormValues>;
 	availability: IAvailabilityRecord | null | undefined;
 	bannerDismissed: boolean;
 	bufferInput: string;
@@ -51,6 +59,7 @@ export interface UseAvailabilitySettingsReturn {
 	confirmTimezoneSave: () => void;
 	endTimeInput: string;
 	firstMissingRecommended: ChecklistItem | undefined;
+	handleAddressSave: () => void;
 	handleBufferSave: () => void;
 	handleGoogleCalendarConnect: () => void;
 	handleJupiterCta: () => void;
@@ -59,6 +68,7 @@ export interface UseAvailabilitySettingsReturn {
 	handleSessionTypeSave: () => void;
 	handleTimezoneSave: () => void;
 	handleWorkingHoursSave: () => void;
+	isAddressSaving: boolean;
 	isConnecting: boolean;
 	isJupiterCtaEnabled: boolean;
 	isLoading: boolean;

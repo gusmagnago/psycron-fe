@@ -1,4 +1,5 @@
-import { styled, TextField } from '@mui/material';
+import styled from '@emotion/styled';
+import { TextField } from '@mui/material';
 import { palette } from '@psycron/theme/palette/palette.theme';
 import { spacing } from '@psycron/theme/spacing/spacing.theme';
 

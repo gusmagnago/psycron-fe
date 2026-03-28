@@ -7,7 +7,15 @@ type Contacts = {
 	whatsapp?: string;
 };
 
+type ClinicAddress = {
+	city?: string;
+	country?: string;
+	postcode?: string;
+	street?: string;
+};
+
 type UserDetailsLike = {
+	clinicAddress?: ClinicAddress;
 	contacts: Contacts;
 	firstName: string;
 	lastName: string;
@@ -17,6 +25,12 @@ type UserDetailsLike = {
 export const toEditUserDefaults = (
 	user: UserDetailsLike
 ): EditUserFormValues => ({
+	clinicAddress: {
+		city: user.clinicAddress?.city ?? '',
+		country: user.clinicAddress?.country ?? '',
+		postcode: user.clinicAddress?.postcode ?? '',
+		street: user.clinicAddress?.street ?? '',
+	},
 	firstName: user.firstName ?? '',
 	lastName: user.lastName ?? '',
 	contacts: {
@@ -28,7 +42,7 @@ export const toEditUserDefaults = (
 });
 
 export const buildEditUserPayload = (args: {
-	enabled: { contacts: boolean; name: boolean; password?: boolean };
+	enabled: { clinicAddress: boolean; contacts: boolean; name: boolean; password?: boolean };
 	original: EditUserFormValues;
 	userId: string;
 	values: EditUserFormValues;
@@ -40,6 +54,15 @@ export const buildEditUserPayload = (args: {
 	if (enabled.name) {
 		data.firstName = values.firstName.trim() || original.firstName;
 		data.lastName = values.lastName.trim() || original.lastName;
+	}
+
+	if (enabled.clinicAddress) {
+		data.clinicAddress = {
+			city: values.clinicAddress?.city?.trim() ?? '',
+			country: values.clinicAddress?.country?.trim() ?? '',
+			postcode: values.clinicAddress?.postcode?.trim() ?? '',
+			street: values.clinicAddress?.street?.trim() ?? '',
+		};
 	}
 
 	if (enabled.contacts) {

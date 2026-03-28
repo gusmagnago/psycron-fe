@@ -35,6 +35,13 @@ export interface IUserData {
 	user?: ITherapist;
 }
 
+export interface IClinicAddress {
+	city: string;
+	country: string;
+	postcode: string;
+	street: string;
+}
+
 export interface IContactInfo {
 	email: string;
 	hasWhatsApp?: boolean;
@@ -83,6 +90,7 @@ export interface ITherapist extends IBaseUser {
 	authProvider?: AuthProvider;
 
 	availability: MongoId[];
+	clinicAddress?: IClinicAddress;
 	// GDPR/LGPD
 	consent?: IConsent;
 	consentHistory?: IConsentHistoryEntry[];
@@ -163,6 +171,7 @@ export interface IPatient extends IBaseUser {
 export interface IBookSessionWithLink {
 	availabilityDayId: MongoId;
 	patient: Partial<IPatient>;
+	shareAddress?: boolean;
 	shouldReplicate?: boolean;
 	slotId: MongoId;
 	timeZone: string;

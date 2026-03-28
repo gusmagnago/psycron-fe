@@ -199,6 +199,7 @@
       "save": "Salvar",
       "address-not-found": "Nenhum endereço cadastrado. Adicione suas informações.",
       "detail-not-found": "{{detail}} não cadastrado ainda",
+      "no-changes": "Selecione uma secção para editar antes de guardar.",
       "delete": {
         "title": "Excluir conta",
         "description": "Sua conta será desativada e seus dados ficarão anônimos dentro de 30 dias. Você pode entrar em contato com nosso suporte técnico para mais detalhes.",
@@ -207,10 +208,11 @@
       "section": {
         "title": {
           "account": "Conta",
-          "security": "Segurança & Privacidade",
+          "clinic": "Endereço do Consultório",
           "contact": "Contatos",
-          "subscription": "Assinatura",
-          "patients": "Pacientes"
+          "patients": "Pacientes",
+          "security": "Segurança & Privacidade",
+          "subscription": "Assinatura"
         },
         "local": "Email e Senha",
         "security": {
@@ -218,6 +220,12 @@
           "accepted": "Ao criar sua conta na Psycron, você concordou com nossos <privacyLink>Política de Privacidade</privacyLink> e <termsLink>Termos de Uso</termsLink>.",
           "accepted-info": "Você pode revisar esses documentos a qualquer momento.",
           "marketing": "Receber comunicações de marketing e news"
+        },
+        "clinic": {
+          "add-address": "Adicionar endereço do consultório",
+          "address-label": "Endereço",
+          "edit-address": "Editar endereço",
+          "title-empty": "Adicione o endereço do seu consultório para que os pacientes o recebam na confirmação de consulta."
         },
         "contact": {
           "title-empty": "Adicione seu número para receber notificações em SMS ou WhatsApp."
@@ -687,7 +695,8 @@
       "checklist-timezone-desc": "Garanta que todas as reservas usem o fuso horário correto",
       "checklist-working-hours": "Horário de trabalho",
       "checklist-working-hours-desc": "Seus dias e horários disponíveis para atendimentos",
-      "tip-buffer-time": "Adicionar um intervalo entre sessões ajuda você a se preparar, fazer anotações e evitar atrasos. Até 10 minutos fazem diferença."
+      "tip-buffer-time": "Adicionar um intervalo entre sessões ajuda você a se preparar, fazer anotações e evitar atrasos. Até 10 minutos fazem diferença.",
+      "tip-session-address": "Deixe seus pacientes saberem onde encontrá-lo. Adicione o endereço da sua clínica ou consultório para que as sessões presenciais sejam fáceis de localizar."
     },
     "google-calendar": {
       "permissions-intro": "Vamos conectar sua Google Agenda com segurança para:",
@@ -794,7 +803,8 @@
         "reschedule-error": "Falha ao remarcar a consulta. Tente novamente.",
         "reschedule-select-prompt": "Selecione um novo horário para esta consulta.",
         "reschedule-no-slots": "Não há horários disponíveis para remarcar. Tente ajustar os seus horários de trabalho.",
-        "reschedule-success": "Consulta remarcada com sucesso."
+        "reschedule-success": "Consulta remarcada com sucesso.",
+        "share-address": "Partilhar endereço do consultório com o paciente"
       },
       "buffer-label": "Buffer",
       "legend-available": "Disponível",
@@ -860,6 +870,10 @@
       "session-type-drawer-title": "Tipo de sessão",
       "session-type-in-person": "Presencial",
       "session-type-online": "Online",
+      "session-address-desc": "Insira o endereço da sua clínica ou consultório para que os pacientes possam encontrá-lo.",
+      "session-type-address-hint": "Atendimentos presenciais exigem um endereço de clínica. Você será solicitado a adicioná-lo após salvar.",
+      "session-address-drawer-title": "Endereço do atendimento",
+      "session-address-title": "Endereço da clínica",
       "feature-disabled-tooltip": "Esta funcionalidade está a chegar em breve",
       "jupiter-cta-disabled-tooltip": "A Júpiter ainda não está disponível — estamos a lançar gradualmente",
       "jupiter-help-action": "Falar com a Júpiter",

@@ -8,6 +8,7 @@ import { Avatar } from '@psycron/components/avatar/Avatar';
 import { Button } from '@psycron/components/button/Button';
 import {
 	Account,
+	Address,
 	Close,
 	Download,
 	EditUser,
@@ -20,11 +21,13 @@ import { Text } from '@psycron/components/text/Text';
 import { Tooltip } from '@psycron/components/tooltip/Tooltip';
 import { useUserDetails } from '@psycron/context/user/details/UserDetailsContext';
 import useClickOutside from '@psycron/hooks/useClickoutside';
+import { useJupiterAvailabilityConfig } from '@psycron/hooks/useJupiterAvailabilityConfig';
 import useViewport from '@psycron/hooks/useViewport';
 import i18n from '@psycron/i18n';
 import { externalUrls, PATIENTS } from '@psycron/pages/urls';
 
 import { AccountSectionContent } from './components/account/AccountSectionContent';
+import { ClinicSectionContent } from './components/clinic/ClinicSectionContent';
 import { ContactSectionContent } from './components/contact/ContactSectionContent';
 import { PatientsSectionContent } from './components/patients/PatientsSectionContent';
 import { UserDetailsSection } from './components/section/UserDetailsSection';
@@ -87,6 +90,8 @@ export const UserDetailsCard = ({ user, isPage }: IUserDetailsCardProps) => {
 		wasVisibleRef.current = true;
 	}, [isPage, isUserDetailsVisible, isOwnSettings]);
 
+	const { availability } = useJupiterAvailabilityConfig();
+
 	const { firstName, lastName, authProvider, _id, patients, consent } = user;
 
 	const email = user.contacts?.email ?? '';
@@ -123,6 +128,17 @@ export const UserDetailsCard = ({ user, isPage }: IUserDetailsCardProps) => {
 					phone={phone}
 					whatsapp={whatsapp}
 					onEditContacts={() => handleClickEditSession(_id, 'contacts')}
+				/>
+			),
+		},
+		{
+			icon: <Address />,
+			title: t('components.user-details.section.title.clinic'),
+			children: (
+				<ClinicSectionContent
+					clinicAddress={user.clinicAddress}
+					sessionType={availability?.sessionType}
+					onEditAddress={() => handleClickEditSession(_id, 'clinicAddress')}
 				/>
 			),
 		},

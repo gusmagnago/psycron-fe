@@ -1,9 +1,11 @@
 import { Fragment } from 'react';
+import { FormProvider } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { Navigate, useParams } from 'react-router-dom';
 import { Autocomplete, TextField, Tooltip } from '@mui/material';
 import { Button } from '@psycron/components/button/Button';
 import { SettingsDrawer } from '@psycron/components/drawer/SettingsDrawer';
+import { AddressForm } from '@psycron/components/form/components/address/AddressForm';
 import { CheckSuccess } from '@psycron/components/icons';
 import { JupiterHelpCard } from '@psycron/components/jupiter-help-card/JupiterHelpCard';
 import { JupiterTip } from '@psycron/components/jupiter-tip/JupiterTip';
@@ -101,6 +103,7 @@ export const AvailabilitySettings = () => {
 	const {
 		activeCount,
 		activeDrawer,
+		addressFormMethods,
 		availability,
 		bannerDismissed,
 		bufferInput,
@@ -111,11 +114,13 @@ export const AvailabilitySettings = () => {
 		confirmTimezoneSave,
 		endTimeInput,
 		firstMissingRecommended,
+		handleAddressSave,
 		handleBufferSave,
 		handleGoogleCalendarConnect,
 		handleJupiterCta,
 		handleRecurrencePatternSave,
 		handleSessionDurationSave,
+		isAddressSaving,
 		isConnecting,
 		isJupiterCtaEnabled,
 		handleSessionTypeSave,
@@ -385,6 +390,11 @@ export const AvailabilitySettings = () => {
 								</OptionChip>
 							))}
 						</OptionChipsRow>
+						{(sessionTypeInput === 'IN_PERSON' || sessionTypeInput === 'BOTH') && (
+							<OptionDesc>
+								{t('availability.settings.session-type-address-hint')}
+							</OptionDesc>
+						)}
 					</SettingsDrawer>
 				)}
 
@@ -540,6 +550,23 @@ export const AvailabilitySettings = () => {
 						)}
 					</SettingsDrawer>
 				)}
+
+			{/* ─── Session address drawer ───────────────────────────────────── */}
+			{activeDrawer === 'session-address' && (
+				<FormProvider {...addressFormMethods}>
+					<SettingsDrawer
+						ariaLabel={t('availability.settings.session-address-drawer-title')}
+						title={t('availability.settings.session-address-drawer-title')}
+						desc={t('availability.settings.session-address-desc')}
+						isSaving={isAddressSaving}
+						onClose={closeDrawer}
+						onSave={handleAddressSave}
+						showCancel
+					>
+						<AddressForm showGoogleAddressSearch />
+					</SettingsDrawer>
+				</FormProvider>
+			)}
 			</PageLayout>
 
 			<Modal

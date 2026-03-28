@@ -27,6 +27,7 @@ import { ContactsForm } from '@psycron/components/form/components/contacts/Conta
 import { NameForm } from '@psycron/components/form/components/name/NameForm';
 import {
 	Account,
+	Address,
 	Appointment,
 	Calendar,
 	Google,
@@ -34,11 +35,13 @@ import {
 	MapPin,
 	Watch,
 } from '@psycron/components/icons';
+import { Switch } from '@psycron/components/switch/components/item/Switch';
 import { useAlert } from '@psycron/context/alert/AlertContext';
 import { useAvailability } from '@psycron/context/appointment/availability/AvailabilityContext';
 import { usePatient } from '@psycron/context/patient/PatientContext';
 import { useUserDetails } from '@psycron/context/user/details/UserDetailsContext';
 import { getFormattedContacts } from '@psycron/hooks/useFormattedContacts';
+import { useJupiterAvailabilityConfig } from '@psycron/hooks/useJupiterAvailabilityConfig';
 import { useSecureStorage } from '@psycron/hooks/useSecureStorage';
 import i18n from '@psycron/i18n';
 import { palette } from '@psycron/theme/palette/palette.theme';
@@ -64,6 +67,8 @@ import {
 	DrawerDetailValue,
 	DrawerDetailWrapper,
 	FormWrapper,
+	ShareAddressLabel,
+	ShareAddressRow,
 	SlotPickerChip,
 	SlotPickerChipsRow,
 	SlotPickerDateLabel,
@@ -108,7 +113,8 @@ const CANCEL_REASONS = [
 
 const useBookingForm = (
 	slot: IAvailabilityWeekDrawerProps['slot'],
-	therapistId: string | null
+	therapistId: string | null,
+	shareAddress: boolean
 ) => {
 	const { bookAppointmentWithLink } = usePatient();
 	const methods = useForm<ICreatePatientForm>({ mode: 'onChange' });
@@ -137,6 +143,7 @@ const useBookingForm = (
 				},
 				timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
 				shouldReplicate: false,
+				shareAddress,
 			},
 		});
 	};
@@ -338,10 +345,12 @@ export const AvailabilityWeekDrawer = ({
 	const { t } = useTranslation();
 	const therapistId = useSecureStorage(THERAPIST_ID);
 	const { userDetails } = useUserDetails(therapistId ?? undefined);
+	const { availability } = useJupiterAvailabilityConfig();
 	const [isEditing, setIsEditing] = useState(false);
 	const [cancelView, setCancelView] = useState<CancelView | null>(null);
+	const [shareAddress, setShareAddress] = useState(false);
 
-	const { isSubmitting, methods, submitBooking } = useBookingForm(slot, therapistId);
+	const { isSubmitting, methods, submitBooking } = useBookingForm(slot, therapistId, shareAddress);
 	const {
 		endTime: editEndTime,
 		isDirty: editIsDirty,
@@ -358,6 +367,11 @@ export const AvailabilityWeekDrawer = ({
 
 	const isAvailable = slot.status === 'available';
 	const isBooked = slot.status === 'booked-jupiter' || slot.status === 'booked-google';
+	const sessionType = availability?.sessionType;
+	const showShareAddress =
+		isAvailable &&
+		(sessionType === 'IN_PERSON' || sessionType === 'BOTH') &&
+		!!userDetails?.clinicAddress?.street;
 	const isGoogle = slot.status === 'booked-google';
 
 	const slotId = slot._id ?? slot.id;
@@ -800,39 +814,55 @@ export const AvailabilityWeekDrawer = ({
 				</DrawerDetailsList>
 
 				{isAvailable && (
-					<FormProvider {...methods}>
-						<Box component='form'>
-							<FormWrapper>
-								<NameForm<ICreatePatientForm>
-									required
-									fields={{ firstName: 'firstName', lastName: 'lastName' }}
-									labelFirstName={t(
-										'availability.week.drawer.patient-first-name'
-									)}
-									labelLastName={t('availability.week.drawer.patient-last-name')}
-									placeholderFirstName={t(
-										'availability.week.drawer.patient-first-name'
-									)}
-									placeholderLastName={t(
-										'availability.week.drawer.patient-last-name'
-									)}
+					<>
+						<FormProvider {...methods}>
+							<Box component='form'>
+								<FormWrapper>
+									<NameForm<ICreatePatientForm>
+										required
+										fields={{ firstName: 'firstName', lastName: 'lastName' }}
+										labelFirstName={t(
+											'availability.week.drawer.patient-first-name'
+										)}
+										labelLastName={t('availability.week.drawer.patient-last-name')}
+										placeholderFirstName={t(
+											'availability.week.drawer.patient-first-name'
+										)}
+										placeholderLastName={t(
+											'availability.week.drawer.patient-last-name'
+										)}
+									/>
+									<ContactsForm<ICreatePatientForm>
+										atLeastOneContact
+										fullWidth
+										labelEmail={t('availability.week.drawer.patient-email')}
+										placeholderEmail={t('availability.week.drawer.patient-email')}
+										fields={{
+											email: 'email',
+											hasWhatsApp: 'hasWhatsApp',
+											isPhoneWpp: 'isPhoneWpp',
+											phone: 'phone',
+											whatsapp: 'whatsapp',
+										}}
+									/>
+								</FormWrapper>
+							</Box>
+						</FormProvider>
+						{showShareAddress && (
+							<ShareAddressRow>
+								<DrawerDetailIcon>
+									<Address color={palette.brand.purple} />
+								</DrawerDetailIcon>
+								<ShareAddressLabel>
+									{t('availability.week.drawer.share-address')}
+								</ShareAddressLabel>
+								<Switch
+									checked={shareAddress}
+									onChange={(e) => setShareAddress(e.target.checked)}
 								/>
-								<ContactsForm<ICreatePatientForm>
-									atLeastOneContact
-									fullWidth
-									labelEmail={t('availability.week.drawer.patient-email')}
-									placeholderEmail={t('availability.week.drawer.patient-email')}
-									fields={{
-										email: 'email',
-										hasWhatsApp: 'hasWhatsApp',
-										isPhoneWpp: 'isPhoneWpp',
-										phone: 'phone',
-										whatsapp: 'whatsapp',
-									}}
-								/>
-							</FormWrapper>
-						</Box>
-					</FormProvider>
+							</ShareAddressRow>
+						)}
+					</>
 				)}
 			</>
 		);
