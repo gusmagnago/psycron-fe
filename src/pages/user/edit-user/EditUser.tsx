@@ -22,7 +22,7 @@ import { useUserDetails } from '@psycron/context/user/details/UserDetailsContext
 import i18n from '@psycron/i18n';
 import { PageLayout } from '@psycron/layouts/app/pages-layout/PageLayout';
 import { externalUrls } from '@psycron/pages/urls';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 import { EditSection } from './components/EditSection';
 import { buildEditUserPayload, toEditUserDefaults } from './edituser.mapper';
@@ -39,6 +39,7 @@ export const EditUser = () => {
 	const { t } = useTranslation();
 	const navigate = useNavigate();
 	const { showAlert } = useAlert();
+	const queryClient = useQueryClient();
 
 	const { userId, session } = useParams<{ session?: string; userId: string }>();
 
@@ -107,7 +108,8 @@ export const EditUser = () => {
 
 	const editUserMutation = useMutation({
 		mutationFn: (payload: IEditUser) => editUserById(payload),
-		onSuccess: () => {
+		onSuccess: async () => {
+			await queryClient.invalidateQueries({ queryKey: ['userDetails', userId] });
 			showAlert({
 				message: t('components.user-details.edit-success'),
 				severity: 'success',
