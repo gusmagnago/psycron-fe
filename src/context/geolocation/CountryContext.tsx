@@ -1,6 +1,7 @@
 import type { FC, ReactNode } from 'react';
 import { createContext, useContext, useEffect, useState } from 'react';
 
+import { getCountryFromTimezone } from '../utils/getCountryFromTimezone';
 import { getUserCountryIPData } from '../utils/getUserCountryIPData';
 
 import type {
@@ -34,6 +35,11 @@ export const UserGeoLocationProvider: FC<{ children: ReactNode }> = ({
 
 			if (userIPData) {
 				setCountryData(userIPData);
+			} else {
+				const countryCode2 = getCountryFromTimezone();
+				if (countryCode2) {
+					setCountryData({ ...DEFAULT_COUNTRY_DATA_SIMPLE, countryCode2 });
+				}
 			}
 		};
 
