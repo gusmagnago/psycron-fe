@@ -19,6 +19,7 @@ export const MultiSelectChips = ({
 	onConfirm,
 	confirmLabel,
 	disabled = false,
+	otherChipKey,
 	otherPlaceholder,
 	onOtherSubmit,
 }: IMultiSelectChipsProps) => {
@@ -30,6 +31,10 @@ export const MultiSelectChips = ({
 	const toggleKey = useCallback(
 		(key: string) => {
 			if (disabled || submitted) return;
+			if (key === otherChipKey) {
+				setShowOther(true);
+				return;
+			}
 			setSelectedKeys((prev) => {
 				const next = new Set(prev);
 				if (next.has(key)) {
@@ -40,7 +45,7 @@ export const MultiSelectChips = ({
 				return next;
 			});
 		},
-		[disabled, submitted]
+		[disabled, otherChipKey, submitted]
 	);
 
 	const handleConfirm = () => {
@@ -71,66 +76,55 @@ export const MultiSelectChips = ({
 		return <ChipsFadeOut />;
 	}
 
-	return (
-		<>
-			<ChipsContainer>
-				{options.map((option) => (
-					<ChipButton
-						key={option.key}
-						chipVariant={option.variant}
-						isSelected={selectedKeys.has(option.key)}
-						onClick={() => toggleKey(option.key)}
-						disabled={disabled}
-					>
-						{option.label}
-					</ChipButton>
-				))}
-
-				{selectedKeys.size > 0 && (
-					<ContinueButton onClick={handleConfirm}>
-						{confirmLabel}
-					</ContinueButton>
-				)}
-			</ChipsContainer>
-
-			{otherPlaceholder && !showOther && (
-				<ChipButton
-					chipVariant='outline'
-					onClick={() => setShowOther(true)}
-					disabled={disabled}
-					sx={{ mt: 1 }}
+	if (showOther) {
+		return (
+			<OtherInputRow>
+				<OtherBackButton
+					onClick={() => {
+						setShowOther(false);
+						setOtherValue('');
+					}}
 				>
-					{otherPlaceholder}
-				</ChipButton>
-			)}
+					<ChevronLeft />
+				</OtherBackButton>
+				<OtherInput
+					autoFocus
+					size='small'
+					placeholder={otherPlaceholder}
+					value={otherValue}
+					onChange={(e) => setOtherValue(e.target.value)}
+					onKeyDown={handleOtherKeyDown}
+				/>
+				<OtherSendButton
+					hasValue={!!otherValue.trim()}
+					disabled={!otherValue.trim()}
+					onClick={submitOther}
+				>
+					<Send />
+				</OtherSendButton>
+			</OtherInputRow>
+		);
+	}
 
-			{showOther && (
-				<OtherInputRow>
-					<OtherBackButton
-						onClick={() => {
-							setShowOther(false);
-							setOtherValue('');
-						}}
-					>
-						<ChevronLeft />
-					</OtherBackButton>
-					<OtherInput
-						size='small'
-						placeholder={otherPlaceholder}
-						value={otherValue}
-						onChange={(e) => setOtherValue(e.target.value)}
-						onKeyDown={handleOtherKeyDown}
-						autoFocus
-					/>
-					<OtherSendButton
-						hasValue={!!otherValue.trim()}
-						disabled={!otherValue.trim()}
-						onClick={submitOther}
-					>
-						<Send />
-					</OtherSendButton>
-				</OtherInputRow>
+	return (
+		<ChipsContainer>
+			{options.map((option) => (
+				<ChipButton
+					key={option.key}
+					chipVariant={option.variant}
+					isSelected={selectedKeys.has(option.key)}
+					onClick={() => toggleKey(option.key)}
+					disabled={disabled}
+				>
+					{option.label}
+				</ChipButton>
+			))}
+
+			{selectedKeys.size > 0 && (
+				<ContinueButton onClick={handleConfirm}>
+					{confirmLabel}
+				</ContinueButton>
 			)}
-		</>
+		</ChipsContainer>
 	);
 };

@@ -1,792 +1,889 @@
 {
-	"common": {
-		"close": "Fechar",
-		"today": "Hoje"
-	},
-	"auth": {
-		"error": {
-			"login-failed": "Email ou senha inválidos. Por favor, verifique suas credenciais e tente novamente.",
-			"registration-failed": "Não foi possível completar o cadastro. Por favor, verifique suas informações e tente novamente.",
-			"password-reset-request": "Se este email estiver cadastrado, você receberá instruções para redefinir sua senha.",
-			"password-reset-failed": "Não foi possível redefinir a senha. O link pode ter expirado. Por favor, solicite um novo.",
-			"session-expired": "Sua sessão expirou. Por favor, faça login novamente.",
-			"rate-limited": "Muitas tentativas. Por favor, aguarde um momento antes de tentar novamente.",
-			"generic": "Algo deu errado. Por favor, tente novamente mais tarde."
-		},
-		"success": {
-			"password-reset-request": "Se este email estiver cadastrado, você receberá instruções para redefinir sua senha em breve.",
-			"password-reset": "Sua senha foi alterada com sucesso. Você já pode fazer login.",
-			"logout": "Você saiu com sucesso."
-		},
-		"continue-google": "Continuar com Google",
-		"continue-email": "Continue com seu e-mail"
-	},
-	"globals": {
-		"email": "Email",
-		"name": "Nome",
-		"password": "Senha",
-		"phone": "Telefone",
-		"whatsapp": "Whatsapp",
-		"address": "Endereço",
-		"patients": "Pacientes",
-		"patient": "Paciente",
-		"registered-patients": "Pacientes registrados",
-		"patients-manager": "Genrecie seus pacientes",
-		"billing-manager": "Gerencie seus pagamentos",
-		"subscription-manager": "Gerencie sua assinatura",
-		"appointments": "Atendimentos",
-		"appointments-manager": "Gerencie seus atendimentos",
-		"change-language": "Mude o idioma",
-		"help": "Centro de suporte",
-		"logout": "Sair",
-		"plan": "Plano",
-		"cancel": "Cancelar",
-		"delete": "Excluir",
-		"edit": "Alterar",
-		"date-time-format": "{{format}}",
-		"time-remaining": {
-			"days": "Em {{count}} dia(s)",
-			"hours": "Em {{count}} horas(s)",
-			"minutes": "Em {{count}} minuto(s)",
-			"less-than-a-minute": "Sessão {{status}}"
-		},
-		"in-progress": "Em andamento",
-		"paused": "Pausada",
-		"proceed": "Continuar",
-		"resume": "Retomar",
-		"reason": "Motivo",
-		"global-reason": "Motivo geral",
-		"custom-reason": "Descreva o motivo",
-		"select": "Selecione",
-		"unselect": "Desmarcar",
-		"error": {
-			"already-subscribed": "Você já está na nossa lista de espera",
-			"internal-server-error": "Algo aconteceu errado, tente novamente mais tarde",
-			"invalid-user": "Email ou senha invalidos"
-		},
-		"success": {
-			"subscribed": "Você foi inscrito com sucesso. Por favor verifique o seu -mail!"
-		},
-		"date": "Data",
-		"time": "Hora",
-		"at": "às",
-		"date-time": "Data e Hora: ",
-		"therapist": "Terapeuta",
-		"appointment-status": {
-			"booked": "Confirmado",
-			"available": "Disponível",
-			"onhold": "Em espera",
-			"blocked": "Bloqueado",
-			"cancelled": "Cancelado"
-		},
-		"contacts": "Contatos",
-		"starts": "Começa às",
-		"ends": "Termina às",
-		"time-range": {
-			"time-from-to": "das {{start}} às {{end}}",
-			"time-range-date": "{{date}} das {{start}} às {{end}}",
-			"your-time": "Seu horário local",
-			"patient-time": "Horário do paciente",
-			"therapist-time": "Horário do terapeuta"
-		},
-		"notification": {
-			"email": "Enviar e-mail",
-			"phone": "Ligar",
-			"whatsapp": "Enviar WhatsApp"
-		},
-		"cancellation-title": "Por favor nos informe o motivo do cancelamento da sua consulta",
-		"cancellation-reason": {
-			"1": "Emergência (Questão Pessoal/Saúde)",
-			"2": "Conflito de Agenda",
-			"3": "Problemas Financeiros",
-			"4": "Questões de Saúde Mental",
-			"5": "Não Comparecimento",
-			"6": "Consulta Encerrada",
-			"7": "Outro"
-		},
-		"cancellation-other-title": "Por favor especifique o motivo",
-		"status": "Disponibilidade",
-		"close": "Fechar",
-		"read-only": "Apenas leitura",
-		"auth-method": "Método de autenticação",
-		"privacy-policy": "Política de Privacidade",
-		"terms-of-service": "Termos de Uso",
-		"privacy": "Privacidade"
-	},
-	"components": {
-		"form": {
-			"confirm-password": "Confirmar senha",
-			"keep-loggedin": "Mantenha-me online",
-			"not-valid": "Alguns campos estão faltando",
-			"signup": {
-				"sign-up": "Cadastra-se",
-				"title-email": "Crie sua conta ",
-				"title": "Crie a sua conta Psycron",
-				"first-name": "Nome",
-				"firstName": "Nome",
-				"last-name": "Sobrenome",
-				"lastName": "Sobrenome",
-				"already-have-acc": "Você já tem uma conta?",
-				"signin-here-link": "Clique aqui para entrar"
-			},
-			"signin": {
-				"sign-in": "Entrar",
-				"title": "Olá de volta!",
-				"dont-have-acc": "Você ainda não tem uma conta?",
-				"signup-here-link": "Cadastre-se aqui",
-				"forgot-password": "Esqueceu a sua senha?"
-			},
-			"validation": {
-				"required": "{{name}} é um campo obrigatório",
-				"invalid": "{{name}} não é válido",
-				"characters": "Senha deve conter no mínimo {{numChar}} caracteres",
-				"pass-rules": "Sua senha deve conter ao menos uma letra maiúscula, uma letra minúscula, um número e um caractere especial (@€#$+...) ",
-				"at-least-one-contact": "Informe um email ou número de telefone",
-				"match": "{{name}} precisa coincidir"
-			},
-			"address-form": {
-				"search": "Procure o endereço aqui",
-				"search-note": "Você pode começar pesquisando o indereço aqui, ou então preencher os campos abaixo",
-				"street": "Rua",
-				"number": "Nº",
-				"hood": "Localidade / bairro",
-				"more-info": "Complemento",
-				"city": "Cidade",
-				"state": "Estado",
-				"zip": "Cep",
-				"country": "País",
-				"more-info-bttn": "Adicione um complemento"
-			},
-			"add-patient": {
-				"name": "Adicionar paciente"
-			},
-			"contacts-form": {
-				"contact-via": "Entrar em contato via {{method}}?",
-				"contact-via-same": "O número é o mesmo para o Whatsapp?"
-			},
-			"consent": {
-				"terms": "Eu concordo com a <privacyLink>Política de Privacidade</privacyLink> e os <termsLink>Termos de Uso</termsLink>",
-				"marketing": "Eu concordo em receber <marketingLink>comunicações de marketing.</marketingLink>",
-				"info": "Ao continuar, você automaticamente aceita as <privacyLink>Política de Privacidade</privacyLink> e os <termsLink>Termos de Uso</termsLink> da Psycron."
-			}
-		},
-		"input": {
-			"phone-input": {
-				"select-label": "País",
-				"phone-num-label": "Número de {{registerName}}",
-				"phone-number-guide": "Por favor, forneça seu número de telefone com o código da cidade"
-			},
-			"text": {
-				"first-name": "Seu primeiro nome",
-				"last-name": "Seu último sobrenome",
-				"email": "Seu e-mail"
-			}
-		},
-		"navbar": {
-			"dashboard": "Painel",
-			"user-settings": "Configurações",
-			"test": "Testes"
-		},
-		"user-details": {
-			"edit": "Editar detalhes",
-			"edit-contacts": "Editar contatos",
-			"edit-success": "Dados atualizados",
-			"add-contacts": "Adicione seu {{contactValue}}",
-			"change": "Alterar {{name}}",
-			"save": "Salvar",
-			"address-not-found": "Nenhum endereço cadastrado. Adicione suas informações.",
-			"detail-not-found": "{{detail}} não cadastrado ainda",
-			"delete": {
-				"title": "Excluir conta",
-				"description": "Sua conta será desativada e seus dados ficarão anônimos dentro de 30 dias. Você pode entrar em contato com nosso suporte técnico para mais detalhes.",
-				"confirmation": "Excluir"
-			},
-			"section": {
-				"title": {
-					"account": "Conta",
-					"security": "Segurança & Privacidade",
-					"contact": "Contatos",
-					"subscription": "Assinatura",
-					"patients": "Pacientes"
-				},
-				"local": "Email e Senha",
-				"security": {
-					"google-mgmt": "Gerenciada por Google - A sua senha é seguramente guardada através do sistema de autênticação da Google e nós não tem acesso.",
-					"accepted": "Ao criar sua conta na Psycron, você concordou com nossos <privacyLink>Política de Privacidade</privacyLink> e <termsLink>Termos de Uso</termsLink>.",
-					"accepted-info": "Você pode revisar esses documentos a qualquer momento.",
-					"marketing": "Receber comunicações de marketing e news"
-				},
-				"contact": {
-					"title-empty": "Adicione seu número para receber notificações em SMS ou WhatsApp."
-				}
-			}
-		},
-		"dashboard": {
-			"card": {
-				"delay-notification": "Pausar o cronômetro vai atrasar todos os seus compromissos de hoje pelo tempo da pausa.",
-				"delay-confirmation": "Você tem certeza que quer pausar o cronômetro?",
-				"pause": "Pausar cronômetro",
-				"session-progress": "Progresso da sessão:"
-			},
-			"availability-card": {
-				"first-availability": "Crie sua disponibilidade de agenda aqui"
-			}
-		},
-		"appointments": {
-			"card-title": "Consultas do dia",
-			"manager": "Gerenciador de consultas"
-		},
-		"patients-table": {
-			"name": "Nome do paciente",
-			"next-session": "Próxima sessão",
-			"payment-status": "Status de pagamento",
-			"sessions-month": "Sessões por mês",
-			"value": "Valor por sessão",
-			"discount": "Desconto?",
-			"discount-val": "Valor do desconto",
-			"amount": "Valor total",
-			"currency": "Moeda",
-			"latest-payment": "Último pagamento",
-			"manage": "Veja paciente"
-		},
-		"progress": {
-			"received": "Você já recebeu {{progress}}% dos seus pagamentos 🥳",
-			"missing": "Faltam {{progress}}% dos seus pagamentos",
-			"not-received": "Você não recebeu nenhum pagamento ainda",
-			"received-all": "Você recebeu 100% dos seus pagamentos para este período 🥳 😎"
-		},
-		"c2-action": {
-			"join-waitlist": "Junte-se à nossa <strong>lista de espera</strong> para simplificar sua prática de terapia e focar mais em seus pacientes.",
-			"email": "Seu email",
-			"join-now": "Inscreva-se"
-		},
-		"hero": {
-			"heading": "Transforme sua prática de terapia com essa solução completa",
-			"helper": "Gerencie facilmente seus agendamentos, pagamentos, prontuários, faturamento e muito mais."
-		},
-		"header": {
-			"join": "Inscreva-se",
-			"benefits": "Utilidades",
-			"contact": "Contato",
-			"language": "Idioma"
-		},
-		"link": {
-			"navigate": {
-				"back": "Voltar",
-				"next": "Prosseguir",
-				"finish": "Finalizar",
-				"confirm": "Confirmar",
-				"cancel": "Cancelar"
-			}
-		},
-		"footer": {
-			"contact": "Quer entrar em contato? <a>Você pode nos encontrar aqui</a>",
-			"find-me": "Você pode nos encontrar aqui",
-			"credit": {
-				"illustration": "Ilustrações por <owner>Icons 8</owner> de <page>Ouch!</page>"
-			}
-		},
-		"share-button": {
-			"alert": {
-				"success": "Compartilhado com sucesso!",
-				"success-copy": "Link copiado com sucesso!",
-				"error": "Erro ao compartilhar, tente novamente mais tarde.",
-				"error-copy": "Erro ao copiar o link, tente novamente mais tarde."
-			},
-			"tooltip-tile": "Compartilhar {{with}}",
-			"share-with-patients": "com seus pacientes",
-			"share-infos": {
-				"availability": {
-					"title": "{{therapistName}} compartilhou com você a disponibilidade",
-					"text": "Entre aqui para agendar o seu horário"
-				}
-			}
-		},
-		"agenda": {
-			"modal": "Você está marcando a sua consulta para {{appointment}}",
-			"your-details": "Seus detalhes",
-			"next-week": "Próxima semana",
-			"previous-week": "Semana anterior",
-			"today": "Hoje",
-			"Month": "Mês",
-			"appointment-details": {
-				"title": "Detalhes da sessão",
-				"mailto-subject": "🔔 Sobre sua consulta com {{therapistName}} 🔔",
-				"whatsapp-subject": "Olá, tudo bem? Estou enviando essa mensagem sobre sua consulta comigo, {{therapisName}}",
-				"next-sessions": "Outras sessões",
-				"edit-patient-details": "Alterar detalhes do paciente",
-				"edit-patient-appointment": "Alterar sessão",
-				"edit-availability": "Alterar disponibilidade",
-				"text-status": "Esse horário está {{status}}"
-			},
-			"edit-appointment": {
-				"title": "Editar consulta",
-				"confirmation": "Tem certeza de que quer reagendar esta consulta?"
-			},
-			"cancel-appointment": {
-				"title": "Cancelar consulta(s)",
-				"select-all": "{{select}} Todas",
-				"global-reason": "Por favor, selecione um motivo geral:",
-				"confirmation": "Você tem certeza que deseja cancelar todas as consultas?",
-				"review": "Revise as datas que você selecionou"
-			},
-			"book-appointment": {
-				"title": "Agendando sua consulta"
-			}
-		}
-	},
-	"page": {
-		"landing": {
-			"seo": {
-				"title": "Psycron - Aplicativo Inovador de Gestão para Terapeutas",
-				"description": "Transforme sua prática de terapia com essa solução completa. Com esse app você pode gerenciar facilmente seus agendamentos, pagamentos, prontuários, faturamento e muito mais.",
-				"ogTitle": "Psycron - Aplicativo Inovador de Gestão para Terapeutas",
-				"ogDescription": "Transforme sua prática de terapia com essa solução completa. Com esse app você pode gerenciar facilmente seus agendamentos, pagamentos, prontuários, faturamento e muito mais."
-			},
-			"values": {
-				"all-in-one": "Solução completa",
-				"text": "Do agendamento de consultas ao processamento de pagamentos, manutenção de prontuários e faturamento, ajudamos você nas tarefas diárias para que tenha muito mais tempo para cuidar dos seus pacientes. Nossa solução pode transformar a gestão da sua prática, integrando tudo em uma única plataforma intuitiva.",
-				"text-focus": "Agora você pode focar no que realmente importa e deixar o resto com a gente."
-			},
-			"benefits": {
-				"increased-efficiency": {
-					"name": "Mais eficiência",
-					"description": "Perca menos tempo em tarefas administrativas. Automatize lembretes, agendamento de consultas e gerencie seus prontuários de forma integrada. Foque mais nos seus pacientes, não nos processos"
-				},
-				"better-patient-management": {
-					"name": "Maior gestão de pacientes",
-					"description": "Acompanhe facilmente o histórico e as consultas dos pacientes. Auxilie seu atendimento com registros organizados e atualizados."
-				},
-				"reduced-administrative-burden": {
-					"name": "Elimine a carga administrativa",
-					"description": "Simplificamos o fluxo do trabalho para você"
-				},
-				"enhanced-financial-control": {
-					"name": "Maior controle financeiro",
-					"description": "Assuma o controle das suas finanças com faturamento seguro e eficiente"
-				}
-			},
-			"ct-action": {
-				"heading": "Você quer revolucionar a sua prática de trabalho?",
-				"join-waitlist": "<strong>Junte-se à nossa lista de espera</strong> hoje e <strong>e se antecipe</strong> para <strong>experimentar</strong> uma gestão de prática terapêutica <strong>inovadora</strong>. <strong>Desbloqueie</strong> <strong>novos níveis</strong> de <strong>eficiência</strong> e <strong>cuidado ao paciente</strong> com <strong>um produto feito para você</strong>."
-			}
-		},
-		"not-found": {
-			"title": "Oops, algo deu errado!",
-			"sub-title": "Mas relaxa que já estamos correndo atrás disso!",
-			"note": "Pois é... prometo que estamos :)"
-		},
-		"unsubscribe": {
-			"title": "Até logo, {{email}}!",
-			"body-text": "Agradecemos por fazer parte da nossa jornada. Embora a gente fique triste em ver você partir, entendemos completamente sua decisão. Continuaremos trabalhando duro para oferecer o melhor que podemos e, lembre-se, estaremos sempre com as portas abertas para você, sempre que quiser voltar.",
-			"see-you": "Esperamos você de volta logo logo! ❤️",
-			"confirm": "Clique aqui para completar"
-		},
-		"reset-password": {
-			"reset": "Resetar senha",
-			"change-password": "Alterar senha",
-			"password-rule": "A sua senha deve conter no mínimo:",
-			"password-example": "Exemplo:",
-			"item-letter": "Uma letra {{rule}}",
-			"item-number": "Um número {{rule}}",
-			"item-special": "Um caractere especial {{rule}}",
-			"item-minimum": "9 dígitos",
-			"current-password": "Senha atual"
-		},
-		"availability": {
-			"wizard": {
-				"wizard-items": {
-					"intro": {
-						"label": "Introdução",
-						"title": "Vamos configurar sua disponibilidade. Podemos começar?",
-						"alert": "Você vai precisar finalizar a sua configuração de disponibilidade depois"
-					},
-					"weekdays": {
-						"label": "Escolha os dias da semana",
-						"title": "Por favor nos informe os dias no qual você costuma atender os seus pacientes."
-					},
-					"duration": {
-						"label": "Duração da consulta",
-						"title": "Por favor nos informe quanto tempo dura a sua consulta."
-					},
-					"week-slots": {
-						"label": "Horários em uma semana"
-					}
-				},
-				"intro": {
-					"options": {
-						"proceed": "Sim!",
-						"finish-later": "Deixar para depois"
-					}
-				},
-				"availability-days": {
-					"days": {
-						"mon": "Segunda",
-						"tue": "Terça",
-						"wed": "Quarta",
-						"thu": "Quinta",
-						"fri": "Sexta"
-					},
-					"options": {
-						"all": "Incluir todos os dias",
-						"weekends": "Excluir fins de semana",
-						"specific": "Selecionar dias específicos"
-					}
-				},
-				"duration": {
-					"label": "Duração da consulta",
-					"note": "Caso você tenha mais de um tipo de consulta, nos informe a duração que você mais utiliza. Você poderá alterar isso no futuro, sem maiores problemas!"
-				},
-				"hours": {
-					"no-session": "Nenhuma sessão disponível"
-				},
-				"modal-title": "Repita sua disponibilidade semanal",
-				"modal-info": "Por favor, escolha uma das opções abaixo. Se você selecionar 'semanal,' sua disponibilidade será repetida até o final do mês. Se escolher 'mensal,' ela será repetida até o final do ano.",
-				"complete": "Sessão de disponibilidade concluída!"
-			},
-			"agenda": {
-				"status": {
-					"available": "Disponível",
-					"unavailable": "Indisponível",
-					"booked": "Reservado",
-					"empty": "Vazio",
-					"blocked": "Bloqueado",
-					"cancelled": "Cancelado",
-					"onhold": "Em espera"
-				},
-				"therapist-edit-modal": {
-					"title": "Altere sua disponibilidade"
-				}
-			}
-		},
-		"book-appointment": {
-			"title": "Horários Disponíveis de {{therapisName}}",
-			"description": "Agende facilmente sua consulta. Veja os horários disponíveis e escolha o melhor momento para marcar sua sessão de forma rápida e prática.",
-			"confirmation-should-replicate": "Deseja usar esse dia como sua escolha padrão para futuras consultas?",
-			"recurrence-pattern": {
-				"month": "Toda semana até o fim do mês",
-				"year": "Toda semana até o fim do ano",
-				"single": "Apenas esta consulta",
-				"all-future": "Todas as próximas consultas"
-			},
-			"confirm-edit": "Por favor, confirme que deseja alterar sua consulta de {{previousDate}} para:",
-			"edit-recurrence-title": "Você deseja alterar apenas esta consulta ou todas as próximas?",
-			"edit-appointment-title": "Você está alterando a sua consulta do dia {{formattedDate}} às {{startTime}}."
-		},
-		"booking-confirmation": {
-			"title": "Sua consulta com <strong>{{therapistName}}</strong> está confirmada 🎉",
-			"title-plain": "Sua consulta com {{therapistName}} está confirmada 🎉",
-			"subtitle": "Estamos ansiosos para te ver em breve!",
-			"whats-next": "<strong>{{therapistName}}</strong> entrará em contato com mais detalhes quando estiver perto da consulta",
-			"advise": "Pedimos para que você esteja disponível alguns minutos antes da consula começar",
-			"reschedule": "Você pode remarcar a sua consulta até 1 dia de antecedência.",
-			"cancel": "Para remarcar ou cancelar, por favor <strong>clique aqui</strong>",
-			"help": "Caso tenha alguma dúvida ou precise de ajuda, entre em contato conosco via ",
-			"thanks": "Estamos aqui para te apoiar. Aguardamos sua consulta!",
-			"cancel-or-edit": {
-				"title": "Deseja fazer alguma mudança?",
-				"sub": "Você pode reagendar ou cancelar esta sessão agora.",
-				"appointment-info": "Sua consulta no dia {{date}} às {{startTime}}",
-				"donwload-ics": "Adicione ao seu calendário 📅"
-			},
-			"no-appointments-title": "Você ainda não tem nenhuma consulta marcada",
-			"no-appointments-link": "Clique aqui para agendar suas consultas"
-		},
-		"appointment-list": {
-			"date": "Data",
-			"starts": "Começa",
-			"ends": "Termina",
-			"modal": {
-				"title": "Tem certeza que você deseja {{action}} esta sessão?"
-			},
-			"description": "Aqui você poderá configurar seus horários para consultas e compartilhá-los com seus pacientes. Vamos guiar você por um processo simples para definir seus horários de atendimento, de maneira que eles sejam replicados ao longo das semanas ou até o final do ano. O processo é flexível e você poderá ajustar as informações a qualquer momento no futuro.",
-			"guide": {
-				"step1": {
-					"title": "Decida se quer começar agora ou depois",
-					"description": "Se preferir, você pode voltar a esta etapa mais tarde. Sabemos que nem sempre é possível configurar tudo de imediato, então você terá a opção de retomar o processo no momento que for mais conveniente."
-				},
-				"step2": {
-					"title": "Defina seus dias de folga",
-					"description": "Nos informe quais dias da semana você não estará disponível para consultas. Esses dias ficarão bloqueados, mas poderão ser alterados no futuro, se necessário."
-				},
-				"step3": {
-					"title": "Duração da sessão",
-					"description": "Informe a duração média das suas consultas. Caso ofereça mais de um tipo de sessão, vamos definir um padrão agora e você poderá ajustar os tempos conforme o paciente e o tipo de terapia."
-				},
-				"step4": {
-					"title": "Escolha seus horários",
-					"description": "De maneira visual e interativa, você poderá selecionar os horários em que estará disponível para consultas ao longo da semana. É um processo flexível: se suas preferências mudarem, você pode ajustar seus horários a qualquer momento."
-				}
-			},
-			"session-past": "Consulta passada"
-		},
-		"cancel-appointment": {
-			"title": "Cancelamento de Consulta(s)",
-			"sub-title": "Por favor selecione a(s) consulta(s) que você quer cancelar"
-		},
-		"edit-appointment": {
-			"title": "Altere a Consulta",
-			"sub-title": "Por favor selecione a data que deseja alterar"
-		},
-		"add-patient": {
-			"title": "Adicione um Novo Paciente",
-			"sub-title": "Preencha o formulário abaixo com os detalhes da pessoa"
-		}
-	},
-	"chat": {
-		"greeting": "Olá! Eu sou a Júpiter, sua assistente para configurar sua agenda de atendimentos. Vamos construir isso juntos, passo a passo 🧘‍♀️! Vamos?",
-		"let-start": "Quais tipos de terapia você oferece?",
-		"system-instruction": "Você é uma assistente gentil que ajuda terapeutas a montar sua agenda passo a passo. Sempre responda com a próxima pergunta e os dados extraídos até o momento. Por exemplo, se a pergunta for sobre reccurencePattern, você deve explicar que weekly significa até o fim do mês e monthly até o fim do ano",
-		"error": "Oops! Não foi possível continuar a conversa. Tente novamente."
-	},
-	"jupiter": {
-		"welcome": {
-			"title-line1": "Eu sou a Júpiter,",
-			"title-line2": "sua Assistente Inteligente",
-			"subtitle": "Vou te ajudar a configurar sua disponibilidade em poucos momentos. Vamos tornar o agendamento simples e rápido.",
-			"cta": "Configurar minha agenda"
-		},
-		"specialty": {
-			"response": "Qual é a sua área de atuação? Use o nome profissional do que você pratica.",
-			"chip-occupational-therapist": "Terapeuta Ocupacional",
-			"chip-nutritionist": "Nutricionista",
-			"chip-other": "Outro",
-			"chip-physiotherapist": "Fisioterapeuta",
-			"chip-psychiatrist": "Psiquiatra",
-			"chip-psychologist": "Psicólogo(a)",
-			"chip-speech-therapist": "Fonoaudiólogo(a)",
-			"continue": "Continuar",
-			"other-placeholder": "Sua especialidade ou título profissional",
-			"acknowledged": "Entendido! Vou configurar tudo levando isso em conta.",
-			"error-rephrase": "Não consegui identificar bem — tente usar o nome profissional do que você pratica.",
-			"error-rejected": "Não consigo configurar agendamentos para isso. Se você tem outra especialidade, adoraria te ajudar a começar."
-		},
-		"calendar-choice": {
-			"msg1": "Olá! Eu sou a Júpiter, sua assistente de agendamento via IA. Estou aqui para te ajudar a configurar sua disponibilidade de forma simples e natural.",
-			"msg2": "Vamos começar configurando sua agenda. Como você prefere?",
-			"chip-google": "Conectar Google Agenda",
-			"chip-manual": "Criar manualmente",
-			"google-already-connected": "Sua Google Agenda já está conectada! Você gostaria de importar sua agenda dela?"
-		},
-		"working-days": {
-			"response": "Ótimo! Em quais dias você costuma atender seus clientes?",
-			"chip-mon": "Seg",
-			"chip-tue": "Ter",
-			"chip-wed": "Qua",
-			"chip-thu": "Qui",
-			"chip-fri": "Sex",
-			"chip-sat": "Sáb",
-			"chip-sun": "Dom",
-			"back": "← Voltar",
-			"continue": "Continuar",
-			"other-placeholder": "Ou digite sua rotina..."
-		},
-		"time-range": {
-			"response": "Perfeito! Qual faixa de horário funciona melhor para você nesses dias?",
-			"chip-1": "09:00 – 17:00",
-			"chip-2": "10:00 – 18:00",
-			"chip-3": "12:00 – 20:00",
-			"chip-custom": "Personalizado",
-			"other-placeholder": "ex: 08:30 – 16:00"
-		},
-		"session-duration": {
-			"response": "Qual a duração de uma sessão? Você pode alterar isso depois.",
-			"chip-45": "45 min",
-			"chip-60": "60 min",
-			"chip-custom": "Personalizado",
-			"other-placeholder": "ex: 90 minutos"
-		},
-		"session-type": {
-			"response": "Como você costuma realizar suas sessões?",
-			"response-with-suggestion": "Como você costuma realizar suas sessões? Tenho uma sugestão com base na sua especialidade — escolha o que funciona melhor para você.",
-			"chip-online": "Apenas online",
-			"chip-in-person": "Apenas presencial",
-			"chip-both": "Online e presencial"
-		},
-		"timezone": {
-			"response": "Quase lá! Vou usar o fuso horário do seu dispositivo para agendar consultas com precisão. Assim, seus clientes sempre vão agendar no horário certo. Tudo bem?",
-			"chip-yes": "Sim",
-			"chip-no": "Não",
-			"follow-up": "Sem problema! Selecione seu fuso horário:",
-			"search-placeholder": "Buscar fuso horário..."
-		},
-		"recurrence-pattern": {
-			"response": "Última pergunta — com qual frequência você quer que sua disponibilidade se repita?",
-			"chip-weekly": "Semanal (até o fim do mês)",
-			"chip-monthly": "Mensal (até o fim do ano)",
-			"summary-weekly": "Entendido! Seus horários vão se repetir toda semana até o fim deste mês. Você pode estender a qualquer momento pelo painel.",
-			"summary-monthly": "Perfeito! Sua disponibilidade vai se repetir mensalmente até o fim do ano — cobrindo todo o seu calendário anual.",
-			"value-weekly": "Semanal (até o fim do mês)",
-			"value-monthly": "Mensal (até o fim do ano)"
-		},
-		"preview": {
-			"title": "Resumo da sua Disponibilidade",
-			"label-days": "Dias de atendimento:",
-			"label-hours": "Horário:",
-			"label-duration": "Duração:",
-			"label-recurrence": "Repetição:",
-			"label-session-type": "Tipo de sessão:",
-			"label-timezone": "Fuso horário:",
-			"footer": "Você pode editar sua disponibilidade a qualquer momento no painel.",
-			"cta": "Publicar Disponibilidade",
-			"loading": "Publicando...",
-			"reset": "Recomeçar"
-		},
-		"post-publish": {
-			"page-title": "Disponibilidade",
-			"page-subtitle": "Gerencie sua disponibilidade e preferências de agendamento",
-			"success-toast": "Sua disponibilidade está ativa. Seus clientes já podem agendar sessões com você.",
-			"welcome-toast": "Bem-vindo ao Psycron!",
-			"tip-title": "Dica da Júpiter",
-			"tip-text": "Sua disponibilidade está ótima. Adicionar uma política de cancelamento ajuda a reduzir faltas e define expectativas claras com seus clientes.",
-			"tip-cta": "Configurar política de cancelamento",
-			"status-active-hours": "Horas ativas",
-			"status-bookings": "Agendamentos futuros",
-			"status-this-week": "Esta semana",
-			"status-booked-label": "{{percent}}% Agendado",
-			"checklist-title": "Complete sua disponibilidade",
-			"checklist-subtitle": "Melhore sua configuração de agendamento para uma experiência melhor",
-			"checklist-session-types": "Definir tipos de sessão",
-			"checklist-session-types-desc": "Crie diferentes tipos e durações de consultas",
-			"checklist-price": "Adicionar preço da sessão",
-			"checklist-price-desc": "Defina seus valores e condições de pagamento",
-			"checklist-price-badge": "Recomendado",
-			"checklist-buffer": "Adicionar intervalo entre sessões",
-			"checklist-buffer-desc": "Defina um tempo entre consultas para preparação",
-			"checklist-cancel-policy": "Configurar política de cancelamento",
-			"checklist-cancel-desc": "Defina como clientes podem cancelar ou remarcar",
-			"checklist-calendar-sync": "Sincronizar com sua agenda existente",
-			"checklist-calendar-desc": "Conecte sua agenda para evitar conflitos",
-			"help-title": "Precisa de ajuda?",
-			"help-text": "A Júpiter pode te ajudar a completar sua configuração",
-			"help-cta": "Falar com a Júpiter"
-		},
-		"google-calendar": {
-			"permissions-intro": "Vamos conectar sua Google Agenda com segurança para:",
-			"permission-1": "Ler seus horários ocupados",
-			"permission-2": "Evitar agendamentos duplicados",
-			"permission-3": "Manter tudo sincronizado",
-			"privacy-note": "Nós nunca editamos ou excluímos eventos sem sua permissão.",
-			"back": "← Voltar",
-			"continue": "Continuar",
-			"success-line1": "Perfeito! 🎉",
-			"success-line2": "Sua Google Agenda está conectada.",
-			"success-line3": "Vou bloquear automaticamente os horários em que você já estiver ocupado.",
-			"next-choice": "Você gostaria de:",
-			"chip-use-existing": "Usar minha agenda atual como disponibilidade",
-			"chip-define-hours": "Definir horários de trabalho específicos",
-			"define-hours-fallback": "Entendido! A importação do Google Agenda estará disponível em breve. Por enquanto, vamos definir seus horários manualmente.",
-			"importing": "Um momento — estou importando sua agenda do Google Agenda...",
-			"imported": "Pronto! Encontrei seus dias e horários de trabalho. Só mais algumas configurações.",
-			"import-failed": "Não consegui ler sua agenda. Vamos definir seus horários de trabalho manualmente."
-		},
-		"errors": {
-			"network": "Algo deu errado. Vamos tentar de novo.",
-			"retry": "Tentar novamente",
-			"google-oauth-fail": "Não consegui conectar à Google Agenda. Tente novamente ou configure manualmente.",
-			"google-oauth-cancel": "Sem problema! Você pode conectar sua agenda depois. Vamos configurar manualmente.",
-			"save-fail": "Não consegui salvar sua disponibilidade. Tente novamente.",
-			"session-timeout": "Parece que você se ausentou. Seu progresso foi salvo — continue de onde parou.",
-			"empty-days": "Selecione pelo menos um dia de atendimento para continuar.",
-			"invalid-time-range": "O horário final deve ser depois do horário inicial.",
-			"invalid-input": "Não entendi bem. Pode tentar de novo?",
-			"ai-fallback": "Obrigado! Deixa eu processar isso para você.",
-			"ai-thinking": "Pensando...",
-			"no-timezone": "Não consegui detectar seu fuso horário automaticamente. Por favor, selecione abaixo.",
-			"publish-success": "Tudo certo! Sua disponibilidade está no ar.",
-			"publish-redirect": "Redirecionando para seu painel..."
-		},
-		"subtitle": "Seu assistente de agendamento",
-		"days": {
-			"MONDAY": "Segunda-feira",
-			"TUESDAY": "Terça-feira",
-			"WEDNESDAY": "Quarta-feira",
-			"THURSDAY": "Quinta-feira",
-			"FRIDAY": "Sexta-feira",
-			"SATURDAY": "Sábado",
-			"SUNDAY": "Domingo"
-		}
-	},
-	"availability": {
-		"calendar": {
-			"legend-available": "Disponível",
-			"legend-busy": "Ocupado",
-			"legend-empty": "Indisponível",
-			"legend-full": "Completo",
-			"legend-partial": "Parcial",
-			"legend-today": "Hoje",
-			"page-title": "Disponibilidade",
-			"source-google": "Google",
-			"source-jupiter": "Júpiter",
-			"subtitle": "Seu calendário de disponibilidade"
-		},
-		"week": {
-			"drawer": {
-				"book-slot": "Agendar este horário",
-				"cancel": "Cancelar",
-				"cancel-appointment": "Cancelar",
-				"confirm-booking": "Confirmar",
-				"confirmed": "Confirmado",
-				"status-cancelled": "Cancelado",
-				"status-confirmed": "Confirmado",
-				"date": "Data",
-				"edit": "Editar",
-				"minutes": "minutos",
-				"notes": "Notas",
-				"patient-email": "Email do paciente",
-				"patient-first-name": "Nome do paciente",
-				"patient-last-name": "Sobrenome do paciente",
-				"patient-time": "Horário do paciente",
-				"session-duration": "Duração: ",
-				"session-type": "Tipo de sessão",
-				"your-time": "Seu horário"
-			},
-			"legend-available": "Disponível",
-			"legend-booked-google": "Google",
-			"legend-booked-jupiter": "Manual",
-			"legend-cancelled": "Cancelado",
-			"next-week": "Próxima semana",
-			"no-appointments": "Sem agendamentos",
-			"page-title": "Disponibilidade",
-			"prev-week": "Semana anterior",
-			"collapse-day": "Ver menos",
-			"expand-day": "+{{count}} mais",
-			"slot": "horário",
-			"slots": "horários",
-			"filter-clear": "Limpar filtros",
-			"filter-delivery-in-person": "Presencial",
-			"filter-delivery-online": "Online",
-			"filter-hide-free": "Ocultar horários livres",
-			"filter-label-cancelled": "Horários cancelados",
-			"filter-label-free": "Horários livres",
-			"filter-section-delivery": "Modalidade",
-			"filter-section-session-type": "Tipo de sessão",
-			"filter-section-source": "Origem",
-			"filter-section-status": "Status do horário",
-			"filter-section-time": "Período do dia",
-			"filter-show-free": "Mostrar horários livres",
-			"filter-source-google": "Google",
-			"filter-source-jupiter": "Júpiter",
-			"filter-time-afternoon": "Tarde",
-			"filter-time-evening": "Noite",
-			"filter-time-morning": "Manhã",
-			"filters": "Filtros",
-			"title": "Agenda da Semana",
-			"extend": {
-				"confirm": "Estender disponibilidade",
-				"end-of-month": "Até o fim do mês",
-				"end-of-year": "Até o fim do ano",
-				"success": "Disponibilidade estendida com sucesso",
-				"title": "Por quanto tempo deseja estender?"
-			}
-		},
-		"gate": {
-			"deleted-notice": "Você não tem mais disponibilidade configurada. Fale com a Júpiter para criar uma nova."
-		},
-		"settings": {
-			"live-alert": "Sua disponibilidade está ativa. Seus clientes já podem agendar sessões com você.",
-			"page-title": "Disponibilidade",
-			"talk-to-jupiter": "Editar com a Júpiter"
-		}
-	}
+  "common": {
+    "close": "Fechar",
+    "today": "Hoje",
+    "save": "Salvar",
+    "saving": "Salvando...",
+    "cancel": "Cancelar"
+  },
+  "auth": {
+    "error": {
+      "login-failed": "Email ou senha inválidos. Por favor, verifique suas credenciais e tente novamente.",
+      "registration-failed": "Não foi possível completar o cadastro. Por favor, verifique suas informações e tente novamente.",
+      "password-reset-request": "Se este email estiver cadastrado, você receberá instruções para redefinir sua senha.",
+      "password-reset-failed": "Não foi possível redefinir a senha. O link pode ter expirado. Por favor, solicite um novo.",
+      "session-expired": "Sua sessão expirou. Por favor, faça login novamente.",
+      "rate-limited": "Muitas tentativas. Por favor, aguarde um momento antes de tentar novamente.",
+      "generic": "Algo deu errado. Por favor, tente novamente mais tarde."
+    },
+    "success": {
+      "password-reset-request": "Se este email estiver cadastrado, você receberá instruções para redefinir sua senha em breve.",
+      "password-reset": "Sua senha foi alterada com sucesso. Você já pode fazer login.",
+      "logout": "Você saiu com sucesso."
+    },
+    "continue-google": "Continuar com Google",
+    "continue-email": "Continue com seu e-mail"
+  },
+  "globals": {
+    "email": "Email",
+    "name": "Nome",
+    "password": "Senha",
+    "phone": "Telefone",
+    "whatsapp": "Whatsapp",
+    "address": "Endereço",
+    "patients": "Pacientes",
+    "patient": "Paciente",
+    "registered-patients": "Pacientes registrados",
+    "patients-manager": "Genrecie seus pacientes",
+    "billing-manager": "Gerencie seus pagamentos",
+    "subscription-manager": "Gerencie sua assinatura",
+    "appointments": "Atendimentos",
+    "appointments-manager": "Gerencie seus atendimentos",
+    "change-language": "Mude o idioma",
+    "help": "Centro de suporte",
+    "logout": "Sair",
+    "plan": "Plano",
+    "cancel": "Cancelar",
+    "delete": "Excluir",
+    "edit": "Alterar",
+    "date-time-format": "{{format}}",
+    "time-remaining": {
+      "days": "Em {{count}} dia(s)",
+      "hours": "Em {{count}} horas(s)",
+      "minutes": "Em {{count}} minuto(s)",
+      "less-than-a-minute": "Sessão {{status}}"
+    },
+    "in-progress": "Em andamento",
+    "paused": "Pausada",
+    "proceed": "Continuar",
+    "resume": "Retomar",
+    "reason": "Motivo",
+    "global-reason": "Motivo geral",
+    "custom-reason": "Descreva o motivo",
+    "select": "Selecione",
+    "unselect": "Desmarcar",
+    "error": {
+      "already-subscribed": "Você já está na nossa lista de espera",
+      "internal-server-error": "Algo aconteceu errado, tente novamente mais tarde",
+      "invalid-user": "Email ou senha invalidos"
+    },
+    "success": {
+      "subscribed": "Você foi inscrito com sucesso. Por favor verifique o seu -mail!"
+    },
+    "date": "Data",
+    "time": "Hora",
+    "at": "às",
+    "date-time": "Data e Hora: ",
+    "therapist": "Terapeuta",
+    "appointment-status": {
+      "booked": "Confirmado",
+      "available": "Disponível",
+      "onhold": "Em espera",
+      "blocked": "Bloqueado",
+      "cancelled": "Cancelado"
+    },
+    "contacts": "Contatos",
+    "starts": "Começa às",
+    "ends": "Termina às",
+    "time-range": {
+      "time-from-to": "das {{start}} às {{end}}",
+      "time-range-date": "{{date}} das {{start}} às {{end}}",
+      "your-time": "Seu horário local",
+      "patient-time": "Horário do paciente",
+      "therapist-time": "Horário do terapeuta"
+    },
+    "notification": {
+      "email": "Enviar e-mail",
+      "phone": "Ligar",
+      "whatsapp": "Enviar WhatsApp"
+    },
+    "cancellation-title": "Por favor nos informe o motivo do cancelamento da sua consulta",
+    "cancellation-reason": {
+      "1": "Emergência (Questão Pessoal/Saúde)",
+      "2": "Conflito de Agenda",
+      "3": "Problemas Financeiros",
+      "4": "Questões de Saúde Mental",
+      "5": "Não Comparecimento",
+      "6": "Consulta Encerrada",
+      "7": "Outro"
+    },
+    "cancellation-other-title": "Por favor especifique o motivo",
+    "status": "Disponibilidade",
+    "close": "Fechar",
+    "read-only": "Apenas leitura",
+    "auth-method": "Método de autenticação",
+    "privacy-policy": "Política de Privacidade",
+    "terms-of-service": "Termos de Uso",
+    "privacy": "Privacidade"
+  },
+  "components": {
+    "form": {
+      "confirm-password": "Confirmar senha",
+      "keep-loggedin": "Mantenha-me online",
+      "not-valid": "Alguns campos estão faltando",
+      "signup": {
+        "sign-up": "Cadastra-se",
+        "title-email": "Crie sua conta ",
+        "title": "Crie a sua conta Psycron",
+        "first-name": "Nome",
+        "firstName": "Nome",
+        "last-name": "Sobrenome",
+        "lastName": "Sobrenome",
+        "already-have-acc": "Você já tem uma conta?",
+        "signin-here-link": "Clique aqui para entrar"
+      },
+      "signin": {
+        "sign-in": "Entrar",
+        "title": "Olá de volta!",
+        "dont-have-acc": "Você ainda não tem uma conta?",
+        "signup-here-link": "Cadastre-se aqui",
+        "forgot-password": "Esqueceu a sua senha?"
+      },
+      "validation": {
+        "required": "{{name}} é um campo obrigatório",
+        "invalid": "{{name}} não é válido",
+        "characters": "Senha deve conter no mínimo {{numChar}} caracteres",
+        "pass-rules": "Sua senha deve conter ao menos uma letra maiúscula, uma letra minúscula, um número e um caractere especial (@€#$+...) ",
+        "at-least-one-contact": "Informe um email ou número de telefone",
+        "match": "{{name}} precisa coincidir"
+      },
+      "address-form": {
+        "search": "Procure o endereço aqui",
+        "search-note": "Você pode começar pesquisando o indereço aqui, ou então preencher os campos abaixo",
+        "street": "Rua",
+        "number": "Nº",
+        "hood": "Localidade / bairro",
+        "more-info": "Complemento",
+        "city": "Cidade",
+        "state": "Estado",
+        "zip": "Cep",
+        "country": "País",
+        "more-info-bttn": "Adicione um complemento"
+      },
+      "add-patient": {
+        "name": "Adicionar paciente"
+      },
+      "contacts-form": {
+        "contact-via": "Entrar em contato via {{method}}?",
+        "contact-via-same": "O número é o mesmo para o Whatsapp?"
+      },
+      "consent": {
+        "terms": "Eu concordo com a <privacyLink>Política de Privacidade</privacyLink> e os <termsLink>Termos de Uso</termsLink>",
+        "marketing": "Eu concordo em receber <marketingLink>comunicações de marketing.</marketingLink>",
+        "info": "Ao continuar, você automaticamente aceita as <privacyLink>Política de Privacidade</privacyLink> e os <termsLink>Termos de Uso</termsLink> da Psycron."
+      }
+    },
+    "input": {
+      "phone-input": {
+        "select-label": "País",
+        "phone-num-label": "Número de {{registerName}}",
+        "phone-number-guide": "Por favor, forneça seu número de telefone com o código da cidade"
+      },
+      "text": {
+        "first-name": "Seu primeiro nome",
+        "last-name": "Seu último sobrenome",
+        "email": "Seu e-mail"
+      }
+    },
+    "navbar": {
+      "dashboard": "Painel",
+      "user-settings": "Configurações",
+      "test": "Testes"
+    },
+    "user-details": {
+      "edit": "Editar detalhes",
+      "edit-contacts": "Editar contatos",
+      "edit-success": "Dados atualizados",
+      "add-contacts": "Adicione seu {{contactValue}}",
+      "change": "Alterar {{name}}",
+      "save": "Salvar",
+      "address-not-found": "Nenhum endereço cadastrado. Adicione suas informações.",
+      "detail-not-found": "{{detail}} não cadastrado ainda",
+      "delete": {
+        "title": "Excluir conta",
+        "description": "Sua conta será desativada e seus dados ficarão anônimos dentro de 30 dias. Você pode entrar em contato com nosso suporte técnico para mais detalhes.",
+        "confirmation": "Excluir"
+      },
+      "section": {
+        "title": {
+          "account": "Conta",
+          "security": "Segurança & Privacidade",
+          "contact": "Contatos",
+          "subscription": "Assinatura",
+          "patients": "Pacientes"
+        },
+        "local": "Email e Senha",
+        "security": {
+          "google-mgmt": "Gerenciada por Google - A sua senha é seguramente guardada através do sistema de autênticação da Google e nós não tem acesso.",
+          "accepted": "Ao criar sua conta na Psycron, você concordou com nossos <privacyLink>Política de Privacidade</privacyLink> e <termsLink>Termos de Uso</termsLink>.",
+          "accepted-info": "Você pode revisar esses documentos a qualquer momento.",
+          "marketing": "Receber comunicações de marketing e news"
+        },
+        "contact": {
+          "title-empty": "Adicione seu número para receber notificações em SMS ou WhatsApp."
+        }
+      }
+    },
+    "dashboard": {
+      "card": {
+        "delay-notification": "Pausar o cronômetro vai atrasar todos os seus compromissos de hoje pelo tempo da pausa.",
+        "delay-confirmation": "Você tem certeza que quer pausar o cronômetro?",
+        "pause": "Pausar cronômetro",
+        "session-progress": "Progresso da sessão:"
+      },
+      "availability-card": {
+        "first-availability": "Crie sua disponibilidade de agenda aqui"
+      }
+    },
+    "appointments": {
+      "card-title": "Consultas do dia",
+      "manager": "Gerenciador de consultas"
+    },
+    "patients-table": {
+      "name": "Nome do paciente",
+      "next-session": "Próxima sessão",
+      "payment-status": "Status de pagamento",
+      "sessions-month": "Sessões por mês",
+      "value": "Valor por sessão",
+      "discount": "Desconto?",
+      "discount-val": "Valor do desconto",
+      "amount": "Valor total",
+      "currency": "Moeda",
+      "latest-payment": "Último pagamento",
+      "manage": "Veja paciente"
+    },
+    "progress": {
+      "received": "Você já recebeu {{progress}}% dos seus pagamentos 🥳",
+      "missing": "Faltam {{progress}}% dos seus pagamentos",
+      "not-received": "Você não recebeu nenhum pagamento ainda",
+      "received-all": "Você recebeu 100% dos seus pagamentos para este período 🥳 😎"
+    },
+    "c2-action": {
+      "join-waitlist": "Junte-se à nossa <strong>lista de espera</strong> para simplificar sua prática de terapia e focar mais em seus pacientes.",
+      "email": "Seu email",
+      "join-now": "Inscreva-se"
+    },
+    "hero": {
+      "heading": "Transforme sua prática de terapia com essa solução completa",
+      "helper": "Gerencie facilmente seus agendamentos, pagamentos, prontuários, faturamento e muito mais."
+    },
+    "header": {
+      "join": "Inscreva-se",
+      "benefits": "Utilidades",
+      "contact": "Contato",
+      "language": "Idioma"
+    },
+    "link": {
+      "navigate": {
+        "back": "Voltar",
+        "next": "Prosseguir",
+        "finish": "Finalizar",
+        "confirm": "Confirmar",
+        "cancel": "Cancelar"
+      }
+    },
+    "footer": {
+      "contact": "Quer entrar em contato? <a>Você pode nos encontrar aqui</a>",
+      "find-me": "Você pode nos encontrar aqui",
+      "credit": {
+        "illustration": "Ilustrações por <owner>Icons 8</owner> de <page>Ouch!</page>"
+      }
+    },
+    "share-button": {
+      "alert": {
+        "success": "Compartilhado com sucesso!",
+        "success-copy": "Link copiado com sucesso!",
+        "error": "Erro ao compartilhar, tente novamente mais tarde.",
+        "error-copy": "Erro ao copiar o link, tente novamente mais tarde."
+      },
+      "tooltip-tile": "Compartilhar {{with}}",
+      "share-with-patients": "com seus pacientes",
+      "share-infos": {
+        "availability": {
+          "title": "{{therapistName}} compartilhou com você a disponibilidade",
+          "text": "Entre aqui para agendar o seu horário"
+        }
+      }
+    },
+    "agenda": {
+      "modal": "Você está marcando a sua consulta para {{appointment}}",
+      "your-details": "Seus detalhes",
+      "next-week": "Próxima semana",
+      "previous-week": "Semana anterior",
+      "today": "Hoje",
+      "Month": "Mês",
+      "appointment-details": {
+        "title": "Detalhes da sessão",
+        "mailto-subject": "🔔 Sobre sua consulta com {{therapistName}} 🔔",
+        "whatsapp-subject": "Olá, tudo bem? Estou enviando essa mensagem sobre sua consulta comigo, {{therapisName}}",
+        "next-sessions": "Outras sessões",
+        "edit-patient-details": "Alterar detalhes do paciente",
+        "edit-patient-appointment": "Alterar sessão",
+        "edit-availability": "Alterar disponibilidade",
+        "text-status": "Esse horário está {{status}}"
+      },
+      "edit-appointment": {
+        "title": "Editar consulta",
+        "confirmation": "Tem certeza de que quer reagendar esta consulta?"
+      },
+      "cancel-appointment": {
+        "title": "Cancelar consulta(s)",
+        "select-all": "{{select}} Todas",
+        "global-reason": "Por favor, selecione um motivo geral:",
+        "confirmation": "Você tem certeza que deseja cancelar todas as consultas?",
+        "review": "Revise as datas que você selecionou"
+      },
+      "book-appointment": {
+        "title": "Agendando sua consulta"
+      }
+    }
+  },
+  "page": {
+    "landing": {
+      "seo": {
+        "title": "Psycron - Aplicativo Inovador de Gestão para Terapeutas",
+        "description": "Transforme sua prática de terapia com essa solução completa. Com esse app você pode gerenciar facilmente seus agendamentos, pagamentos, prontuários, faturamento e muito mais.",
+        "ogTitle": "Psycron - Aplicativo Inovador de Gestão para Terapeutas",
+        "ogDescription": "Transforme sua prática de terapia com essa solução completa. Com esse app você pode gerenciar facilmente seus agendamentos, pagamentos, prontuários, faturamento e muito mais."
+      },
+      "values": {
+        "all-in-one": "Solução completa",
+        "text": "Do agendamento de consultas ao processamento de pagamentos, manutenção de prontuários e faturamento, ajudamos você nas tarefas diárias para que tenha muito mais tempo para cuidar dos seus pacientes. Nossa solução pode transformar a gestão da sua prática, integrando tudo em uma única plataforma intuitiva.",
+        "text-focus": "Agora você pode focar no que realmente importa e deixar o resto com a gente."
+      },
+      "benefits": {
+        "increased-efficiency": {
+          "name": "Mais eficiência",
+          "description": "Perca menos tempo em tarefas administrativas. Automatize lembretes, agendamento de consultas e gerencie seus prontuários de forma integrada. Foque mais nos seus pacientes, não nos processos"
+        },
+        "better-patient-management": {
+          "name": "Maior gestão de pacientes",
+          "description": "Acompanhe facilmente o histórico e as consultas dos pacientes. Auxilie seu atendimento com registros organizados e atualizados."
+        },
+        "reduced-administrative-burden": {
+          "name": "Elimine a carga administrativa",
+          "description": "Simplificamos o fluxo do trabalho para você"
+        },
+        "enhanced-financial-control": {
+          "name": "Maior controle financeiro",
+          "description": "Assuma o controle das suas finanças com faturamento seguro e eficiente"
+        }
+      },
+      "ct-action": {
+        "heading": "Você quer revolucionar a sua prática de trabalho?",
+        "join-waitlist": "<strong>Junte-se à nossa lista de espera</strong> hoje e <strong>e se antecipe</strong> para <strong>experimentar</strong> uma gestão de prática terapêutica <strong>inovadora</strong>. <strong>Desbloqueie</strong> <strong>novos níveis</strong> de <strong>eficiência</strong> e <strong>cuidado ao paciente</strong> com <strong>um produto feito para você</strong>."
+      }
+    },
+    "not-found": {
+      "title": "Oops, algo deu errado!",
+      "sub-title": "Mas relaxa que já estamos correndo atrás disso!",
+      "note": "Pois é... prometo que estamos :)"
+    },
+    "unsubscribe": {
+      "title": "Até logo, {{email}}!",
+      "body-text": "Agradecemos por fazer parte da nossa jornada. Embora a gente fique triste em ver você partir, entendemos completamente sua decisão. Continuaremos trabalhando duro para oferecer o melhor que podemos e, lembre-se, estaremos sempre com as portas abertas para você, sempre que quiser voltar.",
+      "see-you": "Esperamos você de volta logo logo! ❤️",
+      "confirm": "Clique aqui para completar"
+    },
+    "reset-password": {
+      "reset": "Resetar senha",
+      "change-password": "Alterar senha",
+      "password-rule": "A sua senha deve conter no mínimo:",
+      "password-example": "Exemplo:",
+      "item-letter": "Uma letra {{rule}}",
+      "item-number": "Um número {{rule}}",
+      "item-special": "Um caractere especial {{rule}}",
+      "item-minimum": "9 dígitos",
+      "current-password": "Senha atual"
+    },
+    "availability": {
+      "wizard": {
+        "wizard-items": {
+          "intro": {
+            "label": "Introdução",
+            "title": "Vamos configurar sua disponibilidade. Podemos começar?",
+            "alert": "Você vai precisar finalizar a sua configuração de disponibilidade depois"
+          },
+          "weekdays": {
+            "label": "Escolha os dias da semana",
+            "title": "Por favor nos informe os dias no qual você costuma atender os seus pacientes."
+          },
+          "duration": {
+            "label": "Duração da consulta",
+            "title": "Por favor nos informe quanto tempo dura a sua consulta."
+          },
+          "week-slots": {
+            "label": "Horários em uma semana"
+          }
+        },
+        "intro": {
+          "options": {
+            "proceed": "Sim!",
+            "finish-later": "Deixar para depois"
+          }
+        },
+        "availability-days": {
+          "days": {
+            "mon": "Segunda",
+            "tue": "Terça",
+            "wed": "Quarta",
+            "thu": "Quinta",
+            "fri": "Sexta"
+          },
+          "options": {
+            "all": "Incluir todos os dias",
+            "weekends": "Excluir fins de semana",
+            "specific": "Selecionar dias específicos"
+          }
+        },
+        "duration": {
+          "label": "Duração da consulta",
+          "note": "Caso você tenha mais de um tipo de consulta, nos informe a duração que você mais utiliza. Você poderá alterar isso no futuro, sem maiores problemas!"
+        },
+        "hours": {
+          "no-session": "Nenhuma sessão disponível"
+        },
+        "modal-title": "Repita sua disponibilidade semanal",
+        "modal-info": "Por favor, escolha uma das opções abaixo. Se você selecionar 'semanal,' sua disponibilidade será repetida até o final do mês. Se escolher 'mensal,' ela será repetida até o final do ano.",
+        "complete": "Sessão de disponibilidade concluída!"
+      },
+      "agenda": {
+        "status": {
+          "available": "Disponível",
+          "unavailable": "Indisponível",
+          "booked": "Reservado",
+          "empty": "Vazio",
+          "blocked": "Bloqueado",
+          "cancelled": "Cancelado",
+          "onhold": "Em espera"
+        },
+        "therapist-edit-modal": {
+          "title": "Altere sua disponibilidade"
+        }
+      }
+    },
+    "book-appointment": {
+      "title": "Horários Disponíveis de {{therapisName}}",
+      "description": "Agende facilmente sua consulta. Veja os horários disponíveis e escolha o melhor momento para marcar sua sessão de forma rápida e prática.",
+      "confirmation-should-replicate": "Deseja usar esse dia como sua escolha padrão para futuras consultas?",
+      "recurrence-pattern": {
+        "month": "Toda semana até o fim do mês",
+        "year": "Toda semana até o fim do ano",
+        "single": "Apenas esta consulta",
+        "all-future": "Todas as próximas consultas"
+      },
+      "confirm-edit": "Por favor, confirme que deseja alterar sua consulta de {{previousDate}} para:",
+      "edit-recurrence-title": "Você deseja alterar apenas esta consulta ou todas as próximas?",
+      "edit-appointment-title": "Você está alterando a sua consulta do dia {{formattedDate}} às {{startTime}}."
+    },
+    "booking-confirmation": {
+      "title": "Sua consulta com <strong>{{therapistName}}</strong> está confirmada 🎉",
+      "title-plain": "Sua consulta com {{therapistName}} está confirmada 🎉",
+      "subtitle": "Estamos ansiosos para te ver em breve!",
+      "whats-next": "<strong>{{therapistName}}</strong> entrará em contato com mais detalhes quando estiver perto da consulta",
+      "advise": "Pedimos para que você esteja disponível alguns minutos antes da consula começar",
+      "reschedule": "Você pode remarcar a sua consulta até 1 dia de antecedência.",
+      "cancel": "Para remarcar ou cancelar, por favor <strong>clique aqui</strong>",
+      "help": "Caso tenha alguma dúvida ou precise de ajuda, entre em contato conosco via ",
+      "thanks": "Estamos aqui para te apoiar. Aguardamos sua consulta!",
+      "cancel-or-edit": {
+        "title": "Deseja fazer alguma mudança?",
+        "sub": "Você pode reagendar ou cancelar esta sessão agora.",
+        "appointment-info": "Sua consulta no dia {{date}} às {{startTime}}",
+        "donwload-ics": "Adicione ao seu calendário 📅"
+      },
+      "no-appointments-title": "Você ainda não tem nenhuma consulta marcada",
+      "no-appointments-link": "Clique aqui para agendar suas consultas"
+    },
+    "appointment-list": {
+      "date": "Data",
+      "starts": "Começa",
+      "ends": "Termina",
+      "modal": {
+        "title": "Tem certeza que você deseja {{action}} esta sessão?"
+      },
+      "description": "Aqui você poderá configurar seus horários para consultas e compartilhá-los com seus pacientes. Vamos guiar você por um processo simples para definir seus horários de atendimento, de maneira que eles sejam replicados ao longo das semanas ou até o final do ano. O processo é flexível e você poderá ajustar as informações a qualquer momento no futuro.",
+      "guide": {
+        "step1": {
+          "title": "Decida se quer começar agora ou depois",
+          "description": "Se preferir, você pode voltar a esta etapa mais tarde. Sabemos que nem sempre é possível configurar tudo de imediato, então você terá a opção de retomar o processo no momento que for mais conveniente."
+        },
+        "step2": {
+          "title": "Defina seus dias de folga",
+          "description": "Nos informe quais dias da semana você não estará disponível para consultas. Esses dias ficarão bloqueados, mas poderão ser alterados no futuro, se necessário."
+        },
+        "step3": {
+          "title": "Duração da sessão",
+          "description": "Informe a duração média das suas consultas. Caso ofereça mais de um tipo de sessão, vamos definir um padrão agora e você poderá ajustar os tempos conforme o paciente e o tipo de terapia."
+        },
+        "step4": {
+          "title": "Escolha seus horários",
+          "description": "De maneira visual e interativa, você poderá selecionar os horários em que estará disponível para consultas ao longo da semana. É um processo flexível: se suas preferências mudarem, você pode ajustar seus horários a qualquer momento."
+        }
+      },
+      "session-past": "Consulta passada"
+    },
+    "cancel-appointment": {
+      "title": "Cancelamento de Consulta(s)",
+      "sub-title": "Por favor selecione a(s) consulta(s) que você quer cancelar"
+    },
+    "edit-appointment": {
+      "title": "Altere a Consulta",
+      "sub-title": "Por favor selecione a data que deseja alterar"
+    },
+    "add-patient": {
+      "title": "Adicione um Novo Paciente",
+      "sub-title": "Preencha o formulário abaixo com os detalhes da pessoa"
+    }
+  },
+  "chat": {
+    "greeting": "Olá! Eu sou a Júpiter, sua assistente para configurar sua agenda de atendimentos. Vamos construir isso juntos, passo a passo 🧘‍♀️! Vamos?",
+    "let-start": "Quais tipos de terapia você oferece?",
+    "system-instruction": "Você é uma assistente gentil que ajuda terapeutas a montar sua agenda passo a passo. Sempre responda com a próxima pergunta e os dados extraídos até o momento. Por exemplo, se a pergunta for sobre reccurencePattern, você deve explicar que weekly significa até o fim do mês e monthly até o fim do ano",
+    "error": "Oops! Não foi possível continuar a conversa. Tente novamente."
+  },
+  "jupiter": {
+    "welcome": {
+      "title-line1": "Eu sou a Júpiter,",
+      "title-line2": "sua Assistente Inteligente",
+      "subtitle": "Vou te ajudar a configurar sua disponibilidade em poucos momentos. Vamos tornar o agendamento simples e rápido.",
+      "cta": "Configurar minha agenda"
+    },
+    "specialty": {
+      "response": "Qual é a sua área de atuação? Use o nome profissional do que você pratica.",
+      "chip-occupational-therapist": "Terapeuta Ocupacional",
+      "chip-nutritionist": "Nutricionista",
+      "chip-other": "Outro",
+      "chip-physiotherapist": "Fisioterapeuta",
+      "chip-psychiatrist": "Psiquiatra",
+      "chip-psychologist": "Psicólogo(a)",
+      "chip-speech-therapist": "Fonoaudiólogo(a)",
+      "continue": "Continuar",
+      "other-placeholder": "Sua especialidade ou título profissional",
+      "acknowledged": "Entendido! Vou configurar tudo levando isso em conta.",
+      "error-rephrase": "Não consegui identificar bem — tente usar o nome profissional do que você pratica.",
+      "error-rejected": "Não consigo configurar agendamentos para isso. Se você tem outra especialidade, adoraria te ajudar a começar."
+    },
+    "calendar-choice": {
+      "msg1": "Olá! Eu sou a Júpiter, sua assistente de agendamento via IA. Estou aqui para te ajudar a configurar sua disponibilidade de forma simples e natural.",
+      "msg2": "Vamos começar configurando sua agenda. Como você prefere?",
+      "chip-google": "Conectar Google Agenda",
+      "chip-manual": "Criar manualmente",
+      "google-already-connected": "Sua Google Agenda já está conectada! Você gostaria de importar sua agenda dela?"
+    },
+    "working-days": {
+      "response": "Ótimo! Em quais dias você costuma atender seus clientes?",
+      "chip-mon": "Seg",
+      "chip-tue": "Ter",
+      "chip-wed": "Qua",
+      "chip-thu": "Qui",
+      "chip-fri": "Sex",
+      "chip-sat": "Sáb",
+      "chip-sun": "Dom",
+      "back": "← Voltar",
+      "continue": "Continuar",
+      "other-placeholder": "Ou digite sua rotina..."
+    },
+    "time-range": {
+      "response": "Perfeito! Qual faixa de horário funciona melhor para você nesses dias?",
+      "chip-1": "09:00 – 17:00",
+      "chip-2": "10:00 – 18:00",
+      "chip-3": "12:00 – 20:00",
+      "chip-custom": "Personalizado",
+      "other-placeholder": "ex: 08:30 – 16:00"
+    },
+    "session-duration": {
+      "response": "Qual a duração de uma sessão? Você pode alterar isso depois.",
+      "chip-45": "45 min",
+      "chip-60": "60 min",
+      "chip-custom": "Personalizado",
+      "other-placeholder": "ex: 90 minutos"
+    },
+    "session-type": {
+      "response": "Como você costuma realizar suas sessões?",
+      "response-with-suggestion": "Como você costuma realizar suas sessões? Tenho uma sugestão com base na sua especialidade — escolha o que funciona melhor para você.",
+      "chip-online": "Apenas online",
+      "chip-in-person": "Apenas presencial",
+      "chip-both": "Online e presencial"
+    },
+    "timezone": {
+      "response": "Quase lá! Vou usar o fuso horário do seu dispositivo para agendar consultas com precisão. Assim, seus clientes sempre vão agendar no horário certo. Tudo bem?",
+      "chip-yes": "Sim",
+      "chip-no": "Não",
+      "follow-up": "Sem problema! Selecione seu fuso horário:",
+      "search-placeholder": "Buscar fuso horário..."
+    },
+    "recurrence-pattern": {
+      "response": "Última pergunta — com qual frequência você quer que sua disponibilidade se repita?",
+      "chip-weekly": "Semanal (até o fim do mês)",
+      "chip-monthly": "Mensal (até o fim do ano)",
+      "summary-weekly": "Entendido! Seus horários vão se repetir toda semana até o fim deste mês. Você pode estender a qualquer momento pelo painel.",
+      "summary-monthly": "Perfeito! Sua disponibilidade vai se repetir mensalmente até o fim do ano — cobrindo todo o seu calendário anual.",
+      "value-weekly": "Semanal (até o fim do mês)",
+      "value-monthly": "Mensal (até o fim do ano)"
+    },
+    "preview": {
+      "title": "Resumo da sua Disponibilidade",
+      "label-days": "Dias de atendimento:",
+      "label-hours": "Horário:",
+      "label-duration": "Duração:",
+      "label-recurrence": "Repetição:",
+      "label-session-type": "Tipo de sessão:",
+      "label-timezone": "Fuso horário:",
+      "footer": "Você pode editar sua disponibilidade a qualquer momento no painel.",
+      "cta": "Publicar Disponibilidade",
+      "loading": "Publicando...",
+      "reset": "Recomeçar"
+    },
+    "post-publish": {
+      "page-title": "Disponibilidade",
+      "page-subtitle": "Gerencie sua disponibilidade e preferências de agendamento",
+      "success-toast": "Sua disponibilidade está ativa. Seus clientes já podem agendar sessões com você.",
+      "welcome-toast": "Bem-vindo ao Psycron!",
+      "tip-title": "Dica da Júpiter",
+      "tip-text": "Sua disponibilidade está ótima. Adicionar uma política de cancelamento ajuda a reduzir faltas e define expectativas claras com seus clientes.",
+      "tip-cta": "Configurar política de cancelamento",
+      "status-active-hours": "Horas ativas",
+      "status-bookings": "Agendamentos futuros",
+      "status-this-week": "Esta semana",
+      "status-booked-label": "{{percent}}% Agendado",
+      "checklist-title": "Complete sua disponibilidade",
+      "checklist-subtitle": "Melhore sua configuração de agendamento para uma experiência melhor",
+      "checklist-session-types": "Definir tipos de sessão",
+      "checklist-session-types-desc": "Crie diferentes tipos e durações de consultas",
+      "checklist-price": "Adicionar preço da sessão",
+      "checklist-price-desc": "Defina seus valores e condições de pagamento",
+      "checklist-price-badge": "Recomendado",
+      "checklist-buffer": "Adicionar intervalo entre sessões",
+      "checklist-buffer-desc": "Defina um tempo entre consultas para preparação",
+      "checklist-cancel-policy": "Configurar política de cancelamento",
+      "checklist-cancel-desc": "Defina como clientes podem cancelar ou remarcar",
+      "checklist-calendar-sync": "Sincronizar com sua agenda existente",
+      "checklist-calendar-desc": "Conecte sua agenda para evitar conflitos",
+      "checklist-recurrence": "Definir estilo de recorrência",
+      "checklist-recurrence-desc": "Escolha como sua agenda é gerada e gerenciada",
+      "help-title": "Precisa de ajuda?",
+      "help-text": "A Júpiter pode te ajudar a completar sua configuração",
+      "help-cta": "Falar com a Júpiter",
+      "banner-dismiss": "Fechar",
+      "buffer-drawer-desc": "O tempo de intervalo adiciona uma pausa entre as sessões para que possa se preparar, fazer anotações ou simplesmente respirar entre os atendimentos.",
+      "buffer-drawer-title": "Tempo de intervalo",
+      "buffer-input-helper": "Insira um valor entre 0 e 120 minutos",
+      "buffer-input-label": "Minutos entre sessões",
+      "buffer-save": "Salvar",
+      "buffer-save-fail": "Não foi possível salvar o tempo de intervalo. Tente novamente.",
+      "buffer-save-success": "Tempo de intervalo salvo com sucesso.",
+      "checklist-action-configure": "Configurar",
+      "checklist-action-edit": "Editar",
+      "checklist-action-soon": "Em breve",
+      "checklist-action-view": "Ver",
+      "checklist-badge-recommended": "Recomendado",
+      "checklist-duration": "Duração da sessão",
+      "checklist-duration-desc": "Defina a duração de cada consulta",
+      "checklist-progress-label": "{{count}} de {{total}} concluídos",
+      "checklist-session-type": "Tipo de sessão",
+      "checklist-session-type-desc": "Como você conduz suas sessões",
+      "checklist-timezone": "Fuso horário",
+      "checklist-timezone-desc": "Garanta que todas as reservas usem o fuso horário correto",
+      "checklist-working-hours": "Horário de trabalho",
+      "checklist-working-hours-desc": "Seus dias e horários disponíveis para atendimentos",
+      "tip-buffer-time": "Adicionar um intervalo entre sessões ajuda você a se preparar, fazer anotações e evitar atrasos. Até 10 minutos fazem diferença."
+    },
+    "google-calendar": {
+      "permissions-intro": "Vamos conectar sua Google Agenda com segurança para:",
+      "permission-1": "Ler seus horários ocupados",
+      "permission-2": "Evitar agendamentos duplicados",
+      "permission-3": "Manter tudo sincronizado",
+      "privacy-note": "Nós nunca editamos ou excluímos eventos sem sua permissão.",
+      "back": "← Voltar",
+      "continue": "Continuar",
+      "success-line1": "Perfeito! 🎉",
+      "success-line2": "Sua Google Agenda está conectada.",
+      "success-line3": "Vou bloquear automaticamente os horários em que você já estiver ocupado.",
+      "next-choice": "Você gostaria de:",
+      "chip-use-existing": "Usar minha agenda atual como disponibilidade",
+      "chip-define-hours": "Definir horários de trabalho específicos",
+      "define-hours-fallback": "Entendido! A importação do Google Agenda estará disponível em breve. Por enquanto, vamos definir seus horários manualmente.",
+      "importing": "Um momento — estou importando sua agenda do Google Agenda...",
+      "imported": "Pronto! Encontrei seus dias e horários de trabalho. Só mais algumas configurações.",
+      "import-failed": "Não consegui ler sua agenda. Vamos definir seus horários de trabalho manualmente."
+    },
+    "errors": {
+      "network": "Algo deu errado. Vamos tentar de novo.",
+      "retry": "Tentar novamente",
+      "google-oauth-fail": "Não consegui conectar à Google Agenda. Tente novamente ou configure manualmente.",
+      "google-oauth-cancel": "Sem problema! Você pode conectar sua agenda depois. Vamos configurar manualmente.",
+      "save-fail": "Não consegui salvar sua disponibilidade. Tente novamente.",
+      "session-timeout": "Parece que você se ausentou. Seu progresso foi salvo — continue de onde parou.",
+      "empty-days": "Selecione pelo menos um dia de atendimento para continuar.",
+      "invalid-time-range": "O horário final deve ser depois do horário inicial.",
+      "invalid-input": "Não entendi bem. Pode tentar de novo?",
+      "ai-fallback": "Obrigado! Deixa eu processar isso para você.",
+      "ai-thinking": "Pensando...",
+      "no-timezone": "Não consegui detectar seu fuso horário automaticamente. Por favor, selecione abaixo.",
+      "publish-success": "Tudo certo! Sua disponibilidade está no ar.",
+      "publish-redirect": "Redirecionando para seu painel..."
+    },
+    "subtitle": "Seu assistente de agendamento",
+    "days": {
+      "MONDAY": "Segunda-feira",
+      "TUESDAY": "Terça-feira",
+      "WEDNESDAY": "Quarta-feira",
+      "THURSDAY": "Quinta-feira",
+      "FRIDAY": "Sexta-feira",
+      "SATURDAY": "Sábado",
+      "SUNDAY": "Domingo"
+    }
+  },
+  "availability": {
+    "calendar": {
+      "legend-available": "Disponível",
+      "legend-busy": "Ocupado",
+      "legend-empty": "Indisponível",
+      "legend-full": "Completo",
+      "legend-partial": "Parcial",
+      "legend-today": "Hoje",
+      "page-title": "Disponibilidade",
+      "source-google": "Google",
+      "source-jupiter": "Júpiter",
+      "subtitle": "Seu calendário de disponibilidade",
+      "settings": "Definições de disponibilidade"
+    },
+    "week": {
+      "drawer": {
+        "book-slot": "Agendar este horário",
+        "cancel": "Cancelar",
+        "cancel-appointment": "Cancelar consulta",
+        "cancel-back": "Voltar",
+        "cancel-confirm": "Confirmar cancelamento",
+        "cancel-custom-reason-label": "Detalhes adicionais (opcional)",
+        "cancel-error": "Falha ao cancelar a consulta. Tente novamente.",
+        "cancel-reason-label": "Motivo do cancelamento",
+        "cancel-success": "Consulta cancelada com sucesso.",
+        "confirm-booking": "Confirmar",
+        "confirmed": "Confirmado",
+        "status-cancelled": "Cancelado",
+        "status-confirmed": "Confirmado",
+        "date": "Data",
+        "edit": "Editar",
+        "edit-end-time": "Horário de término",
+        "edit-error": "Falha ao salvar as alterações. Tente novamente.",
+        "edit-note": "Notas",
+        "edit-save": "Salvar alterações",
+        "edit-start-time": "Horário de início",
+        "edit-success": "Horário atualizado com sucesso.",
+        "edit-success-booked": "Horário atualizado. Atenção: esta sessão tinha uma reserva ativa.",
+        "minutes": "minutos",
+        "notes": "Notas",
+        "patient-email": "Email do paciente",
+        "patient-first-name": "Nome do paciente",
+        "patient-last-name": "Sobrenome do paciente",
+        "patient-time": "Horário do paciente",
+        "session-duration": "Duração: ",
+        "session-type": "Tipo de sessão",
+        "your-time": "Seu horário",
+        "block-confirm": "Confirmar bloqueio",
+        "block-confirm-body": "Este horário não estará mais disponível para agendamentos de pacientes.",
+        "block-error": "Falha ao bloquear o horário. Tente novamente.",
+        "block-slot": "Bloquear horário",
+        "block-success": "Horário bloqueado com sucesso.",
+        "cancel-choice-sub": "Cancelar esta consulta permanentemente",
+        "reschedule": "Remarcar",
+        "reschedule-choice-sub": "Mover para outro horário disponível",
+        "reschedule-confirm": "Confirmar remarcação",
+        "reschedule-error": "Falha ao remarcar a consulta. Tente novamente.",
+        "reschedule-select-prompt": "Selecione um novo horário para esta consulta.",
+        "reschedule-no-slots": "Não há horários disponíveis para remarcar. Tente ajustar os seus horários de trabalho.",
+        "reschedule-success": "Consulta remarcada com sucesso."
+      },
+      "buffer-label": "Buffer",
+      "legend-available": "Disponível",
+      "legend-booked-google": "Google",
+      "legend-booked-jupiter": "Manual",
+      "legend-buffer": "Buffer",
+      "legend-cancelled": "Cancelado",
+      "next-week": "Próxima semana",
+      "no-appointments": "Sem agendamentos",
+      "page-title": "Disponibilidade",
+      "prev-week": "Semana anterior",
+      "collapse-day": "Ver menos",
+      "expand-day": "+{{count}} mais",
+      "slot": "horário",
+      "slots": "horários",
+      "filter-clear": "Limpar filtros",
+      "filter-delivery-in-person": "Presencial",
+      "filter-delivery-online": "Online",
+      "filter-hide-free": "Ocultar horários livres",
+      "filter-label-cancelled": "Horários cancelados",
+      "filter-label-free": "Horários livres",
+      "filter-section-delivery": "Modalidade",
+      "filter-section-session-type": "Tipo de sessão",
+      "filter-section-source": "Origem",
+      "filter-section-status": "Status do horário",
+      "filter-section-time": "Período do dia",
+      "filter-show-free": "Mostrar horários livres",
+      "filter-source-google": "Google",
+      "filter-source-jupiter": "Júpiter",
+      "filter-time-afternoon": "Tarde",
+      "filter-time-evening": "Noite",
+      "filter-time-morning": "Manhã",
+      "filters": "Filtros",
+      "title": "Agenda da Semana",
+      "extend": {
+        "confirm": "Estender disponibilidade",
+        "end-of-month": "Até o fim do mês",
+        "end-of-year": "Até o fim do ano",
+        "success": "Disponibilidade estendida com sucesso",
+        "title": "Por quanto tempo deseja estender?",
+        "review-settings": "Rever definições"
+      },
+      "settings": "Definições"
+    },
+    "gate": {
+      "deleted-notice": "Você não tem mais disponibilidade configurada. Fale com a Júpiter para criar uma nova."
+    },
+    "settings": {
+      "google-calendar-connect-btn": "Conectar Google Agenda",
+      "google-calendar-connect-error": "Não foi possível iniciar a conexão com o Google Agenda. Tente novamente.",
+      "first-publish-alert": "A sua disponibilidade está ativa! Complete o checklist abaixo para otimizar a sua configuração.",
+      "google-calendar-connected": "Seu Google Agenda está conectado.",
+      "google-calendar-desc": "Sincronize seu Google Agenda para importar sua agenda existente, bloquear horários ocupados automaticamente e manter suas sessões no Psycron sincronizadas.",
+      "google-calendar-drawer-title": "Google Agenda",
+      "live-alert": "Sua disponibilidade está ativa. Seus clientes já podem agendar sessões com você.",
+      "page-title": "Configurações de Disponibilidade",
+      "save-error": "Não foi possível salvar. Tente novamente.",
+      "save-success": "Configurações salvas com sucesso.",
+      "session-duration-desc": "Defina a duração padrão de cada atendimento.",
+      "session-duration-drawer-title": "Duração da sessão",
+      "session-type-both": "Ambos",
+      "session-type-desc": "Escolha como você conduz suas sessões.",
+      "session-type-drawer-title": "Tipo de sessão",
+      "session-type-in-person": "Presencial",
+      "session-type-online": "Online",
+      "feature-disabled-tooltip": "Esta funcionalidade está a chegar em breve",
+      "jupiter-cta-disabled-tooltip": "A Júpiter ainda não está disponível — estamos a lançar gradualmente",
+      "jupiter-help-action": "Falar com a Júpiter",
+      "jupiter-help-description": "A Júpiter pode guiá-lo a completar as suas configurações",
+      "jupiter-help-title": "Precisa de ajuda?",
+      "talk-to-jupiter": "Editar com a Júpiter",
+      "timezone-desc": "Todos os agendamentos serão exibidos e criados neste fuso horário.",
+      "timezone-drawer-title": "Fuso horário",
+      "timezone-input-label": "Fuso horário",
+      "timezone-warning-body": "Seus agendamentos existentes não serão movidos — continuarão no mesmo horário UTC, mas exibidos no novo fuso horário.",
+      "timezone-warning-confirm": "Alterar fuso horário",
+      "timezone-warning-title": "Alterar fuso horário?",
+      "working-hours-days-label": "Dias de trabalho",
+      "working-hours-desc": "Defina seus dias disponíveis e o horário para atendimentos.",
+      "working-hours-drawer-title": "Horário de trabalho",
+      "working-hours-end-label": "Fim",
+      "recurrence-consistent": "Consistente",
+      "recurrence-consistent-desc": "Sua agenda repete os mesmos dias e horários toda semana, gerada mês a mês. Ideal para uma rotina previsível e consistente.",
+      "recurrence-flexible": "Flexível",
+      "recurrence-flexible-desc": "Os slots são gerados para o mês inteiro de uma vez. Ideal se sua disponibilidade varia — você pode editar slots individuais sem reconstruir toda a agenda.",
+      "recurrence-pattern-desc": "Alterar isso vai regenerar seus slots de disponibilidade abertos com o novo padrão. Todos os agendamentos já confirmados permanecem exatamente como estão.",
+      "recurrence-pattern-drawer-title": "Padrão de recorrência",
+      "working-hours-start-label": "Início",
+      "working-hours-time-label": "Intervalo de horário"
+    }
+  }
 }

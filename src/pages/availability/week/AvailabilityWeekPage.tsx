@@ -11,15 +11,21 @@ import {
 	Calendar,
 	ChevronLeft,
 	ChevronRight,
+	Edit,
 	Filter,
 	FilterFull,
 } from '@psycron/components/icons';
 import { useAvailability } from '@psycron/context/appointment/availability/AvailabilityContext';
 import { useCalendarPrefs } from '@psycron/hooks/useCalendarPrefs';
+import { useJupiterAvailabilityConfig } from '@psycron/hooks/useJupiterAvailabilityConfig';
 import useViewport from '@psycron/hooks/useViewport';
 import i18n from '@psycron/i18n';
 import { PageLayout } from '@psycron/layouts/app/pages-layout/PageLayout';
-import { AVAILABILITYPATH, AVAILABILITYWEEK_BASE } from '@psycron/pages/urls';
+import {
+	AVAILABILITYPATH,
+	AVAILABILITYSETTINGS,
+	AVAILABILITYWEEK_BASE,
+} from '@psycron/pages/urls';
 import { palette } from '@psycron/theme/palette/palette.theme';
 import {
 	addWeeks,
@@ -38,6 +44,7 @@ import { AvailabilityWeekDrawer } from './drawer/AvailabilityWeekDrawer';
 import { AvailabilityWeekFilters } from './filters/AvailabilityWeekFilters';
 import { AvailabilityExtendBanner } from './AvailabilityExtendBanner';
 import {
+	BUFFER_COLORS,
 	DayHeader,
 	DayName,
 	DayNumber,
@@ -51,6 +58,7 @@ import {
 	MobileEmptyDay,
 	MobileEmptyDayText,
 	MobileExpandButton,
+	MobileSlotBuffer,
 	MobileSlotCard,
 	MobileSlotCount,
 	MobileSlotDetails,
@@ -58,7 +66,9 @@ import {
 	MobileSlotTherapy,
 	MobileSlotTime,
 	SLOT_COLORS,
+	SlotBufferLabel,
 	SlotCell,
+	SlotCellBuffer,
 	SlotCellEmpty,
 	SlotPatientName,
 	SlotTherapyType,
@@ -89,6 +99,7 @@ const LEGEND_STATUSES: { labelKey: string; status: SlotStatus }[] = [
 		status: 'booked-google',
 		labelKey: 'availability.week.legend-booked-google',
 	},
+	{ status: 'buffer', labelKey: 'availability.week.legend-buffer' },
 	{ status: 'cancelled', labelKey: 'availability.week.legend-cancelled' },
 ];
 
@@ -122,6 +133,7 @@ export const AvailabilityWeekPage = () => {
 		toggleShowFreeSlots,
 		toggleTimeOfDay,
 	} = useCalendarPrefs();
+
 	const [selectedSlot, setSelectedSlot] = useState<IWeekSlot | null>(null);
 	const [filterAnchorEl, setFilterAnchorEl] = useState<HTMLElement | null>(
 		null
@@ -130,6 +142,9 @@ export const AvailabilityWeekPage = () => {
 		() => new Set([format(new Date(), 'yyyy-MM-dd')])
 	);
 
+	const { availability } = useJupiterAvailabilityConfig();
+	const bufferTimeMinutes = availability?.bufferTimeMinutes ?? 0;
+
 	const baseDate = date ? parseISO(date) : new Date();
 	const weekStart = startOfWeek(baseDate, { weekStartsOn: 1 });
 	const weekEnd = endOfWeek(baseDate, { weekStartsOn: 1 });
@@ -137,7 +152,8 @@ export const AvailabilityWeekPage = () => {
 
 	const { weekData, isLoading, isAvailabilityDatesEmpty } = useWeekSlots(
 		weekStart,
-		weekEnd
+		weekEnd,
+		bufferTimeMinutes
 	);
 
 	const workingDays = weekDays.filter(
@@ -183,6 +199,12 @@ export const AvailabilityWeekPage = () => {
 					return prefs.bookingSources.includes('jupiter');
 				if (s.status === 'booked-google')
 					return prefs.bookingSources.includes('google');
+				if (s.status === 'buffer' && s.bufferFor) {
+					if (s.bufferFor === 'booked-jupiter')
+						return prefs.bookingSources.includes('jupiter');
+					if (s.bufferFor === 'booked-google')
+						return prefs.bookingSources.includes('google');
+				}
 				return true;
 			});
 		}
@@ -248,9 +270,13 @@ export const AvailabilityWeekPage = () => {
 
 	const legendItems: AvailabilityLegendItem[] = LEGEND_STATUSES.map(
 		({ status, labelKey }) => ({
-			color: SLOT_COLORS[status],
+			color:
+				status === 'buffer'
+					? BUFFER_COLORS['booked-jupiter']
+					: SLOT_COLORS[status],
 			label: t(labelKey),
 			...(status === 'available' && { borderColor: palette.gray['02'] }),
+			...(status === 'buffer' && { opacity: 0.4 }),
 			...(status === 'cancelled' && { opacity: 0.5 }),
 		})
 	);
@@ -263,8 +289,30 @@ export const AvailabilityWeekPage = () => {
 			variant='outlined'
 		>
 			{activeFilterCount > 0 ? <FilterFull /> : <Filter />}
-			{t('availability.week.filters')}
+			{!isMobile ? t('availability.week.filters') : null}
 		</FilterButton>
+	);
+
+	const navButtons = (
+		<>
+			<Button
+				small
+				tertiary
+				onClick={() => navigate(`/${i18n.language}/${AVAILABILITYPATH}`)}
+			>
+				<Calendar />
+				{!isMobile ? t('components.agenda.month') : null}
+			</Button>
+			<Button
+				small
+				tertiary
+				aria-label={t('availability.week.settings')}
+				onClick={() => navigate(`/${i18n.language}/${AVAILABILITYSETTINGS}`)}
+			>
+				<Edit />
+				{!isMobile ? t('availability.week.settings') : null}
+			</Button>
+		</>
 	);
 
 	const prevButton = (
@@ -285,7 +333,7 @@ export const AvailabilityWeekPage = () => {
 			<ChevronRight />
 		</NavButton>
 	);
-	const todayButton = <AvailabilityTodayButton />;
+	const todayButton = <AvailabilityTodayButton iconOnly={isMobile} />;
 
 	return (
 		<PageLayout
@@ -307,6 +355,7 @@ export const AvailabilityWeekPage = () => {
 						<WeekFeaturesActions>
 							{filterButton}
 							{todayButton}
+							{isMobile && navButtons}
 						</WeekFeaturesActions>
 					</WeekFeaturesWrapper>
 				</WeekHeader>
@@ -358,30 +407,47 @@ export const AvailabilityWeekPage = () => {
 											</MobileEmptyDay>
 										) : (
 											<>
-												{visibleSlots.map((slot) => (
-													<MobileSlotCard
-														key={`mobile-dslot-${slot.id}`}
-														slotStatus={slot.status}
-														onClick={() => handleSlotClick(slot)}
-														disableRipple={!isClickable(slot.status)}
-													>
-														<MobileSlotTime>
-															{formatTimeRange(slot.startTime, slot.duration)}
-														</MobileSlotTime>
-														<MobileSlotDetails>
-															{slot.patientName && (
-																<MobileSlotPatient>
-																	{slot.patientName}
-																</MobileSlotPatient>
-															)}
-															{slot.therapyType && (
-																<MobileSlotTherapy>
-																	{slot.therapyType}
-																</MobileSlotTherapy>
-															)}
-														</MobileSlotDetails>
-													</MobileSlotCard>
-												))}
+												{visibleSlots.map((slot) => {
+													if (slot.status === 'buffer' && slot.bufferFor) {
+														return (
+															<MobileSlotBuffer
+																key={`mobile-buffer-${slot.id}`}
+																bufferFor={slot.bufferFor}
+															>
+																<MobileSlotTime>
+																	{slot.startTime}
+																</MobileSlotTime>
+																<SlotBufferLabel>
+																	{t('availability.week.buffer-label')}
+																</SlotBufferLabel>
+															</MobileSlotBuffer>
+														);
+													}
+													return (
+														<MobileSlotCard
+															key={`mobile-dslot-${slot.id}`}
+															slotStatus={slot.status}
+															onClick={() => handleSlotClick(slot)}
+															disableRipple={!isClickable(slot.status)}
+														>
+															<MobileSlotTime>
+																{formatTimeRange(slot.startTime, slot.duration)}
+															</MobileSlotTime>
+															<MobileSlotDetails>
+																{slot.patientName && (
+																	<MobileSlotPatient>
+																		{slot.patientName}
+																	</MobileSlotPatient>
+																)}
+																{slot.therapyType && (
+																	<MobileSlotTherapy>
+																		{slot.therapyType}
+																	</MobileSlotTherapy>
+																)}
+															</MobileSlotDetails>
+														</MobileSlotCard>
+													);
+												})}
 												{allSlots.length > COLLAPSED_SLOTS_LIMIT && (
 													<MobileExpandButton
 														onClick={() => toggleDayExpanded(dateStr)}
@@ -446,6 +512,18 @@ export const AvailabilityWeekPage = () => {
 													/>
 												);
 											}
+											if (slot.status === 'buffer' && slot.bufferFor) {
+												return (
+													<SlotCellBuffer
+														key={`slot-buffer-${day.toISOString()}-${time}`}
+														bufferFor={slot.bufferFor}
+													>
+														<SlotBufferLabel>
+															{t('availability.week.buffer-label')}
+														</SlotBufferLabel>
+													</SlotCellBuffer>
+												);
+											}
 											return (
 												<SlotCell
 													key={`slot-cell-${day.toISOString()}-${time}`}
@@ -477,16 +555,9 @@ export const AvailabilityWeekPage = () => {
 
 				<WeekFooter>
 					<AvailabilityLegend items={legendItems} />
-					<Box>
-						<Button
-							small
-							tertiary
-							onClick={() => navigate(`/${i18n.language}/${AVAILABILITYPATH}`)}
-						>
-							<Calendar />
-							{t('components.agenda.month')}
-						</Button>
-					</Box>
+					{!isMobile && (
+						<Box sx={{ display: 'flex', gap: 1 }}>{navButtons}</Box>
+					)}
 				</WeekFooter>
 			</WeekCard>
 

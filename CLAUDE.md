@@ -2,6 +2,14 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## Commits
+
+Never create a git commit without the user explicitly asking for it. Always present the work for review first and wait for approval before committing.
+
+## Skill
+
+Always invoke the `psycron-fullstack` skill at the start of every session in this repository before doing any work.
+
 ## Development Commands
 
 ```bash
@@ -25,9 +33,11 @@ import { useAlert } from '@psycron/context/alert/AlertContext';
 ### Component Structure
 Components follow a consistent file pattern:
 - `ComponentName.tsx` - Component logic
-- `ComponentName.types.ts` - TypeScript interfaces
-- `ComponentName.styles.tsx` - Styled components using MUI's `styled()` API
+- `ComponentName.types.ts` - TypeScript interfaces (co-located if only 1 file; move to `types/` folder if 2+)
+- `ComponentName.styles.tsx` - Styled components using `@emotion/styled` (never `@mui/material` styled)
 - `ComponentName.stories.tsx` - Storybook stories (optional)
+
+No `sx`, `style`, or `className` props inside `.tsx` files — all styles live in `.styles.tsx`.
 
 ### Styling
 - Uses MUI `styled()` with Emotion CSS-in-JS
@@ -74,7 +84,7 @@ Key contexts:
 
 ### Styling in styled-components
 ```typescript
-import { styled } from '@mui/material';
+import styled from '@emotion/styled';  // always @emotion/styled, never @mui/material styled
 import { css } from '@emotion/react';
 
 export const MyWrapper = styled(Box, {

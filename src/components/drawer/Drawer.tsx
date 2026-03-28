@@ -1,11 +1,45 @@
-import { DrawerBackdrop, DrawerContent, DrawerPanel } from './Drawer.styles';
+import { CloseButton } from '@psycron/components/button/close/CloseButton';
+
+import { Divider } from '../divider/Divider';
+
+import {
+	DrawerActions,
+	DrawerActionsSection,
+	DrawerBackdrop,
+	DrawerContent,
+	DrawerHeader,
+	DrawerPanel,
+	DrawerTitle,
+} from './Drawer.styles';
 import type { IDrawer } from './Drawer.types';
 
-export const Drawer = ({ ariaLabel, children, onClose }: IDrawer) => (
+export const Drawer = ({
+	actions,
+	ariaLabel,
+	children,
+	headerExtra,
+	onClose,
+	title,
+}: IDrawer) => (
 	<>
-		<DrawerBackdrop onClick={onClose} role='presentation' aria-hidden='true' />
-		<DrawerPanel role='dialog' aria-modal='true' aria-label={ariaLabel}>
-			<DrawerContent>{children}</DrawerContent>
+		<DrawerBackdrop aria-hidden='true' onClick={onClose} role='presentation' />
+		<DrawerPanel aria-label={ariaLabel} aria-modal='true' role='dialog'>
+			<DrawerContent>
+				<DrawerHeader>
+					<div>
+						<DrawerTitle>{title}</DrawerTitle>
+						{headerExtra}
+					</div>
+					<CloseButton onClick={onClose} />
+				</DrawerHeader>
+				{children}
+				{actions && (
+					<DrawerActionsSection>
+						<Divider />
+						<DrawerActions>{actions}</DrawerActions>
+					</DrawerActionsSection>
+				)}
+			</DrawerContent>
 		</DrawerPanel>
 	</>
 );

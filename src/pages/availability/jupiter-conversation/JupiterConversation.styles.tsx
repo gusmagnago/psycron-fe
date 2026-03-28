@@ -1,6 +1,7 @@
 import { css } from '@emotion/react';
 import { Box, styled } from '@mui/material';
 import { Text } from '@psycron/components/text/Text';
+import { jupiterBackgroundMain } from '@psycron/theme/background/background.theme';
 import {
 	isBiggerThanMediumMedia,
 	isMobileMedia,
@@ -139,11 +140,7 @@ export const BotBubble = styled(Box, {
 })<{ isFirst: boolean }>`
 	${bubbleBase}
 
-	background: linear-gradient(
-		90deg,
-		${hexToRgba(palette.secondary.main, 0.2)} 0%,
-		${hexToRgba(palette.primary.main, 0.4)} 100%
-	);
+	background: ${jupiterBackgroundMain};
 	color: inherit;
 	text-align: left;
 
@@ -193,11 +190,7 @@ export {
 export const ThinkingBubble = styled(Box)`
 	${bubbleBase}
 
-	background: linear-gradient(
-		90deg,
-		${hexToRgba(palette.secondary.main, 0.2)} 0%,
-		${hexToRgba(palette.primary.main, 0.4)} 100%
-	);
+	background: ${jupiterBackgroundMain};
 	align-self: flex-start;
 	margin-top: ${spacing.xs};
 

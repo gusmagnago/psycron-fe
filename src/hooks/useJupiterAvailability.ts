@@ -1,6 +1,7 @@
 import { useState } from 'react';
-import { getAvailability } from '@psycron/api/availability';
+import { getAvailabilityCalendar } from '@psycron/api/user';
 import type { IDateInfo } from '@psycron/api/user/index.types';
+import { useTherapistId } from '@psycron/hooks/useTherapistId';
 import { useQuery } from '@tanstack/react-query';
 import {
 	addMonths,
@@ -21,6 +22,7 @@ interface UseJupiterAvailabilityOptions {
 }
 
 export const useJupiterAvailability = (options?: UseJupiterAvailabilityOptions) => {
+	const therapistId = useTherapistId();
 	const [currentDate, setCurrentDate] = useState(new Date());
 
 	const monthStart = startOfMonth(currentDate);
@@ -30,8 +32,9 @@ export const useJupiterAvailability = (options?: UseJupiterAvailabilityOptions) 
 	const to = format(endOfWeek(monthEnd, { weekStartsOn: 1 }), 'yyyy-MM-dd');
 
 	const { data, isLoading } = useQuery({
-		queryKey: ['jupiterAvailability', from, to],
-		queryFn: () => getAvailability({ from, to }),
+		queryKey: ['jupiterAvailability', therapistId, from, to],
+		queryFn: () => getAvailabilityCalendar(therapistId!, { from, to }),
+		enabled: !!therapistId,
 		staleTime: 1000 * 60 * 5,
 	});
 

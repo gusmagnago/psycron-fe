@@ -67,8 +67,26 @@ export interface IAvailabilityDate {
 	slots: ISlot[];
 }
 
+export interface IAvailabilityDateRef {
+	date: ISODateString;
+	dateId: MongoId;
+	slots?: ISlot[];
+}
+
+export interface IOccupancyCount {
+	available: number;
+	booked: number;
+}
+
+export interface ICalendarDay {
+	date: string;
+	google: IOccupancyCount;
+	jupiter: IOccupancyCount;
+}
+
 export interface IAvailabilityResponse {
-	dates: IAvailabilityDate[];
+	calendar?: ICalendarDay[];
+	dates: IAvailabilityDateRef[];
 	firstDate: IDateInfo | null;
 	isEmpty: boolean;
 	lastDate: IDateInfo | null;

@@ -1,5 +1,11 @@
 import type { FC, ReactNode } from 'react';
-import { createContext, useCallback, useContext, useEffect, useState } from 'react';
+import {
+	createContext,
+	useCallback,
+	useContext,
+	useEffect,
+	useState,
+} from 'react';
 import { Alert, Snackbar } from '@mui/material';
 
 import type { AlertContextProps, IAlertProps } from './AlertContext.types';
@@ -29,9 +35,12 @@ export const AlertProvider: FC<{ children: ReactNode }> = ({ children }) => {
 		}
 	}, [open, current, queue]);
 
-	const showAlert = useCallback(({ message, severity, resetCallback }: IAlertProps) => {
-		setQueue((prev) => [...prev, { message, severity, resetCallback }]);
-	}, []);
+	const showAlert = useCallback(
+		({ message, severity, resetCallback }: IAlertProps) => {
+			setQueue((prev) => [...prev, { message, severity, resetCallback }]);
+		},
+		[]
+	);
 
 	const handleClose = useCallback(() => {
 		setOpen(false);
@@ -52,12 +61,13 @@ export const AlertProvider: FC<{ children: ReactNode }> = ({ children }) => {
 				open={open}
 				autoHideDuration={6000}
 				onClose={handleClose}
-				TransitionProps={{ onExited: handleExited }}
+				slotProps={{ transition: { onExited: handleExited } }}
 			>
 				{current && (
 					<Alert
 						onClose={handleClose}
 						severity={current.severity}
+						variant='filled'
 						sx={{ width: '100%' }}
 					>
 						{current.message}

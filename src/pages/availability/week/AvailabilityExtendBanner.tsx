@@ -1,25 +1,27 @@
-import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Radio, RadioGroup } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
 import type { CustomError } from '@psycron/api/error';
-import { extendAvailability, type RecurrencePattern } from '@psycron/api/jupiter';
+import { extendAvailability } from '@psycron/api/jupiter';
 import { Button } from '@psycron/components/button/Button';
 import { useAlert } from '@psycron/context/alert/AlertContext';
+import { useJupiterAvailabilityConfig } from '@psycron/hooks/useJupiterAvailabilityConfig';
+import i18n from '@psycron/i18n';
+import { AVAILABILITYSETTINGS } from '@psycron/pages/urls';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 import {
-	ExtendBannerOption,
-	ExtendBannerOptions,
 	ExtendBannerTitle,
 	ExtendBannerWrapper,
 } from './AvailabilityExtendBanner.styles';
 
 export const AvailabilityExtendBanner = () => {
 	const { t } = useTranslation();
+	const navigate = useNavigate();
 	const { showAlert } = useAlert();
 	const queryClient = useQueryClient();
-	const [recurrencePattern, setRecurrencePattern] =
-		useState<RecurrencePattern>('MONTHLY');
+	const { availability } = useJupiterAvailabilityConfig();
+
+	const recurrencePattern = availability?.recurrencePattern ?? 'MONTHLY';
 
 	const extendMutation = useMutation({
 		mutationFn: () => extendAvailability(recurrencePattern),
@@ -41,33 +43,21 @@ export const AvailabilityExtendBanner = () => {
 				{t('availability.week.extend.title')}
 			</ExtendBannerTitle>
 
-			<RadioGroup
-				value={recurrencePattern}
-				onChange={(e) =>
-					setRecurrencePattern(e.target.value as RecurrencePattern)
-				}
-			>
-				<ExtendBannerOptions>
-					<ExtendBannerOption
-						value='WEEKLY'
-						control={<Radio size='small' />}
-						label={t('availability.week.extend.end-of-month')}
-					/>
-					<ExtendBannerOption
-						value='MONTHLY'
-						control={<Radio size='small' />}
-						label={t('availability.week.extend.end-of-year')}
-					/>
-				</ExtendBannerOptions>
-			</RadioGroup>
-
 			<Button
+				disabled={!availability}
 				loading={extendMutation.isPending}
 				onClick={() => extendMutation.mutate()}
 				small
 				variant='contained'
 			>
 				{t('availability.week.extend.confirm')}
+			</Button>
+			<Button
+				small
+				tertiary
+				onClick={() => navigate(`/${i18n.language}/${AVAILABILITYSETTINGS}`)}
+			>
+				{t('availability.week.extend.review-settings')}
 			</Button>
 		</ExtendBannerWrapper>
 	);

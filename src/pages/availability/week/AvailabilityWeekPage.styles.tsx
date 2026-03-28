@@ -3,7 +3,7 @@ import { Box, ButtonBase } from '@mui/material';
 import { Button } from '@psycron/components/button/Button';
 import { Text } from '@psycron/components/text/Text';
 import { isMobileMedia } from '@psycron/theme/media-queries/mediaQueries';
-import { palette } from '@psycron/theme/palette/palette.theme';
+import { hexToRgba, palette } from '@psycron/theme/palette/palette.theme';
 import {
 	shadowMain,
 	shadowMedium,
@@ -18,10 +18,17 @@ import type { SlotStatus } from './AvailabilityWeekPage.types';
 
 export const SLOT_COLORS: Record<SlotStatus, string> = {
 	available: palette.background.paper,
-	'booked-jupiter': palette.brand.purple,
+	buffer: hexToRgba(palette.brand.purple, 0.18),
 	'booked-google': palette.brand.google,
+	'booked-jupiter': palette.brand.purple,
 	cancelled: palette.gray['02'],
 };
+
+export const BUFFER_COLORS: Record<'booked-google' | 'booked-jupiter', string> =
+	{
+		'booked-google': palette.brand.google,
+		'booked-jupiter': palette.brand.purple,
+	};
 
 const isClickableStatus = (status: SlotStatus) =>
 	status === 'booked-jupiter' ||
@@ -33,7 +40,8 @@ const isClickableStatus = (status: SlotStatus) =>
 
 export const WeekCard = styled(Box)`
 	width: 100%;
-	height: calc(100vh - 140px);
+	max-height: calc(100vh - 140px);
+	min-height: 800px;
 	background: ${palette.background.default};
 	border-radius: ${spacing.largeXl};
 	box-shadow: ${shadowMain};
@@ -51,6 +59,7 @@ export const WeekCard = styled(Box)`
 		box-shadow: none;
 		padding: 0;
 		overflow: visible;
+		margin-bottom: -140px;
 	}
 `;
 
@@ -108,7 +117,7 @@ export const WeekFeaturesActions = styled(Box)`
 	${isMobileMedia} {
 		flex-direction: row;
 		width: 100%;
-		justify-content: flex-end;
+		justify-content: center;
 	}
 `;
 
@@ -296,11 +305,31 @@ export const SlotCellEmpty = styled(Box, {
 		content: '';
 		position: absolute;
 		inset: 0;
-		background: rgba(221, 147, 255, 0.3);
+		background: rgba(221, 147, 255, 0.15);
 		border-radius: inherit;
 		pointer-events: none;
 	}`
 			: ''}
+`;
+
+export const SlotCellBuffer = styled(Box, {
+	shouldForwardProp: (prop) => prop !== 'bufferFor',
+})<{ bufferFor: 'booked-google' | 'booked-jupiter' }>`
+	height: 60px;
+	width: 100%;
+	border-radius: 12px;
+	padding: ${spacing.xs} ${spacing.small};
+	display: flex;
+	align-items: center;
+	border-left: 3px solid ${({ bufferFor }) => BUFFER_COLORS[bufferFor]};
+	background: ${({ bufferFor }) => hexToRgba(BUFFER_COLORS[bufferFor], 0.07)};
+`;
+
+export const SlotBufferLabel = styled(Text)`
+	font-size: 11px;
+	font-weight: 500;
+	color: ${palette.gray['05']};
+	letter-spacing: 0.02em;
 `;
 
 export const SlotPatientName = styled(Text)`
@@ -402,13 +431,23 @@ export const MobileSlotCard = styled(ButtonBase, {
 			: palette.text.primary};
 
 	&:hover {
-		opacity: ${({ slotStatus }) =>
-			isClickableStatus(slotStatus)
-				? 0.9
-				: slotStatus === 'cancelled'
-					? 0.5
-					: 1};
+		opacity: ${({ slotStatus }) => (isClickableStatus(slotStatus) ? 0.9 : 1)};
 	}
+`;
+
+export const MobileSlotBuffer = styled(Box, {
+	shouldForwardProp: (prop) => prop !== 'bufferFor',
+})<{ bufferFor: 'booked-google' | 'booked-jupiter' }>`
+	width: 100%;
+	border-radius: ${spacing.small};
+	padding: ${spacing.xxs} ${spacing.small};
+	height: 56px;
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	gap: ${spacing.small};
+	border-left: 3px solid ${({ bufferFor }) => BUFFER_COLORS[bufferFor]};
+	background: ${({ bufferFor }) => hexToRgba(BUFFER_COLORS[bufferFor], 0.07)};
 `;
 
 export const MobileSlotTime = styled(Text)`
@@ -483,8 +522,4 @@ export const WeekFooter = styled(Box)`
 	flex-shrink: 0;
 	justify-content: space-between;
 	margin-bottom: 0;
-
-	${isMobileMedia} {
-		margin-bottom: 140px;
-	}
 `;

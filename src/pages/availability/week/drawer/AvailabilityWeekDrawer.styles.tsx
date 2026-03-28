@@ -1,32 +1,11 @@
 import styled from '@emotion/styled';
 import { Box } from '@mui/material';
 import { Text } from '@psycron/components/text/Text';
-import { isMobileMedia } from '@psycron/theme/media-queries/mediaQueries';
 import { hexToRgba, palette } from '@psycron/theme/palette/palette.theme';
 import { shadowSmall } from '@psycron/theme/shadow/shadow.theme';
 import { spacing } from '@psycron/theme/spacing/spacing.theme';
 
-// ─── Header ───────────────────────────────────────────────────────────────────
-
-export const DrawerHeader = styled(Box)`
-	display: flex;
-	align-items: flex-start;
-	justify-content: space-between;
-	margin-bottom: ${spacing.large};
-`;
-
 // ─── Patient identity ─────────────────────────────────────────────────────────
-
-export const DrawerPatientName = styled(Text)`
-	font-size: 24px;
-	font-weight: 500;
-	color: ${palette.text.primary};
-	margin-bottom: ${spacing.small};
-
-	${isMobileMedia} {
-		font-size: 20px;
-	}
-`;
 
 export const DrawerBadgeRow = styled(Box)`
 	display: flex;
@@ -35,8 +14,10 @@ export const DrawerBadgeRow = styled(Box)`
 	flex-wrap: wrap;
 `;
 
-export const ConfirmedBadge = styled(Box)`
-	background: ${palette.brand.purple};
+export const ConfirmedBadge = styled(Box, {
+	shouldForwardProp: (prop) => prop !== 'badgeColor',
+})<{ badgeColor?: string }>`
+	background: ${({ badgeColor }) => badgeColor ?? palette.brand.purple};
 	padding: ${spacing.space} ${spacing.mediumSmall};
 	border-radius: ${spacing.extraSmall};
 	display: inline-flex;
@@ -127,17 +108,120 @@ export const DrawerDetailSub = styled(Text)`
 	margin-top: ${spacing.space};
 `;
 
-// ─── Action buttons ───────────────────────────────────────────────────────────
-
-export const DrawerActions = styled(Box)`
-	display: flex;
-	gap: ${spacing.medium};
-	padding-top: ${spacing.large};
-	border-top: 1px solid ${palette.gray['02']};
-`;
+// ─── Form ─────────────────────────────────────────────────────────────────────
 
 export const FormWrapper = styled(Box)`
 	display: flex;
 	flex-direction: column;
 	gap: ${spacing.small};
+`;
+
+// ─── Cancel/block views ────────────────────────────────────────────────────────
+
+export const CancelViewBody = styled(Text)`
+	font-size: 14px;
+	color: ${palette.text.primary};
+	line-height: 1.6;
+`;
+
+export const CancelChoiceWrapper = styled(Box)`
+	display: flex;
+	flex-direction: column;
+	gap: ${spacing.small};
+`;
+
+export const CancelChoiceCard = styled(Box, {
+	shouldForwardProp: (prop) => prop !== 'isDanger',
+})<{ isDanger?: boolean }>`
+	border: 1.5px solid
+		${({ isDanger }) =>
+		isDanger
+			? hexToRgba(palette.error.main, 0.4)
+			: hexToRgba(palette.brand.purple, 0.35)};
+	border-radius: ${spacing.extraSmall};
+	padding: ${spacing.medium};
+	cursor: pointer;
+	display: flex;
+	flex-direction: column;
+	gap: ${spacing.space};
+	transition: background 0.15s ease, border-color 0.15s ease;
+	&:hover {
+		border-color: ${({ isDanger }) =>
+		isDanger ? palette.error.main : palette.brand.purple};
+		background: ${({ isDanger }) =>
+		isDanger
+			? hexToRgba(palette.error.main, 0.04)
+			: hexToRgba(palette.brand.purple, 0.04)};
+	}
+`;
+
+export const CancelChoiceCardTitle = styled(Text)`
+	font-size: 14px;
+	font-weight: 600;
+	color: ${palette.text.primary};
+`;
+
+export const CancelChoiceCardSub = styled(Text)`
+	font-size: 13px;
+	color: ${palette.gray['05']};
+`;
+
+// ─── Reschedule slot picker ────────────────────────────────────────────────────
+
+export const SlotPickerList = styled(Box)`
+	display: flex;
+	flex-direction: column;
+	gap: ${spacing.medium};
+	max-height: 320px;
+	overflow-y: auto;
+	padding-right: ${spacing.extraSmall};
+`;
+
+export const SlotPickerGroup = styled(Box)`
+	display: flex;
+	flex-direction: column;
+	gap: ${spacing.small};
+`;
+
+export const SlotPickerDateLabel = styled(Text)`
+	font-size: 13px;
+	font-weight: 600;
+	color: ${palette.gray['05']};
+	text-transform: capitalize;
+`;
+
+export const SlotPickerChipsRow = styled(Box)`
+	display: flex;
+	flex-wrap: wrap;
+	gap: ${spacing.extraSmall};
+`;
+
+export const SlotPickerEmpty = styled(Box)`
+	padding: ${spacing.medium} 0;
+	text-align: center;
+	color: ${palette.text.secondary};
+	font-size: 0.875rem;
+`;
+
+export const SlotPickerChip = styled(Box, {
+	shouldForwardProp: (prop) => prop !== 'isSelected',
+})<{ isSelected?: boolean }>`
+	padding: ${spacing.space} ${spacing.small};
+	border-radius: ${spacing.extraSmall};
+	border: 1.5px solid
+		${({ isSelected }) =>
+		isSelected ? palette.brand.purple : palette.gray['03']};
+	background: ${({ isSelected }) =>
+		isSelected ? hexToRgba(palette.brand.purple, 0.1) : 'transparent'};
+	color: ${({ isSelected }) =>
+		isSelected ? palette.brand.purple : palette.text.primary};
+	font-size: 13px;
+	font-weight: ${({ isSelected }) => (isSelected ? '600' : '400')};
+	cursor: pointer;
+	user-select: none;
+	transition: border-color 0.15s ease, background 0.15s ease;
+	&:hover {
+		border-color: ${palette.brand.purple};
+		background: ${hexToRgba(palette.brand.purple, 0.05)};
+	}
 `;
