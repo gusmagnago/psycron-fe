@@ -1,15 +1,18 @@
+import type { ReactNode } from 'react';
 import type { ISlotAddress } from '@psycron/context/user/auth/UserAuthenticationContext.types';
 
+import type { LocationChoice } from '../../AvailabilityWeekDrawer.types';
+
 export interface ISlotLocationSectionProps {
-	address: ISlotAddress | null;
-	isAddressDirty: boolean;
-	isAddressSaving: boolean;
-	letPatientChoose: boolean;
-	onAddressChange: (field: keyof ISlotAddress, value: string) => void;
-	onAddressSave: () => void;
-	onLetPatientChooseToggle: (val: boolean) => void;
-	onOverrideAddressToggle: (val: boolean) => void;
-	onShareAddressToggle: (val: boolean) => void;
-	overrideAddress: boolean;
-	shareAddress: boolean;
+	customAddress: ISlotAddress | null;
+	locationChoice: LocationChoice;
+	onCustomAddressChange: (field: keyof ISlotAddress, value: string) => void;
+	onLocationChoiceChange: (choice: LocationChoice) => void;
+}
+
+export interface ILocationOption {
+	choice: LocationChoice;
+	icon: ReactNode;
+	labelKey: string;
+	subtitleKey: string;
 }

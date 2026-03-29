@@ -1,4 +1,11 @@
-export type ColorShades = {
+export type InteractionState = {
+	disabled: string;
+	hover: string;
+	light?: string;
+	press: string;
+};
+
+export type SurfaceState = {
 	disabled: string;
 	hover?: string;
 	light?: string;
@@ -7,11 +14,11 @@ export type ColorShades = {
 
 export type ColorScheme = {
 	access: string;
-	action: ColorShades;
+	action: InteractionState;
 	dark: string;
 	light: string;
 	main: string;
-	surface: ColorShades;
+	surface: SurfaceState;
 };
 
 export type TextColors = {
@@ -20,16 +27,18 @@ export type TextColors = {
 	secondary: string;
 };
 
-export type GrayShades = {
-	'01': string;
-	'02': string;
-	'03': string;
-	'04': string;
-	'05': string;
-	'06': string;
-	'07': string;
-	'08': string;
-	'09': string;
+export type GrayScaleKey =
+	| '01'
+	| '02'
+	| '03'
+	| '04'
+	| '05'
+	| '06'
+	| '07'
+	| '08'
+	| '09';
+
+export type GrayShades = Record<GrayScaleKey, string> & {
 	dark: string;
 };
 
@@ -45,20 +54,60 @@ export type BrandShades = {
 	purple: string;
 };
 
-export type Palette = {
+export type SemanticColors = {
 	alert: ColorScheme;
-	background: BackgroundShades;
-	black: string;
-	border: string;
-	brand: BrandShades;
 	error: ColorScheme;
-	gray: GrayShades;
 	info: ColorScheme;
 	primary: ColorScheme;
 	secondary: ColorScheme;
 	success: ColorScheme;
 	tertiary: ColorScheme;
-	text: TextColors;
 	warning: ColorScheme;
+};
+
+export type NeutralColors = {
+	background: BackgroundShades;
+	gray: GrayShades;
+	text: TextColors;
+};
+
+export type BrandColors = {
+	brand: BrandShades;
+};
+
+export type BaseColors = {
+	black: string;
+	border: string;
 	white: string;
+};
+
+export type AppPalette = SemanticColors &
+	NeutralColors &
+	BrandColors &
+	BaseColors;
+
+export type VariantStateOptions = {
+	backgroundColor?: string;
+	borderColor?: string;
+	color?: string;
+};
+
+export type ContainedVariantOptions = {
+	action: InteractionState;
+	backgroundColor: string;
+	borderColor?: string;
+	color?: string;
+	disabled?: VariantStateOptions;
+	focus?: VariantStateOptions;
+	hover?: VariantStateOptions;
+};
+
+export type OutlinedVariantOptions = {
+	action: InteractionState;
+	backgroundColor?: string;
+	borderColor: string;
+	color?: string;
+	disabled?: VariantStateOptions;
+	focus?: VariantStateOptions;
+	hover?: VariantStateOptions;
 };

@@ -2,7 +2,6 @@ import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { getAppointmentDetailsBySlotId } from '@psycron/api/user/availability';
 import { StatusEnum } from '@psycron/api/user/availability/index.types';
-import { Button } from '@psycron/components/button/Button';
 import { Drawer } from '@psycron/components/drawer/Drawer';
 import {
 	Account,
@@ -25,7 +24,9 @@ import { useQuery } from '@tanstack/react-query';
 import { format, parseISO } from 'date-fns';
 import { enGB, ptBR } from 'date-fns/locale';
 
+import { DrawerActions } from './components/DrawerActions';
 import { useBookingForm } from './hooks/useBookingForm';
+import { useDrawerActions } from './hooks/useDrawerActions';
 import { useEditSlotForm } from './hooks/useEditSlotForm';
 import {
 	useBlockSlot,
@@ -53,6 +54,7 @@ import type {
 	IAvailabilityWeekDrawerProps,
 	IDrawerDetail,
 	IRescheduleSlot,
+	LocationChoice,
 } from './AvailabilityWeekDrawer.types';
 import {
 	computeEndTime,
@@ -71,9 +73,15 @@ export const AvailabilityWeekDrawer = ({
 
 	// ─── View state ───────────────────────────────────────────────────────────
 	const [view, setView] = useState<DrawerView>('default');
-	const [shareAddress, setShareAddress] = useState(false);
-	const [overrideAddress, setOverrideAddress] = useState(
-		() => !!slot.address
+	const [overrideAddress, setOverrideAddress] = useState(() => !!slot.address);
+
+	const getInitialLocationChoice = (): LocationChoice => {
+		if (slot.letPatientChooseAddress) return 'patient';
+		if (slot.address) return 'custom';
+		return 'clinic';
+	};
+	const [locationChoice, setLocationChoice] = useState<LocationChoice>(
+		getInitialLocationChoice
 	);
 
 	// ─── Slot flags ───────────────────────────────────────────────────────────
@@ -96,7 +104,8 @@ export const AvailabilityWeekDrawer = ({
 	const { isSubmitting, methods, submitBooking } = useBookingForm(
 		slot,
 		therapistId,
-		shareAddress
+		locationChoice,
+		slotAddress.address
 	);
 
 	const editSlotForm = useEditSlotForm(
@@ -129,30 +138,23 @@ export const AvailabilityWeekDrawer = ({
 		onClose
 	);
 
-	// ─── Toggle handlers ──────────────────────────────────────────────────────
-	const handleLetPatientChooseToggle = (val: boolean) => {
-		slotAddress.setLetPatientChoose(val);
-		if (val) {
-			setShareAddress(false);
-			setOverrideAddress(false);
+	// ─── Location choice handler ───────────────────────────────────────────────
+	const handleLocationChoiceChange = (choice: LocationChoice) => {
+		setLocationChoice(choice);
+		if (choice === 'patient') {
+			slotAddress.setLetPatientChoose(true);
 			slotAddress.clear();
+		} else {
+			if (locationChoice === 'patient') {
+				slotAddress.setLetPatientChoose(false);
+			}
+			if (choice !== 'custom') {
+				slotAddress.clear();
+			}
 		}
 	};
 
-	const handleShareAddressToggle = (val: boolean) => {
-		setShareAddress(val);
-		if (val) {
-			setOverrideAddress(false);
-			slotAddress.clear();
-		}
-	};
-
-	const handleOverrideAddressToggle = (val: boolean) => {
-		setOverrideAddress(val);
-		if (!val) slotAddress.clear();
-	};
-
-	// ─── Address field updaters ───────────────────────────────────────────────
+	// ─── Custom address field updater ─────────────────────────────────────────
 	const emptyAddress: ISlotAddress = {
 		city: '',
 		country: '',
@@ -160,7 +162,7 @@ export const AvailabilityWeekDrawer = ({
 		street: '',
 	};
 
-	const handleSlotAddressChange = (
+	const handleCustomAddressChange = (
 		field: keyof ISlotAddress,
 		value: string
 	) => {
@@ -356,18 +358,11 @@ export const AvailabilityWeekDrawer = ({
 						<SlotDetailView details={details} />
 						{isAvailable && (
 							<SlotAvailableBody
-								address={slotAddress.address}
-								isAddressDirty={slotAddress.isDirty}
-								isAddressSaving={slotAddress.mutation.isPending}
-								letPatientChoose={slotAddress.letPatientChoose}
+								customAddress={slotAddress.address}
+								locationChoice={locationChoice}
 								methods={methods}
-								onAddressChange={handleSlotAddressChange}
-								onAddressSave={() => slotAddress.mutation.mutate()}
-								onLetPatientChooseToggle={handleLetPatientChooseToggle}
-								onOverrideAddressToggle={handleOverrideAddressToggle}
-								onShareAddressToggle={handleShareAddressToggle}
-								overrideAddress={overrideAddress}
-								shareAddress={shareAddress}
+								onCustomAddressChange={handleCustomAddressChange}
+								onLocationChoiceChange={handleLocationChoiceChange}
 								showSessionLocation={showSessionLocation}
 							/>
 						)}
@@ -377,153 +372,17 @@ export const AvailabilityWeekDrawer = ({
 	};
 
 	// ─── Actions ──────────────────────────────────────────────────────────────
-	const renderActions = () => {
-		switch (view) {
-			case 'editing':
-				return (
-					<>
-						<Button
-							fullWidth
-							disabled={
-								editSlotForm.mutation.isPending || !editSlotForm.isDirty
-							}
-							onClick={() => editSlotForm.mutation.mutate()}
-							tertiary
-							variant='contained'
-						>
-							{t('availability.week.drawer.edit-save')}
-						</Button>
-						<Button
-							fullWidth
-							disabled={editSlotForm.mutation.isPending}
-							onClick={() => setView('default')}
-						>
-							{t('common.cancel')}
-						</Button>
-					</>
-				);
-			case 'block-confirm':
-				return (
-					<>
-						<Button
-							fullWidth
-							disabled={blockSlot.mutation.isPending}
-							onClick={() => blockSlot.mutation.mutate()}
-							severity='error'
-							variant='contained'
-						>
-							{t('availability.week.drawer.block-confirm')}
-						</Button>
-						<Button
-							fullWidth
-							disabled={blockSlot.mutation.isPending}
-							onClick={() => setView('default')}
-						>
-							{t('availability.week.drawer.cancel-back')}
-						</Button>
-					</>
-				);
-			case 'reschedule-or-cancel':
-				return (
-					<Button fullWidth onClick={() => setView('default')}>
-						{t('availability.week.drawer.cancel-back')}
-					</Button>
-				);
-			case 'cancel-reason':
-				return (
-					<>
-						<Button
-							fullWidth
-							disabled={
-								!cancelSlot.reasonCode || cancelSlot.mutation.isPending
-							}
-							onClick={() => cancelSlot.mutation.mutate()}
-							severity='error'
-							variant='contained'
-						>
-							{t('availability.week.drawer.cancel-confirm')}
-						</Button>
-						<Button
-							fullWidth
-							disabled={cancelSlot.mutation.isPending}
-							onClick={() => {
-								setView('reschedule-or-cancel');
-								cancelSlot.reset();
-							}}
-						>
-							{t('availability.week.drawer.cancel-back')}
-						</Button>
-					</>
-				);
-			case 'reschedule-slots':
-				return (
-					<>
-						<Button
-							fullWidth
-							disabled={
-								!reschedule.selectedSlot || reschedule.mutation.isPending
-							}
-							onClick={() => reschedule.mutation.mutate()}
-							tertiary
-							variant='contained'
-						>
-							{t('availability.week.drawer.reschedule-confirm')}
-						</Button>
-						<Button
-							fullWidth
-							disabled={reschedule.mutation.isPending}
-							onClick={() => {
-								setView('reschedule-or-cancel');
-								reschedule.setSelectedSlot(null);
-							}}
-						>
-							{t('availability.week.drawer.cancel-back')}
-						</Button>
-					</>
-				);
-			default:
-				if (isAvailable) {
-					return (
-						<>
-							<Button
-								fullWidth
-								disabled={isSubmitting}
-								onClick={submitBooking}
-								tertiary
-								variant='contained'
-							>
-								{t('availability.week.drawer.confirm-booking')}
-							</Button>
-							<Button
-								fullWidth
-								severity='error'
-								onClick={() => setView('block-confirm')}
-							>
-								{t('availability.week.drawer.block-slot')}
-							</Button>
-						</>
-					);
-				}
-				return (
-					<>
-						<Button
-							fullWidth
-							tertiary
-							onClick={() => setView('editing')}
-						>
-							{t('availability.week.drawer.edit')}
-						</Button>
-						<Button
-							fullWidth
-							severity='error'
-							onClick={() => setView('reschedule-or-cancel')}
-						>
-							{t('availability.week.drawer.cancel-appointment')}
-						</Button>
-					</>
-				);
-		}
-	};
+	const drawerActions = useDrawerActions({
+		blockSlot,
+		cancelSlot,
+		editSlotForm,
+		isAvailable,
+		isSubmitting,
+		reschedule,
+		setView,
+		submitBooking,
+		view,
+	});
 
 	// ─── Header badges ────────────────────────────────────────────────────────
 	const statusCfg = STATUS_CONFIG[slot.status];
@@ -540,7 +399,7 @@ export const AvailabilityWeekDrawer = ({
 					? t('availability.week.drawer.book-slot')
 					: (patientName ?? '')
 			}
-			actions={renderActions()}
+			actions={<DrawerActions config={drawerActions} />}
 			headerExtra={
 				<>
 					{!isAvailable && (

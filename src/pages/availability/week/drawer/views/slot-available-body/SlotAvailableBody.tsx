@@ -49,9 +49,8 @@ export const SlotAvailableBody = ({
 						/>
 					</FormWrapper>
 				</Box>
+				{showSessionLocation && <SlotLocationSection {...locationProps} />}
 			</FormProvider>
-
-			{showSessionLocation && <SlotLocationSection {...locationProps} />}
 		</>
 	);
 };

@@ -10,6 +10,8 @@ export type DrawerView =
 	| 'reschedule-or-cancel'
 	| 'reschedule-slots';
 
+export type LocationChoice = 'clinic' | 'custom' | 'patient';
+
 export interface IRescheduleSlot {
 	availabilityDayId: string;
 	slotId: string;

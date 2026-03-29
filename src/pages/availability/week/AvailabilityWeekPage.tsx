@@ -333,6 +333,7 @@ export const AvailabilityWeekPage = () => {
 			<ChevronRight />
 		</NavButton>
 	);
+
 	const todayButton = <AvailabilityTodayButton iconOnly={isMobile} />;
 
 	return (

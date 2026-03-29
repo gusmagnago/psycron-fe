@@ -13,30 +13,32 @@ export const Button = ({
 	fullWidth,
 	type,
 	loading,
+	variant,
 	...props
 }: IButtonProps) => {
-	const bttnColor = () => {
+	const resolvedColor = () => {
 		if (severity) return severity;
 		if (tertiary) return 'tertiary';
 		if (secondary) return 'secondary';
 		return 'primary';
 	};
 
-	const bttnVariant = () => {
+	const resolvedVariant = () => {
+		if (variant) return variant;
 		if (severity || secondary || tertiary) return 'outlined';
 		return 'contained';
 	};
 
 	return (
 		<MUIButton
-			color={bttnColor()}
-			variant={bttnVariant()}
+			{...props}
+			color={resolvedColor()}
+			variant={resolvedVariant()}
 			size={small ? 'small' : 'medium'}
 			type={type}
 			fullWidth={fullWidth}
-			disabled={loading}
+			disabled={loading || props.disabled}
 			onClick={onClick}
-			{...props}
 		>
 			<StyledBttnContentWrapper>
 				{loading ? (

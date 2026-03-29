@@ -67,6 +67,7 @@ export const useSlotAddress = (
 		onSuccess: (_, val) => {
 			capture(PostHogEvent.AvailabilityLetPatientChooseAddress, {
 				enabled: val,
+				source: 'drawer',
 			});
 			queryClient.invalidateQueries({ queryKey: ['therapistAvailability'] });
 		},

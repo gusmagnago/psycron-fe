@@ -2,7 +2,7 @@ import type { IAvailabilityDateRef } from '@psycron/api/user/index.types';
 import { useAvailability } from '@psycron/context/appointment/availability/AvailabilityContext';
 import { format, isWithinInterval, parseISO } from 'date-fns';
 
-import type { IWeekSlot, SlotStatus } from './AvailabilityWeekPage.types';
+import type { IWeekSlot, SlotStatus } from '../AvailabilityWeekPage.types';
 
 const computeDuration = (startTime: string, endTime: string): number => {
 	const [sh, sm] = startTime.split(':').map(Number);

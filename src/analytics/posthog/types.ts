@@ -200,6 +200,8 @@ export type PostHogEventProps = {
 
 	[PostHogEvent.AvailabilityLetPatientChooseAddress]: {
 		enabled: boolean;
+		source: 'drawer' | 'generator';
+		specialty?: string;
 	};
 
 	[PostHogEvent.AvailabilitySettingSaved]: {
