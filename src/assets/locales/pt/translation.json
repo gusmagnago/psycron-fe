@@ -806,6 +806,7 @@
         "reschedule-success": "Consulta remarcada com sucesso.",
         "address-override": "Local da sessão",
         "address-override-question": "Usar um local diferente para esta sessão?",
+        "let-patient-choose-address": "Deixar o paciente escolher o local?",
         "address-reset": "Repor padrão",
         "address-save": "Guardar local",
         "address-save-error": "Falha ao guardar o local da sessão. Tente novamente.",

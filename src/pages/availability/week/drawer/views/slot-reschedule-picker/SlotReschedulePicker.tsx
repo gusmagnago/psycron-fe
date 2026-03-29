@@ -8,21 +8,9 @@ import {
 	SlotPickerEmpty,
 	SlotPickerGroup,
 	SlotPickerList,
-} from '../AvailabilityWeekDrawer.styles';
-import type { IRescheduleSlot } from '../AvailabilityWeekDrawer.types';
+} from '../../AvailabilityWeekDrawer.styles';
 
-interface ISlotGroup {
-	availabilityDayId: string;
-	date: string;
-	formattedDate: string;
-	slots: IRescheduleSlot[];
-}
-
-interface ISlotReschedulePickerProps {
-	availableSlotGroups: ISlotGroup[];
-	onSelectSlot: (slot: IRescheduleSlot) => void;
-	selectedSlot: IRescheduleSlot | null;
-}
+import type { ISlotReschedulePickerProps } from './SlotReschedulePicker.types';
 
 export const SlotReschedulePicker = ({
 	availableSlotGroups,

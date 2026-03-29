@@ -1,31 +1,16 @@
 import { useTranslation } from 'react-i18next';
 import { TextField } from '@mui/material';
 import { Switch } from '@psycron/components/switch/components/item/Switch';
-import type { ISlotAddress } from '@psycron/context/user/auth/UserAuthenticationContext.types';
 
+import { FormWrapper } from '../../AvailabilityWeekDrawer.styles';
+import { SlotAddressFields } from '../slot-address-fields/SlotAddressFields';
 import {
 	AddressOverrideHeader,
 	AddressOverrideLabel,
 	AddressOverrideSection,
-	FormWrapper,
-} from '../AvailabilityWeekDrawer.styles';
+} from '../slot-location-section/SlotLocationSection.styles';
 
-import { SlotAddressFields } from './SlotAddressFields';
-
-interface ISlotEditFormProps {
-	address: ISlotAddress | null;
-	endTime: string;
-	note: string;
-	onAddressChange: (field: keyof ISlotAddress, value: string) => void;
-	onAddressClear: () => void;
-	onEndTimeChange: (val: string) => void;
-	onNoteChange: (val: string) => void;
-	onOverrideAddressToggle: (val: boolean) => void;
-	onStartTimeChange: (val: string) => void;
-	overrideAddress: boolean;
-	showAddressSection: boolean;
-	startTime: string;
-}
+import type { ISlotEditFormProps } from './SlotEditForm.types';
 
 export const SlotEditForm = ({
 	address,
@@ -82,7 +67,7 @@ export const SlotEditForm = ({
 								onOverrideAddressToggle(e.target.checked);
 								if (!e.target.checked) onAddressClear();
 							}}
-							size='small'
+							small
 						/>
 					</AddressOverrideHeader>
 					{overrideAddress && (

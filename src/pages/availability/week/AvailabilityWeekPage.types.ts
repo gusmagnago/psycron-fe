@@ -12,6 +12,7 @@ export interface IWeekSlot {
 	deliveryMode?: DeliveryMode;
 	duration: number; // minutes
 	id: string;
+	letPatientChooseAddress?: boolean;
 	notes?: string;
 	patientId?: string;
 	patientName?: string;

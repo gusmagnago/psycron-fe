@@ -3,15 +3,10 @@ import { MenuItem, TextField } from '@mui/material';
 import type { CancellationReasonEnum as CancellationReasonType } from '@psycron/api/user/availability/index.types';
 import { CancellationReasonEnum } from '@psycron/api/user/availability/index.types';
 
-import { CANCEL_REASONS } from '../AvailabilityWeekDrawer.constants';
-import { FormWrapper } from '../AvailabilityWeekDrawer.styles';
+import { CANCEL_REASONS } from '../../AvailabilityWeekDrawer.constants';
+import { FormWrapper } from '../../AvailabilityWeekDrawer.styles';
 
-interface ISlotCancelReasonFormProps {
-	customReason: string;
-	onCustomReasonChange: (val: string) => void;
-	onReasonChange: (val: CancellationReasonType) => void;
-	reasonCode: CancellationReasonType | null;
-}
+import type { ISlotCancelReasonFormProps } from './SlotCancelReasonForm.types';
 
 export const SlotCancelReasonForm = ({
 	customReason,

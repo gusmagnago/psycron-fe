@@ -33,12 +33,12 @@ import {
 	useReschedule,
 } from './hooks/useSlotActions';
 import { useSlotAddress } from './hooks/useSlotAddress';
-import { SlotAvailableBody } from './views/SlotAvailableBody';
-import { SlotCancelChoiceView } from './views/SlotCancelChoiceView';
-import { SlotCancelReasonForm } from './views/SlotCancelReasonForm';
-import { SlotDetailView } from './views/SlotDetailView';
-import { SlotEditForm } from './views/SlotEditForm';
-import { SlotReschedulePicker } from './views/SlotReschedulePicker';
+import { SlotAvailableBody } from './views/slot-available-body/SlotAvailableBody';
+import { SlotCancelChoiceView } from './views/slot-cancel-choice-view/SlotCancelChoiceView';
+import { SlotCancelReasonForm } from './views/slot-cancel-reason-form/SlotCancelReasonForm';
+import { SlotDetailView } from './views/slot-detail-view/SlotDetailView';
+import { SlotEditForm } from './views/slot-edit-form/SlotEditForm';
+import { SlotReschedulePicker } from './views/slot-reschedule-picker/SlotReschedulePicker';
 import {
 	CancelViewBody,
 	ConfirmedBadge,
@@ -130,6 +130,15 @@ export const AvailabilityWeekDrawer = ({
 	);
 
 	// ─── Toggle handlers ──────────────────────────────────────────────────────
+	const handleLetPatientChooseToggle = (val: boolean) => {
+		slotAddress.setLetPatientChoose(val);
+		if (val) {
+			setShareAddress(false);
+			setOverrideAddress(false);
+			slotAddress.clear();
+		}
+	};
+
 	const handleShareAddressToggle = (val: boolean) => {
 		setShareAddress(val);
 		if (val) {
@@ -350,9 +359,11 @@ export const AvailabilityWeekDrawer = ({
 								address={slotAddress.address}
 								isAddressDirty={slotAddress.isDirty}
 								isAddressSaving={slotAddress.mutation.isPending}
+								letPatientChoose={slotAddress.letPatientChoose}
 								methods={methods}
 								onAddressChange={handleSlotAddressChange}
 								onAddressSave={() => slotAddress.mutation.mutate()}
+								onLetPatientChooseToggle={handleLetPatientChooseToggle}
 								onOverrideAddressToggle={handleOverrideAddressToggle}
 								onShareAddressToggle={handleShareAddressToggle}
 								overrideAddress={overrideAddress}

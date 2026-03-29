@@ -51,6 +51,7 @@ export const useWeekSlots = (weekStart: Date, weekEnd: Date, bufferTimeMinutes: 
 					date: dayStr,
 					duration: computeDuration(slot.startTime, slot.endTime),
 					id: slot._id ?? `${dayStr}-${j}`,
+					letPatientChooseAddress: slot.letPatientChooseAddress ?? false,
 					notes: slot.note,
 					patientId: slot.patientId ? String(slot.patientId) : undefined,
 					startTime: slot.startTime,

@@ -1,15 +1,8 @@
 import { useTranslation } from 'react-i18next';
 import { TextField } from '@mui/material';
 import { Button } from '@psycron/components/button/Button';
-import type { ISlotAddress } from '@psycron/context/user/auth/UserAuthenticationContext.types';
 
-interface ISlotAddressFieldsProps {
-	address: ISlotAddress | null;
-	isAddressDirty: boolean;
-	isAddressSaving?: boolean;
-	onAddressSave?: () => void;
-	onChange: (field: keyof ISlotAddress, value: string) => void;
-}
+import type { ISlotAddressFieldsProps } from './SlotAddressFields.types';
 
 export const SlotAddressFields = ({
 	address,
@@ -53,7 +46,7 @@ export const SlotAddressFields = ({
 			{onAddressSave && isAddressDirty && (
 				<Button
 					fullWidth
-					isLoading={isAddressSaving}
+					loading={isAddressSaving}
 					onClick={onAddressSave}
 					variant='contained'
 				>

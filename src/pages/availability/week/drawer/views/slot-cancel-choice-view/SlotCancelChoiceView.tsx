@@ -5,12 +5,9 @@ import {
 	CancelChoiceCardSub,
 	CancelChoiceCardTitle,
 	CancelChoiceWrapper,
-} from '../AvailabilityWeekDrawer.styles';
+} from '../../AvailabilityWeekDrawer.styles';
 
-interface ISlotCancelChoiceViewProps {
-	onCancel: () => void;
-	onReschedule: () => void;
-}
+import type { ISlotCancelChoiceViewProps } from './SlotCancelChoiceView.types';
 
 export const SlotCancelChoiceView = ({
 	onCancel,

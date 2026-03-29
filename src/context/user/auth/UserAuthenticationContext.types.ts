@@ -147,6 +147,7 @@ export interface ISlot {
 	canceledAt?: ISODateString | null;
 	customReason?: string | null;
 	endTime: string;
+	letPatientChooseAddress?: boolean;
 	note?: string;
 	patientId?: MongoId;
 	reasonCode?: string | null;

@@ -6,12 +6,9 @@ import {
 	DrawerDetailSub,
 	DrawerDetailValue,
 	DrawerDetailWrapper,
-} from '../AvailabilityWeekDrawer.styles';
-import type { IDrawerDetail } from '../AvailabilityWeekDrawer.types';
+} from '../../AvailabilityWeekDrawer.styles';
 
-interface ISlotDetailViewProps {
-	details: IDrawerDetail[];
-}
+import type { ISlotDetailViewProps } from './SlotDetailView.types';
 
 export const SlotDetailView = ({ details }: ISlotDetailViewProps) => (
 	<DrawerDetailsList>

@@ -805,6 +805,7 @@
         "reschedule-success": "Appointment rescheduled successfully.",
         "address-override": "Session location",
         "address-override-question": "Use a different location for this session?",
+        "let-patient-choose-address": "Let the patient choose the location?",
         "address-reset": "Reset to default",
         "address-save": "Save location",
         "address-save-error": "Failed to save session location. Please try again.",

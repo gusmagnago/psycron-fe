@@ -26,6 +26,7 @@ export const enum PostHogEvent {
 	AuthSwitchFormClicked = 'auth switch form clicked',
 	AuthVerifyEmailFailed = 'auth verify email failed',
 	AuthVerifyEmailSucceeded = 'auth verify email succeeded',
+	AvailabilityLetPatientChooseAddress = 'availability let patient choose address toggled',
 	AvailabilitySettingSaved = 'availability setting saved',
 	AvailabilitySlotBlocked = 'availability slot blocked',
 	BackofficeWorkerSessionFailed = 'backoffice worker session failed',
@@ -195,6 +196,10 @@ export type PostHogEventProps = {
 	[PostHogEvent.EditUserSubmitted]: {
 		sections: Array<'clinicAddress' | 'contacts' | 'name' | 'password'>;
 		session: 'clinicAddress' | 'contacts' | 'default' | 'name' | 'password';
+	};
+
+	[PostHogEvent.AvailabilityLetPatientChooseAddress]: {
+		enabled: boolean;
 	};
 
 	[PostHogEvent.AvailabilitySettingSaved]: {
