@@ -21,14 +21,24 @@ export interface IUpdateAvailabilitySettingsPayload {
 	recurrencePattern?: 'MONTHLY' | 'WEEKLY';
 	sessionDuration?: string;
 	sessionType?: string;
+	specialty?: string;
 	timeRange?: string;
 	timezone?: string;
 	workingDays?: string[];
 }
 
+export interface ISlotAddressPayload {
+	city: string;
+	country: string;
+	postcode: string;
+	street: string;
+}
+
 export interface IEditSlotPayload {
+	address?: ISlotAddressPayload | null;
 	availabilityDayId: string;
 	endTime?: string;
+	letPatientChooseAddress?: boolean;
 	note?: string;
 	slotId: string;
 	startTime?: string;
@@ -47,8 +57,10 @@ export interface IEditSlotResponse {
 }
 
 export const editSlot = async ({
+	address,
 	availabilityDayId,
 	endTime,
+	letPatientChooseAddress,
 	note,
 	startTime,
 	therapistId,
@@ -56,7 +68,7 @@ export const editSlot = async ({
 }: IEditSlotPayload): Promise<IEditSlotResponse> => {
 	const response = await apiClient.patch<IEditSlotResponse>(
 		`/users/${therapistId}/availability/${availabilityDayId}/slot/${slotId}`,
-		{ endTime, note, startTime }
+		{ address, endTime, letPatientChooseAddress, note, startTime }
 	);
 	return response.data;
 };

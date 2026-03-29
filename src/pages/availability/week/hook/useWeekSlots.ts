@@ -2,7 +2,7 @@ import type { IAvailabilityDateRef } from '@psycron/api/user/index.types';
 import { useAvailability } from '@psycron/context/appointment/availability/AvailabilityContext';
 import { format, isWithinInterval, parseISO } from 'date-fns';
 
-import type { IWeekSlot, SlotStatus } from './AvailabilityWeekPage.types';
+import type { IWeekSlot, SlotStatus } from '../AvailabilityWeekPage.types';
 
 const computeDuration = (startTime: string, endTime: string): number => {
 	const [sh, sm] = startTime.split(':').map(Number);
@@ -46,10 +46,12 @@ export const useWeekSlots = (weekStart: Date, weekEnd: Date, bufferTimeMinutes: 
 				if (!status) return null;
 				return {
 					_id: slot._id,
+					address: slot.address ?? null,
 					availabilityDayId: String(d.dateId),
 					date: dayStr,
 					duration: computeDuration(slot.startTime, slot.endTime),
 					id: slot._id ?? `${dayStr}-${j}`,
+					letPatientChooseAddress: slot.letPatientChooseAddress ?? false,
 					notes: slot.note,
 					patientId: slot.patientId ? String(slot.patientId) : undefined,
 					startTime: slot.startTime,

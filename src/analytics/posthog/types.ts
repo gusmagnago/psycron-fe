@@ -26,6 +26,7 @@ export const enum PostHogEvent {
 	AuthSwitchFormClicked = 'auth switch form clicked',
 	AuthVerifyEmailFailed = 'auth verify email failed',
 	AuthVerifyEmailSucceeded = 'auth verify email succeeded',
+	AvailabilityLetPatientChooseAddress = 'availability let patient choose address toggled',
 	AvailabilitySettingSaved = 'availability setting saved',
 	AvailabilitySlotBlocked = 'availability slot blocked',
 	BackofficeWorkerSessionFailed = 'backoffice worker session failed',
@@ -193,13 +194,19 @@ export type PostHogEventProps = {
 	};
 
 	[PostHogEvent.EditUserSubmitted]: {
-		sections: Array<'name' | 'contacts' | 'password'>;
-		session: 'default' | 'name' | 'contacts' | 'password';
+		sections: Array<'clinicAddress' | 'contacts' | 'name' | 'password'>;
+		session: 'clinicAddress' | 'contacts' | 'default' | 'name' | 'password';
+	};
+
+	[PostHogEvent.AvailabilityLetPatientChooseAddress]: {
+		enabled: boolean;
+		source: 'drawer' | 'generator';
+		specialty?: string;
 	};
 
 	[PostHogEvent.AvailabilitySettingSaved]: {
 		new_value: string;
-		setting: 'working_hours' | 'session_type' | 'session_duration' | 'timezone' | 'buffer_time' | 'recurrence_pattern' | 'google_calendar';
+		setting: 'working_hours' | 'session_type' | 'session_duration' | 'timezone' | 'buffer_time' | 'recurrence_pattern' | 'google_calendar' | 'session_address' | 'specialty' | 'specialty_detail';
 	};
 
 	[PostHogEvent.AvailabilitySlotBlocked]: {

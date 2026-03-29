@@ -17,6 +17,12 @@ export type EditUserFormProps = {
 };
 
 export type EditUserFormValues = {
+	clinicAddress?: {
+		city?: string;
+		country?: string;
+		postcode?: string;
+		street?: string;
+	};
 	contacts: {
 		email: string;
 		hasWhatsApp?: boolean;

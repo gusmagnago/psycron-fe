@@ -41,8 +41,9 @@ import {
 } from 'date-fns';
 
 import { AvailabilityWeekDrawer } from './drawer/AvailabilityWeekDrawer';
+import { AvailabilityExtendBanner } from './drawer/extend-banner/AvailabilityExtendBanner';
 import { AvailabilityWeekFilters } from './filters/AvailabilityWeekFilters';
-import { AvailabilityExtendBanner } from './AvailabilityExtendBanner';
+import { useWeekSlots } from './hook/useWeekSlots';
 import {
 	BUFFER_COLORS,
 	DayHeader,
@@ -87,7 +88,6 @@ import {
 	WeekTitle,
 } from './AvailabilityWeekPage.styles';
 import type { IWeekSlot, SlotStatus } from './AvailabilityWeekPage.types';
-import { useWeekSlots } from './useWeekSlots';
 
 const LEGEND_STATUSES: { labelKey: string; status: SlotStatus }[] = [
 	{ status: 'available', labelKey: 'availability.week.legend-available' },
@@ -333,6 +333,7 @@ export const AvailabilityWeekPage = () => {
 			<ChevronRight />
 		</NavButton>
 	);
+
 	const todayButton = <AvailabilityTodayButton iconOnly={isMobile} />;
 
 	return (

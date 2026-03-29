@@ -1,14 +1,22 @@
+import type { UseFormReturn } from 'react-hook-form';
 import type { IAvailabilityRecord } from '@psycron/api/availability/index.types';
+import type { IClinicAddress } from '@psycron/context/user/auth/UserAuthenticationContext.types';
 
 export type DrawerKey =
 	| 'buffer-time'
 	| 'google-calendar'
 	| 'recurrence-pattern'
+	| 'session-address'
 	| 'session-duration'
 	| 'session-type'
+	| 'specialty'
 	| 'timezone'
 	| 'working-hours'
 	| null;
+
+export interface AddressFormValues {
+	clinicAddress: IClinicAddress;
+}
 
 export interface ChecklistItem {
 	descKey: string;
@@ -41,6 +49,7 @@ export interface AvailabilityStatusStats {
 export interface UseAvailabilitySettingsReturn {
 	activeCount: number;
 	activeDrawer: DrawerKey;
+	addressFormMethods: UseFormReturn<AddressFormValues>;
 	availability: IAvailabilityRecord | null | undefined;
 	bannerDismissed: boolean;
 	bufferInput: string;
@@ -51,14 +60,17 @@ export interface UseAvailabilitySettingsReturn {
 	confirmTimezoneSave: () => void;
 	endTimeInput: string;
 	firstMissingRecommended: ChecklistItem | undefined;
+	handleAddressSave: () => void;
 	handleBufferSave: () => void;
 	handleGoogleCalendarConnect: () => void;
 	handleJupiterCta: () => void;
 	handleRecurrencePatternSave: () => void;
 	handleSessionDurationSave: () => void;
 	handleSessionTypeSave: () => void;
+	handleSpecialtySave: () => void;
 	handleTimezoneSave: () => void;
 	handleWorkingHoursSave: () => void;
+	isAddressSaving: boolean;
 	isConnecting: boolean;
 	isJupiterCtaEnabled: boolean;
 	isLoading: boolean;
@@ -75,9 +87,12 @@ export interface UseAvailabilitySettingsReturn {
 	setRecurrencePatternInput: (value: string) => void;
 	setSessionDurationInput: (value: string) => void;
 	setSessionTypeInput: (value: string) => void;
+	setSpecialtyDetailInput: (value: string) => void;
+	setSpecialtyInput: (value: string) => void;
 	setStartTimeInput: (value: string) => void;
 	setTimezoneInput: (value: string) => void;
 	showTimezoneWarning: boolean;
+	specialtyDetailInput: string;
 	startTimeInput: string;
 	statusStats: AvailabilityStatusStats;
 	timezoneInput: string;

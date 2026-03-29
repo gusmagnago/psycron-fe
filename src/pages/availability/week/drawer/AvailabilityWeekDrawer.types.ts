@@ -2,6 +2,22 @@ import type { ReactNode } from 'react';
 
 import type { IWeekSlot } from '../AvailabilityWeekPage.types';
 
+export type DrawerView =
+	| 'block-confirm'
+	| 'cancel-reason'
+	| 'default'
+	| 'editing'
+	| 'reschedule-or-cancel'
+	| 'reschedule-slots';
+
+export type LocationChoice = 'clinic' | 'custom' | 'patient';
+
+export interface IRescheduleSlot {
+	availabilityDayId: string;
+	slotId: string;
+	startTime: string;
+}
+
 export interface IAvailabilityWeekDrawerProps {
 	onClose: () => void;
 	slot: IWeekSlot;

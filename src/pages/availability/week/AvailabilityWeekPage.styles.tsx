@@ -2,7 +2,10 @@ import styled from '@emotion/styled';
 import { Box, ButtonBase } from '@mui/material';
 import { Button } from '@psycron/components/button/Button';
 import { Text } from '@psycron/components/text/Text';
-import { isMobileMedia } from '@psycron/theme/media-queries/mediaQueries';
+import {
+	isMobileMedia,
+	isSmallerThanTabletMedia,
+} from '@psycron/theme/media-queries/mediaQueries';
 import { hexToRgba, palette } from '@psycron/theme/palette/palette.theme';
 import {
 	shadowMain,
@@ -40,7 +43,7 @@ const isClickableStatus = (status: SlotStatus) =>
 
 export const WeekCard = styled(Box)`
 	width: 100%;
-	max-height: calc(100vh - 140px);
+	max-height: calc(100vh - 8.75rem);
 	min-height: 800px;
 	background: ${palette.background.default};
 	border-radius: ${spacing.largeXl};
@@ -51,15 +54,19 @@ export const WeekCard = styled(Box)`
 	gap: ${spacing.mediumSmall};
 	overflow: hidden;
 	margin-bottom: 0;
-
 	position: relative;
+
+	${isSmallerThanTabletMedia} {
+		min-height: 37.5rem;
+		max-height: calc(100vh - 12.5rem);
+	}
 
 	${isMobileMedia} {
 		height: auto;
 		box-shadow: none;
 		padding: 0;
 		overflow: visible;
-		margin-bottom: -140px;
+		margin-bottom: -8.75rem;
 	}
 `;
 

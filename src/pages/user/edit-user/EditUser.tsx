@@ -8,6 +8,7 @@ import type { CustomError } from '@psycron/api/error';
 import { editUserById } from '@psycron/api/user';
 import type { IEditUser } from '@psycron/api/user/index.types';
 import { AvatarUploader } from '@psycron/components/avatar/avatar-uploader/AvatarUploader';
+import { AddressForm } from '@psycron/components/form/components/address/AddressForm';
 import { ContactsForm } from '@psycron/components/form/components/contacts/ContactsForm';
 import { FormFooter } from '@psycron/components/form/components/footer/FormFooter';
 import { NameForm } from '@psycron/components/form/components/name/NameForm';
@@ -21,7 +22,7 @@ import { useUserDetails } from '@psycron/context/user/details/UserDetailsContext
 import i18n from '@psycron/i18n';
 import { PageLayout } from '@psycron/layouts/app/pages-layout/PageLayout';
 import { externalUrls } from '@psycron/pages/urls';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 import { EditSection } from './components/EditSection';
 import { buildEditUserPayload, toEditUserDefaults } from './edituser.mapper';
@@ -38,6 +39,7 @@ export const EditUser = () => {
 	const { t } = useTranslation();
 	const navigate = useNavigate();
 	const { showAlert } = useAlert();
+	const queryClient = useQueryClient();
 
 	const { userId, session } = useParams<{ session?: string; userId: string }>();
 
@@ -70,8 +72,9 @@ export const EditUser = () => {
 	);
 
 	const [enabled, setEnabled] = useState({
-		name: false,
+		clinicAddress: false,
 		contacts: false,
+		name: false,
 		password: false,
 	});
 
@@ -96,15 +99,19 @@ export const EditUser = () => {
 
 	useEffect(() => {
 		setEnabled({
-			name: session === 'name' && canEdit.name,
+			clinicAddress: session === 'clinicAddress',
 			contacts: session === 'contacts' && canEdit.contacts,
+			name: session === 'name' && canEdit.name,
 			password: session === 'password' && canEdit.password,
 		});
 	}, [session, canEdit.name, canEdit.contacts, canEdit.password]);
 
 	const editUserMutation = useMutation({
 		mutationFn: (payload: IEditUser) => editUserById(payload),
-		onSuccess: () => {
+		onSuccess: async () => {
+			await queryClient.invalidateQueries({
+				queryKey: ['userDetails', userId],
+			});
 			showAlert({
 				message: t('components.user-details.edit-success'),
 				severity: 'success',
@@ -137,7 +144,8 @@ export const EditUser = () => {
 		if (
 			!effectiveEnabled.name &&
 			!effectiveEnabled.contacts &&
-			!effectiveEnabled.password
+			!effectiveEnabled.password &&
+			!effectiveEnabled.clinicAddress
 		) {
 			showAlert({
 				message: t(
@@ -158,15 +166,20 @@ export const EditUser = () => {
 
 		capture(PostHogEvent.EditUserSubmitted, {
 			session: (session ?? 'default') as
+				| 'clinicAddress'
+				| 'contacts'
 				| 'default'
 				| 'name'
-				| 'contacts'
 				| 'password',
 			sections: [
 				effectiveEnabled.name ? 'name' : null,
 				effectiveEnabled.contacts ? 'contacts' : null,
 				effectiveEnabled.password ? 'password' : null,
-			].filter((s): s is 'name' | 'contacts' | 'password' => s != null),
+				effectiveEnabled.clinicAddress ? 'clinicAddress' : null,
+			].filter(
+				(s): s is 'clinicAddress' | 'contacts' | 'name' | 'password' =>
+					s != null
+			),
 		});
 		editUserMutation.mutate(payload);
 	};
@@ -225,6 +238,19 @@ export const EditUser = () => {
 						/>
 					</EditSection>
 					<EditSection
+						title={t('components.user-details.section.title.clinic')}
+						isEnabled={enabled.clinicAddress}
+						onToggle={() => {
+							const next = !enabled.clinicAddress;
+							setEnabled((s) => ({ ...s, clinicAddress: next }));
+						}}
+					>
+						<AddressForm<EditUserFormValues>
+							disabled={!enabled.clinicAddress}
+							showGoogleAddressSearch={enabled.clinicAddress}
+						/>
+					</EditSection>
+					<EditSection
 						title={t('globals.password')}
 						isEnabled={enabled.password}
 						disabled={!canEdit.password}
@@ -270,7 +296,14 @@ export const EditUser = () => {
 						</EditUserDetailsMarketingSwitcher>
 					</EditUserDetailsMarketingConsentWrapper>
 					<FormFooter
-						disabled={!(enabled.name || enabled.contacts || enabled.password)}
+						disabled={
+							!(
+								enabled.name ||
+								enabled.contacts ||
+								enabled.password ||
+								enabled.clinicAddress
+							)
+						}
 					/>
 				</EditUserFormContainer>
 			</FormProvider>

@@ -1,4 +1,7 @@
 // editUser.mapper.ts
+import type { IEditUser } from '@psycron/api/user/index.types';
+import type { IClinicAddress } from '@psycron/context/user/auth/UserAuthenticationContext.types';
+
 import type { EditUserFormValues } from './EditUser.types';
 
 type Contacts = {
@@ -8,6 +11,7 @@ type Contacts = {
 };
 
 type UserDetailsLike = {
+	clinicAddress?: Partial<IClinicAddress>;
 	contacts: Contacts;
 	firstName: string;
 	lastName: string;
@@ -17,6 +21,12 @@ type UserDetailsLike = {
 export const toEditUserDefaults = (
 	user: UserDetailsLike
 ): EditUserFormValues => ({
+	clinicAddress: {
+		city: user.clinicAddress?.city ?? '',
+		country: user.clinicAddress?.country ?? '',
+		postcode: user.clinicAddress?.postcode ?? '',
+		street: user.clinicAddress?.street ?? '',
+	},
 	firstName: user.firstName ?? '',
 	lastName: user.lastName ?? '',
 	contacts: {
@@ -28,18 +38,27 @@ export const toEditUserDefaults = (
 });
 
 export const buildEditUserPayload = (args: {
-	enabled: { contacts: boolean; name: boolean; password?: boolean };
+	enabled: { clinicAddress: boolean; contacts: boolean; name: boolean; password?: boolean };
 	original: EditUserFormValues;
 	userId: string;
 	values: EditUserFormValues;
-}): { data: Partial<EditUserFormValues>; userId: string } => {
+}): IEditUser => {
 	const { userId, values, enabled, original } = args;
 
-	const data: Partial<EditUserFormValues> = {};
+	const data: IEditUser['data'] = {};
 
 	if (enabled.name) {
 		data.firstName = values.firstName.trim() || original.firstName;
 		data.lastName = values.lastName.trim() || original.lastName;
+	}
+
+	if (enabled.clinicAddress) {
+		data.clinicAddress = {
+			city: values.clinicAddress?.city?.trim() ?? '',
+			country: values.clinicAddress?.country?.trim() ?? '',
+			postcode: values.clinicAddress?.postcode?.trim() ?? '',
+			street: values.clinicAddress?.street?.trim() ?? '',
+		} satisfies IClinicAddress;
 	}
 
 	if (enabled.contacts) {

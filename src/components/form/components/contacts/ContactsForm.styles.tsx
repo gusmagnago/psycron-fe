@@ -23,6 +23,8 @@ export const InputWrapper = styled(Box)`
 export const ContactsFormSwitchWrapper = styled(Box)`
 	display: flex;
 	padding-left: ${spacing.small};
+	flex-direction: column;
+	gap: ${spacing.small};
 `;
 
 export const ContactsFormWhatsAppWrapper = styled(Box, {

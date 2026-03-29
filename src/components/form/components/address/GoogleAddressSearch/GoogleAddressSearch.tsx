@@ -5,6 +5,7 @@ import { GOOGLE_MAPS_API_KEY } from '@psycron/utils/variables';
 import type { Libraries } from '@react-google-maps/api';
 import { Autocomplete, useLoadScript } from '@react-google-maps/api';
 
+import { GoogleAutocompleteGlobalStyles } from './GoogleAddressSearch.styles';
 import type { IGoogleAddressSearch } from './GoogleAddressSearch.types';
 
 const LIBRARIES: Libraries = ['places'];
@@ -22,8 +23,9 @@ export const GoogleAddressSearch = ({
 
 	return (
 		<>
-			{!loadError || isLoaded ? (
-				<Grid item xs={12}>
+			<GoogleAutocompleteGlobalStyles />
+			{isLoaded && !loadError ? (
+				<Grid size={{ xs: 12 }}>
 					<Autocomplete
 						onLoad={(autocomplete) =>
 							autocomplete.addListener('place_changed', () =>

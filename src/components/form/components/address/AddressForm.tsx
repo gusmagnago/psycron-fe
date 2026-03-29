@@ -1,93 +1,60 @@
 import type { ChangeEvent } from 'react';
-import { useState } from 'react';
 import type { FieldValues, Path } from 'react-hook-form';
+import { useFormContext } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import type { TextFieldProps } from '@mui/material';
 import { Grid, TextField } from '@mui/material';
-import { Switch } from '@psycron/components/switch/components/item/Switch';
-import type { IAddress } from '@psycron/context/user/auth/UserAuthenticationContext.types';
 
 import { GoogleAddressSearch } from './GoogleAddressSearch/GoogleAddressSearch';
-import { ComplementaryField } from './AddressForm.styles';
-import type { AddressComponentProps } from './AddressForm.types';
+import type { AddressFormProps } from './AddressForm.types';
 
 export const AddressForm = <T extends FieldValues>({
-	errors,
-	register,
-	defaultValues,
 	disabled,
+	fields,
 	showGoogleAddressSearch,
-}: AddressComponentProps<T> & TextFieldProps) => {
+}: AddressFormProps<T>) => {
 	const { t } = useTranslation();
 
-	const defaultAddressVal = {
-		address: '',
-		streetNumber: '',
-		route: '',
-		sublocality: '',
-		city: '',
-		administrativeArea: '',
-		country: '',
-		postalCode: '',
-	};
+	const { register, setValue, watch, getFieldState } = useFormContext<T>();
 
-	const [addressComponents, setAddressComponents] = useState<
-		IAddress | undefined
-	>(defaultValues || defaultAddressVal);
+	const streetPath = (fields?.street ?? ('clinicAddress.street' as Path<T>)) as Path<T>;
+	const cityPath = (fields?.city ?? ('clinicAddress.city' as Path<T>)) as Path<T>;
+	const postcodePath = (fields?.postcode ?? ('clinicAddress.postcode' as Path<T>)) as Path<T>;
+	const countryPath = (fields?.country ?? ('clinicAddress.country' as Path<T>)) as Path<T>;
 
-	const [addMoreInfo, setAddMoreInfo] = useState<boolean>(false);
+	const streetState = getFieldState(streetPath);
+	const cityState = getFieldState(cityPath);
+	const postcodeState = getFieldState(postcodePath);
+	const countryState = getFieldState(countryPath);
 
 	const handlePlaceSelect = (autocomplete: google.maps.places.Autocomplete) => {
 		const place = autocomplete.getPlace();
 
-		const updatedAddressComponents: Partial<IAddress> = {
-			address: place.formatted_address || '',
-		};
-
 		place.address_components?.forEach((component) => {
 			const componentType = component.types[0];
 			switch (componentType) {
-				case 'street_number':
-					updatedAddressComponents.streetNumber = component.long_name;
-					break;
 				case 'route':
-					updatedAddressComponents.route = component.long_name;
-					break;
-				case 'sublocality_level_1':
-				case 'sublocality':
-					updatedAddressComponents.sublocality = component.long_name;
+					setValue(streetPath, component.long_name as never, { shouldDirty: true });
 					break;
 				case 'political':
 				case 'locality':
 				case 'administrative_area_level_2':
-					updatedAddressComponents.city = component.long_name;
-					break;
-				case 'administrative_area_level_1':
-					updatedAddressComponents.administrativeArea = component.long_name;
-					break;
-				case 'country':
-					updatedAddressComponents.country = component.long_name;
+					setValue(cityPath, component.long_name as never, { shouldDirty: true });
 					break;
 				case 'postal_code':
-					updatedAddressComponents.postalCode = component.long_name;
+					setValue(postcodePath, component.long_name as never, { shouldDirty: true });
+					break;
+				case 'country':
+					setValue(countryPath, component.long_name as never, { shouldDirty: true });
 					break;
 				default:
 					break;
 			}
 		});
-
-		setAddressComponents((prev) => ({
-			...(prev ?? defaultAddressVal),
-			...updatedAddressComponents,
-		}));
 	};
 
 	const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
 		const { name, value } = e.target;
-		setAddressComponents((prev) => ({
-			...(prev ?? defaultAddressVal),
-			[name]: value,
-		}));
+		setValue(name as Path<T>, value as never, { shouldDirty: true });
 	};
 
 	return (
@@ -98,129 +65,55 @@ export const AddressForm = <T extends FieldValues>({
 					handlePlaceSelect={handlePlaceSelect}
 				/>
 			) : null}
-			<Grid size={{ xs: 12, md: 8 }}>
+			<Grid size={{ xs: 12 }}>
 				<TextField
 					label={t('components.form.address-form.street')}
-					id='route'
-					value={addressComponents?.route}
+					id={String(streetPath)}
 					fullWidth
-					{...register('route' as Path<T>)}
-					error={!!errors?.route}
-					helperText={errors?.route?.message as string}
-					onChange={handleChange}
-					autoComplete='route'
-					required
+					{...register(streetPath)}
+					value={watch(streetPath) ?? ''}
+					error={Boolean(streetState.error)}
+					helperText={streetState.error?.message as string | undefined}
+					autoComplete='street-address'
 					disabled={disabled}
 				/>
 			</Grid>
-			<Grid size={{ xs: 4, md: 4 }}>
+			<Grid size={{ xs: 12, md: 6 }}>
 				<TextField
-					id='streetNumber'
-					label={t('components.form.address-form.number')}
-					value={addressComponents?.streetNumber}
-					fullWidth
-					{...register('streetNumber' as Path<T>)}
-					error={!!errors?.route}
-					helperText={errors?.route?.message as string}
-					onChange={handleChange}
-					autoComplete='streetNumber'
-					required
-					disabled={disabled}
-				/>
-			</Grid>
-			<Grid size={{ xs: 8, md: 6 }}>
-				<TextField
-					id='sublocality'
-					label={t('components.form.address-form.hood')}
-					value={addressComponents?.sublocality}
-					fullWidth
-					{...register('sublocality' as Path<T>)}
-					error={!!errors?.route}
-					helperText={errors?.route?.message as string}
-					onChange={handleChange}
-					autoComplete='sublocality'
-					required
-					disabled={disabled}
-				/>
-			</Grid>
-			{addMoreInfo ? (
-				<Grid size={{ xs: 12 }}>
-					<ComplementaryField
-						id='moreInfo'
-						label={t('components.form.address-form.more-info')}
-						value={addressComponents?.administrativeArea}
-						fullWidth
-						{...register('moreInfo' as Path<T>)}
-						error={!!errors?.route}
-						helperText={errors?.route?.message as string}
-					/>
-				</Grid>
-			) : null}
-			<Grid size={{ xs: 5, md: 6 }}>
-				<TextField
-					id='political'
 					label={t('components.form.address-form.city')}
-					value={addressComponents?.city}
+					id={String(cityPath)}
 					fullWidth
-					{...register('city' as Path<T>)}
-					error={!!errors?.route}
-					helperText={errors?.route?.message as string}
-					onChange={handleChange}
-					autoComplete='political'
-					required
+					{...register(cityPath)}
+					value={watch(cityPath) ?? ''}
+					error={Boolean(cityState.error)}
+					helperText={cityState.error?.message as string | undefined}
+					autoComplete='address-level2'
 					disabled={disabled}
 				/>
 			</Grid>
-			<Grid size={{ xs: 7, md: 6 }}>
+			<Grid size={{ xs: 12, md: 6 }}>
 				<TextField
-					id='administrativeArea'
-					label={t('components.form.address-form.state')}
-					value={addressComponents?.administrativeArea}
-					fullWidth
-					{...register('administrativeArea' as Path<T>)}
-					error={!!errors?.route}
-					helperText={errors?.route?.message as string}
-					onChange={handleChange}
-					autoComplete='administrativeArea'
-					required
-					disabled={disabled}
-				/>
-			</Grid>
-			<Grid size={{ xs: 4, md: 6 }}>
-				<TextField
-					id='postalCode'
 					label={t('components.form.address-form.zip')}
-					value={addressComponents?.postalCode}
+					id={String(postcodePath)}
 					fullWidth
-					{...register('postalCode' as Path<T>)}
-					error={!!errors?.route}
-					helperText={errors?.route?.message as string}
-					onChange={handleChange}
-					autoComplete='pCode'
-					required
+					{...register(postcodePath)}
+					value={watch(postcodePath) ?? ''}
+					error={Boolean(postcodeState.error)}
+					helperText={postcodeState.error?.message as string | undefined}
+					autoComplete='postal-code'
 					disabled={disabled}
 				/>
 			</Grid>
-			<Grid size={{ xs: 8, md: 6 }}>
+			<Grid size={{ xs: 12 }}>
 				<TextField
-					id='country'
 					label={t('components.form.address-form.country')}
-					value={addressComponents?.country}
+					id={String(countryPath)}
 					fullWidth
-					{...register('country' as Path<T>)}
-					error={!!errors?.route}
-					helperText={errors?.route?.message as string}
-					onChange={handleChange}
-					autoComplete='count'
-					required
-					disabled={disabled}
-				/>
-			</Grid>
-			<Grid display='flex' alignItems='center' size={{ xs: 8 }}>
-				<Switch
-					onChange={() => setAddMoreInfo((prev) => !prev)}
-					value={addMoreInfo}
-					label={t('components.form.address-form.more-info-bttn')}
+					{...register(countryPath)}
+					value={watch(countryPath) ?? ''}
+					error={Boolean(countryState.error)}
+					helperText={countryState.error?.message as string | undefined}
+					autoComplete='country-name'
 					disabled={disabled}
 				/>
 			</Grid>

@@ -5,6 +5,7 @@ export interface IAvailabilityRecord {
 	recurrencePattern?: 'MONTHLY' | 'WEEKLY';
 	sessionDuration: string;
 	sessionType: string;
+	specialty?: string;
 	timeRange: string;
 	timezone: string;
 	workingDays: string[];

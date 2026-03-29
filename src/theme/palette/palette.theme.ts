@@ -1,6 +1,6 @@
-import type { Palette } from './palette.types';
+import type { AppPalette } from './palette.types';
 
-export const palette: Palette = {
+export const palette: AppPalette = {
 	primary: {
 		main: '#A9DEF9',
 		light: '#EEF4F8',
