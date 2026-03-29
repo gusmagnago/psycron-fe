@@ -71,6 +71,18 @@ const SESSION_TYPE_OPTIONS = [
 
 const SESSION_DURATION_OPTIONS = ['30', '45', '60', '90'];
 
+const SPECIALTY_OPTIONS = [
+	{ key: 'PSYCHOLOGY', labelKey: 'availability.settings.specialty-psychology' },
+	{ key: 'PSYCHIATRY', labelKey: 'availability.settings.specialty-psychiatry' },
+	{ key: 'PHYSIOTHERAPY', labelKey: 'availability.settings.specialty-physiotherapy' },
+	{ key: 'NUTRITION', labelKey: 'availability.settings.specialty-nutrition' },
+	{ key: 'COACHING', labelKey: 'availability.settings.specialty-coaching' },
+	{ key: 'OCCUPATIONAL_THERAPY', labelKey: 'availability.settings.specialty-occupational-therapy' },
+	{ key: 'SPEECH_THERAPY', labelKey: 'availability.settings.specialty-speech-therapy' },
+	{ key: 'SOCIAL_WORK', labelKey: 'availability.settings.specialty-social-work' },
+	{ key: 'OTHER', labelKey: 'availability.settings.specialty-other' },
+];
+
 const RECURRENCE_PATTERN_OPTIONS = [
 	{
 		descKey: 'availability.settings.recurrence-consistent-desc',
@@ -120,6 +132,7 @@ export const AvailabilitySettings = () => {
 		handleJupiterCta,
 		handleRecurrencePatternSave,
 		handleSessionDurationSave,
+		handleSpecialtySave,
 		isAddressSaving,
 		isConnecting,
 		isJupiterCtaEnabled,
@@ -134,6 +147,7 @@ export const AvailabilitySettings = () => {
 		showTimezoneWarning,
 		sessionDurationInput,
 		sessionTypeInput,
+		specialtyDetailInput,
 		setBannerDismissed,
 		setRecurrencePatternInput,
 		statusStats,
@@ -141,8 +155,11 @@ export const AvailabilitySettings = () => {
 		setEndTimeInput,
 		setSessionDurationInput,
 		setSessionTypeInput,
+		setSpecialtyDetailInput,
+		setSpecialtyInput,
 		setStartTimeInput,
 		setTimezoneInput,
+		specialtyInput,
 		startTimeInput,
 		timezoneInput,
 		toggleWorkingDay,
@@ -566,6 +583,45 @@ export const AvailabilitySettings = () => {
 						<AddressForm showGoogleAddressSearch />
 					</SettingsDrawer>
 				</FormProvider>
+			)}
+
+			{/* ─── Specialty drawer ─────────────────────────────────────────── */}
+			{activeDrawer === 'specialty' && (
+				<SettingsDrawer
+					ariaLabel={t('availability.settings.specialty-drawer-title')}
+					title={t('availability.settings.specialty-drawer-title')}
+					desc={t('availability.settings.specialty-desc')}
+					isSaving={isSaving}
+					onClose={closeDrawer}
+					onSave={handleSpecialtySave}
+					saveDisabled={!specialtyInput}
+					showCancel
+				>
+					<OptionChipsRow
+						aria-label={t('availability.settings.specialty-drawer-title')}
+						role='radiogroup'
+					>
+						{SPECIALTY_OPTIONS.map((option) => (
+							<OptionChip
+								key={option.key}
+								aria-checked={specialtyInput === option.key}
+								isSelected={specialtyInput === option.key}
+								onClick={() => setSpecialtyInput(option.key)}
+								role='radio'
+							>
+								{t(option.labelKey)}
+							</OptionChip>
+						))}
+					</OptionChipsRow>
+					<TextField
+						fullWidth
+						helperText={t('availability.settings.specialty-detail-helper')}
+						label={t('availability.settings.specialty-detail-label')}
+						onChange={(e) => setSpecialtyDetailInput(e.target.value)}
+						size='small'
+						value={specialtyDetailInput}
+					/>
+				</SettingsDrawer>
 			)}
 			</PageLayout>
 

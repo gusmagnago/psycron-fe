@@ -11,7 +11,8 @@ import type { IAvailabilityWeekDrawerProps } from '../AvailabilityWeekDrawer.typ
 
 export const useSlotAddress = (
 	slot: IAvailabilityWeekDrawerProps['slot'],
-	therapistId: string | null
+	therapistId: string | null,
+	specialty?: string
 ) => {
 	const { t } = useTranslation();
 	const { showAlert } = useAlert();
@@ -68,6 +69,7 @@ export const useSlotAddress = (
 			capture(PostHogEvent.AvailabilityLetPatientChooseAddress, {
 				enabled: val,
 				source: 'drawer',
+				specialty,
 			});
 			queryClient.invalidateQueries({ queryKey: ['therapistAvailability'] });
 		},

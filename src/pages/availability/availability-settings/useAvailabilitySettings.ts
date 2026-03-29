@@ -57,6 +57,20 @@ const parseDurationKey = (sessionDuration: string): string => {
 	return match ? match[0] : '45';
 };
 
+// ─── Specialty ────────────────────────────────────────────────────────────────
+
+const SPECIALTY_UMBRELLA_KEYS = new Set([
+	'PSYCHOLOGY',
+	'PSYCHIATRY',
+	'PHYSIOTHERAPY',
+	'NUTRITION',
+	'COACHING',
+	'OCCUPATIONAL_THERAPY',
+	'SPEECH_THERAPY',
+	'SOCIAL_WORK',
+	'OTHER',
+]);
+
 // ─── Static config ────────────────────────────────────────────────────────────
 
 const CHECKLIST_CONFIG: ChecklistConfig[] = [
@@ -124,6 +138,14 @@ const CHECKLIST_CONFIG: ChecklistConfig[] = [
 		onConfigureDrawer: 'recurrence-pattern',
 		titleKey: 'jupiter.post-publish.checklist-recurrence',
 	},
+	{
+		configuredBy: (a) => !!a.specialty,
+		descKey: 'jupiter.post-publish.checklist-specialty-desc',
+		id: 'specialty',
+		isRecommended: false,
+		onConfigureDrawer: 'specialty',
+		titleKey: 'jupiter.post-publish.checklist-specialty',
+	},
 ];
 
 // ─── Hook ─────────────────────────────────────────────────────────────────────
@@ -161,6 +183,10 @@ export const useAvailabilitySettings = (): UseAvailabilitySettingsReturn => {
 	// Timezone
 	const [timezoneInput, setTimezoneInput] = useState('');
 
+	// Specialty
+	const [specialtyInput, setSpecialtyInput] = useState('');
+	const [specialtyDetailInput, setSpecialtyDetailInput] = useState('');
+
 	const { availability, isLoading } = useJupiterAvailabilityConfig();
 	const { availabilityData } = useAvailability();
 	const { userDetails, therapistId } = useUserDetails();
@@ -194,6 +220,11 @@ export const useAvailabilitySettings = (): UseAvailabilitySettingsReturn => {
 					addressFormMethods.reset({
 						clinicAddress: userDetails?.clinicAddress ?? emptyAddress,
 					});
+				} else if (key === 'specialty') {
+					const existing = availability.specialty ?? '';
+					const isUmbrella = SPECIALTY_UMBRELLA_KEYS.has(existing);
+					setSpecialtyInput(isUmbrella ? existing : '');
+					setSpecialtyDetailInput(isUmbrella ? '' : existing);
 				}
 			}
 			setActiveDrawer(key);
@@ -212,6 +243,8 @@ export const useAvailabilitySettings = (): UseAvailabilitySettingsReturn => {
 		setSessionTypeInput('');
 		setSessionDurationInput('');
 		setTimezoneInput('');
+		setSpecialtyInput('');
+		setSpecialtyDetailInput('');
 	}, []);
 
 	const checklistItems = useMemo<ChecklistItem[]>(() => {
@@ -334,7 +367,9 @@ export const useAvailabilitySettings = (): UseAvailabilitySettingsReturn => {
 							? 'timezone'
 							: variables.bufferTimeMinutes !== undefined
 								? 'buffer_time'
-								: 'recurrence_pattern';
+								: variables.specialty
+									? 'specialty'
+									: 'recurrence_pattern';
 
 			const newValue = variables.workingDays
 				? variables.workingDays.join(',')
@@ -343,6 +378,7 @@ export const useAvailabilitySettings = (): UseAvailabilitySettingsReturn => {
 					?? variables.sessionDuration
 					?? variables.timezone
 					?? String(variables.bufferTimeMinutes ?? '')
+					?? variables.specialty
 					?? variables.recurrencePattern
 					?? '';
 
@@ -399,6 +435,17 @@ export const useAvailabilitySettings = (): UseAvailabilitySettingsReturn => {
 		if (!recurrencePatternInput) return;
 		settingsMutation.mutate({ recurrencePattern: recurrencePatternInput as 'WEEKLY' | 'MONTHLY' });
 	}, [recurrencePatternInput, settingsMutation]);
+
+	const handleSpecialtySave = useCallback(() => {
+		if (!specialtyInput) return;
+		if (specialtyDetailInput.trim()) {
+			capture(PostHogEvent.AvailabilitySettingSaved, {
+				new_value: specialtyDetailInput.trim(),
+				setting: 'specialty_detail',
+			});
+		}
+		settingsMutation.mutate({ specialty: specialtyInput });
+	}, [specialtyDetailInput, specialtyInput, settingsMutation]);
 
 	const addressMutation = useMutation({
 		mutationFn: (data: AddressFormValues) =>
@@ -495,6 +542,7 @@ export const useAvailabilitySettings = (): UseAvailabilitySettingsReturn => {
 		handleRecurrencePatternSave,
 		handleSessionDurationSave,
 		handleSessionTypeSave,
+		handleSpecialtySave,
 		handleTimezoneSave,
 		handleWorkingHoursSave,
 		isAddressSaving: addressMutation.isPending,
@@ -509,14 +557,18 @@ export const useAvailabilitySettings = (): UseAvailabilitySettingsReturn => {
 		statusStats,
 		sessionDurationInput,
 		sessionTypeInput,
+		specialtyDetailInput,
 		setBannerDismissed,
 		setBufferInput,
 		setEndTimeInput,
 		setRecurrencePatternInput,
 		setSessionDurationInput,
 		setSessionTypeInput,
+		setSpecialtyDetailInput,
+		setSpecialtyInput,
 		setStartTimeInput,
 		setTimezoneInput,
+		specialtyInput,
 		startTimeInput,
 		timezoneInput,
 		toggleWorkingDay,

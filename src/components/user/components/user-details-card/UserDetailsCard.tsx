@@ -256,8 +256,8 @@ export const UserDetailsCard = ({ user, isPage }: IUserDetailsCardProps) => {
 				{isOwnSettings ? (
 					<Box pt={2} display='flex' justifyContent='flex-end'>
 						<Button
-							variant='outlined'
-							color='error'
+							variant='contained'
+							severity='error'
 							small
 							onClick={() => {
 								openDeleteDialog();
@@ -305,7 +305,7 @@ export const UserDetailsCard = ({ user, isPage }: IUserDetailsCardProps) => {
 							onClick={() => {
 								deleteMyAccount();
 							}}
-							color='error'
+							severity='error'
 							variant='contained'
 							disabled={isDeletePending}
 						>

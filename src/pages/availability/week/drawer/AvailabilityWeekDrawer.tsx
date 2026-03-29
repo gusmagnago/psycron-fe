@@ -99,7 +99,7 @@ export const AvailabilityWeekDrawer = ({
 		isBooked && isInPersonSession && hasInPersonAddress;
 
 	// ─── Hooks ────────────────────────────────────────────────────────────────
-	const slotAddress = useSlotAddress(slot, therapistId);
+	const slotAddress = useSlotAddress(slot, therapistId, availability?.specialty);
 
 	const { isSubmitting, methods, submitBooking } = useBookingForm(
 		slot,
