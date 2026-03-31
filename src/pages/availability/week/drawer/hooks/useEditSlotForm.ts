@@ -59,6 +59,9 @@ export const useEditSlotForm = (
 				severity: data.wasBooked ? 'warning' : 'success',
 			});
 			queryClient.invalidateQueries({ queryKey: ['therapistAvailability'] });
+			queryClient.invalidateQueries({
+				queryKey: ['slotAppointmentDetails', slot._id ?? slot.id],
+			});
 			onSaved();
 		},
 	});

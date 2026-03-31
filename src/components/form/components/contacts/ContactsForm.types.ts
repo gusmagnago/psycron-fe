@@ -16,6 +16,7 @@ export type ContactsFormProps<T extends FieldValues> = {
 	disabled?: boolean;
 	fields?: ContactsFormFields<T>;
 	fullWidth?: boolean;
+	hidePhone?: boolean;
 	labelEmail?: string;
 	placeholderEmail?: string;
 	required?: boolean;

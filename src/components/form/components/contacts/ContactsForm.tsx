@@ -22,6 +22,7 @@ export const ContactsForm = <T extends FieldValues>({
 	disabled,
 	fields,
 	fullWidth,
+	hidePhone = false,
 	labelEmail,
 	placeholderEmail,
 	required = false,
@@ -84,89 +85,92 @@ export const ContactsForm = <T extends FieldValues>({
 					disabled={disabled}
 				/>
 
-				<InputWrapper>
-					<PhoneInputComponent<T>
-						name={phonePath}
-						required={atLeastOneContact ? false : required}
-						validateFn={
-							atLeastOneContact
-								? (v) => {
-										const email = getValues(emailPath) as string | undefined;
-										if (!v?.trim() && !email?.trim()) {
-											return t(
-												'components.form.validation.at-least-one-contact'
-											);
+			{!hidePhone && (
+					<InputWrapper>
+						<PhoneInputComponent<T>
+							name={phonePath}
+							required={atLeastOneContact ? false : required}
+							validateFn={
+								atLeastOneContact
+									? (v) => {
+											const email = getValues(emailPath) as string | undefined;
+											if (!v?.trim() && !email?.trim()) {
+												return t(
+													'components.form.validation.at-least-one-contact'
+												);
+											}
+											return true;
 										}
-										return true;
-									}
-								: undefined
-						}
-						disabled={disabled}
-						defaultValue={defaultValues?.phone ?? ''}
-						labelKey='globals.phone'
-					/>
-				</InputWrapper>
+									: undefined
+							}
+							disabled={disabled}
+							defaultValue={defaultValues?.phone ?? ''}
+							labelKey='globals.phone'
+						/>
+					</InputWrapper>
+				)}
 			</EmailPhoneWrapper>
-			<ContactsFormSwitchWrapper>
-				<Switch
-					small={isSmallerThanTablet}
-					checked={hasWhatsApp}
-					onChange={(_, next) => {
-						if (disabled) return;
-
-						setValue(hasWhatsAppPath, next as never, {
-							shouldDirty: true,
-							shouldTouch: true,
-						});
-
-						// If user turned WhatsApp off, reset dependent state
-						if (!next) {
-							setValue(isPhoneWppPath, false as never, {
-								shouldDirty: true,
-								shouldTouch: true,
-							});
-							setValue(whatsappPath, '' as never, {
-								shouldDirty: true,
-								shouldTouch: true,
-							});
-						}
-					}}
-					label={t('components.form.contacts-form.contact-via', {
-						method: 'Whatsapp',
-					})}
-					disabled={disabled}
-				/>
-
-				{hasWhatsApp ? (
+			{!hidePhone && (
+				<ContactsFormSwitchWrapper>
 					<Switch
 						small={isSmallerThanTablet}
-						checked={isPhoneWpp}
+						checked={hasWhatsApp}
 						onChange={(_, next) => {
 							if (disabled) return;
 
-							setValue(isPhoneWppPath, next as never, {
+							setValue(hasWhatsAppPath, next as never, {
 								shouldDirty: true,
 								shouldTouch: true,
 							});
 
-							if (next) {
+							if (!next) {
+								setValue(isPhoneWppPath, false as never, {
+									shouldDirty: true,
+									shouldTouch: true,
+								});
 								setValue(whatsappPath, '' as never, {
 									shouldDirty: true,
 									shouldTouch: true,
 								});
 							}
 						}}
-						label={t('components.form.contacts-form.contact-via-same')}
+						label={t('components.form.contacts-form.contact-via', {
+							method: 'Whatsapp',
+						})}
 						disabled={disabled}
 					/>
-				) : null}
-			</ContactsFormSwitchWrapper>
+
+					{hasWhatsApp ? (
+						<Switch
+							small={isSmallerThanTablet}
+							checked={isPhoneWpp}
+							onChange={(_, next) => {
+								if (disabled) return;
+
+								setValue(isPhoneWppPath, next as never, {
+									shouldDirty: true,
+									shouldTouch: true,
+								});
+
+								if (next) {
+									setValue(whatsappPath, '' as never, {
+										shouldDirty: true,
+										shouldTouch: true,
+									});
+								}
+							}}
+							label={t('components.form.contacts-form.contact-via-same')}
+							disabled={disabled}
+						/>
+					) : null}
+				</ContactsFormSwitchWrapper>
+			)}
 
 			<input type='hidden' {...register(hasWhatsAppPath)} />
 			<input type='hidden' {...register(isPhoneWppPath)} />
 
-			<ContactsFormWhatsAppWrapper isFullWidth={fullWidth}>
-				{hasWhatsApp && !isPhoneWpp ? (
+			{!hidePhone && hasWhatsApp && !isPhoneWpp ? (
+				<ContactsFormWhatsAppWrapper isFullWidth={fullWidth}>
 					<InputWrapper>
 						<PhoneInputComponent<T>
 							name={whatsappPath}
@@ -176,8 +180,8 @@ export const ContactsForm = <T extends FieldValues>({
 							labelKey='globals.whatsapp'
 						/>
 					</InputWrapper>
-				) : null}
-			</ContactsFormWhatsAppWrapper>
+				</ContactsFormWhatsAppWrapper>
+			) : null}
 		</ContactsFormWrapper>
 	);
 };

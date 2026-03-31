@@ -41,7 +41,13 @@ export const NameForm = <T extends FieldValues>({
 					placeholder={
 						placeholderFirstName ?? t('components.input.text.first-name')
 					}
-					{...register(firstNamePath)}
+					{...register(firstNamePath, {
+						required: required
+							? t('components.form.validation.required', {
+									name: labelFirstName ?? t('components.form.signup.first-name'),
+								})
+							: false,
+					})}
 					error={Boolean(firstNameError)}
 					helperText={
 						typeof firstNameError?.message === 'string'
@@ -62,7 +68,13 @@ export const NameForm = <T extends FieldValues>({
 					placeholder={
 						placeholderLastName ?? t('components.input.text.last-name')
 					}
-					{...register(lastNamePath)}
+					{...register(lastNamePath, {
+						required: required
+							? t('components.form.validation.required', {
+									name: labelLastName ?? t('components.form.signup.last-name'),
+								})
+							: false,
+					})}
 					error={Boolean(lastNameError)}
 					helperText={
 						typeof lastNameError?.message === 'string'

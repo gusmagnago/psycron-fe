@@ -190,6 +190,36 @@ export const CancelChoiceCardSub = styled(Text)`
 	color: ${palette.gray['05']};
 `;
 
+// ─── Contact link button ───────────────────────────────────────────────────────
+
+export const ContactLinkAnchor = styled('a')`
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: ${spacing.small};
+	width: 100%;
+	padding: ${spacing.small} ${spacing.medium};
+	border: 1.5px solid ${hexToRgba(palette.brand.purple, 0.4)};
+	border-radius: ${spacing.extraSmall};
+	color: ${palette.brand.purple};
+	font-size: 14px;
+	font-weight: 500;
+	text-decoration: none;
+	transition:
+		background 0.15s ease,
+		border-color 0.15s ease;
+	cursor: pointer;
+	& svg {
+		width: 20px;
+		height: 20px;
+		flex-shrink: 0;
+	}
+	&:hover {
+		background: ${hexToRgba(palette.brand.purple, 0.06)};
+		border-color: ${palette.brand.purple};
+	}
+`;
+
 // ─── Reschedule slot picker ────────────────────────────────────────────────────
 
 export const SlotPickerList = styled(Box)`

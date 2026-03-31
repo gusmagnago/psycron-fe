@@ -180,3 +180,38 @@ export interface CancelAppointmentFormData {
 	reasonCode: string;
 	triggeredBy: string;
 }
+
+export interface IBookSlotByTherapistPayload {
+	availabilityDayId: string;
+	patient: {
+		contacts: {
+			email?: string;
+			phone?: string;
+			whatsapp?: string;
+		};
+		firstName: string;
+		lastName: string;
+		preferredContact?: {
+			type: string;
+			value: string;
+		};
+	};
+	patientAddress?: ISlotAddress;
+	recurrencePattern?: string;
+	shareAddress: boolean;
+	shouldReplicate: boolean;
+	slotId: string;
+	therapistId: string;
+	timeZone: string;
+}
+
+export interface IBookSlotByTherapistResponse {
+	appointmentInfo: {
+		date: string;
+		time: string;
+	};
+	message: string;
+	patient: Partial<IPatient>;
+	status: string;
+	therapistId: string;
+}
