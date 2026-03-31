@@ -8,7 +8,7 @@ export interface IDrawerActionConfig {
 }
 
 export interface IDrawerActionsConfig {
-	primary: IDrawerActionConfig;
+	primary?: IDrawerActionConfig;
 	secondary?: IDrawerActionConfig;
 }
 

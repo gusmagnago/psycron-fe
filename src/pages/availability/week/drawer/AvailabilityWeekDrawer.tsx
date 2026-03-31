@@ -38,6 +38,7 @@ import {
 } from './hooks/useSlotActions';
 import { useSlotAddress } from './hooks/useSlotAddress';
 import { SlotAvailableBody } from './views/slot-available-body/SlotAvailableBody';
+import { SlotBookingConflictView } from './views/slot-booking-conflict/SlotBookingConflictView';
 import { SlotCancelChoiceView } from './views/slot-cancel-choice-view/SlotCancelChoiceView';
 import { SlotCancelReasonForm } from './views/slot-cancel-reason-form/SlotCancelReasonForm';
 import { SlotDetailView } from './views/slot-detail-view/SlotDetailView';
@@ -113,13 +114,14 @@ export const AvailabilityWeekDrawer = ({
 		availability?.specialty
 	);
 
-	const { isSubmitting, methods, submitBooking } = useBookingForm(
-		slot,
-		therapistId,
-		locationChoice,
-		slotAddress.address,
-		onClose
-	);
+	const {
+		conflict,
+		confirmWithExisting,
+		dismissConflict,
+		isSubmitting,
+		methods,
+		submitBooking,
+	} = useBookingForm(slot, therapistId, locationChoice, slotAddress.address, onClose);
 
 	const editSlotForm = useEditSlotForm(
 		slot,
@@ -441,14 +443,22 @@ export const AvailabilityWeekDrawer = ({
 					<>
 						<SlotDetailView details={details} />
 						{isAvailable ? (
-							<SlotAvailableBody
-								customAddress={slotAddress.address}
-								locationChoice={locationChoice}
-								methods={methods}
-								onCustomAddressChange={handleCustomAddressChange}
-								onLocationChoiceChange={handleLocationChoiceChange}
-								sessionType={sessionType}
-							/>
+							conflict ? (
+								<SlotBookingConflictView
+									conflict={conflict}
+									onConfirm={confirmWithExisting}
+									onDismiss={dismissConflict}
+								/>
+							) : (
+								<SlotAvailableBody
+									customAddress={slotAddress.address}
+									locationChoice={locationChoice}
+									methods={methods}
+									onCustomAddressChange={handleCustomAddressChange}
+									onLocationChoiceChange={handleLocationChoiceChange}
+									sessionType={sessionType}
+								/>
+							)
 						) : (
 							<Box></Box>
 						)}
@@ -462,6 +472,7 @@ export const AvailabilityWeekDrawer = ({
 		blockSlot,
 		cancelSlot,
 		editSlotForm,
+		hasConflict: !!conflict,
 		isAvailable,
 		isSubmitting,
 		reschedule,

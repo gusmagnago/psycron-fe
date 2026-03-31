@@ -11,6 +11,8 @@ import type {
 	IAvailabilityData,
 	IBookSlotByTherapistPayload,
 	IBookSlotByTherapistResponse,
+	ICheckDuplicatePayload,
+	ICheckDuplicateResponse,
 	ICompleteSessionAvailabilityData,
 	ICompleteSessionAvailabilityResponse,
 	IEditSlotStatus,
@@ -118,6 +120,17 @@ export const bookSlotByTherapist = async ({
 	const response = await apiClient.post<IBookSlotByTherapistResponse>(
 		`/users/${therapistId}/availability/${availabilityDayId}/slot/${slotId}/book`,
 		data
+	);
+	return response.data;
+};
+
+export const checkDuplicatePatient = async (
+	therapistId: string,
+	payload: ICheckDuplicatePayload
+): Promise<ICheckDuplicateResponse> => {
+	const response = await apiClient.post<ICheckDuplicateResponse>(
+		`/users/${therapistId}/patients/check-duplicate`,
+		payload
 	);
 	return response.data;
 };

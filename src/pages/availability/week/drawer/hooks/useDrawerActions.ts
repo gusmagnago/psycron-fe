@@ -31,6 +31,7 @@ export interface IUseDrawerActionsInput {
 	blockSlot: IBlockSlotActions;
 	cancelSlot: ICancelSlotActions;
 	editSlotForm: IEditSlotFormActions;
+	hasConflict: boolean;
 	isAvailable: boolean;
 	isSubmitting: boolean;
 	reschedule: IRescheduleActions;
@@ -43,6 +44,7 @@ export const useDrawerActions = ({
 	blockSlot,
 	cancelSlot,
 	editSlotForm,
+	hasConflict,
 	isAvailable,
 	isSubmitting,
 	reschedule,
@@ -133,6 +135,8 @@ export const useDrawerActions = ({
 
 		default:
 			if (isAvailable) {
+				if (hasConflict) return {};
+
 				return {
 					primary: {
 						disabled: isSubmitting,
