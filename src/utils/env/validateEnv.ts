@@ -55,7 +55,7 @@ const OPTIONAL_ENV_VARS: Record<string, string> = {
 	VITE_TEST_MODE: 'Optional testing mode override',
 };
 
-const VALID_RUNTIME_ENVS = ['dev', 'staging', 'prod'] as const;
+const VALID_RUNTIME_ENVS = ['dev', 'prod'] as const;
 const VALID_TEST_MODE_VALUES = ['true', 'false', '1', '0', 'test', 'app'] as const;
 
 const DEPRECATED_ENV_ALIASES = [
@@ -164,13 +164,6 @@ export const validateEnv = (): ValidationResult => {
 	) {
 		errors.push(
 			`VITE_RUNTIME_ENV must be one of: ${VALID_RUNTIME_ENVS.join(', ')}`
-		);
-	}
-
-	// In production builds, force runtime classification to production.
-	if (!isDev && runtimeEnv && runtimeEnv !== 'prod') {
-		errors.push(
-			`VITE_RUNTIME_ENV must be "prod" in production mode. Current value: "${runtimeEnv}"`
 		);
 	}
 
