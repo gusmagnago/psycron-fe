@@ -1,6 +1,6 @@
-import { useMemo, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import type { FieldValues, Path } from 'react-hook-form';
-import { Controller, useFormContext } from 'react-hook-form';
+import { Controller, useFormContext, useWatch } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import type { Country } from 'react-phone-number-input';
 import PhoneInput, { isValidPhoneNumber } from 'react-phone-number-input';
@@ -43,7 +43,15 @@ export const PhoneInputComponent = <T extends FieldValues>({
 	const {
 		control,
 		formState: { errors },
+		trigger,
 	} = useFormContext<T>();
+
+	// Tracks whether the user has typed anything — needed because the library
+	// calls onChange(undefined) for numbers it can't format as E.164 (e.g.
+	// invalid local number parts), making the field look "empty" to validate.
+	const hasInteractedRef = useRef(!!defaultValue);
+
+	const phoneValue = useWatch({ control, name });
 
 	const error = useMemo(
 		() => getPathError(errors, String(name)),
@@ -51,6 +59,15 @@ export const PhoneInputComponent = <T extends FieldValues>({
 	);
 	const helperFromRhf =
 		typeof error?.message === 'string' ? error.message : null;
+
+	const isValid =
+		!helperFromRhf &&
+		hasInteractedRef.current &&
+		typeof phoneValue === 'string' &&
+		!!phoneValue &&
+		isValidPhoneNumber(phoneValue);
+
+	const invalidMsg = t('components.input.phone-input.invalid', 'Invalid phone number');
 
 	const inputLabel = labelKey ? t(labelKey) : t('globals.phone');
 
@@ -64,15 +81,13 @@ export const PhoneInputComponent = <T extends FieldValues>({
 					validate: (value) => {
 						const v = typeof value === 'string' ? value.trim() : '';
 						if (!v) {
+							// Library returned undefined: either empty or unparseable number.
+							// If the user has typed something, treat it as invalid.
+							if (hasInteractedRef.current) return invalidMsg;
 							if (validateFn) return validateFn(v);
-							return required ? t('globals.required', 'Required') : true;
+							return required ? t('common.required', 'Required') : true;
 						}
-						return isValidPhoneNumber(v)
-							? true
-							: t(
-									'components.input.phone-input.invalid',
-									'Invalid phone number'
-								);
+						return isValidPhoneNumber(v) ? true : invalidMsg;
 					},
 				}}
 				render={({ field }) => (
@@ -86,9 +101,13 @@ export const PhoneInputComponent = <T extends FieldValues>({
 							defaultCountry={defaultCountry}
 							countries={ALLOWED_COUNTRIES}
 							value={field.value as string | undefined}
-							onChange={field.onChange}
+							onChange={(val) => {
+								hasInteractedRef.current = true;
+								field.onChange(val);
+							}}
 							onBlur={() => {
 								field.onBlur();
+								void trigger(name);
 								setFocused(false);
 							}}
 							onFocus={() => setFocused(true)}
@@ -105,6 +124,10 @@ export const PhoneInputComponent = <T extends FieldValues>({
 			{helperFromRhf ? (
 				<Text variant='caption' color={palette.error.main}>
 					{helperFromRhf}
+				</Text>
+			) : isValid ? (
+				<Text variant='caption' color={palette.success.main}>
+					{t('components.input.phone-input.valid', 'Valid phone number')}
 				</Text>
 			) : null}
 		</Box>

@@ -9,6 +9,7 @@ export const DrawerActions = ({ config }: IDrawerActionsProps) => {
 				<Button
 					fullWidth
 					disabled={config.primary.disabled}
+					loading={config.primary.loading}
 					onClick={config.primary.onClick}
 					severity={config.primary.severity}
 					tertiary={config.primary.tertiary}

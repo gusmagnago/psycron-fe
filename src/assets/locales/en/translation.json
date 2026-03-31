@@ -100,7 +100,8 @@
     "save": "Save",
     "saving": "Saving...",
     "cancel": "Cancel",
-    "loading": "Loading..."
+    "loading": "Loading...",
+    "required": "Required"
   },
   "auth": {
     "error": {
@@ -284,7 +285,9 @@
       "phone-input": {
         "select-label": "Country",
         "phone-num-label": "{{registerName}} number here",
-        "phone-number-guide": "Please provide a phone number including the city code if applicable."
+        "phone-number-guide": "Please provide a phone number including the city code if applicable.",
+        "invalid": "Invalid phone number",
+        "valid": "Valid phone number"
       },
       "text": {
         "first-name": "Your first name here",

@@ -16,6 +16,7 @@ import {
 	Watch,
 	WhatsApp,
 } from '@psycron/components/icons';
+import { Modal } from '@psycron/components/modal/Modal';
 import { useAvailability } from '@psycron/context/appointment/availability/AvailabilityContext';
 import type { ISlotAddress } from '@psycron/context/user/auth/UserAuthenticationContext.types';
 import { useUserDetails } from '@psycron/context/user/details/UserDetailsContext';
@@ -118,6 +119,7 @@ export const AvailabilityWeekDrawer = ({
 		conflict,
 		confirmWithExisting,
 		dismissConflict,
+		isChecking,
 		isSubmitting,
 		methods,
 		submitBooking,
@@ -443,22 +445,14 @@ export const AvailabilityWeekDrawer = ({
 					<>
 						<SlotDetailView details={details} />
 						{isAvailable ? (
-							conflict ? (
-								<SlotBookingConflictView
-									conflict={conflict}
-									onConfirm={confirmWithExisting}
-									onDismiss={dismissConflict}
-								/>
-							) : (
-								<SlotAvailableBody
-									customAddress={slotAddress.address}
-									locationChoice={locationChoice}
-									methods={methods}
-									onCustomAddressChange={handleCustomAddressChange}
-									onLocationChoiceChange={handleLocationChoiceChange}
-									sessionType={sessionType}
-								/>
-							)
+							<SlotAvailableBody
+								customAddress={slotAddress.address}
+								locationChoice={locationChoice}
+								methods={methods}
+								onCustomAddressChange={handleCustomAddressChange}
+								onLocationChoiceChange={handleLocationChoiceChange}
+								sessionType={sessionType}
+							/>
 						) : (
 							<Box></Box>
 						)}
@@ -474,6 +468,7 @@ export const AvailabilityWeekDrawer = ({
 		editSlotForm,
 		hasConflict: !!conflict,
 		isAvailable,
+		isChecking,
 		isSubmitting,
 		reschedule,
 		setView,
@@ -485,6 +480,7 @@ export const AvailabilityWeekDrawer = ({
 	const statusCfg = STATUS_CONFIG[slot.status];
 
 	return (
+		<>
 		<Drawer
 			ariaLabel={
 				isAvailable
@@ -551,5 +547,35 @@ export const AvailabilityWeekDrawer = ({
 		>
 			{renderBody()}
 		</Drawer>
+		{conflict && (
+			<Modal
+				openModal
+				title={t('availability.week.drawer.conflict-title')}
+				onClose={dismissConflict}
+				cardActionsProps={
+					conflict.kind === 'single'
+						? {
+								actionName: t('availability.week.drawer.conflict-confirm', {
+									name: conflict.patient.firstName,
+								}),
+								onClick: () => confirmWithExisting(conflict.patient._id),
+								hasSecondAction: true,
+								secondActionName: t(
+									'availability.week.drawer.conflict-change-details'
+								),
+								secondAction: dismissConflict,
+							}
+						: {
+								actionName: t(
+									'availability.week.drawer.conflict-change-details'
+								),
+								onClick: dismissConflict,
+							}
+				}
+			>
+				<SlotBookingConflictView conflict={conflict} />
+			</Modal>
+		)}
+		</>
 	);
 };

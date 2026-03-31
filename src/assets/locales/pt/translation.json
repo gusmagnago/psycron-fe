@@ -100,7 +100,8 @@
     "save": "Salvar",
     "saving": "Salvando...",
     "cancel": "Cancelar",
-    "loading": "Carregando..."
+    "loading": "Carregando...",
+    "required": "Obrigatório"
   },
   "auth": {
     "error": {
@@ -285,7 +286,9 @@
       "phone-input": {
         "select-label": "País",
         "phone-num-label": "Número de {{registerName}}",
-        "phone-number-guide": "Por favor, forneça seu número de telefone com o código da cidade"
+        "phone-number-guide": "Por favor, forneça seu número de telefone com o código da cidade",
+        "invalid": "Número de telefone inválido",
+        "valid": "Número de telefone válido"
       },
       "text": {
         "first-name": "Seu primeiro nome",

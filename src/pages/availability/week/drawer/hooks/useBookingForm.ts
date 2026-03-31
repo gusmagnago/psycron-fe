@@ -45,27 +45,27 @@ export const useBookingForm = (
 	const { t } = useTranslation();
 	const { showAlert } = useAlert();
 	const queryClient = useQueryClient();
-	const methods = useForm<ICreatePatientForm>({ mode: 'onChange' });
+	const methods = useForm<ICreatePatientForm>({ mode: 'onTouched' });
 	const {
 		handleSubmit,
 		formState: { isSubmitting },
 	} = methods;
 
 	const [conflict, setConflict] = useState<ConflictMatch | null>(null);
+	const [isChecking, setIsChecking] = useState(false);
 	const [pendingBooking, setPendingBooking] = useState<IPendingBooking | null>(
 		null
 	);
 
-	const buildPayload = (
-		formData: ICreatePatientForm
-	): IPendingBooking => {
+	const buildPayload = (formData: ICreatePatientForm): IPendingBooking => {
 		const { email, firstName, lastName, preferredContact, recurrencePattern } =
 			formData;
 		const { fullPhone: rawPhone, fullWhatsapp: rawWhatsapp } =
 			getFormattedContacts(formData);
 
 		const phoneFromPreferred =
-			preferredContact?.type === 'phone' || preferredContact?.type === 'whatsapp'
+			preferredContact?.type === 'phone' ||
+			preferredContact?.type === 'whatsapp'
 				? preferredContact.value
 				: undefined;
 
@@ -112,7 +112,9 @@ export const useBookingForm = (
 					? { preferredContact: payload.preferredContact }
 					: {}),
 			},
-			...(payload.recurrencePattern ? { recurrencePattern: payload.recurrencePattern } : {}),
+			...(payload.recurrencePattern
+				? { recurrencePattern: payload.recurrencePattern }
+				: {}),
 			shouldReplicate: payload.recurrencePattern
 				? payload.recurrencePattern !== RecurrencePattern.SINGLE
 				: false,
@@ -123,7 +125,9 @@ export const useBookingForm = (
 				: {}),
 		});
 
-		await queryClient.invalidateQueries({ queryKey: ['therapistAvailability'] });
+		await queryClient.invalidateQueries({
+			queryKey: ['therapistAvailability'],
+		});
 
 		showAlert({
 			message: t('availability.week.drawer.booking-success'),
@@ -136,15 +140,20 @@ export const useBookingForm = (
 	const onSubmit = async (formData: ICreatePatientForm) => {
 		try {
 			const payload = buildPayload(formData);
-
-			// Phase 1: conflict check (only when phone is present)
-			if (payload.contacts.phone) {
+			// Phase 1: conflict check (when phone or email is present)
+			if (payload.contacts.phone || payload.contacts.email) {
+				setIsChecking(true);
 				const result = await checkDuplicatePatient(therapistId ?? '', {
 					contacts: {
-						phone: payload.contacts.phone,
-						...(payload.contacts.email ? { email: payload.contacts.email } : {}),
-					},
+						...(payload.contacts.phone
+							? { phone: payload.contacts.phone }
+							: {}),
+						...(payload.contacts.email
+							? { email: payload.contacts.email }
+							: {}),
+					} as { email?: string; phone: string },
 				});
+				setIsChecking(false);
 
 				if (result.conflict) {
 					setPendingBooking(payload);
@@ -160,6 +169,7 @@ export const useBookingForm = (
 			// Phase 2: no conflict — book directly
 			await executeBooking(payload);
 		} catch {
+			setIsChecking(false);
 			showAlert({
 				message: t('availability.week.drawer.booking-error'),
 				severity: 'error',
@@ -191,6 +201,7 @@ export const useBookingForm = (
 		conflict,
 		confirmWithExisting,
 		dismissConflict,
+		isChecking,
 		isSubmitting,
 		methods,
 		submitBooking: handleSubmit(onSubmit),
