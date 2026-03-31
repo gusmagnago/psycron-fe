@@ -100,7 +100,8 @@
     "save": "Save",
     "saving": "Saving...",
     "cancel": "Cancel",
-    "loading": "Loading..."
+    "loading": "Loading...",
+    "required": "Required"
   },
   "auth": {
     "error": {
@@ -284,7 +285,9 @@
       "phone-input": {
         "select-label": "Country",
         "phone-num-label": "{{registerName}} number here",
-        "phone-number-guide": "Please provide a phone number including the city code if applicable."
+        "phone-number-guide": "Please provide a phone number including the city code if applicable.",
+        "invalid": "Invalid phone number",
+        "valid": "Valid phone number"
       },
       "text": {
         "first-name": "Your first name here",
@@ -897,6 +900,11 @@
         "edit-end-time": "End time",
         "booking-error": "Failed to book appointment. Please try again.",
         "booking-success": "Appointment booked successfully.",
+        "conflict-change-details": "Change contact details",
+        "conflict-confirm": "Book for {{name}}",
+        "conflict-multiple-body": "The phone and email match different patients. Update the contact details to continue.",
+        "conflict-single-body": "A patient with this contact is already registered:",
+        "conflict-title": "Patient already registered",
         "edit-error": "Failed to save changes. Please try again.",
         "edit-note": "Notes",
         "edit-save": "Save changes",

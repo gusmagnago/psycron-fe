@@ -1,6 +1,7 @@
 export interface IDrawerActionConfig {
 	disabled?: boolean;
 	label: string;
+	loading?: boolean;
 	onClick: () => void;
 	severity?: 'error';
 	tertiary?: boolean;
@@ -8,7 +9,7 @@ export interface IDrawerActionConfig {
 }
 
 export interface IDrawerActionsConfig {
-	primary: IDrawerActionConfig;
+	primary?: IDrawerActionConfig;
 	secondary?: IDrawerActionConfig;
 }
 

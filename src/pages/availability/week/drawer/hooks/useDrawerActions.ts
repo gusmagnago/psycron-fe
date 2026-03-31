@@ -31,7 +31,9 @@ export interface IUseDrawerActionsInput {
 	blockSlot: IBlockSlotActions;
 	cancelSlot: ICancelSlotActions;
 	editSlotForm: IEditSlotFormActions;
+	hasConflict: boolean;
 	isAvailable: boolean;
+	isChecking: boolean;
 	isSubmitting: boolean;
 	reschedule: IRescheduleActions;
 	setView: (view: DrawerView) => void;
@@ -43,7 +45,9 @@ export const useDrawerActions = ({
 	blockSlot,
 	cancelSlot,
 	editSlotForm,
+	hasConflict,
 	isAvailable,
+	isChecking,
 	isSubmitting,
 	reschedule,
 	setView,
@@ -133,10 +137,13 @@ export const useDrawerActions = ({
 
 		default:
 			if (isAvailable) {
+				if (hasConflict) return {};
+
 				return {
 					primary: {
-						disabled: isSubmitting,
+						disabled: isSubmitting || isChecking,
 						label: t('availability.week.drawer.confirm-booking'),
+						loading: isChecking,
 						onClick: submitBooking,
 						tertiary: true,
 						variant: 'contained',

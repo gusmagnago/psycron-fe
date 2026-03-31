@@ -181,8 +181,31 @@ export interface CancelAppointmentFormData {
 	triggeredBy: string;
 }
 
+export interface IPatientConflictCandidate {
+	_id: string;
+	firstName: string;
+	lastName: string;
+}
+
+export type ICheckDuplicateResponse =
+	| { conflict: false }
+	| { conflict: true; match: 'single'; patient: IPatientConflictCandidate }
+	| {
+			conflict: true;
+			match: 'multiple';
+			patients: IPatientConflictCandidate[];
+	  };
+
+export interface ICheckDuplicatePayload {
+	contacts: {
+		email?: string;
+		phone: string;
+	};
+}
+
 export interface IBookSlotByTherapistPayload {
 	availabilityDayId: string;
+	existingPatientId?: string;
 	patient: {
 		contacts: {
 			email?: string;

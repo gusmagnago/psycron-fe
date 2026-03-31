@@ -100,7 +100,8 @@
     "save": "Salvar",
     "saving": "Salvando...",
     "cancel": "Cancelar",
-    "loading": "Carregando..."
+    "loading": "Carregando...",
+    "required": "Obrigatório"
   },
   "auth": {
     "error": {
@@ -285,7 +286,9 @@
       "phone-input": {
         "select-label": "País",
         "phone-num-label": "Número de {{registerName}}",
-        "phone-number-guide": "Por favor, forneça seu número de telefone com o código da cidade"
+        "phone-number-guide": "Por favor, forneça seu número de telefone com o código da cidade",
+        "invalid": "Número de telefone inválido",
+        "valid": "Número de telefone válido"
       },
       "text": {
         "first-name": "Seu primeiro nome",
@@ -898,6 +901,11 @@
         "edit-end-time": "Horário de término",
         "booking-error": "Falha ao agendar a consulta. Tente novamente.",
         "booking-success": "Consulta agendada com sucesso.",
+        "conflict-change-details": "Alterar dados de contacto",
+        "conflict-confirm": "Agendar para {{name}}",
+        "conflict-multiple-body": "O telefone e o email correspondem a pacientes diferentes. Atualize os dados de contacto para continuar.",
+        "conflict-single-body": "Já existe um paciente registado com este contacto:",
+        "conflict-title": "Paciente já registado",
         "edit-error": "Falha ao salvar as alterações. Tente novamente.",
         "edit-note": "Notas",
         "edit-save": "Salvar alterações",
