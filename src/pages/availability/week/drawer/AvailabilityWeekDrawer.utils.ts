@@ -1,9 +1,46 @@
+import type {
+	IPreferredContact,
+} from '@psycron/context/user/auth/UserAuthenticationContext.types';
 import { palette } from '@psycron/theme/palette/palette.theme';
 import type { Locale } from 'date-fns';
 import { format, parseISO } from 'date-fns';
 import { toZonedTime } from 'date-fns-tz';
 
 import type { IWeekSlot } from '../AvailabilityWeekPage.types';
+
+export interface IContactLink {
+	href: string;
+	labelKey: string;
+	type: IPreferredContact['type'];
+}
+
+const CONTACT_LINK_LABEL: Record<IPreferredContact['type'], string> = {
+	google_meet: 'availability.week.drawer.join-meet',
+	phone: 'availability.week.drawer.call-phone',
+	whatsapp: 'availability.week.drawer.call-whatsapp',
+	zoom: 'availability.week.drawer.join-zoom',
+};
+
+/**
+ * Builds the appropriate contact link for a booked patient.
+ * Uses preferredContact as the single source of truth.
+ */
+export const buildContactLink = (
+	preferredContact?: IPreferredContact | null
+): IContactLink | null => {
+	if (!preferredContact?.value) return null;
+
+	const { type, value } = preferredContact;
+
+	const href =
+		type === 'whatsapp'
+			? `https://wa.me/${value.replace(/\D/g, '')}`
+			: type === 'phone'
+				? `tel:${value}`
+				: value;
+
+	return { href, labelKey: CONTACT_LINK_LABEL[type], type };
+};
 
 export const STATUS_CONFIG: Record<
 	string,

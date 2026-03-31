@@ -2,6 +2,7 @@ import type {
 	IBookSessionWithLink,
 	IContactInfo,
 	IPatient,
+	IPreferredContact,
 	ISlotAddress,
 } from '@psycron/context/user/auth/UserAuthenticationContext.types';
 
@@ -27,11 +28,12 @@ export interface IPatientByIdResponse {
 export interface PatientFormData {
 	_id?: string;
 	countryCode?: string;
-	email: string;
+	email?: string;
 	firstName: string;
 	lastName: string;
 	phone: string;
-	whatsapp: string;
+	preferredContact?: IPreferredContact;
+	whatsapp?: string;
 }
 export interface IEditPatientDetailsById {
 	patient: PatientFormData;
@@ -48,6 +50,7 @@ export interface PatientPartial {
 	contacts: IContactInfo;
 	firstName: string;
 	lastName: string;
+	preferredContact?: IPreferredContact;
 }
 
 export interface ICreatePatient {
@@ -63,15 +66,19 @@ export interface ICreatePatientResponse {
 	status: 'success' | 'error';
 }
 
+export type SessionDelivery = 'in_person' | 'online';
+
 export interface ICreatePatientForm {
 	countryCode: string;
-	email: string;
+	email?: string;
 	firstName: string;
 	hasWhatsApp?: boolean;
 	isPhoneWpp?: boolean;
 	lastName: string;
 	phone: string;
+	preferredContact?: IPreferredContact;
 	recurrencePattern?: RecurrencePattern;
+	sessionDelivery?: SessionDelivery;
 	timeZone?: string;
 	whatsapp?: string;
 }

@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Box } from '@mui/material';
 import { StatusEnum } from '@psycron/api/user/availability/index.types';
@@ -7,6 +7,7 @@ import {
 	Account,
 	Appointment,
 	Calendar,
+	Globe,
 	Google,
 	Jupiter,
 	Mail,
@@ -46,6 +47,7 @@ import {
 	CancelViewBody,
 	ConfirmedBadge,
 	ConfirmedBadgeText,
+	ContactLinkAnchor,
 	DrawerBadgeRow,
 	DrawerDetailLabel,
 	SourceBadge,
@@ -59,6 +61,7 @@ import type {
 	LocationChoice,
 } from './AvailabilityWeekDrawer.types';
 import {
+	buildContactLink,
 	computeEndTime,
 	computeTimeStrings,
 	STATUS_CONFIG,
@@ -86,6 +89,12 @@ export const AvailabilityWeekDrawer = ({
 		getInitialLocationChoice
 	);
 
+	useEffect(() => {
+		setLocationChoice(getInitialLocationChoice());
+		setOverrideAddress(!!slot.address);
+	// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [slot.address, slot.letPatientChooseAddress]);
+
 	// ─── Slot flags ───────────────────────────────────────────────────────────
 	const isAvailable = slot.status === 'available';
 	const isBooked =
@@ -95,8 +104,6 @@ export const AvailabilityWeekDrawer = ({
 	const hasInPersonAddress = !!userDetails?.clinicAddress?.street;
 	const isInPersonSession =
 		sessionType === 'IN_PERSON' || sessionType === 'BOTH';
-	const showSessionLocation =
-		isAvailable && isInPersonSession && hasInPersonAddress;
 	const showAddressInEdit = isBooked && isInPersonSession && hasInPersonAddress;
 
 	// ─── Hooks ────────────────────────────────────────────────────────────────
@@ -110,7 +117,8 @@ export const AvailabilityWeekDrawer = ({
 		slot,
 		therapistId,
 		locationChoice,
-		slotAddress.address
+		slotAddress.address,
+		onClose
 	);
 
 	const editSlotForm = useEditSlotForm(
@@ -255,6 +263,21 @@ export const AvailabilityWeekDrawer = ({
 	const DASH = '—';
 	const apptPatient = appointmentDetailsBySlotId?.appointment?.patient;
 	const appt = appointmentDetailsBySlotId?.appointment;
+
+	// ─── Contact link ─────────────────────────────────────────────────────────
+	const contactLink = isBooked
+		? buildContactLink(apptPatient?.preferredContact)
+		: null;
+
+	const CONTACT_LINK_ICON: Record<
+		'google_meet' | 'phone' | 'whatsapp' | 'zoom',
+		JSX.Element
+	> = {
+		google_meet: <Google color={palette.brand.purple} />,
+		phone: <Phone color={palette.brand.purple} />,
+		whatsapp: <WhatsApp color={palette.brand.purple} />,
+		zoom: <Globe color={palette.brand.purple} />,
+	};
 
 	const details: IDrawerDetail[] = isAvailable
 		? [
@@ -424,7 +447,7 @@ export const AvailabilityWeekDrawer = ({
 								methods={methods}
 								onCustomAddressChange={handleCustomAddressChange}
 								onLocationChoiceChange={handleLocationChoiceChange}
-								showSessionLocation={showSessionLocation}
+								sessionType={sessionType}
 							/>
 						) : (
 							<Box></Box>
@@ -462,7 +485,21 @@ export const AvailabilityWeekDrawer = ({
 					? t('availability.week.drawer.book-slot')
 					: (patientName ?? '')
 			}
-			actions={<DrawerActions config={drawerActions} />}
+			actions={
+				<>
+					{contactLink && view === 'default' && (
+						<ContactLinkAnchor
+							href={contactLink.href}
+							rel='noopener noreferrer'
+							target='_blank'
+						>
+							{CONTACT_LINK_ICON[contactLink.type]}
+							{t(contactLink.labelKey)}
+						</ContactLinkAnchor>
+					)}
+					<DrawerActions config={drawerActions} />
+				</>
+			}
 			headerExtra={
 				<>
 					{!isAvailable && (

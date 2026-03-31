@@ -262,6 +262,18 @@
         "contact-via": "Contact via {{method}}?",
         "contact-via-same": "Is phone number the same as whatsapp?"
       },
+      "preferred-contact": {
+        "coming-soon": "Integration coming soon — paste your meeting link for now",
+        "label": "Preferred session platform",
+        "value-phone": "Phone number",
+        "value-url": "Meeting link (URL)",
+        "type": {
+          "google_meet": "Google Meet",
+          "phone": "Phone call",
+          "whatsapp": "WhatsApp",
+          "zoom": "Zoom"
+        }
+      },
       "consent": {
         "terms": "I agree to the <privacyLink>Privacy Policy</privacyLink> and <termsLink>Terms of Use.</termsLink>",
         "marketing": "I consent to receive <marketingLink>marketing communications.</marketingLink>",
@@ -883,6 +895,8 @@
         "date": "Date",
         "edit": "Edit",
         "edit-end-time": "End time",
+        "booking-error": "Failed to book appointment. Please try again.",
+        "booking-success": "Appointment booked successfully.",
         "edit-error": "Failed to save changes. Please try again.",
         "edit-note": "Notes",
         "edit-save": "Save changes",
@@ -893,6 +907,16 @@
         "location-choice-clinic": "Clinic",
         "location-choice-custom": "Custom",
         "location-choice-label": "Session location",
+        "session-delivery-in-person": "In person",
+        "session-delivery-in-person-subtitle": "At your clinic or the patient's location",
+        "session-delivery-label": "How will this session be held?",
+        "session-delivery-online": "Online",
+        "recurrence-all": "All future appointments",
+        "recurrence-end-month": "Until end of month",
+        "recurrence-end-year": "Until end of year",
+        "recurrence-label": "Repeat booking",
+        "recurrence-single": "This appointment only",
+        "session-delivery-online-subtitle": "Video call, phone, or messaging",
         "location-choice-patient": "Patient",
         "location-subtitle-clinic": "We will share your clinic address in the booking location",
         "location-subtitle-custom": "We will share the custom address in the booking location",
@@ -900,6 +924,8 @@
         "minutes": "minutes",
         "notes": "Notes",
         "patient-email": "Patient's email",
+        "patient-timezone": "Patient's timezone",
+        "patient-timezone-placeholder": "Search by city, e.g. Sao Paulo",
         "patient-first-name": "Patient's first name",
         "patient-last-name": "Patient's last name",
         "patient-time": "Patient time",
@@ -918,7 +944,11 @@
         "your-time": "Your time",
         "appointment-address": "Appointment address",
         "patient-phone": "Patient's phone",
-        "patient-provides-address": "Patient will provide the address"
+        "patient-provides-address": "Patient will provide the address",
+        "call-whatsapp": "Call on WhatsApp",
+        "call-phone": "Call patient",
+        "join-meet": "Join on Google Meet",
+        "join-zoom": "Join on Zoom"
       },
       "buffer-label": "Buffer",
       "legend-available": "Available",

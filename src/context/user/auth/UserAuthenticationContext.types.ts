@@ -42,7 +42,7 @@ export interface IClinicAddress {
 }
 
 export interface IContactInfo {
-	email: string;
+	email?: string;
 	hasWhatsApp?: boolean;
 	isPhoneWpp?: boolean;
 
@@ -174,10 +174,18 @@ export interface ISessionDatesGroup {
 	slots: ISlot[];
 }
 
+export type PreferredContactType = 'google_meet' | 'phone' | 'whatsapp' | 'zoom';
+
+export interface IPreferredContact {
+	type: PreferredContactType;
+	value: string;
+}
+
 export interface IPatient extends IBaseUser {
 	cancelledAppointments?: ICancelledAppointment[];
 	createdBy?: ITherapist | string;
 	notifications?: INotification[];
+	preferredContact?: IPreferredContact | null;
 
 	role: 'PATIENT';
 	sessionDates: ISessionDatesGroup[];

@@ -263,6 +263,18 @@
         "contact-via": "Entrar em contato via {{method}}?",
         "contact-via-same": "O número é o mesmo para o Whatsapp?"
       },
+      "preferred-contact": {
+        "coming-soon": "Integração em breve — cole o link da sessão por enquanto",
+        "label": "Plataforma preferida para sessão",
+        "value-phone": "Número de telefone",
+        "value-url": "Link da reunião (URL)",
+        "type": {
+          "google_meet": "Google Meet",
+          "phone": "Ligação",
+          "whatsapp": "WhatsApp",
+          "zoom": "Zoom"
+        }
+      },
       "consent": {
         "terms": "Eu concordo com a <privacyLink>Política de Privacidade</privacyLink> e os <termsLink>Termos de Uso</termsLink>",
         "marketing": "Eu concordo em receber <marketingLink>comunicações de marketing.</marketingLink>",
@@ -884,6 +896,8 @@
         "date": "Data",
         "edit": "Editar",
         "edit-end-time": "Horário de término",
+        "booking-error": "Falha ao agendar a consulta. Tente novamente.",
+        "booking-success": "Consulta agendada com sucesso.",
         "edit-error": "Falha ao salvar as alterações. Tente novamente.",
         "edit-note": "Notas",
         "edit-save": "Salvar alterações",
@@ -894,6 +908,16 @@
         "location-choice-clinic": "Consultório",
         "location-choice-custom": "Personalizado",
         "location-choice-label": "Local da sessão",
+        "session-delivery-in-person": "Presencial",
+        "session-delivery-in-person-subtitle": "No seu consultório ou endereço do paciente",
+        "session-delivery-label": "Como será realizada esta sessão?",
+        "session-delivery-online": "Online",
+        "recurrence-all": "Todos os agendamentos futuros",
+        "recurrence-end-month": "Até o fim do mês",
+        "recurrence-end-year": "Até o fim do ano",
+        "recurrence-label": "Repetir agendamento",
+        "recurrence-single": "Apenas este agendamento",
+        "session-delivery-online-subtitle": "Videochamada, telefone ou mensagens",
         "location-choice-patient": "Paciente",
         "location-subtitle-clinic": "Vamos partilhar o endereço do consultório na localização da consulta",
         "location-subtitle-custom": "Vamos partilhar o endereço personalizado na localização da consulta",
@@ -901,6 +925,8 @@
         "minutes": "minutos",
         "notes": "Notas",
         "patient-email": "Email do paciente",
+        "patient-timezone": "Fuso horário do paciente",
+        "patient-timezone-placeholder": "Pesquise por cidade, ex: Sao Paulo",
         "patient-first-name": "Nome do paciente",
         "patient-last-name": "Sobrenome do paciente",
         "patient-time": "Horário do paciente",
@@ -919,7 +945,11 @@
         "your-time": "Seu horário",
         "appointment-address": "Endereço da consulta",
         "patient-phone": "Telefone do paciente",
-        "patient-provides-address": "O paciente irá fornecer o endereço"
+        "patient-provides-address": "O paciente irá fornecer o endereço",
+        "call-whatsapp": "Ligar pelo WhatsApp",
+        "call-phone": "Ligar para o paciente",
+        "join-meet": "Entrar no Google Meet",
+        "join-zoom": "Entrar no Zoom"
       },
       "buffer-label": "Buffer",
       "legend-available": "Disponível",

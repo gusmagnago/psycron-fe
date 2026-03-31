@@ -5,5 +5,5 @@ import type { ISlotLocationSectionProps } from '../slot-location-section/SlotLoc
 
 export interface ISlotAvailableBodyProps extends ISlotLocationSectionProps {
 	methods: UseFormReturn<ICreatePatientForm>;
-	showSessionLocation: boolean;
+	sessionType?: string;
 }
