@@ -1,0 +1,188 @@
+# .github/workflows/dev-changelog.yml
+# ─────────────────────────────────────────────────────────────
+# Psycron — Dev Branch Changelog Generator
+# ─────────────────────────────────────────────────────────────
+# Runs on every push to `dev`. Generates a diff summary showing
+# all commits and file changes between `main` and `dev`.
+# Posts the summary as a PR comment (if a dev→main PR exists)
+# and updates a pinned GitHub Issue for visibility.
+#
+# Setup: No secrets needed beyond default GITHUB_TOKEN.
+# ─────────────────────────────────────────────────────────────
+
+name: "📋 Dev Changelog"
+
+on:
+  push:
+    branches: [dev]
+
+permissions:
+  contents: read
+  issues: write
+  pull-requests: write
+
+jobs:
+  changelog:
+    name: Generate dev↔main diff
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout full history
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Generate changelog
+        id: diff
+        run: |
+          echo "## 🔀 Dev vs Main — $(date -u '+%Y-%m-%d %H:%M UTC')" > changelog.md
+          echo "" >> changelog.md
+
+          # Count commits ahead
+          AHEAD=$(git rev-list --count main..dev 2>/dev/null || echo "0")
+          BEHIND=$(git rev-list --count dev..main 2>/dev/null || echo "0")
+          echo "**Branch status:** \`dev\` is **${AHEAD} commits ahead**, ${BEHIND} commits behind \`main\`" >> changelog.md
+          echo "" >> changelog.md
+
+          # List commits (grouped by conventional commit type)
+          echo "### Commits since last release" >> changelog.md
+          echo "" >> changelog.md
+          echo "| Hash | Author | Message | Date |" >> changelog.md
+          echo "|------|--------|---------|------|" >> changelog.md
+          git log main..dev --pretty=format="| \`%.7h\` | %an | %s | %ad |" --date=short >> changelog.md
+          echo "" >> changelog.md
+          echo "" >> changelog.md
+
+          # Categorize by conventional commits
+          echo "### Changes by category" >> changelog.md
+          echo "" >> changelog.md
+
+          FEATS=$(git log main..dev --pretty=format:"%s" | grep -c "^feat" || true)
+          FIXES=$(git log main..dev --pretty=format:"%s" | grep -c "^fix" || true)
+          SECS=$(git log main..dev --pretty=format:"%s" | grep -c "^sec" || true)
+          REFACTORS=$(git log main..dev --pretty=format:"%s" | grep -c "^refactor" || true)
+          DOCS=$(git log main..dev --pretty=format:"%s" | grep -c "^docs" || true)
+          CHORES=$(git log main..dev --pretty=format:"%s" | grep -c "^chore" || true)
+
+          echo "| Category | Count |" >> changelog.md
+          echo "|----------|-------|" >> changelog.md
+          echo "| ✨ Features (\`feat\`) | ${FEATS} |" >> changelog.md
+          echo "| 🐛 Fixes (\`fix\`) | ${FIXES} |" >> changelog.md
+          echo "| 🔒 Security (\`sec\`) | ${SECS} |" >> changelog.md
+          echo "| ♻️ Refactors (\`refactor\`) | ${REFACTORS} |" >> changelog.md
+          echo "| 📝 Docs (\`docs\`) | ${DOCS} |" >> changelog.md
+          echo "| 🔧 Chores (\`chore\`) | ${CHORES} |" >> changelog.md
+          echo "" >> changelog.md
+
+          # File change summary
+          echo "### Files changed" >> changelog.md
+          echo "" >> changelog.md
+          echo "\`\`\`" >> changelog.md
+          git diff --stat main..dev >> changelog.md
+          echo "\`\`\`" >> changelog.md
+          echo "" >> changelog.md
+
+          # Key directories impacted
+          echo "### Key areas impacted" >> changelog.md
+          echo "" >> changelog.md
+          git diff --name-only main..dev | sed 's|/[^/]*$||' | sort -u | head -20 | while read dir; do
+            COUNT=$(git diff --name-only main..dev | grep "^${dir}/" | wc -l)
+            echo "- \`${dir}/\` — ${COUNT} files" >> changelog.md
+          done
+          echo "" >> changelog.md
+
+          # Store for next step
+          echo "ahead=${AHEAD}" >> $GITHUB_OUTPUT
+
+      - name: Find or create tracking issue
+        id: issue
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const title = '📋 Dev Branch Changelog (Auto-Updated)';
+            const { data: issues } = await github.rest.issues.listForRepo({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: 'open',
+              labels: 'changelog',
+              per_page: 1
+            });
+
+            let issueNumber;
+            if (issues.length > 0) {
+              issueNumber = issues[0].number;
+            } else {
+              // Create the tracking issue
+              const { data: newIssue } = await github.rest.issues.create({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                title: title,
+                labels: ['changelog'],
+                body: 'This issue is auto-updated by the Dev Changelog workflow.'
+              });
+              issueNumber = newIssue.number;
+              // Pin it
+              await github.rest.issues.update({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: issueNumber,
+                state: 'open'
+              });
+            }
+            core.setOutput('number', issueNumber);
+
+      - name: Update tracking issue
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const changelog = fs.readFileSync('changelog.md', 'utf8');
+            await github.rest.issues.update({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: ${{ steps.issue.outputs.number }},
+              body: changelog
+            });
+
+      - name: Comment on open dev→main PR (if exists)
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const changelog = fs.readFileSync('changelog.md', 'utf8');
+
+            // Find open PRs from dev to main
+            const { data: prs } = await github.rest.pulls.list({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: 'open',
+              head: `${context.repo.owner}:dev`,
+              base: 'main'
+            });
+
+            for (const pr of prs) {
+              // Delete previous bot comment if exists
+              const { data: comments } = await github.rest.issues.listComments({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: pr.number,
+                per_page: 100
+              });
+              const botComment = comments.find(c =>
+                c.user.type === 'Bot' && c.body.includes('Dev vs Main')
+              );
+              if (botComment) {
+                await github.rest.issues.deleteComment({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  comment_id: botComment.id
+                });
+              }
+
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: pr.number,
+                body: changelog
+              });
+            }

@@ -1,0 +1,189 @@
+# Psycron — GitHub Automation & Version Tracking Setup Guide
+
+## Overview
+
+This package contains two GitHub Actions workflows that automate changelog generation and version management for Psycron's `psycron-fe` and `psycron-be` repositories.
+
+### What you get
+
+| Workflow | Trigger | What it does |
+|----------|---------|-------------|
+| `dev-changelog.yml` | Every push to `dev` | Generates a diff summary (main↔dev), posts to a pinned GitHub Issue, comments on any open dev→main PR |
+| `release.yml` | PR merge from `dev` to `main` | Auto-determines semver bump, creates Git tag, generates categorized GitHub Release |
+
+---
+
+## Installation (both repos)
+
+### Step 1: Copy workflow files
+
+For **each** repository (`psycron-fe` and `psycron-be`):
+
+```bash
+# From your local clone
+cd psycron-fe   # or psycron-be
+mkdir -p .github/workflows
+cp path/to/dev-changelog.yml .github/workflows/
+cp path/to/release.yml .github/workflows/
+git add .github/workflows/
+git commit -m "ci: add dev changelog and release automation"
+git push origin dev
+```
+
+### Step 2: Create the `changelog` label
+
+In each repo, go to **Settings → Labels** and create:
+- Name: `changelog`
+- Color: `#0075ca`
+- Description: "Auto-updated dev branch changelog"
+
+### Step 3: Verify permissions
+
+Go to **Settings → Actions → General → Workflow permissions** and ensure:
+- [x] Read and write permissions
+- [x] Allow GitHub Actions to create and approve pull requests
+
+---
+
+## Versioning Strategy
+
+### Semantic Versioning (SemVer)
+
+```
+v{MAJOR}.{MINOR}.{PATCH}
+
+MAJOR = breaking changes (API contracts change)
+MINOR = new features (additive, non-breaking)
+PATCH = bug fixes, security patches, refactors
+```
+
+### Version Phases
+
+| Phase | Version Range | When |
+|-------|--------------|------|
+| Pre-launch development | `v0.x.x` | Now → March 31, 2026 |
+| **MVP Launch** | **`v1.0.0`** | **April 1, 2026** |
+| Post-launch iteration | `v1.x.x` | April 2+ |
+| Major redesign/breaking | `v2.0.0` | When API contracts change |
+
+### Launch Day: Creating v1.0.0
+
+On April 1, when you merge `dev` → `main` for launch, use the manual trigger:
+
+1. Go to **Actions → 🚀 Release & Version Tag**
+2. Click **Run workflow**
+3. Set:
+   - `version_override`: `1.0.0`
+   - `release_title`: `Psycron MVP Launch — v1.0.0`
+4. Click **Run workflow**
+
+This creates the `v1.0.0` tag and a full GitHub Release.
+
+### Post-Launch: Automatic Versioning
+
+After v1.0.0, every merge from `dev` → `main` auto-determines the version:
+
+```
+feat(jupiter): add enhancement mode    → v1.1.0 (MINOR)
+fix(booking): timezone offset bug      → v1.0.1 (PATCH)
+sec(auth): rate limit hardening        → v1.0.2 (PATCH)
+feat!: new availability data model     → v2.0.0 (MAJOR — breaking)
+```
+
+---
+
+## Commit Convention (Required)
+
+For the automation to categorize changes correctly, follow **Conventional Commits**:
+
+```
+<type>(<scope>): <description>
+
+Types:
+  feat     → New feature
+  fix      → Bug fix
+  sec      → Security improvement
+  refactor → Code refactor (no behavior change)
+  docs     → Documentation
+  chore    → Tooling, deps, config
+  test     → Tests
+  ci       → CI/CD changes
+
+Scopes (suggested):
+  auth, booking, jupiter, availability, notifications,
+  payments, dashboard, i18n, calendar, patient
+
+Breaking changes:
+  feat!: ...           → Major version bump
+  BREAKING CHANGE:     → In commit body → Major version bump
+```
+
+### Examples
+
+```bash
+git commit -m "feat(jupiter): add recurrence pattern to conversational flow"
+git commit -m "fix(booking): patient address not persisting after step 3"
+git commit -m "sec(auth): enforce httpOnly on refresh token cookie"
+git commit -m "refactor(availability): extract slot generation to service"
+```
+
+---
+
+## What the Dev Changelog Shows
+
+Every push to `dev` updates a pinned GitHub Issue with:
+
+1. **Branch status** — how many commits `dev` is ahead/behind `main`
+2. **Commit table** — all commits since last merge to main
+3. **Category breakdown** — features, fixes, security, refactors
+4. **File change stats** — which directories/files changed
+5. **Key areas impacted** — grouped by module
+
+This gives you (and Eduardo, and investors looking at GitHub) a real-time view of what's in staging vs production.
+
+---
+
+## Confluence Integration
+
+The Confluence "Version Tracking" page should be updated when:
+1. A new release is created (version tag on main)
+2. Major feature work completes on dev
+
+For now, this is a manual step (update Confluence after each release).
+
+**Future automation option:** Add a Confluence API step to `release.yml` that auto-updates the version tracking page. This requires:
+- Storing `CONFLUENCE_API_TOKEN` as a GitHub Secret
+- Adding an API call step to the release workflow
+
+Template for that step (add when ready):
+
+```yaml
+- name: Update Confluence version tracking
+  run: |
+    curl -X PUT \
+      "https://psycron.atlassian.net/wiki/api/v2/pages/${CONFLUENCE_PAGE_ID}" \
+      -H "Authorization: Basic ${CONFLUENCE_AUTH}" \
+      -H "Content-Type: application/json" \
+      -d '{...}'
+  env:
+    CONFLUENCE_AUTH: ${{ secrets.CONFLUENCE_API_TOKEN }}
+    CONFLUENCE_PAGE_ID: "<page-id-here>"
+```
+
+---
+
+## File Structure
+
+```
+.github/
+└── workflows/
+    ├── dev-changelog.yml    # Dev branch diff generator
+    └── release.yml          # Release & version tagging
+```
+
+Both files go in **both** `psycron-fe` and `psycron-be` repos. Each repo tracks its own version independently:
+
+- `psycron-fe` → `v1.0.0`, `v1.1.0`, ...
+- `psycron-be` → `v1.0.0`, `v1.1.0`, ...
+
+This is standard for separate frontend/backend repos and allows independent deployment cadences.

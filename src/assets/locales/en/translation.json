@@ -1,10 +1,106 @@
 {
+  "public": {
+    "powered-by": "Powered by Psycron"
+  },
+  "booking": {
+    "page": {
+      "title": "Book a Session"
+    },
+    "filter": {
+      "from": "From",
+      "label-date-range": "Date range",
+      "label-time-of-day": "Time of day",
+      "time-all": "Any time",
+      "time-morning": "Morning (before noon)",
+      "time-afternoon": "Afternoon (12–17h)",
+      "time-evening": "Evening (after 17h)",
+      "time-of-day": "Time of day",
+      "to": "To",
+      "weeks-1": "Next week",
+      "weeks-2": "Next 2 weeks",
+      "weeks-4": "Next month",
+      "weeks-12": "Next 3 months",
+      "weeks-all": "All available"
+    },
+    "slot": {
+      "booked": "Booked",
+      "taken": "Taken"
+    },
+    "drawer": {
+      "aria-label": "Book appointment",
+      "title": "Confirm your booking"
+    },
+    "confirm": "Confirm",
+    "error": "Something went wrong. Please try again.",
+    "no-slots": "No available slots match your filters.",
+    "form": {
+      "address-fallback": "Address will appear here after you enter it above.",
+      "email": "Email",
+      "first-name": "First name",
+      "last-name": "Last name",
+      "notify-email": "Notify me by email",
+      "notify-fallback": "Provide your contact details above to enable notifications.",
+      "notify-whatsapp": "Notify me by WhatsApp",
+      "section-notifications": "Notifications",
+      "section-personal": "Your details",
+      "section-recurrence": "Recurrence",
+      "your-address": "Session address"
+    },
+    "notifications": {
+      "description": "We'll send you a reminder before each session.",
+      "email": "Notify me by email",
+      "fallback-note": "Add your contact details above to enable reminders.",
+      "title": "Reminders",
+      "whatsapp": "Notify me by WhatsApp"
+    },
+    "recurrence": {
+      "biweekly": "Every 2 weeks",
+      "monthly": "Every month",
+      "not-yet": "Not yet — decide later",
+      "single": "One-time session",
+      "title": "How often would you like to meet?",
+      "weekly": "Every week"
+    },
+    "confirmation": {
+      "title": "You're booked!",
+      "subtitle": "Great, {{name}}! Your session has been confirmed.",
+      "date": "Date",
+      "time": "Time",
+      "your-agenda": "Your personal agenda",
+      "agenda-description": "Use this link to view and manage your upcoming appointments.",
+      "copy-link": "Copy link"
+    },
+    "appointments": {
+      "title": "Your appointments",
+      "subtitle": "View and manage your scheduled sessions.",
+      "upcoming": "Upcoming",
+      "past": "Past",
+      "no-upcoming": "You have no upcoming appointments."
+    },
+    "cancel": {
+      "button": "Cancel appointment",
+      "reason-prompt": "Please let us know why you need to cancel.",
+      "reason-label": "Reason",
+      "reason": {
+        "emergency": "Personal emergency",
+        "schedule-conflict": "Schedule conflict",
+        "financial": "Financial reasons",
+        "mental-health": "Not feeling ready",
+        "other": "Other"
+      },
+      "custom-reason": "Tell us more (optional)",
+      "confirm": "Confirm cancellation",
+      "success": "Your appointment has been cancelled.",
+      "error": "Something went wrong. Please try again."
+    }
+  },
   "common": {
     "close": "Close",
     "today": "Today",
     "save": "Save",
     "saving": "Saving...",
-    "cancel": "Cancel"
+    "cancel": "Cancel",
+    "loading": "Loading..."
   },
   "auth": {
     "error": {

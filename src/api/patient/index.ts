@@ -10,6 +10,7 @@ import type {
 	IEditPatientDetailsById,
 	IEditPatientDetailsByIdResponse,
 	IPatientByIdResponse,
+	IPublicPatientSessionsResponse,
 } from './index.types';
 
 export const bookAppointmentFromLink = async ({
@@ -44,6 +45,15 @@ export const updatePatientDetailsById = async ({
 		patient
 	);
 
+	return response.data;
+};
+
+export const getPublicPatientSessions = async (
+	patientId: string
+): Promise<IPublicPatientSessionsResponse> => {
+	const response = await apiClient.get<IPublicPatientSessionsResponse>(
+		`/patient/${patientId}/sessions`
+	);
 	return response.data;
 };
 
