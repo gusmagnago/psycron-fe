@@ -47,9 +47,10 @@ export const computeTimeStrings = (
 	slot: IWeekSlot,
 	endTime: string,
 	therapistTZ: string,
-	dateLocale: Locale
+	dateLocale: Locale,
+	patientTZOverride?: string
 ): { patientTimeStr: string | null; therapistTimeStr: string } => {
-	const rawPatientTZ = slot.timezone;
+	const rawPatientTZ = patientTZOverride ?? slot.timezone;
 	const patientTZ =
 		rawPatientTZ && isValidIANATZ(rawPatientTZ) ? rawPatientTZ : therapistTZ;
 

@@ -25,10 +25,19 @@ const toSlotStatus = (status: string): SlotStatus | null => {
 	return null;
 };
 
-export const useWeekSlots = (weekStart: Date, weekEnd: Date, bufferTimeMinutes: number) => {
-	const { availabilityData, availabilityDataIsLoading, isAvailabilityDatesEmpty } = useAvailability();
-
-	const weekDates = (availabilityData?.dates ?? [] as IAvailabilityDateRef[]).filter((d) =>
+export const useWeekSlots = (
+	weekStart: Date,
+	weekEnd: Date,
+	bufferTimeMinutes: number
+) => {
+	const {
+		availabilityData,
+		availabilityDataIsLoading,
+		isAvailabilityDatesEmpty,
+	} = useAvailability();
+	const weekDates = (
+		availabilityData?.dates ?? ([] as IAvailabilityDateRef[])
+	).filter((d) =>
 		isWithinInterval(parseISO(d.date), { start: weekStart, end: weekEnd })
 	);
 
@@ -54,6 +63,7 @@ export const useWeekSlots = (weekStart: Date, weekEnd: Date, bufferTimeMinutes: 
 					letPatientChooseAddress: slot.letPatientChooseAddress ?? false,
 					notes: slot.note,
 					patientId: slot.patientId ? String(slot.patientId) : undefined,
+					patientName: slot.patientSummary?.fullName ?? undefined,
 					startTime: slot.startTime,
 					status,
 				};
@@ -65,7 +75,8 @@ export const useWeekSlots = (weekStart: Date, weekEnd: Date, bufferTimeMinutes: 
 			const bufferSlots: IWeekSlot[] = [];
 
 			realSlots.forEach((slot) => {
-				if (slot.status !== 'booked-jupiter' && slot.status !== 'booked-google') return;
+				if (slot.status !== 'booked-jupiter' && slot.status !== 'booked-google')
+					return;
 
 				const bufferStart = addMinutes(slot.startTime, slot.duration);
 				const [h] = bufferStart.split(':').map(Number);
@@ -90,5 +101,9 @@ export const useWeekSlots = (weekStart: Date, weekEnd: Date, bufferTimeMinutes: 
 		}
 	});
 
-	return { isAvailabilityDatesEmpty, isLoading: availabilityDataIsLoading, weekData };
+	return {
+		isAvailabilityDatesEmpty,
+		isLoading: availabilityDataIsLoading,
+		weekData,
+	};
 };

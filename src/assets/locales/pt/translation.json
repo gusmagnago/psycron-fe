@@ -820,7 +820,10 @@
         "share-address": "Partilhar endereço do consultório com o paciente",
         "status-cancelled": "Cancelado",
         "status-confirmed": "Confirmado",
-        "your-time": "Seu horário"
+        "your-time": "Seu horário",
+        "appointment-address": "Endereço da consulta",
+        "patient-phone": "Telefone do paciente",
+        "patient-provides-address": "O paciente irá fornecer o endereço"
       },
       "buffer-label": "Buffer",
       "legend-available": "Disponível",

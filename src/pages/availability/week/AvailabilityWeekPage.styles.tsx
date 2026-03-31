@@ -3,6 +3,7 @@ import { Box, ButtonBase } from '@mui/material';
 import { Button } from '@psycron/components/button/Button';
 import { Text } from '@psycron/components/text/Text';
 import {
+	isMediumMedia,
 	isMobileMedia,
 	isSmallerThanTabletMedia,
 } from '@psycron/theme/media-queries/mediaQueries';
@@ -55,6 +56,10 @@ export const WeekCard = styled(Box)`
 	overflow: hidden;
 	margin-bottom: 0;
 	position: relative;
+
+	${isMediumMedia} {
+		margin-bottom: 3.75rem;
+	}
 
 	${isSmallerThanTabletMedia} {
 		min-height: 37.5rem;
@@ -194,14 +199,17 @@ export const DayHeader = styled(Box, {
 	align-items: center;
 	justify-content: center;
 	margin-bottom: ${spacing.extraSmall};
-	opacity: ${({ isDisabled }) => (isDisabled ? 0.7 : 1)};
 	border: 2px solid
-		${({ isToday }) => (isToday ? palette.secondary.main : 'transparent')};
+		${({ isToday }) =>
+			isToday
+				? palette.secondary.main
+				: hexToRgba(palette.background.default, 0.2)};
 	border-radius: ${spacing.xs};
 	position: sticky;
 	top: 0;
 	z-index: ${zIndexSticky};
-	background: ${palette.background.default};
+	backdrop-filter: blur(10px);
+	background: ${hexToRgba(palette.background.default, 0.2)};
 `;
 
 export const DayName = styled(Text)`
@@ -271,6 +279,7 @@ export const SlotCell = styled(ButtonBase, {
 		box-shadow: ${({ slotStatus }) =>
 			slotStatus === 'cancelled' ? 'none' : shadowSmall};
 	}
+	text-align: left;
 
 	${({ isOddRow }) =>
 		isOddRow

@@ -3,7 +3,6 @@ import type {
 	IAvailabilityResponse,
 	IDateInfo,
 } from '@psycron/api/user/index.types';
-import type { ISlot } from '@psycron/context/user/auth/UserAuthenticationContext.types';
 
 export interface AvailabilityContextType {
 	availabilityData?: IAvailabilityResponse;
@@ -22,11 +21,3 @@ export interface UseAvailabilityProps {
 	initialDaySelected?: IDateInfo;
 	slotId?: string;
 }
-
-export type ISelectedSlot = {
-	availabilityDayId: string;
-	date: Date;
-	patientId?: string;
-	slot: ISlot;
-	therapistId?: string;
-};

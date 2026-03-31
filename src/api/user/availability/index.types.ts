@@ -1,7 +1,8 @@
 import type {
 	IPatient,
 	ISlot,
-	ISlotStatus,
+	ISlotAddress,
+	ISODateString,
 } from '@psycron/context/user/auth/UserAuthenticationContext.types';
 
 export interface IInitiateAvailabilityResponse {
@@ -65,9 +66,16 @@ export interface BookAppointmentResponse {
 
 export interface AppointmentDetailsBySlotIdResponse {
 	appointment: {
-		date: Date;
+		_id: string;
+		address?: ISlotAddress | null;
+		canceledAt?: ISODateString | null;
+		customReason?: string | null;
+		date: ISODateString;
 		endTime: string;
+		letPatientChooseAddress?: boolean;
 		patient: Partial<IPatient>;
+		patientId?: string;
+		reasonCode?: string | null;
 		startTime: string;
 		status: ISlot['status'];
 	};
@@ -132,7 +140,7 @@ export interface IEditSlotStatus {
 }
 
 export interface IEditSlotStatusData {
-	newStatus: ISlotStatus;
+	newStatus: StatusEnum;
 	startTime: string;
 }
 

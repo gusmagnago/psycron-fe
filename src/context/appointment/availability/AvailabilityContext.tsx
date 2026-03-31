@@ -30,7 +30,6 @@ import {
 import type {
 	AvailabilityContextType,
 	AvailabilityProviderProps,
-	ISelectedSlot,
 } from './AvailabilityContext.types';
 
 const AvailabilityContext = createContext<AvailabilityContextType | undefined>(
@@ -76,8 +75,8 @@ export const AvailabilityProvider = ({
 
 export const useAvailability = (
 	initialDaySelected?: IDateInfo,
-	slot?: ISelectedSlot,
-	selectedSlotId?: string,
+	availabilityDayId?: string | null,
+	slotId?: string | null,
 	patientId?: string
 ) => {
 	const context = useContext(AvailabilityContext);
@@ -129,19 +128,14 @@ export const useAvailability = (
 
 	const consultationDuration = firstPage?.consultationDuration;
 
-	const availabilityDayId = slot?.availabilityDayId || null;
-
-	const slotId = slot?.slot?._id || null;
-
 	const {
 		data: appointmentDetailsBySlotId,
 		isLoading: isAppointmentDetailsBySlotIdLoading,
 	} = useQuery({
-		queryKey: ['getAppointmentDetailsBySlotId', slotId],
 		queryFn: () =>
 			getAppointmentDetailsBySlotId(therapistId, availabilityDayId, slotId),
 		enabled: !!therapistId && !!slotId,
-		retry: false,
+		queryKey: ['slotAppointmentDetails', slotId],
 		staleTime: 1000 * 60 * 5,
 	});
 
@@ -197,9 +191,9 @@ export const useAvailability = (
 
 	const { data: publicSlotDetails, isLoading: publicSlotDetailsIsLoading } =
 		useQuery({
-			queryKey: ['getPublicSlotDetailsById', selectedSlotId],
-			queryFn: () => getPublicSlotDetailsById(therapistId, selectedSlotId),
-			enabled: !!therapistId && !!selectedSlotId,
+			queryKey: ['getPublicSlotDetailsById', slotId],
+			queryFn: () => getPublicSlotDetailsById(therapistId, slotId),
+			enabled: !!therapistId && !!slotId,
 			retry: false,
 			staleTime: 1000 * 60 * 5,
 		});

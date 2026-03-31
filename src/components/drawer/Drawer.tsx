@@ -1,3 +1,4 @@
+import { Box } from '@mui/material';
 import { CloseButton } from '@psycron/components/button/close/CloseButton';
 
 import { Divider } from '../divider/Divider';
@@ -26,10 +27,10 @@ export const Drawer = ({
 		<DrawerPanel aria-label={ariaLabel} aria-modal='true' role='dialog'>
 			<DrawerContent>
 				<DrawerHeader>
-					<div>
+					<Box textAlign='left'>
 						<DrawerTitle>{title}</DrawerTitle>
 						{headerExtra}
-					</div>
+					</Box>
 					<CloseButton onClick={onClose} />
 				</DrawerHeader>
 				{children}
