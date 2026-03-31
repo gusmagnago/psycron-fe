@@ -354,9 +354,7 @@ export const AvailabilityWeekDrawer = ({
 									icon: <MapPin color={palette.brand.purple} />,
 									key: 'appointment-address',
 									label: t('availability.week.drawer.appointment-address'),
-									value: t(
-										'availability.week.drawer.patient-provides-address'
-									),
+									value: t('availability.week.drawer.patient-provides-address'),
 								},
 							]
 						: []),

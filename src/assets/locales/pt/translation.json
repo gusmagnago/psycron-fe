@@ -1,10 +1,106 @@
 {
+  "public": {
+    "powered-by": "Desenvolvido por Psycron"
+  },
+  "booking": {
+    "page": {
+      "title": "Agendar Sessão"
+    },
+    "filter": {
+      "from": "De",
+      "label-date-range": "Período",
+      "label-time-of-day": "Período do dia",
+      "time-all": "Qualquer horário",
+      "time-morning": "Manhã (antes do meio-dia)",
+      "time-afternoon": "Tarde (12–17h)",
+      "time-evening": "Noite (após 17h)",
+      "time-of-day": "Período do dia",
+      "to": "Até",
+      "weeks-1": "Próxima semana",
+      "weeks-2": "Próximas 2 semanas",
+      "weeks-4": "Próximo mês",
+      "weeks-12": "Próximos 3 meses",
+      "weeks-all": "Todos disponíveis"
+    },
+    "slot": {
+      "booked": "Reservado",
+      "taken": "Ocupado"
+    },
+    "drawer": {
+      "aria-label": "Agendar consulta",
+      "title": "Confirmar agendamento"
+    },
+    "confirm": "Confirmar",
+    "error": "Algo deu errado. Por favor, tente novamente.",
+    "no-slots": "Nenhum horário disponível corresponde aos seus filtros.",
+    "form": {
+      "address-fallback": "O endereço aparecerá aqui após você preenchê-lo acima.",
+      "email": "E-mail",
+      "first-name": "Nome",
+      "last-name": "Sobrenome",
+      "notify-email": "Notificar por e-mail",
+      "notify-fallback": "Preencha seus dados de contato acima para ativar as notificações.",
+      "notify-whatsapp": "Notificar por WhatsApp",
+      "section-notifications": "Notificações",
+      "section-personal": "Seus dados",
+      "section-recurrence": "Recorrência",
+      "your-address": "Endereço da sessão"
+    },
+    "notifications": {
+      "description": "Enviaremos um lembrete antes de cada sessão.",
+      "email": "Notificar por e-mail",
+      "fallback-note": "Adicione seus dados de contato acima para ativar os lembretes.",
+      "title": "Lembretes",
+      "whatsapp": "Notificar por WhatsApp"
+    },
+    "recurrence": {
+      "biweekly": "A cada 2 semanas",
+      "monthly": "Todo mês",
+      "not-yet": "Ainda não — decidir depois",
+      "single": "Sessão única",
+      "title": "Com que frequência você gostaria de se encontrar?",
+      "weekly": "Toda semana"
+    },
+    "confirmation": {
+      "title": "Agendamento confirmado!",
+      "subtitle": "Ótimo, {{name}}! Sua sessão foi confirmada.",
+      "date": "Data",
+      "time": "Horário",
+      "your-agenda": "Sua agenda pessoal",
+      "agenda-description": "Use este link para ver e gerenciar seus próximos agendamentos.",
+      "copy-link": "Copiar link"
+    },
+    "appointments": {
+      "title": "Seus agendamentos",
+      "subtitle": "Veja e gerencie suas sessões agendadas.",
+      "upcoming": "Próximas",
+      "past": "Anteriores",
+      "no-upcoming": "Você não possui agendamentos futuros."
+    },
+    "cancel": {
+      "button": "Cancelar agendamento",
+      "reason-prompt": "Por favor, informe o motivo do cancelamento.",
+      "reason-label": "Motivo",
+      "reason": {
+        "emergency": "Emergência pessoal",
+        "schedule-conflict": "Conflito de agenda",
+        "financial": "Motivos financeiros",
+        "mental-health": "Não me sinto pronto(a)",
+        "other": "Outro"
+      },
+      "custom-reason": "Conte mais (opcional)",
+      "confirm": "Confirmar cancelamento",
+      "success": "Seu agendamento foi cancelado.",
+      "error": "Algo deu errado. Por favor, tente novamente."
+    }
+  },
   "common": {
     "close": "Fechar",
     "today": "Hoje",
     "save": "Salvar",
     "saving": "Salvando...",
-    "cancel": "Cancelar"
+    "cancel": "Cancelar",
+    "loading": "Carregando..."
   },
   "auth": {
     "error": {

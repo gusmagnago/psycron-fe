@@ -2,6 +2,7 @@ import type {
 	IBookSessionWithLink,
 	IContactInfo,
 	IPatient,
+	ISlotAddress,
 } from '@psycron/context/user/auth/UserAuthenticationContext.types';
 
 import type { IResponse } from '../user/index.types';
@@ -73,6 +74,45 @@ export interface ICreatePatientForm {
 	recurrencePattern?: RecurrencePattern;
 	timeZone?: string;
 	whatsapp?: string;
+}
+
+export interface IPublicSessionSlot {
+	_id: string;
+	address?: ISlotAddress | null;
+	canceledAt?: string | null;
+	endTime: string;
+	letPatientChooseAddress?: boolean;
+	patientId?: string;
+	startTime: string;
+	status: string;
+}
+
+export interface IPublicSessionDate {
+	_id: string;
+	date: string;
+	slots: IPublicSessionSlot[];
+}
+
+export interface IPublicPatientSessionsResponse {
+	patient: {
+		_id: string;
+		cancelledAppointments: Array<{
+			cancelledAt: string;
+			customReason?: string;
+			date: string;
+			endTime: string;
+			reasonCode?: number;
+			slotId: string;
+			startTime: string;
+			triggeredBy: 'PATIENT' | 'THERAPIST';
+		}>;
+		firstName: string;
+		lastName: string;
+		sessionDates: IPublicSessionDate[];
+		therapistId: string;
+		timeZone?: string;
+	};
+	status: string;
 }
 
 export enum RecurrencePattern {

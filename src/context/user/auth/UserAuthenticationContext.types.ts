@@ -186,7 +186,11 @@ export interface IPatient extends IBaseUser {
 
 export interface IBookSessionWithLink {
 	availabilityDayId: string;
+	notifyByEmail?: boolean;
+	notifyByWhatsapp?: boolean;
 	patient: Partial<IPatient>;
+	patientAddress?: ISlotAddress;
+	recurrencePattern?: string;
 	shareAddress?: boolean;
 	shouldReplicate?: boolean;
 	slotId: string;
