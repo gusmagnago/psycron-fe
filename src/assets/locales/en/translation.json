@@ -819,7 +819,10 @@
         "share-address": "Share clinic address with patient",
         "status-cancelled": "Cancelled",
         "status-confirmed": "Confirmed",
-        "your-time": "Your time"
+        "your-time": "Your time",
+        "appointment-address": "Appointment address",
+        "patient-phone": "Patient's phone",
+        "patient-provides-address": "Patient will provide the address"
       },
       "buffer-label": "Buffer",
       "legend-available": "Available",

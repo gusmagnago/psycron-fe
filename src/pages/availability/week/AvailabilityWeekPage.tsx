@@ -2,6 +2,7 @@ import { Fragment, useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Box } from '@mui/material';
+import { getAppointmentDetailsBySlotId } from '@psycron/api/user/availability';
 import type { AvailabilityLegendItem } from '@psycron/components/availability/AvailabilityLegend';
 import { AvailabilityLegend } from '@psycron/components/availability/AvailabilityLegend';
 import { NavButton } from '@psycron/components/availability/AvailabilityNavButton';
@@ -18,6 +19,7 @@ import {
 import { useAvailability } from '@psycron/context/appointment/availability/AvailabilityContext';
 import { useCalendarPrefs } from '@psycron/hooks/useCalendarPrefs';
 import { useJupiterAvailabilityConfig } from '@psycron/hooks/useJupiterAvailabilityConfig';
+import { useTherapistId } from '@psycron/hooks/useTherapistId';
 import useViewport from '@psycron/hooks/useViewport';
 import i18n from '@psycron/i18n';
 import { PageLayout } from '@psycron/layouts/app/pages-layout/PageLayout';
@@ -27,6 +29,7 @@ import {
 	AVAILABILITYWEEK_BASE,
 } from '@psycron/pages/urls';
 import { palette } from '@psycron/theme/palette/palette.theme';
+import { useQueryClient } from '@tanstack/react-query';
 import {
 	addWeeks,
 	eachDayOfInterval,
@@ -143,6 +146,7 @@ export const AvailabilityWeekPage = () => {
 	);
 
 	const { availability } = useJupiterAvailabilityConfig();
+
 	const bufferTimeMinutes = availability?.bufferTimeMinutes ?? 0;
 
 	const baseDate = date ? parseISO(date) : new Date();
@@ -266,7 +270,29 @@ export const AvailabilityWeekPage = () => {
 		});
 	};
 
+	const queryClient = useQueryClient();
+	const therapistId = useTherapistId();
+
 	const handleSlotClick = (slot: IWeekSlot) => setSelectedSlot(slot);
+
+	const handleSlotPointerDown = useCallback(
+		(slot: IWeekSlot) => {
+			const isBooked =
+				slot.status === 'booked-jupiter' || slot.status === 'booked-google';
+			if (!isBooked || !slot.availabilityDayId || !slot._id) return;
+			queryClient.prefetchQuery({
+				queryKey: ['slotAppointmentDetails', slot._id],
+				queryFn: () =>
+					getAppointmentDetailsBySlotId(
+						therapistId,
+						slot.availabilityDayId!,
+						slot._id!
+					),
+				staleTime: 1000 * 60 * 5,
+			});
+		},
+		[queryClient, therapistId]
+	);
 
 	const legendItems: AvailabilityLegendItem[] = LEGEND_STATUSES.map(
 		({ status, labelKey }) => ({
@@ -429,6 +455,7 @@ export const AvailabilityWeekPage = () => {
 															key={`mobile-dslot-${slot.id}`}
 															slotStatus={slot.status}
 															onClick={() => handleSlotClick(slot)}
+															onPointerDown={() => handleSlotPointerDown(slot)}
 															disableRipple={!isClickable(slot.status)}
 														>
 															<MobileSlotTime>
@@ -532,6 +559,7 @@ export const AvailabilityWeekPage = () => {
 													isOddRow={isOddRow}
 													isToday={todayDay}
 													onClick={() => handleSlotClick(slot)}
+													onPointerDown={() => handleSlotPointerDown(slot)}
 													disableRipple={!isClickable(slot.status)}
 												>
 													{slot.patientName && (

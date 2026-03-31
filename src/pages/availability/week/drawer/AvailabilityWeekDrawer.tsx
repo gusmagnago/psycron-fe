@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { getAppointmentDetailsBySlotId } from '@psycron/api/user/availability';
+import { Box } from '@mui/material';
 import { StatusEnum } from '@psycron/api/user/availability/index.types';
 import { Drawer } from '@psycron/components/drawer/Drawer';
 import {
@@ -9,8 +9,11 @@ import {
 	Calendar,
 	Google,
 	Jupiter,
+	Mail,
 	MapPin,
+	Phone,
 	Watch,
+	WhatsApp,
 } from '@psycron/components/icons';
 import { useAvailability } from '@psycron/context/appointment/availability/AvailabilityContext';
 import type { ISlotAddress } from '@psycron/context/user/auth/UserAuthenticationContext.types';
@@ -20,7 +23,6 @@ import { useSecureStorage } from '@psycron/hooks/useSecureStorage';
 import i18n from '@psycron/i18n';
 import { palette } from '@psycron/theme/palette/palette.theme';
 import { THERAPIST_ID } from '@psycron/utils/tokens';
-import { useQuery } from '@tanstack/react-query';
 import { format, parseISO } from 'date-fns';
 import { enGB, ptBR } from 'date-fns/locale';
 
@@ -95,11 +97,14 @@ export const AvailabilityWeekDrawer = ({
 		sessionType === 'IN_PERSON' || sessionType === 'BOTH';
 	const showSessionLocation =
 		isAvailable && isInPersonSession && hasInPersonAddress;
-	const showAddressInEdit =
-		isBooked && isInPersonSession && hasInPersonAddress;
+	const showAddressInEdit = isBooked && isInPersonSession && hasInPersonAddress;
 
 	// ─── Hooks ────────────────────────────────────────────────────────────────
-	const slotAddress = useSlotAddress(slot, therapistId, availability?.specialty);
+	const slotAddress = useSlotAddress(
+		slot,
+		therapistId,
+		availability?.specialty
+	);
 
 	const { isSubmitting, methods, submitBooking } = useBookingForm(
 		slot,
@@ -119,22 +124,17 @@ export const AvailabilityWeekDrawer = ({
 	const cancelSlot = useCancelSlot(slot, therapistId, onClose);
 
 	const slotId = slot._id ?? slot.id;
-	const { data: appointmentDetails } = useQuery({
-		enabled: isBooked && !!therapistId && !!slotId && !!slot.availabilityDayId,
-		queryFn: () =>
-			getAppointmentDetailsBySlotId(
-				therapistId ?? '',
-				slot.availabilityDayId ?? '',
-				slotId
-			),
-		queryKey: ['slotAppointmentDetails', slotId],
-		staleTime: 1000 * 60 * 5,
-	});
+	const { availabilityData, appointmentDetailsBySlotId } = useAvailability(
+		undefined,
+		slot.availabilityDayId,
+		slotId,
+		slot.patientId
+	);
 
 	const reschedule = useReschedule(
 		slot,
 		therapistId,
-		appointmentDetails,
+		appointmentDetailsBySlotId,
 		onClose
 	);
 
@@ -189,25 +189,34 @@ export const AvailabilityWeekDrawer = ({
 		locale: dateLocale,
 	});
 
+	const patientTZOverride =
+		appointmentDetailsBySlotId?.appointment?.patient?.timeZone ?? undefined;
+
 	const { therapistTimeStr, patientTimeStr } = useMemo(() => {
 		const therapistTZ =
 			userDetails?.timeZone ?? Intl.DateTimeFormat().resolvedOptions().timeZone;
-		return computeTimeStrings(slot, endTime, therapistTZ, dateLocale);
-	}, [slot, endTime, userDetails?.timeZone, dateLocale]);
+		return computeTimeStrings(
+			slot,
+			endTime,
+			therapistTZ,
+			dateLocale,
+			patientTZOverride
+		);
+	}, [slot, endTime, userDetails?.timeZone, dateLocale, patientTZOverride]);
 
 	const timeSub = `${t('availability.week.drawer.session-duration')}${slot.duration} ${t('availability.week.drawer.minutes')}`;
 
-	const patientName = appointmentDetails?.appointment?.patient
+	const patientName = appointmentDetailsBySlotId?.appointment?.patient
 		? [
-				appointmentDetails.appointment.patient.firstName,
-				appointmentDetails.appointment.patient.lastName,
+				appointmentDetailsBySlotId.appointment.patient.firstName,
+				appointmentDetailsBySlotId.appointment.patient.lastName,
 			]
 				.filter(Boolean)
 				.join(' ') || undefined
 		: undefined;
 
 	// ─── Available slot groups for reschedule picker ──────────────────────────
-	const { availabilityData } = useAvailability();
+
 	const todayStr = format(new Date(), 'yyyy-MM-dd');
 
 	const availableSlotGroups = useMemo(() => {
@@ -243,6 +252,10 @@ export const AvailabilityWeekDrawer = ({
 	}, [availabilityData?.dates, todayStr, dateLocale]);
 
 	// ─── Detail rows ──────────────────────────────────────────────────────────
+	const DASH = '—';
+	const apptPatient = appointmentDetailsBySlotId?.appointment?.patient;
+	const appt = appointmentDetailsBySlotId?.appointment;
+
 	const details: IDrawerDetail[] = isAvailable
 		? [
 				{
@@ -297,6 +310,56 @@ export const AvailabilityWeekDrawer = ({
 							},
 						]
 					: []),
+				{
+					icon: <Mail color={palette.brand.purple} />,
+					key: 'email',
+					label: t('availability.week.drawer.patient-email'),
+					value: apptPatient?.contacts?.email ?? DASH,
+				},
+				{
+					icon: <Phone color={palette.brand.purple} />,
+					key: 'phone',
+					label: t('availability.week.drawer.patient-phone'),
+					value: apptPatient?.contacts?.phone ?? DASH,
+				},
+				...(apptPatient?.contacts?.whatsapp &&
+				apptPatient.contacts.whatsapp !== apptPatient.contacts.phone
+					? [
+							{
+								icon: <WhatsApp color={palette.brand.purple} />,
+								key: 'whatsapp',
+								label: 'WhatsApp',
+								value: apptPatient.contacts.whatsapp,
+							},
+						]
+					: []),
+				...(appt?.address
+					? [
+							{
+								icon: <MapPin color={palette.brand.purple} />,
+								key: 'appointment-address',
+								label: t('availability.week.drawer.appointment-address'),
+								value: [
+									appt.address.street,
+									appt.address.city,
+									appt.address.country,
+								]
+									.filter(Boolean)
+									.join(', '),
+							},
+						]
+					: appt?.letPatientChooseAddress
+						? [
+								{
+									icon: <MapPin color={palette.brand.purple} />,
+									key: 'appointment-address',
+									label: t('availability.week.drawer.appointment-address'),
+									value: t(
+										'availability.week.drawer.patient-provides-address'
+									),
+								},
+							]
+						: []),
 			];
 
 	// ─── Body ─────────────────────────────────────────────────────────────────
@@ -356,7 +419,7 @@ export const AvailabilityWeekDrawer = ({
 				return (
 					<>
 						<SlotDetailView details={details} />
-						{isAvailable && (
+						{isAvailable ? (
 							<SlotAvailableBody
 								customAddress={slotAddress.address}
 								locationChoice={locationChoice}
@@ -365,6 +428,8 @@ export const AvailabilityWeekDrawer = ({
 								onLocationChoiceChange={handleLocationChoiceChange}
 								showSessionLocation={showSessionLocation}
 							/>
+						) : (
+							<Box></Box>
 						)}
 					</>
 				);

@@ -68,7 +68,7 @@ export const DrawerDetailsList = styled(Box)`
 
 export const DrawerDetailRow = styled(Box)`
 	display: flex;
-	align-items: flex-start;
+	align-items: center;
 	gap: ${spacing.medium};
 `;
 
@@ -94,18 +94,21 @@ export const DrawerDetailLabel = styled(Text)`
 	font-size: 13px;
 	color: ${palette.gray['05']};
 	margin-bottom: ${spacing.space};
+	text-align: left;
 `;
 
 export const DrawerDetailValue = styled(Text)`
 	font-size: 15px;
 	color: ${palette.text.primary};
 	line-height: 1.6;
+	text-align: left;
 `;
 
 export const DrawerDetailSub = styled(Text)`
 	font-size: 13px;
 	color: ${palette.gray['05']};
 	margin-top: ${spacing.space};
+	text-align: left;
 `;
 
 // ─── Form ─────────────────────────────────────────────────────────────────────

@@ -1,6 +1,6 @@
 import type { ICancelEditAppointmentResponse } from '@psycron/api/appointment/index.types';
 import apiClient from '@psycron/api/axios-instance';
-import type { IAvailability } from '@psycron/context/user/auth/UserAuthenticationContext.types';
+import type { IAvailabilityDate } from '@psycron/context/user/auth/UserAuthenticationContext.types';
 
 import type {
 	Appointment,
@@ -54,7 +54,7 @@ export const completeSessionAvailability = async (
 };
 
 export const getAvailabilitySession = async (
-	sessionId: Partial<IAvailability>
+	sessionId: Partial<IAvailabilityDate>
 ): Promise<ISessionResponse> => {
 	const response = await apiClient.get(
 		`/users/availability/session/${sessionId}`

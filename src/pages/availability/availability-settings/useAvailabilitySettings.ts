@@ -18,7 +18,10 @@ import {
 	useJupiterAvailabilityConfig,
 } from '@psycron/hooks/useJupiterAvailabilityConfig';
 import { PUBLISHED_KEY } from '@psycron/pages/availability/jupiter-conversation/useJupiterFlow';
-import { AVAILABILITYGENERATE, AVAILABILITYSETTINGS } from '@psycron/pages/urls';
+import {
+	AVAILABILITYGENERATE,
+	AVAILABILITYSETTINGS,
+} from '@psycron/pages/urls';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 import type {
@@ -31,7 +34,9 @@ import type {
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
-const parseTimeRangeToInputs = (timeRange: string): { end: string; start: string } => {
+const parseTimeRangeToInputs = (
+	timeRange: string
+): { end: string; start: string } => {
 	const parts = timeRange.split(/\s*[-–—]\s*/);
 	if (parts.length < 2) return { end: '', start: '' };
 
@@ -191,12 +196,19 @@ export const useAvailabilitySettings = (): UseAvailabilitySettingsReturn => {
 	const { availabilityData } = useAvailability();
 	const { userDetails, therapistId } = useUserDetails();
 
-	const emptyAddress: IClinicAddress = { city: '', country: '', postcode: '', street: '' };
+	const emptyAddress: IClinicAddress = {
+		city: '',
+		country: '',
+		postcode: '',
+		street: '',
+	};
 	const addressFormMethods = useForm<AddressFormValues>({
 		defaultValues: { clinicAddress: emptyAddress },
 	});
 
-	const isCancellationPolicyEnabled = useFeatureFlagEnabled('availability_cancellation_policy');
+	const isCancellationPolicyEnabled = useFeatureFlagEnabled(
+		'availability_cancellation_policy'
+	);
 	const isBufferTimeEnabled = useFeatureFlagEnabled('availability_buffer_time');
 	const isJupiterCtaEnabled = useFeatureFlagEnabled('jupiter_cta_availability');
 
@@ -211,7 +223,9 @@ export const useAvailabilitySettings = (): UseAvailabilitySettingsReturn => {
 				} else if (key === 'session-type') {
 					setSessionTypeInput(availability.sessionType);
 				} else if (key === 'session-duration') {
-					setSessionDurationInput(parseDurationKey(availability.sessionDuration));
+					setSessionDurationInput(
+						parseDurationKey(availability.sessionDuration)
+					);
 				} else if (key === 'timezone') {
 					setTimezoneInput(availability.timezone);
 				} else if (key === 'recurrence-pattern') {
@@ -271,7 +285,10 @@ export const useAvailabilitySettings = (): UseAvailabilitySettingsReturn => {
 			};
 		});
 
-		if (availability.sessionType === 'IN_PERSON' || availability.sessionType === 'BOTH') {
+		if (
+			availability.sessionType === 'IN_PERSON' ||
+			availability.sessionType === 'BOTH'
+		) {
 			const clinicAddress = userDetails?.clinicAddress;
 			items.push({
 				descKey: 'availability.settings.session-address-desc',
@@ -293,7 +310,13 @@ export const useAvailabilitySettings = (): UseAvailabilitySettingsReturn => {
 
 			return rank(a) - rank(b);
 		});
-	}, [availability, isBufferTimeEnabled, isCancellationPolicyEnabled, openDrawer, userDetails?.clinicAddress]);
+	}, [
+		availability,
+		isBufferTimeEnabled,
+		isCancellationPolicyEnabled,
+		openDrawer,
+		userDetails?.clinicAddress,
+	]);
 
 	const activeCount = useMemo(
 		() => checklistItems.filter((item) => !item.isDisabled).length,
@@ -305,7 +328,8 @@ export const useAvailabilitySettings = (): UseAvailabilitySettingsReturn => {
 		[checklistItems]
 	);
 
-	const progress = activeCount > 0 ? Math.round((configuredCount / activeCount) * 100) : 0;
+	const progress =
+		activeCount > 0 ? Math.round((configuredCount / activeCount) * 100) : 0;
 
 	const statusStats = useMemo(() => {
 		const todayStr = new Date().toISOString().slice(0, 10);
@@ -314,16 +338,18 @@ export const useAvailabilitySettings = (): UseAvailabilitySettingsReturn => {
 			(d) => d.date >= todayStr && d.slots?.length
 		);
 		const upcomingBookings = upcomingDates.reduce(
-			(sum, d) => sum + (d.slots?.filter((s) => s.status === 'BOOKED').length ?? 0),
+			(sum, d) =>
+				sum + (d.slots?.filter((s) => s.status === 'BOOKED').length ?? 0),
 			0
 		);
 		const totalUpcomingSlots = upcomingDates.reduce(
 			(sum, d) => sum + (d.slots?.length ?? 0),
 			0
 		);
-		const percentBooked = totalUpcomingSlots > 0
-			? Math.round((upcomingBookings / totalUpcomingSlots) * 100)
-			: 0;
+		const percentBooked =
+			totalUpcomingSlots > 0
+				? Math.round((upcomingBookings / totalUpcomingSlots) * 100)
+				: 0;
 
 		let activeHoursPerWeek = 0;
 		if (availability?.timeRange && availability.workingDays?.length) {
@@ -332,22 +358,34 @@ export const useAvailabilitySettings = (): UseAvailabilitySettingsReturn => {
 				const [sh, sm] = parts[0].split(':').map(Number);
 				const [eh, em] = parts[1].split(':').map(Number);
 				const hoursPerDay = (eh * 60 + em - (sh * 60 + sm)) / 60;
-				activeHoursPerWeek = Math.round(hoursPerDay * availability.workingDays.length);
+				activeHoursPerWeek = Math.round(
+					hoursPerDay * availability.workingDays.length
+				);
 			}
 		}
 
 		return { activeHoursPerWeek, percentBooked, upcomingBookings };
-	}, [availability?.timeRange, availability?.workingDays, availabilityData?.dates]);
+	}, [
+		availability?.timeRange,
+		availability?.workingDays,
+		availabilityData?.dates,
+	]);
 
 	const firstMissingRecommended = useMemo(
-		() => checklistItems.find((item) => item.isRecommended && !item.isConfigured && !item.isDisabled),
+		() =>
+			checklistItems.find(
+				(item) => item.isRecommended && !item.isConfigured && !item.isDisabled
+			),
 		[checklistItems]
 	);
 
 	const settingsMutation = useMutation({
 		mutationFn: updateAvailabilitySettings,
 		onError: () => {
-			showAlert({ message: t('availability.settings.save-error'), severity: 'error' });
+			showAlert({
+				message: t('availability.settings.save-error'),
+				severity: 'error',
+			});
 		},
 		onSuccess: (updated, variables) => {
 			queryClient.setQueryData<IAvailabilityRecord>(
@@ -357,34 +395,41 @@ export const useAvailabilitySettings = (): UseAvailabilitySettingsReturn => {
 			queryClient.refetchQueries({ queryKey: ['therapistAvailability'] });
 			queryClient.refetchQueries({ queryKey: ['jupiterAvailability'] });
 
-			const setting = variables.workingDays || variables.timeRange
-				? 'working_hours'
-				: variables.sessionType
-					? 'session_type'
-					: variables.sessionDuration
-						? 'session_duration'
-						: variables.timezone
-							? 'timezone'
-							: variables.bufferTimeMinutes !== undefined
-								? 'buffer_time'
-								: variables.specialty
-									? 'specialty'
-									: 'recurrence_pattern';
+			const setting =
+				variables.workingDays || variables.timeRange
+					? 'working_hours'
+					: variables.sessionType
+						? 'session_type'
+						: variables.sessionDuration
+							? 'session_duration'
+							: variables.timezone
+								? 'timezone'
+								: variables.bufferTimeMinutes !== undefined
+									? 'buffer_time'
+									: variables.specialty
+										? 'specialty'
+										: 'recurrence_pattern';
 
 			const newValue = variables.workingDays
 				? variables.workingDays.join(',')
-				: variables.timeRange
-					?? variables.sessionType
-					?? variables.sessionDuration
-					?? variables.timezone
-					?? String(variables.bufferTimeMinutes ?? '')
-					?? variables.specialty
-					?? variables.recurrencePattern
-					?? '';
+				: (variables.timeRange ??
+					variables.sessionType ??
+					variables.sessionDuration ??
+					variables.timezone ??
+					String(variables.bufferTimeMinutes ?? '') ??
+					variables.specialty ??
+					variables.recurrencePattern ??
+					'');
 
-			capture(PostHogEvent.AvailabilitySettingSaved, { new_value: newValue, setting });
+			capture(PostHogEvent.AvailabilitySettingSaved, {
+				new_value: newValue,
+				setting,
+			});
 
-			showAlert({ message: t('availability.settings.save-success'), severity: 'success' });
+			showAlert({
+				message: t('availability.settings.save-success'),
+				severity: 'success',
+			});
 			closeDrawer();
 		},
 	});
@@ -396,7 +441,8 @@ export const useAvailabilitySettings = (): UseAvailabilitySettingsReturn => {
 	}, [bufferInput, settingsMutation]);
 
 	const handleWorkingHoursSave = useCallback(() => {
-		if (workingDaysInput.length === 0 || !startTimeInput || !endTimeInput) return;
+		if (workingDaysInput.length === 0 || !startTimeInput || !endTimeInput)
+			return;
 		settingsMutation.mutate({
 			timeRange: `${startTimeInput} - ${endTimeInput}`,
 			workingDays: workingDaysInput,
@@ -410,7 +456,9 @@ export const useAvailabilitySettings = (): UseAvailabilitySettingsReturn => {
 
 	const handleSessionDurationSave = useCallback(() => {
 		if (!sessionDurationInput) return;
-		settingsMutation.mutate({ sessionDuration: `${sessionDurationInput} minutes` });
+		settingsMutation.mutate({
+			sessionDuration: `${sessionDurationInput} minutes`,
+		});
 	}, [sessionDurationInput, settingsMutation]);
 
 	const handleTimezoneSave = useCallback(() => {
@@ -433,7 +481,9 @@ export const useAvailabilitySettings = (): UseAvailabilitySettingsReturn => {
 
 	const handleRecurrencePatternSave = useCallback(() => {
 		if (!recurrencePatternInput) return;
-		settingsMutation.mutate({ recurrencePattern: recurrencePatternInput as 'WEEKLY' | 'MONTHLY' });
+		settingsMutation.mutate({
+			recurrencePattern: recurrencePatternInput as 'WEEKLY' | 'MONTHLY',
+		});
 	}, [recurrencePatternInput, settingsMutation]);
 
 	const handleSpecialtySave = useCallback(() => {
@@ -449,9 +499,15 @@ export const useAvailabilitySettings = (): UseAvailabilitySettingsReturn => {
 
 	const addressMutation = useMutation({
 		mutationFn: (data: AddressFormValues) =>
-			editUserById({ data: { clinicAddress: data.clinicAddress }, userId: therapistId }),
+			editUserById({
+				data: { clinicAddress: data.clinicAddress },
+				userId: therapistId,
+			}),
 		onError: () => {
-			showAlert({ message: t('availability.settings.save-error'), severity: 'error' });
+			showAlert({
+				message: t('availability.settings.save-error'),
+				severity: 'error',
+			});
 		},
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: ['userDetails', therapistId] });
@@ -459,7 +515,10 @@ export const useAvailabilitySettings = (): UseAvailabilitySettingsReturn => {
 				new_value: '',
 				setting: 'session_address',
 			});
-			showAlert({ message: t('availability.settings.save-success'), severity: 'success' });
+			showAlert({
+				message: t('availability.settings.save-success'),
+				severity: 'success',
+			});
 			closeDrawer();
 		},
 	});
@@ -477,20 +536,31 @@ export const useAvailabilitySettings = (): UseAvailabilitySettingsReturn => {
 	useEffect(() => {
 		if (searchParams.get('calendar') !== 'connected') return;
 
-		queryClient.invalidateQueries({ queryKey: [JUPITER_AVAILABILITY_CONFIG_KEY] });
-		showAlert({ message: t('availability.settings.google-calendar-connected'), severity: 'success' });
+		queryClient.invalidateQueries({
+			queryKey: [JUPITER_AVAILABILITY_CONFIG_KEY],
+		});
+		showAlert({
+			message: t('availability.settings.google-calendar-connected'),
+			severity: 'success',
+		});
 
-		setSearchParams((prev) => {
-			const next = new URLSearchParams(prev);
-			next.delete('calendar');
-			return next;
-		}, { replace: true });
+		setSearchParams(
+			(prev) => {
+				const next = new URLSearchParams(prev);
+				next.delete('calendar');
+				return next;
+			},
+			{ replace: true }
+		);
 	}, [queryClient, searchParams, setSearchParams, showAlert, t]);
 
 	useEffect(() => {
 		if (!localStorage.getItem(PUBLISHED_KEY)) return;
 		localStorage.removeItem(PUBLISHED_KEY);
-		showAlert({ message: t('availability.settings.first-publish-alert'), severity: 'success' });
+		showAlert({
+			message: t('availability.settings.first-publish-alert'),
+			severity: 'success',
+		});
 	}, [showAlert, t]);
 
 	const handleGoogleCalendarConnect = useCallback(async () => {
@@ -502,7 +572,10 @@ export const useAvailabilitySettings = (): UseAvailabilitySettingsReturn => {
 			});
 			window.location.assign(url);
 		} catch {
-			showAlert({ message: t('availability.settings.google-calendar-connect-error'), severity: 'error' });
+			showAlert({
+				message: t('availability.settings.google-calendar-connect-error'),
+				severity: 'error',
+			});
 			setIsConnecting(false);
 		}
 	}, [i18n.language, showAlert, t]);
@@ -513,8 +586,10 @@ export const useAvailabilitySettings = (): UseAvailabilitySettingsReturn => {
 
 	const renderActionLabel = useCallback(
 		(item: ChecklistItem): string => {
-			if (item.isDisabled) return t('jupiter.post-publish.checklist-action-soon');
-			if (item.isConfigured) return t('jupiter.post-publish.checklist-action-edit');
+			if (item.isDisabled)
+				return t('jupiter.post-publish.checklist-action-soon');
+			if (item.isConfigured)
+				return t('jupiter.post-publish.checklist-action-edit');
 			return t('jupiter.post-publish.checklist-action-configure');
 		},
 		[t]
@@ -568,7 +643,7 @@ export const useAvailabilitySettings = (): UseAvailabilitySettingsReturn => {
 		setSpecialtyInput,
 		setStartTimeInput,
 		setTimezoneInput,
-		specialtyInput,
+		// specialtyInput,
 		startTimeInput,
 		timezoneInput,
 		toggleWorkingDay,
