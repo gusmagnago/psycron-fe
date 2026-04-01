@@ -26,6 +26,8 @@
     }
   ],
   "rewrites": [
-    { "source": "/:locale/:path*", "destination": "/index.html" }
+    { "source": "/api-docs",        "destination": "https://api.psycron.app/api-docs" },
+    { "source": "/api-docs/:path*", "destination": "https://api.psycron.app/api-docs/:path*" },
+    { "source": "/:locale/:path*",  "destination": "/index.html" }
   ]
 }

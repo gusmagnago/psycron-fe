@@ -1,6 +1,7 @@
 import { type FC, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { usePostHog } from '@posthog/react';
+import * as Sentry from '@sentry/react';
 import type { Properties } from 'posthog-js';
 
 import type { AppAnalyticsProps } from './AppAnalytics.types';
@@ -21,6 +22,14 @@ export const AppAnalytics: FC<AppAnalyticsProps> = ({
 		if (!isAuthenticated || !distinctId) return;
 
 		client.identify(distinctId, identifyProps);
+
+		const sessionReplayUrl = client.get_session_replay_url({
+			withTimestamp: true,
+		});
+
+		if (sessionReplayUrl) {
+			Sentry.setTag('posthog_session_url', sessionReplayUrl);
+		}
 	}, [client, isAuthenticated, distinctId]);
 
 	useEffect((): void => {
