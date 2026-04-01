@@ -905,6 +905,10 @@
         "conflict-multiple-body": "The phone and email match different patients. Update the contact details to continue.",
         "conflict-single-body": "A patient with this contact is already registered:",
         "conflict-title": "Patient already registered",
+        "existing-booking-body": "{{name}} already has a session booked on {{date}} at {{time}}. Would you like to add another session for this patient?",
+        "existing-booking-cancel": "Choose another patient",
+        "existing-booking-confirm": "Add another session",
+        "existing-booking-title": "Patient already has a session",
         "edit-error": "Failed to save changes. Please try again.",
         "edit-note": "Notes",
         "edit-save": "Save changes",
@@ -936,6 +940,11 @@
         "patient-timezone-placeholder": "Search by city, e.g. Sao Paulo",
         "patient-first-name": "Patient's first name",
         "patient-last-name": "Patient's last name",
+        "patient-search": {
+          "no-results": "No patients found",
+          "placeholder": "Search or type a new name",
+          "type-to-search": "Type at least 2 characters to search"
+        },
         "patient-time": "Patient time",
         "reschedule": "Reschedule",
         "reschedule-choice-sub": "Move to a different time slot",
@@ -991,14 +1000,6 @@
       "slot": "slot",
       "slots": "slots",
       "title": "Week Schedule",
-      "extend": {
-        "confirm": "Extend availability",
-        "end-of-month": "End of the month",
-        "end-of-year": "End of the year",
-        "success": "Availability extended successfully",
-        "title": "How long would you like to extend it?",
-        "review-settings": "Review settings"
-      },
       "settings": "Settings"
     },
     "gate": {

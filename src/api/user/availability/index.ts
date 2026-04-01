@@ -17,6 +17,7 @@ import type {
 	ICompleteSessionAvailabilityResponse,
 	IEditSlotStatus,
 	IInitiateAvailabilityResponse,
+	IPatientSearchResponse,
 	IPublicSlotDetailsResponse,
 	ISessionResponse,
 	IUpdateAvailabilitySession,
@@ -120,6 +121,17 @@ export const bookSlotByTherapist = async ({
 	const response = await apiClient.post<IBookSlotByTherapistResponse>(
 		`/users/${therapistId}/availability/${availabilityDayId}/slot/${slotId}/book`,
 		data
+	);
+	return response.data;
+};
+
+export const searchPatients = async (
+	therapistId: string,
+	query: string
+): Promise<IPatientSearchResponse> => {
+	const response = await apiClient.get<IPatientSearchResponse>(
+		`/users/${therapistId}/patients/search`,
+		{ params: { q: query } }
 	);
 	return response.data;
 };

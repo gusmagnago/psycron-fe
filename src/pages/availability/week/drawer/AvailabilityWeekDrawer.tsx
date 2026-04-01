@@ -32,6 +32,7 @@ import { DrawerActions } from './components/DrawerActions';
 import { useBookingForm } from './hooks/useBookingForm';
 import { useDrawerActions } from './hooks/useDrawerActions';
 import { useEditSlotForm } from './hooks/useEditSlotForm';
+import { usePatientSearch } from './hooks/usePatientSearch';
 import {
 	useBlockSlot,
 	useCancelSlot,
@@ -40,6 +41,7 @@ import {
 import { useSlotAddress } from './hooks/useSlotAddress';
 import { SlotAvailableBody } from './views/slot-available-body/SlotAvailableBody';
 import { SlotBookingConflictView } from './views/slot-booking-conflict/SlotBookingConflictView';
+import { ConflictBody } from './views/slot-booking-conflict/SlotBookingConflictView.styles';
 import { SlotCancelChoiceView } from './views/slot-cancel-choice-view/SlotCancelChoiceView';
 import { SlotCancelReasonForm } from './views/slot-cancel-reason-form/SlotCancelReasonForm';
 import { SlotDetailView } from './views/slot-detail-view/SlotDetailView';
@@ -59,6 +61,7 @@ import type {
 	DrawerView,
 	IAvailabilityWeekDrawerProps,
 	IDrawerDetail,
+	IExistingBooking,
 	IRescheduleSlot,
 	LocationChoice,
 } from './AvailabilityWeekDrawer.types';
@@ -115,6 +118,17 @@ export const AvailabilityWeekDrawer = ({
 		availability?.specialty
 	);
 
+	const slotId = slot._id ?? slot.id;
+	const { availabilityData, appointmentDetailsBySlotId } = useAvailability(
+		undefined,
+		slot.availabilityDayId,
+		slotId,
+		slot.patientId
+	);
+
+	const patientSearch = usePatientSearch(therapistId);
+	const [existingBooking, setExistingBooking] = useState<IExistingBooking | null>(null);
+
 	const {
 		conflict,
 		confirmWithExisting,
@@ -123,7 +137,79 @@ export const AvailabilityWeekDrawer = ({
 		isSubmitting,
 		methods,
 		submitBooking,
-	} = useBookingForm(slot, therapistId, locationChoice, slotAddress.address, onClose);
+	} = useBookingForm(slot, therapistId, locationChoice, slotAddress.address, onClose, patientSearch.selectedPatient?._id);
+
+	const applyPatientToForm = (patient: Parameters<typeof patientSearch.setSelectedPatient>[0]) => {
+		if (!patient) return;
+		patientSearch.setSelectedPatient(patient);
+		patientSearch.setSearchQuery(patient.firstName);
+
+		const hasWhatsApp = !!patient.contacts.whatsapp;
+		const isPhoneWpp = hasWhatsApp && patient.contacts.whatsapp === patient.contacts.phone;
+
+		const currentValues = methods.getValues();
+		methods.reset({
+			...currentValues,
+			firstName: patient.firstName,
+			lastName: patient.lastName,
+			email: patient.contacts.email ?? '',
+			phone: patient.contacts.phone ?? '',
+			whatsapp: patient.contacts.whatsapp ?? '',
+			hasWhatsApp,
+			isPhoneWpp,
+			preferredContact: patient.preferredContact ?? undefined,
+			timeZone: patient.timeZone ?? '',
+		});
+	};
+
+	const findExistingBooking = (patientId: string): IExistingBooking | null => {
+		if (!availabilityData?.dates) return null;
+		for (const day of availabilityData.dates) {
+			for (const s of day.slots ?? []) {
+				if (s.patientId === patientId && s.status === StatusEnum.BOOKED) {
+					return {
+						date: day.date,
+						patientName: s.patientSummary?.fullName ?? '',
+						slotId: s._id,
+						startTime: s.startTime,
+					};
+				}
+			}
+		}
+		return null;
+	};
+
+	const handlePatientSelect = (patient: Parameters<typeof patientSearch.setSelectedPatient>[0]) => {
+		if (!patient) return;
+
+		const existing = findExistingBooking(patient._id);
+		if (existing) {
+			// Store patient temporarily so we can apply after confirmation
+			patientSearch.setSelectedPatient(patient);
+			patientSearch.setSearchQuery(patient.firstName);
+			setExistingBooking({ ...existing, patientName: `${patient.firstName} ${patient.lastName}` });
+			return;
+		}
+
+		applyPatientToForm(patient);
+	};
+
+	const handleExistingBookingConfirm = () => {
+		setExistingBooking(null);
+		applyPatientToForm(patientSearch.selectedPatient);
+	};
+
+	const handleExistingBookingDismiss = () => {
+		setExistingBooking(null);
+		patientSearch.clearSelection();
+		patientSearch.setSearchQuery('');
+		methods.setValue('firstName', '', { shouldValidate: false });
+	};
+
+	const handleSelectionClear = () => {
+		patientSearch.clearSelection();
+		methods.reset();
+	};
 
 	const editSlotForm = useEditSlotForm(
 		slot,
@@ -134,14 +220,6 @@ export const AvailabilityWeekDrawer = ({
 
 	const blockSlot = useBlockSlot(slot, therapistId, onClose);
 	const cancelSlot = useCancelSlot(slot, therapistId, onClose);
-
-	const slotId = slot._id ?? slot.id;
-	const { availabilityData, appointmentDetailsBySlotId } = useAvailability(
-		undefined,
-		slot.availabilityDayId,
-		slotId,
-		slot.patientId
-	);
 
 	const reschedule = useReschedule(
 		slot,
@@ -451,7 +529,14 @@ export const AvailabilityWeekDrawer = ({
 								methods={methods}
 								onCustomAddressChange={handleCustomAddressChange}
 								onLocationChoiceChange={handleLocationChoiceChange}
+								onPatientSelect={handlePatientSelect}
+								onSelectionClear={handleSelectionClear}
+								results={patientSearch.results}
+								searchIsLoading={patientSearch.isLoading}
+								searchQuery={patientSearch.searchQuery}
+								selectedPatient={patientSearch.selectedPatient}
 								sessionType={sessionType}
+								setSearchQuery={patientSearch.setSearchQuery}
 							/>
 						) : (
 							<Box></Box>
@@ -574,6 +659,28 @@ export const AvailabilityWeekDrawer = ({
 				}
 			>
 				<SlotBookingConflictView conflict={conflict} />
+			</Modal>
+		)}
+		{existingBooking && (
+			<Modal
+				openModal
+				title={t('availability.week.drawer.existing-booking-title')}
+				onClose={handleExistingBookingDismiss}
+				cardActionsProps={{
+					actionName: t('availability.week.drawer.existing-booking-confirm'),
+					onClick: handleExistingBookingConfirm,
+					hasSecondAction: true,
+					secondActionName: t('availability.week.drawer.existing-booking-cancel'),
+					secondAction: handleExistingBookingDismiss,
+				}}
+			>
+				<ConflictBody>
+					{t('availability.week.drawer.existing-booking-body', {
+						name: existingBooking.patientName,
+						date: format(parseISO(existingBooking.date), 'PPP', { locale: dateLocale }),
+						time: existingBooking.startTime,
+					})}
+				</ConflictBody>
 			</Modal>
 		)}
 		</>

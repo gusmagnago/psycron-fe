@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { CircularProgress, TextField } from '@mui/material';
 import { GoogleAutocompleteGlobalStyles } from '@psycron/components/form/components/address/GoogleAddressSearch/GoogleAddressSearch.styles';
@@ -34,12 +34,22 @@ const fetchTimezoneId = async (
 };
 
 export const GoogleTimezoneSearch = ({
+	initialValue,
 	onTimezoneSelect,
 }: IGoogleTimezoneSearch) => {
 	const { t } = useTranslation();
 	const [inputValue, setInputValue] = useState('');
 	const [detectedTz, setDetectedTz] = useState<string | null>(null);
 	const [loading, setLoading] = useState(false);
+
+	const prevInitialRef = useRef(initialValue);
+	useEffect(() => {
+		if (initialValue && initialValue !== prevInitialRef.current) {
+			setDetectedTz(initialValue);
+			setInputValue(initialValue);
+		}
+		prevInitialRef.current = initialValue;
+	}, [initialValue]);
 
 	const { isLoaded, loadError } = useLoadScript({
 		googleMapsApiKey: GOOGLE_MAPS_API_KEY,

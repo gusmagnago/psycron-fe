@@ -44,7 +44,6 @@ import {
 } from 'date-fns';
 
 import { AvailabilityWeekDrawer } from './drawer/AvailabilityWeekDrawer';
-import { AvailabilityExtendBanner } from './drawer/extend-banner/AvailabilityExtendBanner';
 import { AvailabilityWeekFilters } from './filters/AvailabilityWeekFilters';
 import { useWeekSlots } from './hook/useWeekSlots';
 import {
@@ -154,7 +153,7 @@ export const AvailabilityWeekPage = () => {
 	const weekEnd = endOfWeek(baseDate, { weekStartsOn: 1 });
 	const weekDays = eachDayOfInterval({ start: weekStart, end: weekEnd });
 
-	const { weekData, isLoading, isAvailabilityDatesEmpty } = useWeekSlots(
+	const { weekData, isLoading } = useWeekSlots(
 		weekStart,
 		weekEnd,
 		bufferTimeMinutes
@@ -387,9 +386,7 @@ export const AvailabilityWeekPage = () => {
 					</WeekFeaturesWrapper>
 				</WeekHeader>
 
-				{isAvailabilityDatesEmpty ? (
-					<AvailabilityExtendBanner />
-				) : isMobile ? (
+				{isMobile ? (
 					<MobileDayList>
 						{workingDays.map((day, _id) => {
 							const dateStr = format(day, 'yyyy-MM-dd');

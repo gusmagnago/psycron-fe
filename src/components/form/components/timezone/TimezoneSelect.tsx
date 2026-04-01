@@ -11,7 +11,10 @@ export const TimezoneSelect = () => {
 			control={control}
 			name='timeZone'
 			render={({ field }) => (
-				<GoogleTimezoneSearch onTimezoneSelect={field.onChange} />
+				<GoogleTimezoneSearch
+					initialValue={field.value}
+					onTimezoneSelect={field.onChange}
+				/>
 			)}
 		/>
 	);

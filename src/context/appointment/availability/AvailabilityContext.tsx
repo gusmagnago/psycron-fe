@@ -62,7 +62,6 @@ export const AvailabilityProvider = ({
 			value={{
 				availabilityData: data,
 				availabilityDataIsLoading: isLoading,
-				isAvailabilityDatesEmpty: data?.isEmpty,
 				firstDate: pageStatus?.firstDate,
 				lastDate: pageStatus?.latestDate,
 				totalPages: data?.totalPages,
@@ -134,7 +133,7 @@ export const useAvailability = (
 	} = useQuery({
 		queryFn: () =>
 			getAppointmentDetailsBySlotId(therapistId, availabilityDayId, slotId),
-		enabled: !!therapistId && !!slotId,
+		enabled: !!therapistId && !!slotId && !!patientId,
 		queryKey: ['slotAppointmentDetails', slotId],
 		staleTime: 1000 * 60 * 5,
 	});

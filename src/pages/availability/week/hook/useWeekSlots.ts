@@ -33,7 +33,6 @@ export const useWeekSlots = (
 	const {
 		availabilityData,
 		availabilityDataIsLoading,
-		isAvailabilityDatesEmpty,
 	} = useAvailability();
 	const weekDates = (
 		availabilityData?.dates ?? ([] as IAvailabilityDateRef[])
@@ -102,7 +101,6 @@ export const useWeekSlots = (
 	});
 
 	return {
-		isAvailabilityDatesEmpty,
 		isLoading: availabilityDataIsLoading,
 		weekData,
 	};

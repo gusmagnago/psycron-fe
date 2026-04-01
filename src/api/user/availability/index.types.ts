@@ -181,6 +181,27 @@ export interface CancelAppointmentFormData {
 	triggeredBy: string;
 }
 
+export interface IPatientSearchResult {
+	_id: string;
+	address?: ISlotAddress | null;
+	contacts: {
+		email?: string;
+		phone?: string;
+		whatsapp?: string;
+	};
+	firstName: string;
+	lastName: string;
+	preferredContact?: {
+		type: string;
+		value: string;
+	};
+	timeZone?: string;
+}
+
+export interface IPatientSearchResponse {
+	patients: IPatientSearchResult[];
+}
+
 export interface IPatientConflictCandidate {
 	_id: string;
 	firstName: string;

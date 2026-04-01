@@ -46,6 +46,7 @@ export const ContactsForm = <T extends FieldValues>({
 
 	const hasWhatsApp = Boolean(useWatch({ control, name: hasWhatsAppPath }));
 	const isPhoneWpp = Boolean(useWatch({ control, name: isPhoneWppPath }));
+	const emailValue = useWatch({ control, name: emailPath });
 
 	const emailState = getFieldState(emailPath);
 	const emailError =
@@ -83,6 +84,7 @@ export const ContactsForm = <T extends FieldValues>({
 					helperText={emailError}
 					required={required}
 					disabled={disabled}
+					InputLabelProps={{ shrink: !!emailValue }}
 				/>
 
 			{!hidePhone && (
