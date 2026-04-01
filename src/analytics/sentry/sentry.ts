@@ -120,6 +120,23 @@ export const initSentry = (): void => {
 		integrations: [
 			Sentry.replayIntegration(),
 			Sentry.browserTracingIntegration(),
+			Sentry.feedbackIntegration({
+				autoInject: true,
+				showBranding: false,
+				colorScheme: 'system',
+				triggerLabel: 'Report a Bug',
+				formTitle: 'Report a Bug',
+				nameLabel: 'Name',
+				namePlaceholder: 'Your name',
+				emailLabel: 'Email',
+				emailPlaceholder: 'your@email.com',
+				messageLabel: 'What happened?',
+				messagePlaceholder:
+					'Describe what you were doing and what went wrong.',
+				submitButtonLabel: 'Send Report',
+				cancelButtonLabel: 'Cancel',
+				successMessageText: 'Thank you! Your report has been sent.',
+			}),
 		],
 	});
 };

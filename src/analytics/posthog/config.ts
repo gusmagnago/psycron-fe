@@ -50,6 +50,13 @@ export const initPostHog = (): void => {
 			maskInputOptions: {
 				password: true,
 			},
+			recordHeaders: false,
+			recordBody: false,
+			networkRecordOptions: {
+				recordHeaders: false,
+				recordBody: false,
+				recordInitiatorType: true,
+			},
 		},
 
 		// ✅ Performance & UX metrics
