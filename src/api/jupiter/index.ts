@@ -82,13 +82,3 @@ export const getWeekSlots = async (
 };
 
 export type RecurrencePattern = 'MONTHLY' | 'WEEKLY';
-
-export const extendAvailability = async (
-	recurrencePattern: RecurrencePattern
-): Promise<{ availabilityId: string }> => {
-	const response = await apiClient.post<{ availabilityId: string }>(
-		'/jupiter/availability/extend',
-		{ recurrencePattern }
-	);
-	return response.data;
-};

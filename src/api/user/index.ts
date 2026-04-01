@@ -39,38 +39,22 @@ export const changePassword = async ({ data, userId }: IChangePass) => {
 	return response.data;
 };
 
-const EMPTY_AVAILABILITY: IAvailabilityResponse = {
-	dates: [],
-	firstDate: null,
-	isEmpty: true,
-	lastDate: null,
-	totalPages: 0,
-};
-
 export const getTherapistLatestAvailability = async (therapistId: string): Promise<IAvailabilityResponse> => {
-	try {
-		const response = await apiClient.get<IAvailabilityResponse>(
-			`/users/${therapistId}/availability?latest=true`
-		);
-		return response.data;
-	} catch {
-		return EMPTY_AVAILABILITY;
-	}
+	const response = await apiClient.get<IAvailabilityResponse>(
+		`/users/${therapistId}/availability?latest=true`
+	);
+	return response.data;
 };
 
 export const getAvailabilityCalendar = async (
 	therapistId: string,
 	params?: { from?: string; to?: string }
 ): Promise<IAvailabilityResponse> => {
-	try {
-		const response = await apiClient.get<IAvailabilityResponse>(
-			`/users/${therapistId}/availability`,
-			{ params: { latest: 'true', ...params } }
-		);
-		return response.data;
-	} catch {
-		return EMPTY_AVAILABILITY;
-	}
+	const response = await apiClient.get<IAvailabilityResponse>(
+		`/users/${therapistId}/availability`,
+		{ params: { latest: 'true', ...params } }
+	);
+	return response.data;
 };
 
 export const getAvailabilityByDayId = async (

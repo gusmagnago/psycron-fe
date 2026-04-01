@@ -906,6 +906,10 @@
         "conflict-multiple-body": "O telefone e o email correspondem a pacientes diferentes. Atualize os dados de contacto para continuar.",
         "conflict-single-body": "Já existe um paciente registado com este contacto:",
         "conflict-title": "Paciente já registado",
+        "existing-booking-body": "{{name}} já tem uma sessão agendada em {{date}} às {{time}}. Deseja adicionar outra sessão para este paciente?",
+        "existing-booking-cancel": "Escolher outro paciente",
+        "existing-booking-confirm": "Adicionar outra sessão",
+        "existing-booking-title": "Paciente já tem sessão agendada",
         "edit-error": "Falha ao salvar as alterações. Tente novamente.",
         "edit-note": "Notas",
         "edit-save": "Salvar alterações",
@@ -937,6 +941,11 @@
         "patient-timezone-placeholder": "Pesquise por cidade, ex: Sao Paulo",
         "patient-first-name": "Nome do paciente",
         "patient-last-name": "Sobrenome do paciente",
+        "patient-search": {
+          "no-results": "Nenhum paciente encontrado",
+          "placeholder": "Pesquise ou digite um novo nome",
+          "type-to-search": "Digite pelo menos 2 caracteres para pesquisar"
+        },
         "patient-time": "Horário do paciente",
         "reschedule": "Remarcar",
         "reschedule-choice-sub": "Mover para outro horário disponível",
@@ -992,14 +1001,6 @@
       "filter-time-morning": "Manhã",
       "filters": "Filtros",
       "title": "Agenda da Semana",
-      "extend": {
-        "confirm": "Estender disponibilidade",
-        "end-of-month": "Até o fim do mês",
-        "end-of-year": "Até o fim do ano",
-        "success": "Disponibilidade estendida com sucesso",
-        "title": "Por quanto tempo deseja estender?",
-        "review-settings": "Rever definições"
-      },
       "settings": "Definições"
     },
     "gate": {

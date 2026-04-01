@@ -8,7 +8,6 @@ export interface AvailabilityContextType {
 	availabilityData?: IAvailabilityResponse;
 	availabilityDataIsLoading: boolean;
 	firstDate: IDateInfo;
-	isAvailabilityDatesEmpty: boolean;
 	lastDate: IDateInfo;
 	totalPages: number;
 }

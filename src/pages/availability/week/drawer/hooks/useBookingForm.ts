@@ -40,7 +40,8 @@ export const useBookingForm = (
 	therapistId: string | null,
 	locationChoice: LocationChoice,
 	customAddress: ISlotAddress | null,
-	onSuccess: () => void
+	onSuccess: () => void,
+	selectedPatientId?: string | null
 ) => {
 	const { t } = useTranslation();
 	const { showAlert } = useAlert();
@@ -140,6 +141,13 @@ export const useBookingForm = (
 	const onSubmit = async (formData: ICreatePatientForm) => {
 		try {
 			const payload = buildPayload(formData);
+
+			// Skip conflict check when an existing patient was selected
+			if (selectedPatientId) {
+				await executeBooking({ ...payload, existingPatientId: selectedPatientId });
+				return;
+			}
+
 			// Phase 1: conflict check (when phone or email is present)
 			if (payload.contacts.phone || payload.contacts.email) {
 				setIsChecking(true);
@@ -168,10 +176,11 @@ export const useBookingForm = (
 
 			// Phase 2: no conflict — book directly
 			await executeBooking(payload);
-		} catch {
+		} catch (error) {
 			setIsChecking(false);
+			const msg = error instanceof Error ? error.message : undefined;
 			showAlert({
-				message: t('availability.week.drawer.booking-error'),
+				message: msg || t('availability.week.drawer.booking-error'),
 				severity: 'error',
 			});
 		}
@@ -181,9 +190,10 @@ export const useBookingForm = (
 		if (!pendingBooking) return;
 		try {
 			await executeBooking({ ...pendingBooking, existingPatientId });
-		} catch {
+		} catch (error) {
+			const msg = error instanceof Error ? error.message : undefined;
 			showAlert({
-				message: t('availability.week.drawer.booking-error'),
+				message: msg || t('availability.week.drawer.booking-error'),
 				severity: 'error',
 			});
 		} finally {

@@ -12,6 +12,13 @@ export type DrawerView =
 
 export type LocationChoice = 'clinic' | 'custom' | 'patient';
 
+export interface IExistingBooking {
+	date: string;
+	patientName: string;
+	slotId: string;
+	startTime: string;
+}
+
 export interface IRescheduleSlot {
 	availabilityDayId: string;
 	slotId: string;

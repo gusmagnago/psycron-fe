@@ -62,6 +62,7 @@ export const useDrawerActions = ({
 				primary: {
 					disabled: editSlotForm.mutation.isPending || !editSlotForm.isDirty,
 					label: t('availability.week.drawer.edit-save'),
+					loading: editSlotForm.mutation.isPending,
 					onClick: () => editSlotForm.mutation.mutate(),
 					tertiary: true,
 					variant: 'contained',
@@ -78,6 +79,7 @@ export const useDrawerActions = ({
 				primary: {
 					disabled: blockSlot.mutation.isPending,
 					label: t('availability.week.drawer.block-confirm'),
+					loading: blockSlot.mutation.isPending,
 					onClick: () => blockSlot.mutation.mutate(),
 					severity: 'error',
 					variant: 'contained',
@@ -102,6 +104,7 @@ export const useDrawerActions = ({
 				primary: {
 					disabled: !cancelSlot.reasonCode || cancelSlot.mutation.isPending,
 					label: t('availability.week.drawer.cancel-confirm'),
+					loading: cancelSlot.mutation.isPending,
 					onClick: () => cancelSlot.mutation.mutate(),
 					severity: 'error',
 					variant: 'contained',
@@ -121,6 +124,7 @@ export const useDrawerActions = ({
 				primary: {
 					disabled: !reschedule.selectedSlot || reschedule.mutation.isPending,
 					label: t('availability.week.drawer.reschedule-confirm'),
+					loading: reschedule.mutation.isPending,
 					onClick: () => reschedule.mutation.mutate(),
 					tertiary: true,
 					variant: 'contained',
@@ -143,7 +147,7 @@ export const useDrawerActions = ({
 					primary: {
 						disabled: isSubmitting || isChecking,
 						label: t('availability.week.drawer.confirm-booking'),
-						loading: isChecking,
+						loading: isSubmitting || isChecking,
 						onClick: submitBooking,
 						tertiary: true,
 						variant: 'contained',
