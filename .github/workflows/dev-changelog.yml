@@ -32,6 +32,9 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Ensure main ref is available
+        run: git fetch origin main:refs/remotes/origin/main
+
       - name: Generate changelog
         id: diff
         run: |
@@ -39,8 +42,8 @@ jobs:
           echo "" >> changelog.md
 
           # Count commits ahead
-          AHEAD=$(git rev-list --count main..dev 2>/dev/null || echo "0")
-          BEHIND=$(git rev-list --count dev..main 2>/dev/null || echo "0")
+          AHEAD=$(git rev-list --count origin/main..dev 2>/dev/null || echo "0")
+          BEHIND=$(git rev-list --count dev..origin/main 2>/dev/null || echo "0")
           echo "**Branch status:** \`dev\` is **${AHEAD} commits ahead**, ${BEHIND} commits behind \`main\`" >> changelog.md
           echo "" >> changelog.md
 
@@ -49,7 +52,7 @@ jobs:
           echo "" >> changelog.md
           echo "| Hash | Author | Message | Date |" >> changelog.md
           echo "|------|--------|---------|------|" >> changelog.md
-          git log main..dev --pretty=format="| \`%.7h\` | %an | %s | %ad |" --date=short >> changelog.md
+          git log origin/main..dev --pretty=format="| \`%.7h\` | %an | %s | %ad |" --date=short >> changelog.md
           echo "" >> changelog.md
           echo "" >> changelog.md
 
@@ -57,12 +60,12 @@ jobs:
           echo "### Changes by category" >> changelog.md
           echo "" >> changelog.md
 
-          FEATS=$(git log main..dev --pretty=format:"%s" | grep -c "^feat" || true)
-          FIXES=$(git log main..dev --pretty=format:"%s" | grep -c "^fix" || true)
-          SECS=$(git log main..dev --pretty=format:"%s" | grep -c "^sec" || true)
-          REFACTORS=$(git log main..dev --pretty=format:"%s" | grep -c "^refactor" || true)
-          DOCS=$(git log main..dev --pretty=format:"%s" | grep -c "^docs" || true)
-          CHORES=$(git log main..dev --pretty=format:"%s" | grep -c "^chore" || true)
+          FEATS=$(git log origin/main..dev --pretty=format:"%s" | grep -c "^feat" || true)
+          FIXES=$(git log origin/main..dev --pretty=format:"%s" | grep -c "^fix" || true)
+          SECS=$(git log origin/main..dev --pretty=format:"%s" | grep -c "^sec" || true)
+          REFACTORS=$(git log origin/main..dev --pretty=format:"%s" | grep -c "^refactor" || true)
+          DOCS=$(git log origin/main..dev --pretty=format:"%s" | grep -c "^docs" || true)
+          CHORES=$(git log origin/main..dev --pretty=format:"%s" | grep -c "^chore" || true)
 
           echo "| Category | Count |" >> changelog.md
           echo "|----------|-------|" >> changelog.md
@@ -78,15 +81,15 @@ jobs:
           echo "### Files changed" >> changelog.md
           echo "" >> changelog.md
           echo "\`\`\`" >> changelog.md
-          git diff --stat main..dev >> changelog.md
+          git diff --stat origin/main..dev >> changelog.md
           echo "\`\`\`" >> changelog.md
           echo "" >> changelog.md
 
           # Key directories impacted
           echo "### Key areas impacted" >> changelog.md
           echo "" >> changelog.md
-          git diff --name-only main..dev | sed 's|/[^/]*$||' | sort -u | head -20 | while read dir; do
-            COUNT=$(git diff --name-only main..dev | grep "^${dir}/" | wc -l)
+          git diff --name-only origin/main..dev | sed 's|/[^/]*$||' | sort -u | head -20 | while read dir; do
+            COUNT=$(git diff --name-only origin/main..dev | grep "^${dir}/" | wc -l)
             echo "- \`${dir}/\` — ${COUNT} files" >> changelog.md
           done
           echo "" >> changelog.md
