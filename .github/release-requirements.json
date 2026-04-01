@@ -1,0 +1,91 @@
+{
+  "version": "1.0.0",
+  "requirements": [
+    { "name": "Authentication & Security", "status": "done" },
+    { "name": "Júpiter + Availability Builder", "status": "done" },
+    {
+      "name": "Scheduling & Availability Management",
+      "status": "in-progress",
+      "tickets": [
+        {
+          "key": "PR-291",
+          "url": "https://psycron.atlassian.net/browse/PR-291",
+          "summary": "Google Meet/Zoom auto-links"
+        },
+        {
+          "key": "PR-294",
+          "url": "https://psycron.atlassian.net/browse/PR-294",
+          "summary": "Booked slot drawer UX overhaul"
+        }
+      ]
+    },
+    { "name": "Public Booking Pages", "status": "done" },
+    {
+      "name": "Booking",
+      "status": "in-progress",
+      "tickets": [
+        {
+          "key": "PR-287",
+          "url": "https://psycron.atlassian.net/browse/PR-287",
+          "summary": "Select Existing Patient When Booking"
+        },
+        {
+          "key": "PR-290",
+          "url": "https://psycron.atlassian.net/browse/PR-290",
+          "summary": "Patient self-management (cancel/reschedule)"
+        }
+      ]
+    },
+    { "name": "Payments & Subscriptions", "status": "done" },
+    { "name": "Multi-language & Localization", "status": "done" },
+    {
+      "name": "Client (Patient) Management",
+      "status": "in-progress",
+      "note": "Consent management (LGPD) — no ticket yet"
+    },
+    {
+      "name": "Therapist Dashboard",
+      "status": "in-progress",
+      "tickets": [
+        {
+          "key": "PR-293",
+          "url": "https://psycron.atlassian.net/browse/PR-293",
+          "summary": "Conflict Panel"
+        }
+      ],
+      "note": "Empty state, today's agenda, quick actions — tickets TBD"
+    },
+    {
+      "name": "Notifications & Communication",
+      "status": "in-progress",
+      "tickets": [
+        {
+          "key": "PR-288",
+          "url": "https://psycron.atlassian.net/browse/PR-288",
+          "summary": "WhatsApp Business API notifications"
+        }
+      ],
+      "note": "Automated reminders (24h/1h) — no ticket yet"
+    }
+  ],
+  "blockers": [
+    {
+      "name": "QA Baseline Review",
+      "ticket": "PR-295",
+      "url": "https://psycron.atlassian.net/browse/PR-295",
+      "status": "pending"
+    },
+    {
+      "name": "E2E Smoke Test",
+      "ticket": "PR-265",
+      "url": "https://psycron.atlassian.net/browse/PR-265",
+      "status": "pending"
+    },
+    {
+      "name": "Google Calendar Permissions Fix",
+      "ticket": "PR-289",
+      "url": "https://psycron.atlassian.net/browse/PR-289",
+      "status": "pending"
+    }
+  ]
+}
