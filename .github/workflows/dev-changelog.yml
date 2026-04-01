@@ -189,3 +189,193 @@ jobs:
                 body: changelog
               });
             }
+
+      - name: Update Confluence "What's in Dev" section
+        if: env.CONFLUENCE_AUTH != ''
+        env:
+          CONFLUENCE_AUTH: ${{ secrets.CONFLUENCE_API_TOKEN }}
+          CONFLUENCE_CLOUD_ID: "7fc7f600-112d-4a1d-b837-02dc51ca2682"
+          CONFLUENCE_PAGE_ID: "132120577"
+        run: |
+          REPO="${{ github.event.repository.name }}"
+          DATE=$(date -u '+%Y-%m-%d %H:%M UTC')
+
+          AHEAD=$(git rev-list --count origin/main..dev 2>/dev/null || echo "0")
+
+          # Recent commits (last 15)
+          RECENT=$(git log origin/main..dev --pretty=format:"%h|%an|%s|%ad" --date=short | head -15)
+
+          # Category counts
+          FEATS=$(git log origin/main..dev --pretty=format:"%s" | grep -c "^feat" || true)
+          FIXES=$(git log origin/main..dev --pretty=format:"%s" | grep -c "^fix" || true)
+          SECS=$(git log origin/main..dev --pretty=format:"%s" | grep -c "^sec" || true)
+          REFACTORS=$(git log origin/main..dev --pretty=format:"%s" | grep -c "^refactor" || true)
+
+          # Get current page
+          PAGE_DATA=$(curl -s \
+            "https://api.atlassian.com/ex/confluence/${CONFLUENCE_CLOUD_ID}/wiki/api/v2/pages/${CONFLUENCE_PAGE_ID}?body-format=storage" \
+            -H "Authorization: Basic ${CONFLUENCE_AUTH}" \
+            -H "Accept: application/json")
+
+          export PAGE_JSON="$PAGE_DATA"
+          export DEV_REPO="$REPO"
+          export DEV_DATE="$DATE"
+          export DEV_AHEAD="$AHEAD"
+          export DEV_RECENT="$RECENT"
+          export DEV_FEATS="$FEATS"
+          export DEV_FIXES="$FIXES"
+          export DEV_SECS="$SECS"
+          export DEV_REFACTORS="$REFACTORS"
+          export DEV_REQUIREMENTS="$(cat .github/release-requirements.json)"
+
+          PAYLOAD=$(node -e "
+            const page = JSON.parse(process.env.PAGE_JSON);
+            const repo = process.env.DEV_REPO;
+            const date = process.env.DEV_DATE;
+            const ahead = process.env.DEV_AHEAD;
+            const recent = process.env.DEV_RECENT;
+            const feats = process.env.DEV_FEATS;
+            const fixes = process.env.DEV_FIXES;
+            const secs = process.env.DEV_SECS;
+            const refactors = process.env.DEV_REFACTORS;
+            const config = JSON.parse(process.env.DEV_REQUIREMENTS);
+
+            const esc = s => s.replace(/[<>&]/g, m => ({'<':'&lt;','>':'&gt;','&':'&amp;'}[m]));
+
+            // --- Requirements progress ---
+            const reqs = config.requirements;
+            const blockers = config.blockers || [];
+            const doneCount = reqs.filter(r => r.status === 'done').length;
+            const totalCount = reqs.length;
+            const pct = Math.round((doneCount / totalCount) * 100);
+            const blockersResolved = blockers.filter(b => b.status === 'done').length;
+
+            const barColor = pct >= 90 ? '#4caf50' : pct >= 60 ? '#ff9800' : '#2196f3';
+
+            const progressBar = [
+              '<h3>v' + config.version + ' Release Progress</h3>',
+              '<div style=\"background:#e0e0e0;border-radius:8px;overflow:hidden;height:28px;margin:8px 0 16px 0;\">',
+              '<div style=\"background:' + barColor + ';height:100%;width:' + pct + '%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:bold;font-size:14px;border-radius:8px;transition:width 0.3s;\">',
+              pct + '%',
+              '</div></div>',
+              '<p><strong>' + doneCount + '</strong> of <strong>' + totalCount + '</strong> requirements done &mdash; <strong>' + blockersResolved + '</strong> of <strong>' + blockers.length + '</strong> blockers resolved</p>',
+            ].join('');
+
+            // Requirements table
+            const statusIcon = s => s === 'done' ? '&#9989;' : s === 'in-progress' ? '&#9888;&#65039;' : '&#128308;';
+            const reqRows = reqs.map(r => {
+              const tickets = (r.tickets || []).map(t =>
+                '<a href=\"' + t.url + '\">' + esc(t.key) + '</a>: ' + esc(t.summary)
+              ).join('<br/>');
+              const note = r.note ? '<em>' + esc(r.note) + '</em>' : '';
+              const details = [tickets, note].filter(Boolean).join('<br/>');
+              return '<tr><td>' + statusIcon(r.status) + '</td><td>' + esc(r.name) + '</td><td>' + r.status + '</td><td>' + details + '</td></tr>';
+            }).join('');
+
+            const reqTable = [
+              '<h3>Requirements</h3>',
+              '<table><tbody>',
+              '<tr><th></th><th>Feature</th><th>Status</th><th>Details</th></tr>',
+              reqRows,
+              '</tbody></table>',
+            ].join('');
+
+            // Blockers table
+            const blockerRows = blockers.map(b => {
+              return '<tr><td>' + statusIcon(b.status) + '</td><td><a href=\"' + b.url + '\">' + esc(b.ticket) + '</a></td><td>' + esc(b.name) + '</td><td>' + b.status + '</td></tr>';
+            }).join('');
+
+            const blockerTable = blockers.length > 0 ? [
+              '<h3>Blockers</h3>',
+              '<table><tbody>',
+              '<tr><th></th><th>Ticket</th><th>Description</th><th>Status</th></tr>',
+              blockerRows,
+              '</tbody></table>',
+            ].join('') : '';
+
+            // Build commit table rows
+            const rows = recent.split('\n').filter(Boolean).map(line => {
+              const [hash, author, msg, d] = line.split('|');
+              return '<tr><td><code>' + esc(hash) + '</code></td><td>' + esc(author) + '</td><td>' + esc(msg) + '</td><td>' + esc(d) + '</td></tr>';
+            }).join('');
+
+            const section = [
+              '<p><em>Auto-updated by GitHub Actions on ' + esc(date) + ' from <strong>' + esc(repo) + '</strong></em></p>',
+              progressBar,
+              reqTable,
+              blockerTable,
+              '<h3>Dev branch status</h3>',
+              '<p><strong>' + esc(repo) + '</strong> &mdash; <strong>' + ahead + ' commits</strong> ahead of main</p>',
+              '<h3>Category breakdown</h3>',
+              '<table><tbody>',
+              '<tr><th>Category</th><th>Count</th></tr>',
+              '<tr><td>Features (feat)</td><td>' + feats + '</td></tr>',
+              '<tr><td>Fixes (fix)</td><td>' + fixes + '</td></tr>',
+              '<tr><td>Security (sec)</td><td>' + secs + '</td></tr>',
+              '<tr><td>Refactors (refactor)</td><td>' + refactors + '</td></tr>',
+              '</tbody></table>',
+              '<h3>Recent commits</h3>',
+              '<table><tbody>',
+              '<tr><th>Hash</th><th>Author</th><th>Message</th><th>Date</th></tr>',
+              rows,
+              '</tbody></table>',
+            ].join('');
+
+            let body = page.body.storage.value;
+
+            // Replace 'What's in Dev Right Now' section
+            const marker = 'in Dev Right Now';
+            const idx = body.indexOf(marker);
+            if (idx !== -1) {
+              const afterHeading = body.indexOf('>', idx) + 1;
+              const nextH2 = body.indexOf('<h2', afterHeading);
+              const nextHr = body.indexOf('<hr', afterHeading);
+              let endIdx = body.length;
+              if (nextH2 !== -1) endIdx = Math.min(endIdx, nextH2);
+              if (nextHr !== -1 && nextHr < endIdx) endIdx = nextHr;
+              body = body.slice(0, afterHeading) + section + body.slice(endIdx);
+            }
+
+            // Also update the Current Status section with the progress bar
+            const statusMarker = 'Current Status';
+            const statusIdx = body.indexOf(statusMarker);
+            if (statusIdx !== -1) {
+              const afterStatusHeading = body.indexOf('>', statusIdx) + 1;
+              const nextSection = body.indexOf('<h2', afterStatusHeading);
+              const nextStatusHr = body.indexOf('<hr', afterStatusHeading);
+              let statusEnd = body.length;
+              if (nextSection !== -1) statusEnd = Math.min(statusEnd, nextSection);
+              if (nextStatusHr !== -1 && nextStatusHr < statusEnd) statusEnd = nextStatusHr;
+
+              const existingContent = body.slice(afterStatusHeading, statusEnd);
+              const cleaned = existingContent.replace(/<h3>v[\d.]+\sRelease Progress<\/h3>[\s\S]*?resolved<\/p>/g, '');
+              body = body.slice(0, afterStatusHeading) + progressBar + cleaned + body.slice(statusEnd);
+            }
+
+            const payload = {
+              id: process.env.CONFLUENCE_PAGE_ID,
+              status: 'current',
+              title: page.title,
+              body: { representation: 'storage', value: body },
+              version: {
+                number: page.version.number + 1,
+                message: 'Auto-update: ' + repo + ' dev changelog (' + date + ')'
+              }
+            };
+
+            process.stdout.write(JSON.stringify(payload));
+          ")
+
+          HTTP_STATUS=$(curl -s -o /tmp/confluence_response.json -w "%{http_code}" \
+            -X PUT \
+            "https://api.atlassian.com/ex/confluence/${CONFLUENCE_CLOUD_ID}/wiki/api/v2/pages/${CONFLUENCE_PAGE_ID}" \
+            -H "Authorization: Basic ${CONFLUENCE_AUTH}" \
+            -H "Content-Type: application/json" \
+            -d "$PAYLOAD")
+
+          if [ "$HTTP_STATUS" -ge 200 ] && [ "$HTTP_STATUS" -lt 300 ]; then
+            echo "✅ Confluence 'What's in Dev' updated (HTTP ${HTTP_STATUS})"
+          else
+            echo "⚠️ Confluence update failed (HTTP ${HTTP_STATUS}) — changelog was still generated"
+            cat /tmp/confluence_response.json
+          fi
