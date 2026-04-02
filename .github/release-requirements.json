@@ -25,16 +25,12 @@
       "status": "in-progress",
       "tickets": [
         {
-          "key": "PR-287",
-          "url": "https://psycron.atlassian.net/browse/PR-287",
-          "summary": "Select Existing Patient When Booking"
-        },
-        {
           "key": "PR-290",
           "url": "https://psycron.atlassian.net/browse/PR-290",
           "summary": "Patient self-management (cancel/reschedule)"
         }
-      ]
+      ],
+      "note": "PR-287 (Select Existing Patient) done — merged to dev"
     },
     { "name": "Payments & Subscriptions", "status": "done" },
     { "name": "Multi-language & Localization", "status": "done" },

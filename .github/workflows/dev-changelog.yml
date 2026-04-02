@@ -190,12 +190,13 @@ jobs:
               });
             }
 
-      - name: Update Confluence "What's in Dev" section
+      - name: Update Confluence "What's in Dev" + Open Tickets from Jira
         if: env.CONFLUENCE_AUTH != ''
         env:
           CONFLUENCE_AUTH: ${{ secrets.CONFLUENCE_API_TOKEN }}
           CONFLUENCE_CLOUD_ID: "7fc7f600-112d-4a1d-b837-02dc51ca2682"
           CONFLUENCE_PAGE_ID: "132120577"
+          JIRA_PROJECT_KEY: "PR"
         run: |
           REPO="${{ github.event.repository.name }}"
           DATE=$(date -u '+%Y-%m-%d %H:%M UTC')
@@ -211,13 +212,22 @@ jobs:
           SECS=$(git log origin/main..dev --pretty=format:"%s" | grep -c "^sec" || true)
           REFACTORS=$(git log origin/main..dev --pretty=format:"%s" | grep -c "^refactor" || true)
 
-          # Get current page
+          # Get current Confluence page
           PAGE_DATA=$(curl -s \
             "https://api.atlassian.com/ex/confluence/${CONFLUENCE_CLOUD_ID}/wiki/api/v2/pages/${CONFLUENCE_PAGE_ID}?body-format=storage" \
             -H "Authorization: Basic ${CONFLUENCE_AUTH}" \
             -H "Accept: application/json")
 
+          # Query Jira for open non-Epic tickets in project
+          JQL="project = ${JIRA_PROJECT_KEY} AND issuetype != Epic AND statusCategory != Done ORDER BY priority ASC, key ASC"
+          ENCODED_JQL=$(python3 -c "import urllib.parse; print(urllib.parse.quote('${JQL}'))")
+          JIRA_DATA=$(curl -s \
+            "https://api.atlassian.com/ex/jira/${CONFLUENCE_CLOUD_ID}/rest/api/3/search?jql=${ENCODED_JQL}&fields=summary,status,priority,assignee,parent&maxResults=50" \
+            -H "Authorization: Basic ${CONFLUENCE_AUTH}" \
+            -H "Accept: application/json")
+
           export PAGE_JSON="$PAGE_DATA"
+          export JIRA_JSON="$JIRA_DATA"
           export DEV_REPO="$REPO"
           export DEV_DATE="$DATE"
           export DEV_AHEAD="$AHEAD"
@@ -230,6 +240,7 @@ jobs:
 
           PAYLOAD=$(node -e "
             const page = JSON.parse(process.env.PAGE_JSON);
+            const jiraResult = JSON.parse(process.env.JIRA_JSON);
             const repo = process.env.DEV_REPO;
             const date = process.env.DEV_DATE;
             const ahead = process.env.DEV_AHEAD;
@@ -293,6 +304,32 @@ jobs:
               '</tbody></table>',
             ].join('') : '';
 
+            // --- Open Tickets table from live Jira data ---
+            const jiraIssues = (jiraResult.issues || []);
+            const ticketRows = jiraIssues.map(issue => {
+              const f = issue.fields;
+              const key = issue.key;
+              const url = 'https://psycron.atlassian.net/browse/' + key;
+              const summary = esc(f.summary || '');
+              const status = esc((f.status || {}).name || 'Unknown');
+              const priority = esc((f.priority || {}).name || '-');
+              const assignee = esc((f.assignee || {}).displayName || 'Unassigned');
+              const parentKey = (f.parent || {}).key || '';
+              const parentSummary = ((f.parent || {}).fields || {}).summary || '';
+              const epicCol = parentKey
+                ? '<a href=\"https://psycron.atlassian.net/browse/' + parentKey + '\">' + esc(parentKey) + '</a>: ' + esc(parentSummary)
+                : '&mdash;';
+              return '<tr><td><a href=\"' + url + '\">' + key + '</a></td><td>' + summary + '</td><td>' + status + '</td><td>' + priority + '</td><td>' + assignee + '</td><td>' + epicCol + '</td></tr>';
+            }).join('');
+
+            const openTicketsSection = [
+              '<p><em>Auto-synced from Jira on ' + esc(date) + '. Excludes Done tickets and Epics.</em></p>',
+              '<table><tbody>',
+              '<tr><th>Ticket</th><th>Summary</th><th>Status</th><th>Priority</th><th>Assignee</th><th>Epic</th></tr>',
+              ticketRows,
+              '</tbody></table>',
+            ].join('');
+
             // Build commit table rows
             const rows = recent.split('\n').filter(Boolean).map(line => {
               const [hash, author, msg, d] = line.split('|');
@@ -336,6 +373,19 @@ jobs:
               body = body.slice(0, afterHeading) + section + body.slice(endIdx);
             }
 
+            // Replace 'Open Tickets' section with live Jira data
+            const ticketMarker = 'Open Tickets';
+            const ticketIdx = body.indexOf(ticketMarker);
+            if (ticketIdx !== -1) {
+              const afterTicketHeading = body.indexOf('>', ticketIdx) + 1;
+              const nextTicketH2 = body.indexOf('<h2', afterTicketHeading);
+              const nextTicketHr = body.indexOf('<hr', afterTicketHeading);
+              let ticketEnd = body.length;
+              if (nextTicketH2 !== -1) ticketEnd = Math.min(ticketEnd, nextTicketH2);
+              if (nextTicketHr !== -1 && nextTicketHr < ticketEnd) ticketEnd = nextTicketHr;
+              body = body.slice(0, afterTicketHeading) + openTicketsSection + body.slice(ticketEnd);
+            }
+
             // Also update the Current Status section with the progress bar
             const statusMarker = 'Current Status';
             const statusIdx = body.indexOf(statusMarker);
@@ -374,7 +424,7 @@ jobs:
             -d "$PAYLOAD")
 
           if [ "$HTTP_STATUS" -ge 200 ] && [ "$HTTP_STATUS" -lt 300 ]; then
-            echo "✅ Confluence 'What's in Dev' updated (HTTP ${HTTP_STATUS})"
+            echo "✅ Confluence updated: What's in Dev + Open Tickets (HTTP ${HTTP_STATUS})"
           else
             echo "⚠️ Confluence update failed (HTTP ${HTTP_STATUS}) — changelog was still generated"
             cat /tmp/confluence_response.json
