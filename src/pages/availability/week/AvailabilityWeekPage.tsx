@@ -72,7 +72,7 @@ import {
 	SlotBufferLabel,
 	SlotCell,
 	SlotCellBuffer,
-	SlotCellEmpty,
+	SlotCellDisabled,
 	SlotPatientName,
 	SlotTherapyType,
 	TimeLabel,
@@ -89,34 +89,12 @@ import {
 	WeekSubtitle,
 	WeekTitle,
 } from './AvailabilityWeekPage.styles';
-import type { IWeekSlot, SlotStatus } from './AvailabilityWeekPage.types';
-
-const LEGEND_STATUSES: { labelKey: string; status: SlotStatus }[] = [
-	{ status: 'available', labelKey: 'availability.week.legend-available' },
-	{
-		status: 'booked-jupiter',
-		labelKey: 'availability.week.legend-booked-jupiter',
-	},
-	{
-		status: 'booked-google',
-		labelKey: 'availability.week.legend-booked-google',
-	},
-	{ status: 'buffer', labelKey: 'availability.week.legend-buffer' },
-	{ status: 'cancelled', labelKey: 'availability.week.legend-cancelled' },
-];
-
-const isClickable = (status: SlotStatus) =>
-	status === 'booked-jupiter' ||
-	status === 'booked-google' ||
-	status === 'available';
-
-const formatTimeRange = (startTime: string, durationMin: number) => {
-	const [h, m] = startTime.split(':').map(Number);
-	const totalEndMin = h * 60 + m + durationMin;
-	const endH = Math.floor(totalEndMin / 60);
-	const endM = totalEndMin % 60;
-	return `${startTime} – ${String(endH).padStart(2, '0')}:${String(endM).padStart(2, '0')}`;
-};
+import type { IWeekSlot } from './AvailabilityWeekPage.types';
+import {
+	formatTimeRange,
+	isClickable,
+	LEGEND_STATUSES,
+} from './AvailabilityWeekPage.utils';
 
 export const AvailabilityWeekPage = () => {
 	const { t } = useTranslation();
@@ -397,6 +375,7 @@ export const AvailabilityWeekPage = () => {
 								? allSlots
 								: allSlots.slice(0, COLLAPSED_SLOTS_LIMIT);
 							const hiddenCount = allSlots.length - COLLAPSED_SLOTS_LIMIT;
+
 							return (
 								<MobileDayCard
 									key={`mobile-day-${day.toISOString() + _id}`}
@@ -432,6 +411,8 @@ export const AvailabilityWeekPage = () => {
 										) : (
 											<>
 												{visibleSlots.map((slot) => {
+													const shouldClick = isClickable(slot?.status, day);
+
 													if (slot.status === 'buffer' && slot.bufferFor) {
 														return (
 															<MobileSlotBuffer
@@ -451,9 +432,13 @@ export const AvailabilityWeekPage = () => {
 														<MobileSlotCard
 															key={`mobile-dslot-${slot.id}`}
 															slotStatus={slot.status}
-															onClick={() => handleSlotClick(slot)}
-															onPointerDown={() => handleSlotPointerDown(slot)}
-															disableRipple={!isClickable(slot.status)}
+															onClick={() =>
+																shouldClick ? handleSlotClick(slot) : null
+															}
+															onPointerDown={() =>
+																shouldClick ? handleSlotPointerDown(slot) : null
+															}
+															disableRipple={!shouldClick}
 														>
 															<MobileSlotTime>
 																{formatTimeRange(slot.startTime, slot.duration)}
@@ -528,9 +513,11 @@ export const AvailabilityWeekPage = () => {
 												? null
 												: (daySlots.find((s) => s.startTime === time) ?? null);
 
-											if (!slot) {
+											const shouldClick = isClickable(slot?.status, day);
+
+											if (!slot || !shouldClick) {
 												return (
-													<SlotCellEmpty
+													<SlotCellDisabled
 														key={`slot-empty${day.toISOString()}-${time}`}
 														isOddRow={isOddRow}
 														isToday={todayDay}
@@ -555,9 +542,13 @@ export const AvailabilityWeekPage = () => {
 													slotStatus={slot.status}
 													isOddRow={isOddRow}
 													isToday={todayDay}
-													onClick={() => handleSlotClick(slot)}
-													onPointerDown={() => handleSlotPointerDown(slot)}
-													disableRipple={!isClickable(slot.status)}
+													onClick={() => {
+														shouldClick && handleSlotClick(slot);
+													}}
+													onPointerDown={() => {
+														shouldClick && handleSlotPointerDown(slot);
+													}}
+													disableRipple={!shouldClick}
 												>
 													{slot.patientName && (
 														<>

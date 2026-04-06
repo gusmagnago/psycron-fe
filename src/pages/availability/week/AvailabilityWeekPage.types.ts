@@ -9,7 +9,7 @@ export interface IWeekSlot {
 	availabilityDayId?: string;
 	bufferFor?: 'booked-google' | 'booked-jupiter'; // only set when status === 'buffer'
 	date: string; // 'YYYY-MM-DD'
-	deliveryMode?: DeliveryMode;
+	deliveryMode?: DeliveryMode | null;
 	duration: number; // minutes
 	id: string;
 	letPatientChooseAddress?: boolean;

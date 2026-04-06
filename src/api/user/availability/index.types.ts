@@ -3,6 +3,7 @@ import type {
 	ISlot,
 	ISlotAddress,
 	ISODateString,
+	PreferredContactType,
 } from '@psycron/context/user/auth/UserAuthenticationContext.types';
 
 export interface IInitiateAvailabilityResponse {
@@ -76,6 +77,7 @@ export interface AppointmentDetailsBySlotIdResponse {
 		patient: Partial<IPatient>;
 		patientId?: string;
 		reasonCode?: string | null;
+		sessionCount?: number;
 		startTime: string;
 		status: ISlot['status'];
 	};
@@ -109,6 +111,7 @@ export interface IAvailabilityDate {
 		_id: string;
 		canceledAt?: string | null;
 		customReason?: string | null;
+		deliveryMode?: 'online' | 'in-person' | null;
 		endTime: string;
 		note?: string;
 		patientId?: string;
@@ -191,10 +194,7 @@ export interface IPatientSearchResult {
 	};
 	firstName: string;
 	lastName: string;
-	preferredContact?: {
-		type: string;
-		value: string;
-	};
+	preferredContact?: PreferredContactType;
 	timeZone?: string;
 }
 
@@ -226,6 +226,7 @@ export interface ICheckDuplicatePayload {
 
 export interface IBookSlotByTherapistPayload {
 	availabilityDayId: string;
+	deliveryMode?: 'online' | 'in-person';
 	existingPatientId?: string;
 	patient: {
 		contacts: {

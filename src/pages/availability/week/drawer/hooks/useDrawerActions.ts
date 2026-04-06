@@ -34,6 +34,7 @@ export interface IUseDrawerActionsInput {
 	hasConflict: boolean;
 	isAvailable: boolean;
 	isChecking: boolean;
+	isPast?: boolean;
 	isSubmitting: boolean;
 	reschedule: IRescheduleActions;
 	setView: (view: DrawerView) => void;
@@ -48,6 +49,7 @@ export const useDrawerActions = ({
 	hasConflict,
 	isAvailable,
 	isChecking,
+	isPast,
 	isSubmitting,
 	reschedule,
 	setView,
@@ -159,6 +161,8 @@ export const useDrawerActions = ({
 					},
 				};
 			}
+
+			if (isPast) return {};
 
 			return {
 				primary: {

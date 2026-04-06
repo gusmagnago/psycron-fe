@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import { editSlot } from '@psycron/api/availability';
 import {
 	type ICreatePatientForm,
 	RecurrencePattern,
@@ -41,7 +40,8 @@ export const useBookingForm = (
 	locationChoice: LocationChoice,
 	customAddress: ISlotAddress | null,
 	onSuccess: () => void,
-	selectedPatientId?: string | null
+	selectedPatientId?: string | null,
+	sessionType?: string
 ) => {
 	const { t } = useTranslation();
 	const { showAlert } = useAlert();
@@ -92,19 +92,13 @@ export const useBookingForm = (
 	};
 
 	const executeBooking = async (payload: IPendingBooking) => {
-		if (locationChoice === 'custom' && customAddress) {
-			await editSlot({
-				address: customAddress,
-				availabilityDayId: slot.availabilityDayId ?? '',
-				slotId: slot._id ?? slot.id,
-				therapistId: therapistId ?? '',
-			});
-		}
+		const deliveryMode = sessionType === 'ONLINE' ? 'online' : 'in-person';
 
 		await bookSlotByTherapist({
 			therapistId: therapistId ?? '',
 			availabilityDayId: slot.availabilityDayId ?? '',
 			slotId: slot._id ?? slot.id,
+			deliveryMode,
 			patient: {
 				contacts: payload.contacts,
 				firstName: payload.firstName,
@@ -120,6 +114,9 @@ export const useBookingForm = (
 				? payload.recurrencePattern !== RecurrencePattern.SINGLE
 				: false,
 			shareAddress: locationChoice === 'clinic',
+			...(locationChoice === 'custom' && customAddress
+				? { patientAddress: customAddress }
+				: {}),
 			timeZone: payload.timeZone,
 			...(payload.existingPatientId
 				? { existingPatientId: payload.existingPatientId }
