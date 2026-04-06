@@ -57,6 +57,7 @@ export const useWeekSlots = (
 					address: slot.address ?? null,
 					availabilityDayId: String(d.dateId),
 					date: dayStr,
+					deliveryMode: slot.deliveryMode ?? null,
 					duration: computeDuration(slot.startTime, slot.endTime),
 					id: slot._id ?? `${dayStr}-${j}`,
 					letPatientChooseAddress: slot.letPatientChooseAddress ?? false,

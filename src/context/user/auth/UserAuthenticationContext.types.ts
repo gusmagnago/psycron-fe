@@ -152,6 +152,7 @@ export interface ISlot {
 	address?: ISlotAddress | null;
 	canceledAt?: ISODateString | null;
 	customReason?: string | null;
+	deliveryMode?: 'online' | 'in-person' | null;
 	endTime: string;
 	letPatientChooseAddress?: boolean;
 	note?: string;

@@ -1,24 +1,21 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Box } from '@mui/material';
+import type { IPatientSearchResult } from '@psycron/api/user/availability/index.types';
 import { StatusEnum } from '@psycron/api/user/availability/index.types';
 import { Drawer } from '@psycron/components/drawer/Drawer';
 import {
 	Account,
-	Appointment,
+	Alert,
 	Calendar,
-	Globe,
 	Google,
-	Jupiter,
-	Mail,
-	MapPin,
-	Phone,
 	Watch,
-	WhatsApp,
 } from '@psycron/components/icons';
 import { Modal } from '@psycron/components/modal/Modal';
 import { useAvailability } from '@psycron/context/appointment/availability/AvailabilityContext';
-import type { ISlotAddress } from '@psycron/context/user/auth/UserAuthenticationContext.types';
+import type {
+	ISlotAddress,
+	PreferredContactType,
+} from '@psycron/context/user/auth/UserAuthenticationContext.types';
 import { useUserDetails } from '@psycron/context/user/details/UserDetailsContext';
 import { useJupiterAvailabilityConfig } from '@psycron/hooks/useJupiterAvailabilityConfig';
 import { useSecureStorage } from '@psycron/hooks/useSecureStorage';
@@ -40,6 +37,12 @@ import {
 } from './hooks/useSlotActions';
 import { useSlotAddress } from './hooks/useSlotAddress';
 import { SlotAvailableBody } from './views/slot-available-body/SlotAvailableBody';
+import { SlotBookedBody } from './views/slot-booked-body/SlotBookedBody';
+import {
+	DeliveryBadge,
+	PastDisabledFooter,
+} from './views/slot-booked-body/SlotBookedBody.styles';
+import { isPastAppointment } from './views/slot-booked-body/SlotBookedBody.utils';
 import { SlotBookingConflictView } from './views/slot-booking-conflict/SlotBookingConflictView';
 import { ConflictBody } from './views/slot-booking-conflict/SlotBookingConflictView.styles';
 import { SlotCancelChoiceView } from './views/slot-cancel-choice-view/SlotCancelChoiceView';
@@ -51,7 +54,6 @@ import {
 	CancelViewBody,
 	ConfirmedBadge,
 	ConfirmedBadgeText,
-	ContactLinkAnchor,
 	DrawerBadgeRow,
 	DrawerDetailLabel,
 	SourceBadge,
@@ -66,10 +68,8 @@ import type {
 	LocationChoice,
 } from './AvailabilityWeekDrawer.types';
 import {
-	buildContactLink,
 	computeEndTime,
 	computeTimeStrings,
-	STATUS_CONFIG,
 } from './AvailabilityWeekDrawer.utils';
 
 export const AvailabilityWeekDrawer = ({
@@ -97,7 +97,7 @@ export const AvailabilityWeekDrawer = ({
 	useEffect(() => {
 		setLocationChoice(getInitialLocationChoice());
 		setOverrideAddress(!!slot.address);
-	// eslint-disable-next-line react-hooks/exhaustive-deps
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [slot.address, slot.letPatientChooseAddress]);
 
 	// ─── Slot flags ───────────────────────────────────────────────────────────
@@ -119,7 +119,11 @@ export const AvailabilityWeekDrawer = ({
 	);
 
 	const slotId = slot._id ?? slot.id;
-	const { availabilityData, appointmentDetailsBySlotId } = useAvailability(
+	const {
+		availabilityData,
+		appointmentDetailsBySlotId,
+		isAppointmentDetailsBySlotIdLoading,
+	} = useAvailability(
 		undefined,
 		slot.availabilityDayId,
 		slotId,
@@ -127,7 +131,8 @@ export const AvailabilityWeekDrawer = ({
 	);
 
 	const patientSearch = usePatientSearch(therapistId);
-	const [existingBooking, setExistingBooking] = useState<IExistingBooking | null>(null);
+	const [existingBooking, setExistingBooking] =
+		useState<IExistingBooking | null>(null);
 
 	const {
 		conflict,
@@ -137,15 +142,24 @@ export const AvailabilityWeekDrawer = ({
 		isSubmitting,
 		methods,
 		submitBooking,
-	} = useBookingForm(slot, therapistId, locationChoice, slotAddress.address, onClose, patientSearch.selectedPatient?._id);
+	} = useBookingForm(
+		slot,
+		therapistId,
+		locationChoice,
+		slotAddress.address,
+		onClose,
+		patientSearch.selectedPatient?._id,
+		sessionType
+	);
 
-	const applyPatientToForm = (patient: Parameters<typeof patientSearch.setSelectedPatient>[0]) => {
+	const applyPatientToForm = (patient: IPatientSearchResult) => {
 		if (!patient) return;
 		patientSearch.setSelectedPatient(patient);
 		patientSearch.setSearchQuery(patient.firstName);
 
 		const hasWhatsApp = !!patient.contacts.whatsapp;
-		const isPhoneWpp = hasWhatsApp && patient.contacts.whatsapp === patient.contacts.phone;
+		const isPhoneWpp =
+			hasWhatsApp && patient.contacts.whatsapp === patient.contacts.phone;
 
 		const currentValues = methods.getValues();
 		methods.reset({
@@ -157,7 +171,9 @@ export const AvailabilityWeekDrawer = ({
 			whatsapp: patient.contacts.whatsapp ?? '',
 			hasWhatsApp,
 			isPhoneWpp,
-			preferredContact: patient.preferredContact ?? undefined,
+			preferredContact: patient.preferredContact
+				? { type: patient.preferredContact as PreferredContactType }
+				: undefined,
 			timeZone: patient.timeZone ?? '',
 		});
 	};
@@ -179,7 +195,7 @@ export const AvailabilityWeekDrawer = ({
 		return null;
 	};
 
-	const handlePatientSelect = (patient: Parameters<typeof patientSearch.setSelectedPatient>[0]) => {
+	const handlePatientSelect = (patient: IPatientSearchResult) => {
 		if (!patient) return;
 
 		const existing = findExistingBooking(patient._id);
@@ -187,7 +203,10 @@ export const AvailabilityWeekDrawer = ({
 			// Store patient temporarily so we can apply after confirmation
 			patientSearch.setSelectedPatient(patient);
 			patientSearch.setSearchQuery(patient.firstName);
-			setExistingBooking({ ...existing, patientName: `${patient.firstName} ${patient.lastName}` });
+			setExistingBooking({
+				...existing,
+				patientName: `${patient.firstName} ${patient.lastName}`,
+			});
 			return;
 		}
 
@@ -308,6 +327,7 @@ export const AvailabilityWeekDrawer = ({
 	// ─── Available slot groups for reschedule picker ──────────────────────────
 
 	const todayStr = format(new Date(), 'yyyy-MM-dd');
+	const isPast = isBooked && isPastAppointment(slot.date);
 
 	const availableSlotGroups = useMemo(() => {
 		if (!availabilityData?.dates) return [];
@@ -341,129 +361,22 @@ export const AvailabilityWeekDrawer = ({
 			}, []);
 	}, [availabilityData?.dates, todayStr, dateLocale]);
 
-	// ─── Detail rows ──────────────────────────────────────────────────────────
-	const DASH = '—';
-	const apptPatient = appointmentDetailsBySlotId?.appointment?.patient;
-	const appt = appointmentDetailsBySlotId?.appointment;
-
-	// ─── Contact link ─────────────────────────────────────────────────────────
-	const contactLink = isBooked
-		? buildContactLink(apptPatient?.preferredContact)
-		: null;
-
-	const CONTACT_LINK_ICON: Record<
-		'google_meet' | 'phone' | 'whatsapp' | 'zoom',
-		JSX.Element
-	> = {
-		google_meet: <Google color={palette.brand.purple} />,
-		phone: <Phone color={palette.brand.purple} />,
-		whatsapp: <WhatsApp color={palette.brand.purple} />,
-		zoom: <Globe color={palette.brand.purple} />,
-	};
-
-	const details: IDrawerDetail[] = isAvailable
-		? [
-				{
-					icon: <Calendar color={palette.brand.purple} />,
-					key: 'date',
-					label: t('availability.week.drawer.date'),
-					value: formattedDate,
-				},
-				{
-					icon: <Watch color={palette.brand.purple} />,
-					key: 'time',
-					label: t('availability.week.drawer.your-time'),
-					sub: timeSub,
-					value: therapistTimeStr,
-				},
-			]
-		: [
-				{
-					icon: <Watch color={palette.brand.purple} />,
-					key: 'time',
-					label: t('availability.week.drawer.your-time'),
-					sub: timeSub,
-					value: therapistTimeStr,
-				},
-				...(patientTimeStr
-					? [
-							{
-								icon: <MapPin color={palette.brand.purple} />,
-								key: 'patient-time',
-								label: t('availability.week.drawer.patient-time'),
-								value: patientTimeStr,
-							},
-						]
-					: []),
-				...(slot.therapyType
-					? [
-							{
-								icon: <Account color={palette.brand.purple} />,
-								key: 'therapy-type',
-								label: t('availability.week.drawer.session-type'),
-								value: slot.therapyType,
-							},
-						]
-					: []),
-				...(slot.notes
-					? [
-							{
-								icon: <Appointment color={palette.brand.purple} />,
-								key: 'notes',
-								label: t('availability.week.drawer.notes'),
-								value: slot.notes,
-							},
-						]
-					: []),
-				{
-					icon: <Mail color={palette.brand.purple} />,
-					key: 'email',
-					label: t('availability.week.drawer.patient-email'),
-					value: apptPatient?.contacts?.email ?? DASH,
-				},
-				{
-					icon: <Phone color={palette.brand.purple} />,
-					key: 'phone',
-					label: t('availability.week.drawer.patient-phone'),
-					value: apptPatient?.contacts?.phone ?? DASH,
-				},
-				...(apptPatient?.contacts?.whatsapp &&
-				apptPatient.contacts.whatsapp !== apptPatient.contacts.phone
-					? [
-							{
-								icon: <WhatsApp color={palette.brand.purple} />,
-								key: 'whatsapp',
-								label: 'WhatsApp',
-								value: apptPatient.contacts.whatsapp,
-							},
-						]
-					: []),
-				...(appt?.address
-					? [
-							{
-								icon: <MapPin color={palette.brand.purple} />,
-								key: 'appointment-address',
-								label: t('availability.week.drawer.appointment-address'),
-								value: [
-									appt.address.street,
-									appt.address.city,
-									appt.address.country,
-								]
-									.filter(Boolean)
-									.join(', '),
-							},
-						]
-					: appt?.letPatientChooseAddress
-						? [
-								{
-									icon: <MapPin color={palette.brand.purple} />,
-									key: 'appointment-address',
-									label: t('availability.week.drawer.appointment-address'),
-									value: t('availability.week.drawer.patient-provides-address'),
-								},
-							]
-						: []),
-			];
+	// ─── Detail rows (available slots only) ──────────────────────────────────
+	const details: IDrawerDetail[] = [
+		{
+			icon: <Calendar color={palette.brand.purple} />,
+			key: 'date',
+			label: t('availability.week.drawer.date'),
+			value: formattedDate,
+		},
+		{
+			icon: <Watch color={palette.brand.purple} />,
+			key: 'time',
+			label: t('availability.week.drawer.your-time'),
+			sub: timeSub,
+			value: therapistTimeStr,
+		},
+	];
 
 	// ─── Body ─────────────────────────────────────────────────────────────────
 	const renderBody = () => {
@@ -519,28 +432,42 @@ export const AvailabilityWeekDrawer = ({
 					/>
 				);
 			default:
+				if (isBooked) {
+					return (
+						<SlotBookedBody
+							appointmentDetails={appointmentDetailsBySlotId}
+							formattedDate={formattedDate}
+							isGoogle={isGoogle}
+							isLoading={isAppointmentDetailsBySlotIdLoading}
+							isPast={isPast}
+							patientName={patientName}
+							patientTimeStr={patientTimeStr}
+							sessionType={sessionType}
+							slot={slot}
+							therapistTimeStr={therapistTimeStr}
+							timeSub={timeSub}
+						/>
+					);
+				}
+
 				return (
 					<>
 						<SlotDetailView details={details} />
-						{isAvailable ? (
-							<SlotAvailableBody
-								customAddress={slotAddress.address}
-								locationChoice={locationChoice}
-								methods={methods}
-								onCustomAddressChange={handleCustomAddressChange}
-								onLocationChoiceChange={handleLocationChoiceChange}
-								onPatientSelect={handlePatientSelect}
-								onSelectionClear={handleSelectionClear}
-								results={patientSearch.results}
-								searchIsLoading={patientSearch.isLoading}
-								searchQuery={patientSearch.searchQuery}
-								selectedPatient={patientSearch.selectedPatient}
-								sessionType={sessionType}
-								setSearchQuery={patientSearch.setSearchQuery}
-							/>
-						) : (
-							<Box></Box>
-						)}
+						<SlotAvailableBody
+							customAddress={slotAddress.address}
+							locationChoice={locationChoice}
+							methods={methods}
+							onCustomAddressChange={handleCustomAddressChange}
+							onLocationChoiceChange={handleLocationChoiceChange}
+							onPatientSelect={handlePatientSelect}
+							onSelectionClear={handleSelectionClear}
+							results={patientSearch.results}
+							searchIsLoading={patientSearch.isLoading}
+							searchQuery={patientSearch.searchQuery}
+							selectedPatient={patientSearch.selectedPatient}
+							sessionType={sessionType}
+							setSearchQuery={patientSearch.setSearchQuery}
+						/>
 					</>
 				);
 		}
@@ -554,6 +481,7 @@ export const AvailabilityWeekDrawer = ({
 		hasConflict: !!conflict,
 		isAvailable,
 		isChecking,
+		isPast,
 		isSubmitting,
 		reschedule,
 		setView,
@@ -562,127 +490,130 @@ export const AvailabilityWeekDrawer = ({
 	});
 
 	// ─── Header badges ────────────────────────────────────────────────────────
-	const statusCfg = STATUS_CONFIG[slot.status];
-
 	return (
 		<>
-		<Drawer
-			ariaLabel={
-				isAvailable
-					? t('availability.week.drawer.book-slot')
-					: (patientName ?? '')
-			}
-			title={
-				isAvailable
-					? t('availability.week.drawer.book-slot')
-					: (patientName ?? '')
-			}
-			actions={
-				<>
-					{contactLink && view === 'default' && (
-						<ContactLinkAnchor
-							href={contactLink.href}
-							rel='noopener noreferrer'
-							target='_blank'
-						>
-							{CONTACT_LINK_ICON[contactLink.type]}
-							{t(contactLink.labelKey)}
-						</ContactLinkAnchor>
-					)}
-					<DrawerActions config={drawerActions} />
-				</>
-			}
-			headerExtra={
-				<>
-					{!isAvailable && (
-						<DrawerDetailLabel>{formattedDate}</DrawerDetailLabel>
-					)}
-					<DrawerBadgeRow>
-						{isAvailable ? (
-							<ConfirmedBadge>
-								<ConfirmedBadgeText>
-									{slot.startTime} – {endTime}
-								</ConfirmedBadgeText>
-							</ConfirmedBadge>
-						) : (
-							<>
-								{statusCfg && (
-									<ConfirmedBadge badgeColor={statusCfg.badgeColor}>
-										<ConfirmedBadgeText>
-											{t(statusCfg.labelKey)}
-										</ConfirmedBadgeText>
-									</ConfirmedBadge>
-								)}
-								<SourceBadge isGoogle={isGoogle}>
-									{isGoogle ? (
-										<Google color={palette.white} />
-									) : (
-										<Jupiter color={palette.brand.purple} />
-									)}
-									<SourceBadgeText isGoogle={isGoogle}>
-										{isGoogle ? 'Google' : 'Júpiter'}
-									</SourceBadgeText>
-								</SourceBadge>
-							</>
-						)}
-					</DrawerBadgeRow>
-				</>
-			}
-			onClose={onClose}
-		>
-			{renderBody()}
-		</Drawer>
-		{conflict && (
-			<Modal
-				openModal
-				title={t('availability.week.drawer.conflict-title')}
-				onClose={dismissConflict}
-				cardActionsProps={
-					conflict.kind === 'single'
-						? {
-								actionName: t('availability.week.drawer.conflict-confirm', {
-									name: conflict.patient.firstName,
-								}),
-								onClick: () => confirmWithExisting(conflict.patient._id),
-								hasSecondAction: true,
-								secondActionName: t(
-									'availability.week.drawer.conflict-change-details'
-								),
-								secondAction: dismissConflict,
-							}
-						: {
-								actionName: t(
-									'availability.week.drawer.conflict-change-details'
-								),
-								onClick: dismissConflict,
-							}
+			<Drawer
+				ariaLabel={
+					isAvailable
+						? t('availability.week.drawer.book-slot')
+						: (patientName ?? '')
 				}
+				title={
+					isAvailable
+						? t('availability.week.drawer.book-slot')
+						: (patientName ?? '')
+				}
+				actions={
+					isPast ? (
+						<PastDisabledFooter>
+							<Alert color={palette.gray['05']} />
+							{t('availability.week.drawer.booked-past-disabled')}
+						</PastDisabledFooter>
+					) : (
+						<DrawerActions config={drawerActions} />
+					)
+				}
+				headerExtra={
+					<>
+						{!isAvailable && (
+							<DrawerDetailLabel>{formattedDate}</DrawerDetailLabel>
+						)}
+						<DrawerBadgeRow>
+							{isAvailable ? (
+								<ConfirmedBadge>
+									<ConfirmedBadgeText>
+										{slot.startTime} – {endTime}
+									</ConfirmedBadgeText>
+								</ConfirmedBadge>
+							) : (
+								<>
+									<DeliveryBadge
+										isOnline={
+											slot.deliveryMode === 'online' ||
+											(!slot.deliveryMode && sessionType === 'ONLINE')
+										}
+									>
+										{slot.deliveryMode === 'online' ||
+										(!slot.deliveryMode && sessionType === 'ONLINE')
+											? t('availability.week.drawer.booked-online-session')
+											: t('availability.week.drawer.booked-in-person')}
+									</DeliveryBadge>
+									<SourceBadge isGoogle={isGoogle}>
+										{isGoogle ? (
+											<Google color={palette.white} />
+										) : (
+											<Account color={palette.brand.purple} />
+										)}
+										<SourceBadgeText isGoogle={isGoogle}>
+											{isGoogle
+												? 'Google'
+												: t('availability.week.drawer.source-manual')}
+										</SourceBadgeText>
+									</SourceBadge>
+								</>
+							)}
+						</DrawerBadgeRow>
+					</>
+				}
+				onClose={onClose}
 			>
-				<SlotBookingConflictView conflict={conflict} />
-			</Modal>
-		)}
-		{existingBooking && (
-			<Modal
-				openModal
-				title={t('availability.week.drawer.existing-booking-title')}
-				onClose={handleExistingBookingDismiss}
-				cardActionsProps={{
-					actionName: t('availability.week.drawer.existing-booking-confirm'),
-					onClick: handleExistingBookingConfirm,
-					hasSecondAction: true,
-					secondActionName: t('availability.week.drawer.existing-booking-cancel'),
-					secondAction: handleExistingBookingDismiss,
-				}}
-			>
-				<ConflictBody>
-					{t('availability.week.drawer.existing-booking-body', {
-						name: existingBooking.patientName,
-						date: format(parseISO(existingBooking.date), 'PPP', { locale: dateLocale }),
-						time: existingBooking.startTime,
-					})}
-				</ConflictBody>
-			</Modal>
-		)}
+				{renderBody()}
+			</Drawer>
+			{conflict && (
+				<Modal
+					openModal
+					title={t('availability.week.drawer.conflict-title')}
+					onClose={dismissConflict}
+					cardActionsProps={
+						conflict.kind === 'single'
+							? {
+									actionName: t('availability.week.drawer.conflict-confirm', {
+										name: conflict.patient.firstName,
+									}),
+									onClick: () => confirmWithExisting(conflict.patient._id),
+									hasSecondAction: true,
+									secondActionName: t(
+										'availability.week.drawer.conflict-change-details'
+									),
+									secondAction: dismissConflict,
+								}
+							: {
+									actionName: t(
+										'availability.week.drawer.conflict-change-details'
+									),
+									onClick: dismissConflict,
+								}
+					}
+				>
+					<SlotBookingConflictView conflict={conflict} />
+				</Modal>
+			)}
+			{existingBooking && (
+				<Modal
+					openModal
+					title={t('availability.week.drawer.existing-booking-title')}
+					onClose={handleExistingBookingDismiss}
+					cardActionsProps={{
+						actionName: t('availability.week.drawer.existing-booking-confirm'),
+						onClick: handleExistingBookingConfirm,
+						hasSecondAction: true,
+						secondActionName: t(
+							'availability.week.drawer.existing-booking-cancel'
+						),
+						secondAction: handleExistingBookingDismiss,
+					}}
+				>
+					<ConflictBody>
+						{t('availability.week.drawer.existing-booking-body', {
+							name: existingBooking.patientName,
+							date: format(parseISO(existingBooking.date), 'PPP', {
+								locale: dateLocale,
+							}),
+							time: existingBooking.startTime,
+						})}
+					</ConflictBody>
+				</Modal>
+			)}
 		</>
 	);
 };

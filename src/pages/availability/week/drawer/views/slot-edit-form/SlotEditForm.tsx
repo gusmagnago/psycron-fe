@@ -4,22 +4,20 @@ import { Switch } from '@psycron/components/switch/components/item/Switch';
 
 import { FormWrapper } from '../../AvailabilityWeekDrawer.styles';
 import { SlotAddressFields } from '../slot-address-fields/SlotAddressFields';
+
 import {
 	AddressOverrideHeader,
 	AddressOverrideLabel,
 	AddressOverrideSection,
-} from '../slot-location-section/SlotLocationSection.styles';
-
+} from './SlotEditForm.styles';
 import type { ISlotEditFormProps } from './SlotEditForm.types';
 
 export const SlotEditForm = ({
 	address,
 	endTime,
-	note,
 	onAddressChange,
 	onAddressClear,
 	onEndTimeChange,
-	onNoteChange,
 	onOverrideAddressToggle,
 	onStartTimeChange,
 	overrideAddress,
@@ -45,15 +43,6 @@ export const SlotEditForm = ({
 				size='small'
 				type='time'
 				value={endTime}
-			/>
-			<TextField
-				fullWidth
-				label={t('availability.week.drawer.edit-note')}
-				maxRows={4}
-				multiline
-				onChange={(e) => onNoteChange(e.target.value)}
-				size='small'
-				value={note}
 			/>
 			{showAddressSection && (
 				<AddressOverrideSection>

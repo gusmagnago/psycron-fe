@@ -294,7 +294,7 @@ export const SlotCell = styled(ButtonBase, {
 			: ''}
 `;
 
-export const SlotCellEmpty = styled(Box, {
+export const SlotCellDisabled = styled(Box, {
 	shouldForwardProp: (prop) => prop !== 'isToday' && prop !== 'isOddRow',
 })<{ isOddRow?: boolean; isToday?: boolean }>`
 	height: 60px;
