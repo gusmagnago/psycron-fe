@@ -12,6 +12,7 @@ import {
 	Calendar,
 	ChevronLeft,
 	ChevronRight,
+	Dots,
 	Edit,
 	Filter,
 	FilterFull,
@@ -28,7 +29,7 @@ import {
 	AVAILABILITYSETTINGS,
 	AVAILABILITYWEEK_BASE,
 } from '@psycron/pages/urls';
-import { palette } from '@psycron/theme/palette/palette.theme';
+import { hexToRgba, palette } from '@psycron/theme/palette/palette.theme';
 import { useQueryClient } from '@tanstack/react-query';
 import {
 	addWeeks,
@@ -43,8 +44,10 @@ import {
 	subWeeks,
 } from 'date-fns';
 
+import { DayHeaderPopover } from './day-header-popover/DayHeaderPopover';
 import { AvailabilityWeekDrawer } from './drawer/AvailabilityWeekDrawer';
 import { AvailabilityWeekFilters } from './filters/AvailabilityWeekFilters';
+import { useBlockDay, useUnblockDay } from './hook/useDayActions';
 import { useWeekSlots } from './hook/useWeekSlots';
 import {
 	BUFFER_COLORS,
@@ -92,8 +95,11 @@ import {
 import type { IWeekSlot } from './AvailabilityWeekPage.types';
 import {
 	formatTimeRange,
+	isAvailableOnlyMobileDay,
 	isClickable,
+	isDayFullyBlocked,
 	LEGEND_STATUSES,
+	sortMobileDaySlots,
 } from './AvailabilityWeekPage.utils';
 
 export const AvailabilityWeekPage = () => {
@@ -106,7 +112,6 @@ export const AvailabilityWeekPage = () => {
 		activeFilterCount,
 		clearFilters,
 		prefs,
-		toggleBookingSource,
 		toggleDeliveryMode,
 		toggleSessionType,
 		toggleShowCancelledSlots,
@@ -118,6 +123,9 @@ export const AvailabilityWeekPage = () => {
 	const [filterAnchorEl, setFilterAnchorEl] = useState<HTMLElement | null>(
 		null
 	);
+	const [dayPopoverAnchorEl, setDayPopoverAnchorEl] =
+		useState<HTMLElement | null>(null);
+	const [dayPopoverDate, setDayPopoverDate] = useState<string | null>(null);
 	const [expandedDays, setExpandedDays] = useState<Set<string>>(
 		() => new Set([format(new Date(), 'yyyy-MM-dd')])
 	);
@@ -173,22 +181,6 @@ export const AvailabilityWeekPage = () => {
 			slots = slots.filter((s) => s.status !== 'available');
 		if (!prefs.showCancelledSlots)
 			slots = slots.filter((s) => s.status !== 'cancelled');
-
-		if (prefs.bookingSources.length > 0) {
-			slots = slots.filter((s) => {
-				if (s.status === 'booked-jupiter')
-					return prefs.bookingSources.includes('jupiter');
-				if (s.status === 'booked-google')
-					return prefs.bookingSources.includes('google');
-				if (s.status === 'buffer' && s.bufferFor) {
-					if (s.bufferFor === 'booked-jupiter')
-						return prefs.bookingSources.includes('jupiter');
-					if (s.bufferFor === 'booked-google')
-						return prefs.bookingSources.includes('google');
-				}
-				return true;
-			});
-		}
 
 		if (prefs.sessionTypes.length > 0) {
 			slots = slots.filter(
@@ -250,6 +242,23 @@ export const AvailabilityWeekPage = () => {
 	const queryClient = useQueryClient();
 	const therapistId = useTherapistId();
 
+	const blockDay = useBlockDay(therapistId, () => {
+		setDayPopoverAnchorEl(null);
+		setDayPopoverDate(null);
+	});
+	const unblockDay = useUnblockDay(therapistId, () => {
+		setDayPopoverAnchorEl(null);
+		setDayPopoverDate(null);
+	});
+
+	const handleDayHeaderClick = (
+		event: React.MouseEvent<HTMLElement>,
+		dateStr: string
+	) => {
+		setDayPopoverAnchorEl(event.currentTarget);
+		setDayPopoverDate(dateStr);
+	};
+
 	const handleSlotClick = (slot: IWeekSlot) => setSelectedSlot(slot);
 
 	const handleSlotPointerDown = useCallback(
@@ -275,12 +284,19 @@ export const AvailabilityWeekPage = () => {
 		({ status, labelKey }) => ({
 			color:
 				status === 'buffer'
-					? BUFFER_COLORS['booked-jupiter']
+					? hexToRgba(BUFFER_COLORS['booked-jupiter'], 0.12)
 					: SLOT_COLORS[status],
 			label: t(labelKey),
 			...(status === 'available' && { borderColor: palette.gray['02'] }),
-			...(status === 'buffer' && { opacity: 0.4 }),
-			...(status === 'cancelled' && { opacity: 0.5 }),
+			...(status === 'blocked' && { borderColor: palette.gray['02'] }),
+			...(status === 'buffer' && {
+				borderColor: BUFFER_COLORS['booked-jupiter'],
+				opacity: 1,
+			}),
+			...(status === 'cancelled' && {
+				borderColor: palette.warning.main,
+				opacity: 0.78,
+			}),
 		})
 	);
 
@@ -369,16 +385,26 @@ export const AvailabilityWeekPage = () => {
 						{workingDays.map((day, _id) => {
 							const dateStr = format(day, 'yyyy-MM-dd');
 							const todayDay = isToday(day);
-							const allSlots = getVisibleDaySlots(day);
+							const allSlots = sortMobileDaySlots(getVisibleDaySlots(day));
+							const fullyBlocked = isDayFullyBlocked(getDaySlots(day));
 							const isExpanded = expandedDays.has(dateStr);
-							const visibleSlots = isExpanded
-								? allSlots
-								: allSlots.slice(0, COLLAPSED_SLOTS_LIMIT);
-							const hiddenCount = allSlots.length - COLLAPSED_SLOTS_LIMIT;
+							const isAvailableOnlyDay = isAvailableOnlyMobileDay(allSlots);
+							const visibleSlots = isAvailableOnlyDay
+								? isExpanded
+									? allSlots
+									: []
+								: isExpanded
+									? allSlots
+									: allSlots.slice(0, COLLAPSED_SLOTS_LIMIT);
+							const hiddenCount = Math.max(
+								allSlots.length - COLLAPSED_SLOTS_LIMIT,
+								0
+							);
 
 							return (
 								<MobileDayCard
 									key={`mobile-day-${day.toISOString() + _id}`}
+									isFullyBlocked={fullyBlocked}
 									isToday={todayDay}
 								>
 									<MobileDayCardHeader>
@@ -394,12 +420,30 @@ export const AvailabilityWeekPage = () => {
 												{format(day, 'MMMM d')}
 											</MobileDayDate>
 										</div>
-										<MobileSlotCount>
-											{allSlots.length}{' '}
-											{allSlots.length === 1
-												? t('availability.week.slot')
-												: t('availability.week.slots')}
-										</MobileSlotCount>
+										<Box
+											sx={{
+												display: 'flex',
+												alignItems: 'center',
+												gap: 1,
+											}}
+										>
+											<MobileSlotCount>
+												{allSlots.length}{' '}
+												{allSlots.length === 1
+													? t('availability.week.slot')
+													: t('availability.week.slots')}
+											</MobileSlotCount>
+											<Button
+												aria-label={t('availability.week.day-header.actions')}
+												onClick={(e: React.MouseEvent<HTMLElement>) =>
+													handleDayHeaderClick(e, dateStr)
+												}
+												small
+												tertiary
+											>
+												<Dots />
+											</Button>
+										</Box>
 									</MobileDayCardHeader>
 									<MobileDaySlots>
 										{allSlots.length === 0 ? (
@@ -410,6 +454,15 @@ export const AvailabilityWeekPage = () => {
 											</MobileEmptyDay>
 										) : (
 											<>
+												{isAvailableOnlyDay && !isExpanded && (
+													<MobileExpandButton
+														onClick={() => toggleDayExpanded(dateStr)}
+													>
+														{t('availability.week.show-available-slots', {
+															count: allSlots.length,
+														})}
+													</MobileExpandButton>
+												)}
 												{visibleSlots.map((slot) => {
 													const shouldClick = isClickable(slot?.status, day);
 
@@ -458,7 +511,9 @@ export const AvailabilityWeekPage = () => {
 														</MobileSlotCard>
 													);
 												})}
-												{allSlots.length > COLLAPSED_SLOTS_LIMIT && (
+												{((!isAvailableOnlyDay &&
+													allSlots.length > COLLAPSED_SLOTS_LIMIT) ||
+													(isAvailableOnlyDay && isExpanded)) && (
 													<MobileExpandButton
 														onClick={() => toggleDayExpanded(dateStr)}
 													>
@@ -482,13 +537,23 @@ export const AvailabilityWeekPage = () => {
 							<WeekGridCorner />
 
 							{weekDays.map((day, _id) => {
-								const isDisabled = !(format(day, 'yyyy-MM-dd') in weekData);
+								const dateStr = format(day, 'yyyy-MM-dd');
+								const isDisabled = !(dateStr in weekData);
 								const todayDay = isToday(day);
+								const fullyBlocked =
+									!isDisabled && isDayFullyBlocked(getDaySlots(day));
 								return (
 									<DayHeader
 										key={`hd-${day.toISOString() + _id}`}
 										isDisabled={isDisabled}
+										isFullyBlocked={fullyBlocked}
 										isToday={todayDay}
+										onClick={
+											isDisabled
+												? undefined
+												: (e: React.MouseEvent<HTMLElement>) =>
+														handleDayHeaderClick(e, dateStr)
+										}
 									>
 										<DayName>{format(day, 'EEE')}</DayName>
 										<DayNumber>{format(day, 'd')}</DayNumber>
@@ -584,7 +649,6 @@ export const AvailabilityWeekPage = () => {
 				anchorEl={filterAnchorEl}
 				onClearFilters={clearFilters}
 				onClose={() => setFilterAnchorEl(null)}
-				onToggleBookingSource={toggleBookingSource}
 				onToggleDeliveryMode={toggleDeliveryMode}
 				onToggleSessionType={toggleSessionType}
 				onToggleShowCancelledSlots={toggleShowCancelledSlots}
@@ -592,6 +656,39 @@ export const AvailabilityWeekPage = () => {
 				onToggleTimeOfDay={toggleTimeOfDay}
 				prefs={prefs}
 			/>
+
+			{dayPopoverDate &&
+				(() => {
+					const daySlots = getDaySlots(parseISO(dayPopoverDate));
+					const availabilityDayId = daySlots[0]?.availabilityDayId ?? '';
+					return (
+						<DayHeaderPopover
+							anchorEl={dayPopoverAnchorEl}
+							availabilityDayId={availabilityDayId}
+							dayDate={dayPopoverDate}
+							dayLabel={format(parseISO(dayPopoverDate), 'EEEE, MMMM d')}
+							isBlockDayPending={blockDay.isPending}
+							isUnblockDayPending={unblockDay.isPending}
+							onBlockAll={() =>
+								blockDay.mutate({
+									availabilityDayId,
+									dayDate: dayPopoverDate,
+								})
+							}
+							onClose={() => {
+								setDayPopoverAnchorEl(null);
+								setDayPopoverDate(null);
+							}}
+							onUnblockAll={() =>
+								unblockDay.mutate({
+									availabilityDayId,
+									dayDate: dayPopoverDate,
+								})
+							}
+							slots={daySlots}
+						/>
+					);
+				})()}
 
 			{selectedSlot && (
 				<AvailabilityWeekDrawer

@@ -21,24 +21,42 @@ import type { SlotStatus } from './AvailabilityWeekPage.types';
 // ─── Slot colours ─────────────────────────────────────────────────────────────
 
 export const SLOT_COLORS: Record<SlotStatus, string> = {
-	available: palette.background.paper,
+	available: palette.white,
+	blocked: palette.gray['02'],
 	buffer: hexToRgba(palette.brand.purple, 0.18),
 	'booked-google': palette.brand.google,
 	'booked-jupiter': palette.brand.purple,
-	cancelled: palette.gray['02'],
+	cancelled: palette.warning.surface.light,
 };
 
-export const BUFFER_COLORS: Record<'booked-google' | 'booked-jupiter', string> =
-	{
-		'booked-google': palette.brand.google,
-		'booked-jupiter': palette.brand.purple,
-	};
+export const BUFFER_COLORS: Record<
+	'booked' | 'booked-google' | 'booked-jupiter',
+	string
+> = {
+	'booked-google': palette.brand.google,
+	booked: palette.brand.purple,
+	'booked-jupiter': palette.brand.purple,
+};
 
 const isClickableStatus = (status: SlotStatus) =>
-	status === 'booked-jupiter' ||
-	status === 'booked-google' ||
-	status === 'available' ||
-	status === 'cancelled';
+	status.includes('booked') || status === 'available' || status === 'cancelled';
+
+const getSlotTextColor = (slotStatus: SlotStatus): string => {
+	if (slotStatus.includes('booked')) return palette.white;
+	if (slotStatus === 'available') return palette.text.primary;
+	if (slotStatus === 'blocked') return palette.gray.dark;
+	if (slotStatus === 'cancelled') return palette.warning.dark;
+	return palette.text.primary;
+};
+
+const getSlotBorder = (slotStatus: SlotStatus): string => {
+	if (slotStatus === 'available') return `1px solid ${palette.gray['02']}`;
+	if (slotStatus === 'cancelled') return `1px dashed ${palette.warning.main}`;
+	return 'none';
+};
+
+const hasPersistentSlotShadow = (slotStatus: SlotStatus): boolean =>
+	slotStatus === 'available' || slotStatus.includes('booked');
 
 // ─── Card ─────────────────────────────────────────────────────────────────────
 
@@ -191,8 +209,9 @@ export const WeekGridCorner = styled(Box)`
 // ─── Day column header ─────────────────────────────────────────────────────────
 
 export const DayHeader = styled(Box, {
-	shouldForwardProp: (prop) => prop !== 'isDisabled' && prop !== 'isToday',
-})<{ isDisabled?: boolean; isToday?: boolean }>`
+	shouldForwardProp: (prop) =>
+		prop !== 'isDisabled' && prop !== 'isToday' && prop !== 'isFullyBlocked',
+})<{ isDisabled?: boolean; isFullyBlocked?: boolean; isToday?: boolean }>`
 	height: 60px;
 	display: flex;
 	flex-direction: column;
@@ -200,16 +219,31 @@ export const DayHeader = styled(Box, {
 	justify-content: center;
 	margin-bottom: ${spacing.extraSmall};
 	border: 2px solid
-		${({ isToday }) =>
-			isToday
-				? palette.secondary.main
-				: hexToRgba(palette.background.default, 0.2)};
+		${({ isFullyBlocked, isToday }) =>
+			isFullyBlocked
+				? palette.gray['02']
+				: isToday
+					? palette.secondary.main
+					: hexToRgba(palette.background.default, 0.2)};
 	border-radius: ${spacing.xs};
 	position: sticky;
 	top: 0;
 	z-index: ${zIndexSticky};
 	backdrop-filter: blur(10px);
-	background: ${hexToRgba(palette.background.default, 0.2)};
+	background: ${({ isFullyBlocked }) =>
+		isFullyBlocked
+			? palette.gray['02']
+			: hexToRgba(palette.background.default, 0.2)};
+	opacity: 1;
+	cursor: pointer;
+	transition: background 0.15s ease;
+
+	&:hover {
+		background: ${({ isFullyBlocked }) =>
+			isFullyBlocked
+				? palette.gray['02']
+				: hexToRgba(palette.brand.purple, 0.06)};
+	}
 `;
 
 export const DayName = styled(Text)`
@@ -264,21 +298,36 @@ export const SlotCell = styled(ButtonBase, {
 	position: relative;
 
 	background-color: ${({ slotStatus }) => SLOT_COLORS[slotStatus]};
-	color: ${({ slotStatus }) =>
-		slotStatus === 'booked-jupiter' || slotStatus === 'booked-google'
-			? palette.white
-			: palette.text.primary};
-	opacity: ${({ slotStatus }) => (slotStatus === 'cancelled' ? 0.3 : 1)};
+	color: ${({ slotStatus }) => getSlotTextColor(slotStatus)};
+	border: ${({ slotStatus }) => getSlotBorder(slotStatus)};
+	opacity: 1;
 	cursor: ${({ slotStatus }) =>
 		isClickableStatus(slotStatus) ? 'pointer' : 'default'};
 	box-shadow: ${({ slotStatus }) =>
-		slotStatus === 'cancelled' ? 'none' : shadowMedium};
-	transition: box-shadow 0.15s ease;
+		hasPersistentSlotShadow(slotStatus) ? shadowMedium : 'none'};
+	transition:
+		box-shadow 0.15s ease,
+		transform 0.15s ease,
+		background-color 0.15s ease;
 
 	&:hover {
 		box-shadow: ${({ slotStatus }) =>
-			slotStatus === 'cancelled' ? 'none' : shadowSmall};
+			hasPersistentSlotShadow(slotStatus)
+				? shadowSmall
+				: isClickableStatus(slotStatus)
+					? shadowSmall
+					: 'none'};
+		transform: ${({ slotStatus }) =>
+			isClickableStatus(slotStatus) ? 'translateY(-1px)' : 'none'};
 	}
+
+	${({ slotStatus }) =>
+		slotStatus === 'cancelled'
+			? `opacity: 0.78;
+		text-decoration: line-through;
+		text-decoration-color: ${palette.warning.dark};
+		text-decoration-thickness: 1px;`
+			: ''}
 	text-align: left;
 
 	${({ isOddRow }) =>
@@ -287,7 +336,7 @@ export const SlotCell = styled(ButtonBase, {
 		content: '';
 		position: absolute;
 		inset: 0;
-		background: rgba(255, 255, 255, 0.5);
+		background: rgba(255, 255, 255, 0.3);
 		border-radius: inherit;
 		pointer-events: none;
 	}`
@@ -378,12 +427,14 @@ export const MobileDayList = styled(Box)`
 `;
 
 export const MobileDayCard = styled(Box, {
-	shouldForwardProp: (prop) => prop !== 'isToday',
-})<{ isToday?: boolean }>`
-	background: ${palette.white};
+	shouldForwardProp: (prop) => prop !== 'isToday' && prop !== 'isFullyBlocked',
+})<{ isFullyBlocked?: boolean; isToday?: boolean }>`
+	background: ${({ isFullyBlocked }) =>
+		isFullyBlocked ? palette.gray['02'] : palette.white};
 	border-radius: ${spacing.mediumSmall};
 	padding: ${spacing.small};
 	overflow: hidden;
+	opacity: 1;
 	border-left: 3px solid
 		${({ isToday }) => (isToday ? palette.secondary.main : 'transparent')};
 `;
@@ -435,20 +486,37 @@ export const MobileSlotCard = styled(ButtonBase, {
 	gap: ${spacing.small};
 	text-align: left;
 	background-color: ${({ slotStatus }) => SLOT_COLORS[slotStatus]};
-	border: ${({ slotStatus }) =>
-		slotStatus === 'available' ? `1px solid ${palette.gray['02']}` : 'none'};
-	opacity: ${({ slotStatus }) => (slotStatus === 'cancelled' ? 0.5 : 1)};
+	border: ${({ slotStatus }) => getSlotBorder(slotStatus)};
+	opacity: 1;
 	cursor: ${({ slotStatus }) =>
 		isClickableStatus(slotStatus) ? 'pointer' : 'default'};
-	transition: opacity 0.1s ease;
-	color: ${({ slotStatus }) =>
-		slotStatus === 'booked-jupiter' || slotStatus === 'booked-google'
-			? palette.white
-			: palette.text.primary};
+	transition:
+		opacity 0.1s ease,
+		transform 0.15s ease,
+		box-shadow 0.15s ease;
+	color: ${({ slotStatus }) => getSlotTextColor(slotStatus)};
+	box-shadow: ${({ slotStatus }) =>
+		hasPersistentSlotShadow(slotStatus) ? shadowSmall : 'none'};
 
 	&:hover {
 		opacity: ${({ slotStatus }) => (isClickableStatus(slotStatus) ? 0.9 : 1)};
+		box-shadow: ${({ slotStatus }) =>
+			hasPersistentSlotShadow(slotStatus)
+				? shadowSmall
+				: isClickableStatus(slotStatus)
+					? shadowSmall
+					: 'none'};
+		transform: ${({ slotStatus }) =>
+			isClickableStatus(slotStatus) ? 'translateY(-1px)' : 'none'};
 	}
+
+	${({ slotStatus }) =>
+		slotStatus === 'cancelled'
+			? `opacity: 0.78;
+		text-decoration: line-through;
+		text-decoration-color: ${palette.warning.dark};
+		text-decoration-thickness: 1px;`
+			: ''}
 `;
 
 export const MobileSlotBuffer = styled(Box, {

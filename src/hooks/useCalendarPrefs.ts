@@ -42,7 +42,7 @@ const readPrefs = (): CalendarPrefs => {
 		if ('showUnavailableSlots' in stored && !('showFreeSlots' in stored)) {
 			stored.showFreeSlots = stored.showUnavailableSlots;
 		}
-		return { ...DEFAULT_PREFS, ...stored };
+		return { ...DEFAULT_PREFS, ...stored, bookingSources: [] };
 	} catch {
 		return DEFAULT_PREFS;
 	}
@@ -109,7 +109,6 @@ export const useCalendarPrefs = () => {
 		let count = 0;
 		if (prefs.showFreeSlots) count++;
 		if (!prefs.showCancelledSlots) count++;
-		if (prefs.bookingSources.length > 0) count++;
 		if (prefs.sessionTypes.length > 0) count++;
 		if (prefs.deliveryModes.length > 0) count++;
 		if (prefs.timeOfDay.length > 0) count++;

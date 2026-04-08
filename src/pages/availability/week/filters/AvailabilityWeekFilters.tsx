@@ -2,11 +2,7 @@ import { Fragment } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Popover, Switch } from '@mui/material';
 import { Button } from '@psycron/components/button/Button';
-import type {
-	BookingSource,
-	DeliveryMode,
-	TimeOfDay,
-} from '@psycron/hooks/useCalendarPrefs';
+import type { DeliveryMode, TimeOfDay } from '@psycron/hooks/useCalendarPrefs';
 
 import {
 	FiltersChip,
@@ -31,7 +27,6 @@ export const AvailabilityWeekFilters = ({
 	anchorEl,
 	onClearFilters,
 	onClose,
-	onToggleBookingSource,
 	onToggleDeliveryMode,
 	onToggleSessionType,
 	onToggleShowCancelledSlots,
@@ -59,15 +54,6 @@ export const AvailabilityWeekFilters = ({
 				},
 			],
 			type: 'switches',
-		},
-		{
-			getOptionLabel: (v) => t(`availability.week.filter-source-${v}`),
-			isActive: (v) => prefs.bookingSources.includes(v as BookingSource),
-			key: 'source',
-			labelKey: 'availability.week.filter-section-source',
-			onToggle: (v) => onToggleBookingSource(v as BookingSource),
-			options: ['jupiter', 'google'],
-			type: 'chips',
 		},
 		...(allSessionTypes.length > 0
 			? [
