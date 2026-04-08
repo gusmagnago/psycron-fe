@@ -13,6 +13,7 @@ export interface IDayHeaderPopoverProps {
 	dayDate: string;
 	dayLabel: string;
 	isBlockDayPending: boolean;
+	isPastDay: boolean;
 	isUnblockDayPending: boolean;
 	onBlockAll: () => void;
 	onClose: () => void;

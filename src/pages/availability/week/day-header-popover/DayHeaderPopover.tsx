@@ -18,6 +18,7 @@ export const DayHeaderPopover = ({
 	anchorEl,
 	dayLabel,
 	isBlockDayPending,
+	isPastDay,
 	isUnblockDayPending,
 	onBlockAll,
 	onClose,
@@ -88,7 +89,7 @@ export const DayHeaderPopover = ({
 					<PopoverActions>
 						{summary.available > 0 && (
 							<Button
-								disabled={isBlockDayPending || summary.booked > 0}
+								disabled={isBlockDayPending || isPastDay || summary.booked > 0}
 								loading={isBlockDayPending}
 								onClick={() => setConfirmAction('block-all')}
 								severity='error'

@@ -23,3 +23,17 @@ export interface IWeekSlot {
 	therapyType?: string;
 	timezone?: string;
 }
+
+export interface IAvailabilityWeekMobileDay {
+	allSlots: IWeekSlot[];
+	availableSlotCount: number;
+	date: Date;
+	dateStr: string;
+	fullyBlocked: boolean;
+	hiddenCount: number;
+	isExpanded: boolean;
+	isFreeOnlyDay: boolean;
+	isPastDay: boolean;
+	isToday: boolean;
+	visibleSlots: IWeekSlot[];
+}

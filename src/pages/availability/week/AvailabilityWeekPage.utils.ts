@@ -9,7 +9,7 @@ export const LEGEND_STATUSES: { labelKey: string; status: SlotStatus }[] = [
 		status: 'booked-jupiter',
 		labelKey: 'availability.week.legend-booked-jupiter',
 	},
-	{ status: 'buffer', labelKey: 'availability.week.legend-buffer' },
+	// { status: 'buffer', labelKey: 'availability.week.legend-buffer' },
 	{ status: 'cancelled', labelKey: 'availability.week.legend-cancelled' },
 ];
 
@@ -41,24 +41,14 @@ export const formatTimeRange = (startTime: string, durationMin: number) => {
 	return `${startTime} – ${String(endH).padStart(2, '0')}:${String(endM).padStart(2, '0')}`;
 };
 
-const getMobileSlotPriority = (slot: IWeekSlot): number => {
-	if (slot.status === 'booked-jupiter' || slot.status === 'booked-google')
-		return 0;
-	if (slot.status === 'buffer') return 1;
-	if (slot.status === 'available') return 3;
-	return 2;
-};
+export const isBookedMobileSlot = (slot: IWeekSlot): boolean =>
+	slot.status === 'booked-jupiter' || slot.status === 'booked-google';
+
+export const isFreeMobileSlot = (slot: IWeekSlot): boolean =>
+	slot.status === 'available' || slot.status === 'blocked';
 
 export const sortMobileDaySlots = (slots: IWeekSlot[]): IWeekSlot[] =>
-	slots
-		.map((slot, index) => ({ index, slot }))
-		.sort((a, b) => {
-			const priorityDiff =
-				getMobileSlotPriority(a.slot) - getMobileSlotPriority(b.slot);
-			if (priorityDiff !== 0) return priorityDiff;
-			return a.index - b.index;
-		})
-		.map(({ slot }) => slot);
+	[...slots].sort((a, b) => a.startTime.localeCompare(b.startTime));
 
-export const isAvailableOnlyMobileDay = (slots: IWeekSlot[]): boolean =>
-	slots.length > 0 && slots.every((slot) => slot.status === 'available');
+export const isFreeOnlyMobileDay = (slots: IWeekSlot[]): boolean =>
+	slots.length > 0 && slots.every(isFreeMobileSlot);

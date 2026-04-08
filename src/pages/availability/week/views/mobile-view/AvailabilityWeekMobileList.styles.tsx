@@ -1,0 +1,221 @@
+import styled from '@emotion/styled';
+import { Box, ButtonBase } from '@mui/material';
+import { Button } from '@psycron/components/button/Button';
+import { Text } from '@psycron/components/text/Text';
+import { hexToRgba, palette } from '@psycron/theme/palette/palette.theme';
+import { shadowSmall } from '@psycron/theme/shadow/shadow.theme';
+import { spacing } from '@psycron/theme/spacing/spacing.theme';
+
+import {
+	BUFFER_COLORS,
+	getSlotBorder,
+	getSlotTextColor,
+	hasPersistentSlotShadow,
+	isClickableStatus,
+	SLOT_COLORS,
+} from '../../AvailabilityWeekPage.styles';
+import type { SlotStatus } from '../../AvailabilityWeekPage.types';
+
+export const MobileDayList = styled(Box)`
+	display: flex;
+	flex-direction: column;
+	gap: ${spacing.medium};
+	padding-bottom: ${spacing.small};
+`;
+
+export const MobileDayCard = styled(Box, {
+	shouldForwardProp: (prop) =>
+		prop !== 'isToday' && prop !== 'isFullyBlocked' && prop !== 'isPastDay',
+})<{ isFullyBlocked?: boolean; isPastDay?: boolean; isToday?: boolean }>`
+	background: ${({ isFullyBlocked, isPastDay }) =>
+		isFullyBlocked
+			? palette.gray['02']
+			: isPastDay
+				? palette.gray['02']
+				: palette.white};
+	border-radius: ${spacing.mediumSmall};
+	padding: ${spacing.small};
+	overflow: hidden;
+	opacity: 1;
+	border-left: 3px solid
+		${({ isToday }) => (isToday ? palette.secondary.main : 'transparent')};
+`;
+
+export const MobileDayCardHeader = styled(Box)`
+	display: flex;
+	align-items: flex-start;
+	justify-content: space-between;
+`;
+
+export const MobileDayHeaderActions = styled(Box)`
+	display: flex;
+	align-items: center;
+	gap: ${spacing.xs};
+`;
+
+export const MobileDayName = styled(Text)`
+	font-size: 11px;
+	font-weight: 500;
+	color: ${palette.gray['05']};
+	text-transform: uppercase;
+	margin-bottom: ${spacing.space};
+`;
+
+export const MobileDayDate = styled(Text, {
+	shouldForwardProp: (prop) => prop !== 'isToday',
+})<{ isToday?: boolean }>`
+	font-size: 16px;
+	font-weight: 500;
+	color: ${({ isToday }) =>
+		isToday ? palette.brand.purple : palette.text.primary};
+`;
+
+export const MobileSlotCount = styled(Text)`
+	font-size: 12px;
+	color: ${palette.gray['05']};
+`;
+
+export const MobileDaySlots = styled(Box)`
+	display: flex;
+	flex-direction: column;
+	gap: ${spacing.small};
+	padding-top: ${spacing.small};
+`;
+
+export const MobileSlotCard = styled(ButtonBase, {
+	shouldForwardProp: (prop) => prop !== 'slotStatus',
+})<{ slotStatus: SlotStatus }>`
+	width: 100%;
+	border-radius: ${spacing.mediumSmall};
+	padding: ${spacing.xxs} ${spacing.small};
+	height: 56px;
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	gap: ${spacing.xs};
+	text-align: left;
+	background-color: ${({ slotStatus }) => SLOT_COLORS[slotStatus]};
+	border: ${({ slotStatus }) => getSlotBorder(slotStatus)};
+	opacity: 1;
+	cursor: ${({ slotStatus }) =>
+		isClickableStatus(slotStatus) ? 'pointer' : 'default'};
+	transition:
+		opacity 0.1s ease,
+		transform 0.15s ease,
+		box-shadow 0.15s ease;
+	color: ${({ slotStatus }) => getSlotTextColor(slotStatus)};
+	box-shadow: ${({ slotStatus }) =>
+		hasPersistentSlotShadow(slotStatus) ? shadowSmall : 'none'};
+
+	&:hover {
+		opacity: ${({ slotStatus }) => (isClickableStatus(slotStatus) ? 0.9 : 1)};
+		box-shadow: ${({ slotStatus }) =>
+			hasPersistentSlotShadow(slotStatus)
+				? shadowSmall
+				: isClickableStatus(slotStatus)
+					? shadowSmall
+					: 'none'};
+		transform: ${({ slotStatus }) =>
+			isClickableStatus(slotStatus) ? 'translateY(-1px)' : 'none'};
+	}
+
+	${({ slotStatus }) =>
+		slotStatus === 'cancelled'
+			? `opacity: 0.78;
+		text-decoration: line-through;
+		text-decoration-color: ${palette.warning.dark};
+		text-decoration-thickness: 1px;`
+			: ''}
+`;
+
+export const MobileSlotBuffer = styled(Box, {
+	shouldForwardProp: (prop) => prop !== 'bufferFor',
+})<{ bufferFor: 'booked-google' | 'booked-jupiter' }>`
+	width: 100%;
+	border-radius: ${spacing.small};
+	padding: ${spacing.xxs} ${spacing.small};
+	height: 56px;
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	gap: ${spacing.small};
+	border-left: 3px solid ${({ bufferFor }) => BUFFER_COLORS[bufferFor]};
+	background: ${({ bufferFor }) => hexToRgba(BUFFER_COLORS[bufferFor], 0.07)};
+`;
+
+export const MobileSlotTime = styled(Text)`
+	font-size: 12px;
+	font-weight: 600;
+	white-space: nowrap;
+	flex-shrink: 0;
+`;
+
+export const MobileSlotPatient = styled(Text)`
+	font-size: 13px;
+	font-weight: 600;
+	overflow: hidden;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	width: 100%;
+`;
+
+export const MobileSlotTherapy = styled(Text)`
+	font-size: 11px;
+	opacity: 0.8;
+	overflow: hidden;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	width: 100%;
+`;
+
+export const MobileSlotDetails = styled(Box)`
+	display: flex;
+	flex-direction: column;
+	gap: 2px;
+	flex: 1;
+	min-width: 0;
+`;
+
+export const MobileExpandButton = styled(ButtonBase)`
+	width: 100%;
+	padding: ${spacing.xs} 0;
+	font-size: 12px;
+	color: ${palette.brand.purple};
+	font-weight: 500;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: ${spacing.xs};
+	border-radius: ${spacing.xs};
+
+	&.Mui-disabled {
+		color: ${palette.gray['05']};
+		opacity: 0.6;
+		cursor: not-allowed;
+	}
+`;
+
+export const MobileEmptyDay = styled(Box)`
+	padding: ${spacing.medium} 0;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+`;
+
+export const MobileEmptyDayText = styled(Text)`
+	font-size: 13px;
+	color: ${palette.gray['05']};
+	text-align: center;
+`;
+
+export const BlockDayButton = styled(Button)`
+	padding: ${spacing.xxs};
+	min-width: 40px;
+	height: 40px;
+	border-width: 1px;
+	&.Mui-disabled {
+		background-color: ${palette.gray['02']};
+		border: 0;
+		box-shadow: none;
+	}
+`;
