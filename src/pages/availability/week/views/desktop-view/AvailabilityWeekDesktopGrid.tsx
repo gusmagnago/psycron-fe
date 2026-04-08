@@ -56,12 +56,11 @@ export const AvailabilityWeekDesktopGrid = ({
 							isFullyBlocked={fullyBlocked}
 							isToday={todayDay}
 							onClick={
-								isDisabled
-									? undefined
-									: (event: React.MouseEvent<HTMLElement>) =>
-											onDayHeaderClick(event, dateStr)
-							}
-						>
+									isDisabled
+										? undefined
+										: () => onDayHeaderClick(dateStr)
+								}
+							>
 							<DayName>{format(day, 'EEE')}</DayName>
 							<DayNumber>{format(day, 'd')}</DayNumber>
 						</DayHeader>

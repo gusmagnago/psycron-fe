@@ -4,11 +4,11 @@ export interface IDaySummary {
 	available: number;
 	blocked: number;
 	booked: number;
+	cancelled: number;
 	total: number;
 }
 
 export interface IDayHeaderPopoverProps {
-	anchorEl: HTMLElement | null;
 	availabilityDayId: string;
 	dayDate: string;
 	dayLabel: string;
@@ -18,5 +18,6 @@ export interface IDayHeaderPopoverProps {
 	onBlockAll: () => void;
 	onClose: () => void;
 	onUnblockAll: () => void;
+	open: boolean;
 	slots: IWeekSlot[];
 }

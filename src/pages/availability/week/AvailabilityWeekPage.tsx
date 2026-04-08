@@ -80,8 +80,6 @@ export const AvailabilityWeekPage = () => {
 	const [filterAnchorEl, setFilterAnchorEl] = useState<HTMLElement | null>(
 		null
 	);
-	const [dayPopoverAnchorEl, setDayPopoverAnchorEl] =
-		useState<HTMLElement | null>(null);
 	const [dayPopoverDate, setDayPopoverDate] = useState<string | null>(null);
 	const [shouldScrollToToday, setShouldScrollToToday] = useState(false);
 
@@ -89,21 +87,15 @@ export const AvailabilityWeekPage = () => {
 	const therapistId = useTherapistId();
 
 	const blockDay = useBlockDay(therapistId, () => {
-		setDayPopoverAnchorEl(null);
 		setDayPopoverDate(null);
 	});
 	const unblockDay = useUnblockDay(therapistId, () => {
-		setDayPopoverAnchorEl(null);
 		setDayPopoverDate(null);
 	});
 
-	const handleDayHeaderClick = (
-		event: React.MouseEvent<HTMLElement>,
-		dateStr: string
-	) => {
+	const handleDayHeaderClick = (dateStr: string) => {
 		const dayDate = parseISO(dateStr);
 		if (isPast(dayDate) && !isToday(dayDate)) return;
-		setDayPopoverAnchorEl(event.currentTarget);
 		setDayPopoverDate(dateStr);
 	};
 
@@ -278,27 +270,26 @@ export const AvailabilityWeekPage = () => {
 					const daySlots = getDaySlots(parseISO(dayPopoverDate));
 					const availabilityDayId = daySlots[0]?.availabilityDayId ?? '';
 					return (
-						<DayHeaderPopover
-							anchorEl={dayPopoverAnchorEl}
-							availabilityDayId={availabilityDayId}
-							dayDate={dayPopoverDate}
-							dayLabel={format(parseISO(dayPopoverDate), 'EEEE, MMMM d')}
-							isBlockDayPending={blockDay.isPending}
+							<DayHeaderPopover
+								availabilityDayId={availabilityDayId}
+								dayDate={dayPopoverDate}
+								dayLabel={format(parseISO(dayPopoverDate), 'EEEE, MMMM d')}
+								isBlockDayPending={blockDay.isPending}
 							isPastDay={
 								isPast(parseISO(dayPopoverDate)) &&
 								!isToday(parseISO(dayPopoverDate))
 							}
-							isUnblockDayPending={unblockDay.isPending}
-							onBlockAll={() =>
-								blockDay.mutate({
-									availabilityDayId,
-									dayDate: dayPopoverDate,
-								})
-							}
-							onClose={() => {
-								setDayPopoverAnchorEl(null);
-								setDayPopoverDate(null);
-							}}
+								isUnblockDayPending={unblockDay.isPending}
+								open={Boolean(dayPopoverDate)}
+								onBlockAll={() =>
+									blockDay.mutate({
+										availabilityDayId,
+										dayDate: dayPopoverDate,
+									})
+								}
+								onClose={() => {
+									setDayPopoverDate(null);
+								}}
 							onUnblockAll={() =>
 								unblockDay.mutate({
 									availabilityDayId,

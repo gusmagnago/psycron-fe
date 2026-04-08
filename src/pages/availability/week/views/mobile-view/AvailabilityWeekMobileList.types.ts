@@ -5,10 +5,7 @@ import type {
 
 export type AvailabilityWeekMobileListProps = {
 	days: IAvailabilityWeekMobileDay[];
-	onDayHeaderClick: (
-		event: React.MouseEvent<HTMLElement>,
-		dateStr: string
-	) => void;
+	onDayHeaderClick: (dateStr: string) => void;
 	onSlotClick: (slot: IWeekSlot) => void;
 	onSlotPointerDown: (slot: IWeekSlot) => void;
 	onToggleDayExpanded: (dateStr: string) => void;

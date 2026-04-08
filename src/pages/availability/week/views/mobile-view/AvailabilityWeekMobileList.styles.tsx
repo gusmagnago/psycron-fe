@@ -1,6 +1,5 @@
 import styled from '@emotion/styled';
 import { Box, ButtonBase } from '@mui/material';
-import { Button } from '@psycron/components/button/Button';
 import { Text } from '@psycron/components/text/Text';
 import { hexToRgba, palette } from '@psycron/theme/palette/palette.theme';
 import { shadowSmall } from '@psycron/theme/shadow/shadow.theme';
@@ -42,15 +41,41 @@ export const MobileDayCard = styled(Box, {
 `;
 
 export const MobileDayCardHeader = styled(Box)`
+	width: 100%;
 	display: flex;
 	align-items: flex-start;
 	justify-content: space-between;
+	text-align: left;
+	border-radius: ${spacing.small};
+
+	&:disabled {
+		opacity: 0.72;
+	}
 `;
 
 export const MobileDayHeaderActions = styled(Box)`
 	display: flex;
 	align-items: center;
 	gap: ${spacing.xs};
+`;
+
+export const MobileDayHeaderButton = styled(ButtonBase)`
+	width: 100%;
+	display: flex;
+	align-items: flex-start;
+	justify-content: space-between;
+	text-align: left;
+	border-radius: ${spacing.small};
+	padding: ${spacing.xxs};
+
+	&:hover {
+		background: ${palette.gray['01']};
+	}
+
+	&.Mui-disabled {
+		opacity: 0.72;
+		cursor: not-allowed;
+	}
 `;
 
 export const MobileDayName = styled(Text)`
@@ -72,6 +97,17 @@ export const MobileDayDate = styled(Text, {
 
 export const MobileSlotCount = styled(Text)`
 	font-size: 12px;
+	color: ${palette.gray['05']};
+`;
+
+export const MobileHeaderIcon = styled(Box)`
+	width: 32px;
+	height: 32px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	border-radius: 999px;
+	background: ${palette.gray['01']};
 	color: ${palette.gray['05']};
 `;
 
@@ -206,16 +242,4 @@ export const MobileEmptyDayText = styled(Text)`
 	font-size: 13px;
 	color: ${palette.gray['05']};
 	text-align: center;
-`;
-
-export const BlockDayButton = styled(Button)`
-	padding: ${spacing.xxs};
-	min-width: 40px;
-	height: 40px;
-	border-width: 1px;
-	&.Mui-disabled {
-		background-color: ${palette.gray['02']};
-		border: 0;
-		box-shadow: none;
-	}
 `;

@@ -1,6 +1,5 @@
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Popover } from '@mui/material';
 import { Button } from '@psycron/components/button/Button';
 import { Modal } from '@psycron/components/modal/Modal';
 
@@ -15,40 +14,41 @@ import {
 import type { IDayHeaderPopoverProps, IDaySummary } from './DayHeaderPopover.types';
 
 export const DayHeaderPopover = ({
-	anchorEl,
 	dayLabel,
 	isBlockDayPending,
 	isPastDay,
 	isUnblockDayPending,
+	open,
 	onBlockAll,
 	onClose,
 	onUnblockAll,
 	slots,
 }: IDayHeaderPopoverProps) => {
 	const { t } = useTranslation();
-	const open = Boolean(anchorEl);
 
 	const [confirmAction, setConfirmAction] = useState<
 		'block-all' | 'unblock-all' | null
 	>(null);
 
-	const summary: IDaySummary = useMemo(() => {
-		let available = 0;
-		let blocked = 0;
-		let booked = 0;
+		const summary: IDaySummary = useMemo(() => {
+			let available = 0;
+			let blocked = 0;
+			let booked = 0;
+			let cancelled = 0;
 
-		for (const slot of slots) {
-			if (slot.status === 'available') available++;
-			else if (slot.status === 'blocked') blocked++;
-			else if (
-				slot.status === 'booked-jupiter' ||
-				slot.status === 'booked-google'
-			)
-				booked++;
-		}
+			for (const slot of slots) {
+				if (slot.status === 'available') available++;
+				else if (slot.status === 'blocked') blocked++;
+				else if (
+					slot.status === 'booked-jupiter' ||
+					slot.status === 'booked-google'
+				)
+					booked++;
+				else if (slot.status === 'cancelled') cancelled++;
+			}
 
-		return { available, blocked, booked, total: slots.length };
-	}, [slots]);
+			return { available, blocked, booked, cancelled, total: slots.length };
+		}, [slots]);
 
 	const handleConfirm = () => {
 		if (confirmAction === 'block-all') onBlockAll();
@@ -58,42 +58,46 @@ export const DayHeaderPopover = ({
 
 	return (
 		<>
-			<Popover
-				anchorEl={anchorEl}
-				anchorOrigin={{ horizontal: 'center', vertical: 'bottom' }}
+			<Modal
+				openModal={open}
+				title={dayLabel}
 				onClose={onClose}
-				open={open}
-				transformOrigin={{ horizontal: 'center', vertical: 'top' }}
+				cardActionsProps={{
+					actionName: t('common.close'),
+					onClick: onClose,
+				}}
 			>
 				<PopoverContent>
-					<PopoverTitle>{dayLabel}</PopoverTitle>
+					<PopoverTitle>{t('availability.week.day-header.actions')}</PopoverTitle>
 
 					<SummaryRow>
 						<SummaryChip>
 							{t('availability.week.day-header.summary', {
+								cancelled: summary.cancelled,
 								available: summary.available,
 								blocked: summary.blocked,
 								booked: summary.booked,
+								total: summary.total,
 							})}
 						</SummaryChip>
 					</SummaryRow>
 
-					{summary.booked > 0 && summary.available > 0 && (
-						<BookedWarning>
-							{t('availability.week.day-header.booked-warning', {
-								count: summary.booked,
-							})}
-						</BookedWarning>
-					)}
+						{summary.booked > 0 && summary.available > 0 && (
+							<BookedWarning>
+								{t('availability.week.day-header.booked-warning', {
+									count: summary.booked,
+								})}
+							</BookedWarning>
+						)}
 
-					<PopoverActions>
-						{summary.available > 0 && (
-							<Button
-								disabled={isBlockDayPending || isPastDay || summary.booked > 0}
-								loading={isBlockDayPending}
-								onClick={() => setConfirmAction('block-all')}
-								severity='error'
-								small
+						<PopoverActions>
+							{summary.available > 0 && (
+								<Button
+									disabled={isBlockDayPending || isPastDay}
+									loading={isBlockDayPending}
+									onClick={() => setConfirmAction('block-all')}
+									severity='error'
+									small
 							>
 								{t('availability.week.day-header.block-all')}
 							</Button>
@@ -105,17 +109,17 @@ export const DayHeaderPopover = ({
 								onClick={() => setConfirmAction('unblock-all')}
 								small
 								tertiary
-							>
-								{t('availability.week.day-header.unblock-all')}
-							</Button>
-						)}
-					</PopoverActions>
-				</PopoverContent>
-			</Popover>
+								>
+									{t('availability.week.day-header.unblock-all')}
+								</Button>
+							)}
+						</PopoverActions>
+					</PopoverContent>
+			</Modal>
 
-			{confirmAction && (
-				<Modal
-					openModal
+				{confirmAction && (
+					<Modal
+						openModal
 					title={
 						confirmAction === 'block-all'
 							? t('availability.week.day-header.block-all')

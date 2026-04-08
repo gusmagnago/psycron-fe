@@ -6,17 +6,18 @@ import { SlotBufferLabel } from '../../AvailabilityWeekPage.styles';
 import { formatTimeRange, isClickable } from '../../AvailabilityWeekPage.utils';
 
 import {
-	BlockDayButton,
 	MobileDayCard,
 	MobileDayCardHeader,
 	MobileDayDate,
 	MobileDayHeaderActions,
+	MobileDayHeaderButton,
 	MobileDayList,
 	MobileDayName,
 	MobileDaySlots,
 	MobileEmptyDay,
 	MobileEmptyDayText,
 	MobileExpandButton,
+	MobileHeaderIcon,
 	MobileSlotBuffer,
 	MobileSlotCard,
 	MobileSlotCount,
@@ -53,36 +54,34 @@ export const AvailabilityWeekMobileList = ({
 						id={day.isToday ? todayCardId : undefined}
 						key={`mobile-day-${day.date.toISOString()}`}
 						isFullyBlocked={day.fullyBlocked}
-						isPastDay={day.isPastDay}
-						isToday={day.isToday}
-					>
-						<MobileDayCardHeader>
-							<div>
-								<MobileDayName>{format(day.date, 'EEEE')}</MobileDayName>
-								<MobileDayDate isToday={day.isToday}>
-									{format(day.date, 'MMMM d')}
-								</MobileDayDate>
-							</div>
-							<MobileDayHeaderActions>
-								<MobileSlotCount>
-									{day.allSlots.length}
-									{day.allSlots.length === 1
-										? t('availability.week.slot')
-										: t('availability.week.slots')}
-								</MobileSlotCount>
-								<BlockDayButton
+							isPastDay={day.isPastDay}
+							isToday={day.isToday}
+						>
+							<MobileDayCardHeader>
+								<MobileDayHeaderButton
 									aria-label={t('availability.week.day-header.actions')}
 									disabled={day.isPastDay}
-									onClick={(event: React.MouseEvent<HTMLElement>) =>
-										onDayHeaderClick(event, day.dateStr)
-									}
-									small
-									tertiary
+									onClick={() => onDayHeaderClick(day.dateStr)}
 								>
-									<Lock />
-								</BlockDayButton>
-							</MobileDayHeaderActions>
-						</MobileDayCardHeader>
+									<div>
+										<MobileDayName>{format(day.date, 'EEEE')}</MobileDayName>
+										<MobileDayDate isToday={day.isToday}>
+											{format(day.date, 'MMMM d')}
+										</MobileDayDate>
+									</div>
+									<MobileDayHeaderActions>
+										<MobileSlotCount>
+											{day.allSlots.length}
+											{day.allSlots.length === 1
+												? t('availability.week.slot')
+												: t('availability.week.slots')}
+										</MobileSlotCount>
+										<MobileHeaderIcon>
+											<Lock />
+										</MobileHeaderIcon>
+									</MobileDayHeaderActions>
+								</MobileDayHeaderButton>
+							</MobileDayCardHeader>
 						<MobileDaySlots>
 							{day.allSlots.length === 0 ? (
 								<MobileEmptyDay>
