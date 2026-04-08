@@ -7,7 +7,9 @@ import type {
 import type { IDrawerActionsConfig } from '../components/DrawerActions.types';
 
 interface IBlockSlotActions {
+	blockReason?: string;
 	mutation: { isPending: boolean; mutate: () => void };
+	setBlockReason?: (reason: string) => void;
 }
 
 interface ICancelSlotActions {
@@ -33,12 +35,14 @@ export interface IUseDrawerActionsInput {
 	editSlotForm: IEditSlotFormActions;
 	hasConflict: boolean;
 	isAvailable: boolean;
+	isBlocked: boolean;
 	isChecking: boolean;
 	isPast?: boolean;
 	isSubmitting: boolean;
 	reschedule: IRescheduleActions;
 	setView: (view: DrawerView) => void;
 	submitBooking: () => void;
+	unblockSlot: IBlockSlotActions;
 	view: DrawerView;
 }
 
@@ -48,12 +52,14 @@ export const useDrawerActions = ({
 	editSlotForm,
 	hasConflict,
 	isAvailable,
+	isBlocked,
 	isChecking,
 	isPast,
 	isSubmitting,
 	reschedule,
 	setView,
 	submitBooking,
+	unblockSlot,
 	view,
 }: IUseDrawerActionsInput): IDrawerActionsConfig => {
 	const { t } = useTranslation();
@@ -141,7 +147,34 @@ export const useDrawerActions = ({
 				},
 			};
 
+		case 'unblock-confirm':
+			return {
+				primary: {
+					disabled: unblockSlot.mutation.isPending,
+					label: t('availability.week.drawer.unblock-confirm'),
+					loading: unblockSlot.mutation.isPending,
+					onClick: () => unblockSlot.mutation.mutate(),
+					tertiary: true,
+					variant: 'contained',
+				},
+				secondary: {
+					disabled: unblockSlot.mutation.isPending,
+					label: t('availability.week.drawer.cancel-back'),
+					onClick: () => setView('default'),
+				},
+			};
+
 		default:
+			if (isBlocked) {
+				return {
+					primary: {
+						label: t('availability.week.drawer.unblock-slot'),
+						onClick: () => setView('unblock-confirm'),
+						tertiary: true,
+					},
+				};
+			}
+
 			if (isAvailable) {
 				if (hasConflict) return {};
 

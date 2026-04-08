@@ -1,5 +1,5 @@
 import styled from '@emotion/styled';
-import { Box } from '@mui/material';
+import { Box, TextField } from '@mui/material';
 import { Text } from '@psycron/components/text/Text';
 import { hexToRgba, palette } from '@psycron/theme/palette/palette.theme';
 import { shadowSmall } from '@psycron/theme/shadow/shadow.theme';
@@ -144,6 +144,16 @@ export const CancelViewBody = styled(Text)`
 	font-size: 14px;
 	color: ${palette.text.primary};
 	line-height: 1.6;
+`;
+
+export const BlockConfirmWrapper = styled(Box)`
+	display: flex;
+	flex-direction: column;
+	gap: ${spacing.medium};
+`;
+
+export const BlockReasonField = styled(TextField)`
+	margin-top: ${spacing.xs};
 `;
 
 export const CancelChoiceWrapper = styled(Box)`

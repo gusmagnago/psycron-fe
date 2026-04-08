@@ -135,6 +135,27 @@ export interface ICompleteSessionAvailabilityResponse {
 	status: string;
 }
 
+export interface IBlockAllSlotsPayload {
+	availabilityDayId: string;
+	blockReason?: string;
+	therapistId: string;
+}
+
+export interface IBatchBlockResponse {
+	blockedCount: number;
+	message: string;
+}
+
+export interface IUnblockAllSlotsPayload {
+	availabilityDayId: string;
+	therapistId: string;
+}
+
+export interface IBatchUnblockResponse {
+	message: string;
+	unblockedCount: number;
+}
+
 export interface IEditSlotStatus {
 	availabilityDayId: string;
 	data: IEditSlotStatusData;
@@ -143,6 +164,7 @@ export interface IEditSlotStatus {
 }
 
 export interface IEditSlotStatusData {
+	blockReason?: string;
 	newStatus: StatusEnum;
 	startTime: string;
 }
