@@ -1,6 +1,7 @@
 import type { IAvailabilityRecord } from '@psycron/api/availability/index.types';
 import type { IBufferTimeAdviceRequest } from '@psycron/api/jupiter';
 import type { IAvailabilityResponse } from '@psycron/api/user/index.types';
+import i18n from '@psycron/i18n';
 import { addDays } from 'date-fns';
 
 import type {
@@ -184,7 +185,9 @@ export const getBufferInsights = ({
 		(sum, day) => sum + day.capacityImpactMinutes,
 		0
 	);
-	const scheduledDayInsights = dayInsights.filter((day) => day.bookedSessions > 0);
+	const scheduledDayInsights = dayInsights.filter(
+		(day) => day.bookedSessions > 0
+	);
 	const highlightCandidates =
 		dayInsights.length > 0 ? dayInsights : scheduledDayInsights;
 	const packedDay =
@@ -193,7 +196,7 @@ export const getBufferInsights = ({
 					(a, b) =>
 						b.bookedSessions - a.bookedSessions ||
 						b.bookingDensity - a.bookingDensity
-			  )[0]
+				)[0]
 			: null;
 	const lightDay =
 		scheduledDayInsights.length > 0
@@ -201,13 +204,13 @@ export const getBufferInsights = ({
 					(a, b) =>
 						a.bookedSessions - b.bookedSessions ||
 						a.bookingDensity - b.bookingDensity
-			  )[0]
+				)[0]
 			: null;
 	const highlightDay =
 		highlightCandidates.length > 0
 			? [...highlightCandidates].sort(
 					(a, b) => b.capacityImpactMinutes - a.capacityImpactMinutes
-			  )[0]
+				)[0]
 			: null;
 
 	const averageRecommendation =
@@ -215,7 +218,7 @@ export const getBufferInsights = ({
 			? scheduledDayInsights.reduce(
 					(sum, day) => sum + day.recommendedMinutes,
 					0
-			  ) / scheduledDayInsights.length
+				) / scheduledDayInsights.length
 			: DEFAULT_BUFFER_RECOMMENDATION;
 	const recommendedBufferMinutes = getNearestAllowedBuffer(
 		Math.round(averageRecommendation)
@@ -228,7 +231,9 @@ export const getBufferInsights = ({
 	) {
 		warningLevel = 'strong';
 	} else if (
-		scheduledDayInsights.some((day) => day.currentScheduleImpactMinutes >= 30) ||
+		scheduledDayInsights.some(
+			(day) => day.currentScheduleImpactMinutes >= 30
+		) ||
 		currentScheduleWeeklyImpactMinutes >= 90
 	) {
 		warningLevel = 'soft';
@@ -289,13 +294,15 @@ export const buildBufferAdviceRequest = ({
 			const workingDayEnd = parseWorkingDayEnd(availability?.timeRange);
 			const overflowMinutes =
 				latestBookedEndMinutes != null && workingDayEnd != null
-					? Math.max(latestBookedEndMinutes + selectedBufferMinutes - workingDayEnd, 0)
+					? Math.max(
+							latestBookedEndMinutes + selectedBufferMinutes - workingDayEnd,
+							0
+						)
 					: 0;
 
 			return {
 				bookedSessions,
-				bookingDensity:
-					totalSessions > 0 ? bookedSessions / totalSessions : 0,
+				bookingDensity: totalSessions > 0 ? bookedSessions / totalSessions : 0,
 				capacityImpactMinutes:
 					Math.max(totalSessions - 1, 0) * selectedBufferMinutes,
 				currentScheduleImpactMinutes:
@@ -330,10 +337,47 @@ export const buildBufferAdviceRequest = ({
 			totalFutureSessions
 		),
 		selectedBufferMinutes,
-		sessionDurationMinutes: Number(availability?.sessionDuration?.match(/\d+/)?.[0] ?? 0) || null,
+		sessionDurationMinutes:
+			Number(availability?.sessionDuration?.match(/\d+/)?.[0] ?? 0) || null,
 		timezone: availability?.timezone ?? null,
 		weeklyCapacityImpactMinutes: insights.capacityWeeklyImpactMinutes,
 		weeklyCurrentImpactMinutes: insights.currentScheduleWeeklyImpactMinutes,
 		workingHours: availability?.timeRange ?? null,
 	};
+};
+
+export const formatDuration = (
+	minutes: number,
+	t: (key: string, options?: Record<string, unknown>) => string
+): string => {
+	if (minutes <= 0)
+		return t('jupiter.post-publish.buffer-impact-minutes-value', {
+			minutes: 0,
+		});
+
+	const locale = i18n.language.startsWith('pt') ? 'pt-PT' : 'en-GB';
+	const hoursFormatter = new Intl.NumberFormat(locale, {
+		style: 'unit',
+		unit: 'hour',
+		unitDisplay: 'short',
+	});
+	const minutesFormatter = new Intl.NumberFormat(locale, {
+		style: 'unit',
+		unit: 'minute',
+		unitDisplay: 'short',
+	});
+	const hours = Math.floor(minutes / 60);
+	const remainingMinutes = minutes % 60;
+
+	if (hours > 0 && remainingMinutes > 0) {
+		return `${hoursFormatter.format(hours)} ${minutesFormatter.format(
+			remainingMinutes
+		)}`;
+	}
+
+	if (hours > 0) {
+		return hoursFormatter.format(hours);
+	}
+
+	return minutesFormatter.format(minutes);
 };

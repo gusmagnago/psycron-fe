@@ -7,7 +7,9 @@ import { palette } from '@psycron/theme/palette/palette.theme';
 import { shadowSmall } from '@psycron/theme/shadow/shadow.theme';
 import { spacing } from '@psycron/theme/spacing/spacing.theme';
 
-export const JupiterTipRoot = styled(Box)`
+export const JupiterTipRoot = styled(Box, {
+	shouldForwardProp: (prop) => prop !== 'fullWidth',
+})<{ fullWidth?: boolean }>`
 	display: flex;
 	align-items: flex-start;
 	gap: ${spacing.small};
@@ -15,7 +17,7 @@ export const JupiterTipRoot = styled(Box)`
 	box-shadow: ${shadowSmall};
 	background: ${jupiterBackgroundMain};
 	border-radius: ${spacing.medium};
-	width: 400px;
+	width: ${({ fullWidth }) => (fullWidth ? '100%' : '400px')};
 
 	${isMobileMedia} {
 		width: 100%;

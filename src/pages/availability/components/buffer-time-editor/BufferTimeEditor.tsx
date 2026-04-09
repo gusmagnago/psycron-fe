@@ -1,5 +1,6 @@
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
+import { JupiterTip } from '@psycron/components/jupiter-tip/JupiterTip';
 import i18n from '@psycron/i18n';
 import { format, parseISO } from 'date-fns';
 import { enGB, ptBR } from 'date-fns/locale';
@@ -15,41 +16,8 @@ import {
 	BufferPanelTitle,
 } from './BufferTimeEditor.styles';
 import type { IBufferTimeEditorProps } from './BufferTimeEditor.types';
-import { BUFFER_TIME_OPTIONS } from './BufferTimeEditor.utils';
+import { BUFFER_TIME_OPTIONS, formatDuration } from './BufferTimeEditor.utils';
 import { useBufferTimeAdvice } from './useBufferTimeAdvice';
-
-const formatDuration = (
-	minutes: number,
-	t: (key: string, options?: Record<string, unknown>) => string
-): string => {
-	if (minutes <= 0) return t('jupiter.post-publish.buffer-impact-minutes-value', { minutes: 0 });
-
-	const locale = i18n.language.startsWith('pt') ? 'pt-PT' : 'en-GB';
-	const hoursFormatter = new Intl.NumberFormat(locale, {
-		style: 'unit',
-		unit: 'hour',
-		unitDisplay: 'short',
-	});
-	const minutesFormatter = new Intl.NumberFormat(locale, {
-		style: 'unit',
-		unit: 'minute',
-		unitDisplay: 'short',
-	});
-	const hours = Math.floor(minutes / 60);
-	const remainingMinutes = minutes % 60;
-
-	if (hours > 0 && remainingMinutes > 0) {
-		return `${hoursFormatter.format(hours)} ${minutesFormatter.format(
-			remainingMinutes
-		)}`;
-	}
-
-	if (hours > 0) {
-		return hoursFormatter.format(hours);
-	}
-
-	return minutesFormatter.format(minutes);
-};
 
 export const BufferTimeEditor = ({
 	adviceRequest,
@@ -59,8 +27,12 @@ export const BufferTimeEditor = ({
 }: IBufferTimeEditorProps) => {
 	const { t } = useTranslation();
 	const dateLocale = i18n.language.startsWith('pt') ? ptBR : enGB;
-	const { data: aiAdvice, isError, isFetching, isLoading } =
-		useBufferTimeAdvice(adviceRequest);
+	const {
+		data: aiAdvice,
+		isError,
+		isFetching,
+		isLoading,
+	} = useBufferTimeAdvice(adviceRequest);
 
 	const packedDayLabel = useMemo(
 		() =>
@@ -82,6 +54,13 @@ export const BufferTimeEditor = ({
 	const recommendationSummary = aiAdvice?.recommendationSummary ?? null;
 	const packedDaySummary = aiAdvice?.packedDaySummary ?? null;
 	const lightDaySummary = aiAdvice?.lightDaySummary ?? null;
+	const jupiterRecommendationText = [
+		recommendationSummary,
+		packedDaySummary,
+		lightDaySummary,
+	]
+		.filter(Boolean)
+		.join(' ');
 
 	return (
 		<BufferEditorWrapper>
@@ -102,7 +81,9 @@ export const BufferTimeEditor = ({
 				))}
 			</BufferOptionChips>
 
-			<BufferHelper>{t('jupiter.post-publish.buffer-range-helper')}</BufferHelper>
+			<BufferHelper>
+				{t('jupiter.post-publish.buffer-range-helper')}
+			</BufferHelper>
 
 			<BufferPanel>
 				<BufferPanelTitle>
@@ -115,7 +96,7 @@ export const BufferTimeEditor = ({
 									insights.highlightDay?.capacityImpactMinutes ?? 0,
 									t
 								),
-						  })
+							})
 						: t('jupiter.post-publish.buffer-impact-empty')}
 				</BufferPanelText>
 				<BufferPanelText>
@@ -125,26 +106,22 @@ export const BufferTimeEditor = ({
 				</BufferPanelText>
 			</BufferPanel>
 
-			<BufferPanel>
-				<BufferPanelTitle>
-					{t('jupiter.post-publish.buffer-jupiter-title')}
-				</BufferPanelTitle>
-				{isThinking ? (
-					<BufferPanelText>
+			<JupiterTip
+				ariaLabel={t('jupiter.post-publish.tip-title')}
+				fullWidth
+				text={
+					isThinking ? (
 						<BufferTimeAdviceLoading />
-					</BufferPanelText>
-				) : recommendationSummary ? (
-					<BufferPanelText>{recommendationSummary}</BufferPanelText>
-				) : (
-					<BufferPanelText>
-						{isError
-							? t('jupiter.post-publish.buffer-jupiter-unavailable')
-							: t('jupiter.post-publish.buffer-jupiter-empty')}
-					</BufferPanelText>
-				)}
-				{packedDaySummary && <BufferPanelText>{packedDaySummary}</BufferPanelText>}
-				{lightDaySummary && <BufferPanelText>{lightDaySummary}</BufferPanelText>}
-			</BufferPanel>
+					) : jupiterRecommendationText ? (
+						jupiterRecommendationText
+					) : isError ? (
+						t('jupiter.post-publish.buffer-jupiter-unavailable')
+					) : (
+						t('jupiter.post-publish.buffer-jupiter-empty')
+					)
+				}
+				title={t('jupiter.post-publish.tip-title')}
+			/>
 
 			{(insights.warningLevel !== 'none' || warningSummary) && (
 				<BufferPanel
@@ -160,7 +137,9 @@ export const BufferTimeEditor = ({
 							})}
 						</BufferPanelText>
 					) : null}
-					{warningSummary && <BufferPanelText>{warningSummary}</BufferPanelText>}
+					{warningSummary && (
+						<BufferPanelText>{warningSummary}</BufferPanelText>
+					)}
 				</BufferPanel>
 			)}
 		</BufferEditorWrapper>

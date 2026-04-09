@@ -95,6 +95,7 @@ export const BufferThinkingDots = styled('span')`
 	align-items: flex-end;
 	gap: 4px;
 	padding-left: ${spacing.xxs};
+	padding-bottom: ${spacing.xxs};
 
 	span {
 		width: 5px;
