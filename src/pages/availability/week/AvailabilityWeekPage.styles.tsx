@@ -1,5 +1,5 @@
 import styled from '@emotion/styled';
-import { Box, ButtonBase } from '@mui/material';
+import { Box } from '@mui/material';
 import { Button } from '@psycron/components/button/Button';
 import { Text } from '@psycron/components/text/Text';
 import {
@@ -8,11 +8,7 @@ import {
 	isSmallerThanTabletMedia,
 } from '@psycron/theme/media-queries/mediaQueries';
 import { hexToRgba, palette } from '@psycron/theme/palette/palette.theme';
-import {
-	shadowMain,
-	shadowMedium,
-	shadowSmall,
-} from '@psycron/theme/shadow/shadow.theme';
+import { shadowMain } from '@psycron/theme/shadow/shadow.theme';
 import { spacing } from '@psycron/theme/spacing/spacing.theme';
 import { zIndexSticky } from '@psycron/theme/zIndex';
 
@@ -21,24 +17,42 @@ import type { SlotStatus } from './AvailabilityWeekPage.types';
 // ─── Slot colours ─────────────────────────────────────────────────────────────
 
 export const SLOT_COLORS: Record<SlotStatus, string> = {
-	available: palette.background.paper,
+	available: palette.white,
+	blocked: palette.gray['02'],
 	buffer: hexToRgba(palette.brand.purple, 0.18),
 	'booked-google': palette.brand.google,
 	'booked-jupiter': palette.brand.purple,
-	cancelled: palette.gray['02'],
+	cancelled: palette.warning.surface.light,
 };
 
-export const BUFFER_COLORS: Record<'booked-google' | 'booked-jupiter', string> =
-	{
-		'booked-google': palette.brand.google,
-		'booked-jupiter': palette.brand.purple,
-	};
+export const BUFFER_COLORS: Record<
+	'booked' | 'booked-google' | 'booked-jupiter',
+	string
+> = {
+	'booked-google': palette.brand.google,
+	booked: palette.brand.purple,
+	'booked-jupiter': palette.brand.purple,
+};
 
-const isClickableStatus = (status: SlotStatus) =>
-	status === 'booked-jupiter' ||
-	status === 'booked-google' ||
-	status === 'available' ||
-	status === 'cancelled';
+export const isClickableStatus = (status: SlotStatus) =>
+	status.includes('booked') || status === 'available' || status === 'cancelled';
+
+export const getSlotTextColor = (slotStatus: SlotStatus): string => {
+	if (slotStatus.includes('booked')) return palette.white;
+	if (slotStatus === 'available') return palette.text.primary;
+	if (slotStatus === 'blocked') return palette.gray.dark;
+	if (slotStatus === 'cancelled') return palette.warning.dark;
+	return palette.text.primary;
+};
+
+export const getSlotBorder = (slotStatus: SlotStatus): string => {
+	if (slotStatus === 'available') return `1px solid ${palette.gray['02']}`;
+	if (slotStatus === 'cancelled') return `1px dashed ${palette.warning.main}`;
+	return 'none';
+};
+
+export const hasPersistentSlotShadow = (slotStatus: SlotStatus): boolean =>
+	slotStatus === 'available' || slotStatus.includes('booked');
 
 // ─── Card ─────────────────────────────────────────────────────────────────────
 
@@ -120,6 +134,11 @@ export const WeekNavRow = styled(Box)`
 	}
 `;
 
+export const WeekTitleBlock = styled(Box)`
+	display: flex;
+	flex-direction: column;
+`;
+
 export const WeekFeaturesActions = styled(Box)`
 	display: flex;
 	flex-direction: column;
@@ -162,368 +181,11 @@ export const FilterButton = styled(Button, {
 	}
 `;
 
-// ─── Desktop Grid ─────────────────────────────────────────────────────────────
-
-export const WeekGridWrapper = styled(Box)`
-	flex: 1;
-	min-height: 0;
-	overflow-y: auto;
-	overflow-x: auto;
-	padding-bottom: ${spacing.xs};
-`;
-
-export const WeekGrid = styled(Box)`
-	display: grid;
-	grid-template-columns: 64px repeat(7, 1fr);
-	gap: ${spacing.xs};
-	min-width: 560px;
-`;
-
-export const WeekGridCorner = styled(Box)`
-	height: 60px;
-	position: sticky;
-	top: 0;
-	left: 0;
-	z-index: ${zIndexSticky};
-	background: ${palette.background.default};
-`;
-
-// ─── Day column header ─────────────────────────────────────────────────────────
-
-export const DayHeader = styled(Box, {
-	shouldForwardProp: (prop) => prop !== 'isDisabled' && prop !== 'isToday',
-})<{ isDisabled?: boolean; isToday?: boolean }>`
-	height: 60px;
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-	justify-content: center;
-	margin-bottom: ${spacing.extraSmall};
-	border: 2px solid
-		${({ isToday }) =>
-			isToday
-				? palette.secondary.main
-				: hexToRgba(palette.background.default, 0.2)};
-	border-radius: ${spacing.xs};
-	position: sticky;
-	top: 0;
-	z-index: ${zIndexSticky};
-	backdrop-filter: blur(10px);
-	background: ${hexToRgba(palette.background.default, 0.2)};
-`;
-
-export const DayName = styled(Text)`
-	font-size: 13px;
-	color: ${palette.gray['05']};
-	font-weight: 500;
-	margin-bottom: ${spacing.space};
-`;
-
-export const DayNumber = styled(Text)`
-	font-size: 18px;
-	font-weight: 700;
-	color: ${palette.text.primary};
-`;
-
-export const TimeLabel = styled(Box)`
-	height: 60px;
-	display: flex;
-	align-items: center;
-	justify-content: flex-end;
-	padding-right: ${spacing.small};
-	position: sticky;
-	left: 0;
-	z-index: ${zIndexSticky};
-	background: ${palette.background.default};
-`;
-
-export const TimeLabelText = styled(Text)`
-	font-size: 13px;
-	color: ${palette.gray['05']};
-	font-weight: 500;
-	white-space: nowrap;
-`;
-
-// ─── Desktop slot cell ─────────────────────────────────────────────────────────
-
-export const SlotCell = styled(ButtonBase, {
-	shouldForwardProp: (prop) =>
-		prop !== 'slotStatus' && prop !== 'isToday' && prop !== 'isOddRow',
-})<{ isOddRow?: boolean; isToday?: boolean; slotStatus: SlotStatus }>`
-	height: 60px;
-	width: 100%;
-	border-radius: 12px;
-	padding: ${spacing.xs} ${spacing.small};
-	font-size: 13px;
-	font-weight: 500;
-	display: flex;
-	flex-direction: column;
-	align-items: flex-start;
-	justify-content: center;
-	overflow: hidden;
-	position: relative;
-
-	background-color: ${({ slotStatus }) => SLOT_COLORS[slotStatus]};
-	color: ${({ slotStatus }) =>
-		slotStatus === 'booked-jupiter' || slotStatus === 'booked-google'
-			? palette.white
-			: palette.text.primary};
-	opacity: ${({ slotStatus }) => (slotStatus === 'cancelled' ? 0.3 : 1)};
-	cursor: ${({ slotStatus }) =>
-		isClickableStatus(slotStatus) ? 'pointer' : 'default'};
-	box-shadow: ${({ slotStatus }) =>
-		slotStatus === 'cancelled' ? 'none' : shadowMedium};
-	transition: box-shadow 0.15s ease;
-
-	&:hover {
-		box-shadow: ${({ slotStatus }) =>
-			slotStatus === 'cancelled' ? 'none' : shadowSmall};
-	}
-	text-align: left;
-
-	${({ isOddRow }) =>
-		isOddRow
-			? `&::before {
-		content: '';
-		position: absolute;
-		inset: 0;
-		background: rgba(255, 255, 255, 0.5);
-		border-radius: inherit;
-		pointer-events: none;
-	}`
-			: ''}
-`;
-
-export const SlotCellDisabled = styled(Box, {
-	shouldForwardProp: (prop) => prop !== 'isToday' && prop !== 'isOddRow',
-})<{ isOddRow?: boolean; isToday?: boolean }>`
-	height: 60px;
-	width: 100%;
-	border-radius: 12px;
-	background-color: ${palette.gray['02']};
-	position: relative;
-
-	${({ isOddRow }) =>
-		isOddRow
-			? `&::before {
-		content: '';
-		position: absolute;
-		inset: 0;
-		background: rgba(255, 255, 255, 0.4);
-		border-radius: inherit;
-		pointer-events: none;
-	}`
-			: ''}
-
-	${({ isToday }) =>
-		isToday
-			? `&::after {
-		content: '';
-		position: absolute;
-		inset: 0;
-		background: rgba(221, 147, 255, 0.15);
-		border-radius: inherit;
-		pointer-events: none;
-	}`
-			: ''}
-`;
-
-export const SlotCellBuffer = styled(Box, {
-	shouldForwardProp: (prop) => prop !== 'bufferFor',
-})<{ bufferFor: 'booked-google' | 'booked-jupiter' }>`
-	height: 60px;
-	width: 100%;
-	border-radius: 12px;
-	padding: ${spacing.xs} ${spacing.small};
-	display: flex;
-	align-items: center;
-	border-left: 3px solid ${({ bufferFor }) => BUFFER_COLORS[bufferFor]};
-	background: ${({ bufferFor }) => hexToRgba(BUFFER_COLORS[bufferFor], 0.07)};
-`;
-
 export const SlotBufferLabel = styled(Text)`
 	font-size: 11px;
 	font-weight: 500;
 	color: ${palette.gray['05']};
 	letter-spacing: 0.02em;
-`;
-
-export const SlotPatientName = styled(Text)`
-	font-size: 12px;
-	font-weight: 700;
-	line-height: 1.2;
-	overflow: hidden;
-	white-space: nowrap;
-	text-overflow: ellipsis;
-	width: 100%;
-`;
-
-export const SlotTherapyType = styled(Text)`
-	font-size: 10px;
-	font-weight: 400;
-	opacity: 0.8;
-	overflow: hidden;
-	white-space: nowrap;
-	text-overflow: ellipsis;
-	width: 100%;
-`;
-
-// ─── Mobile Day List ───────────────────────────────────────────────────────────
-
-export const MobileDayList = styled(Box)`
-	display: flex;
-	flex-direction: column;
-	gap: ${spacing.medium};
-	padding-bottom: ${spacing.small};
-`;
-
-export const MobileDayCard = styled(Box, {
-	shouldForwardProp: (prop) => prop !== 'isToday',
-})<{ isToday?: boolean }>`
-	background: ${palette.white};
-	border-radius: ${spacing.mediumSmall};
-	padding: ${spacing.small};
-	overflow: hidden;
-	border-left: 3px solid
-		${({ isToday }) => (isToday ? palette.secondary.main : 'transparent')};
-`;
-
-export const MobileDayCardHeader = styled(Box)`
-	display: flex;
-	align-items: flex-start;
-	justify-content: space-between;
-	margin-bottom: ${spacing.medium};
-	padding-bottom: ${spacing.mediumSmall};
-	border-bottom: 1px solid ${palette.gray['02']};
-`;
-
-export const MobileDayName = styled(Text)`
-	font-size: 11px;
-	font-weight: 500;
-	color: ${palette.gray['05']};
-	text-transform: uppercase;
-	margin-bottom: ${spacing.space};
-`;
-
-export const MobileDayDate = styled(Text)`
-	font-size: 16px;
-	font-weight: 500;
-	color: ${palette.text.primary};
-`;
-
-export const MobileSlotCount = styled(Text)`
-	font-size: 12px;
-	color: ${palette.gray['05']};
-`;
-
-export const MobileDaySlots = styled(Box)`
-	display: flex;
-	flex-direction: column;
-	gap: ${spacing.small};
-`;
-
-export const MobileSlotCard = styled(ButtonBase, {
-	shouldForwardProp: (prop) => prop !== 'slotStatus',
-})<{ slotStatus: SlotStatus }>`
-	width: 100%;
-	border-radius: ${spacing.small};
-	padding: ${spacing.xxs} ${spacing.small};
-	height: 56px;
-	display: flex;
-	flex-direction: row;
-	align-items: center;
-	gap: ${spacing.small};
-	text-align: left;
-	background-color: ${({ slotStatus }) => SLOT_COLORS[slotStatus]};
-	border: ${({ slotStatus }) =>
-		slotStatus === 'available' ? `1px solid ${palette.gray['02']}` : 'none'};
-	opacity: ${({ slotStatus }) => (slotStatus === 'cancelled' ? 0.5 : 1)};
-	cursor: ${({ slotStatus }) =>
-		isClickableStatus(slotStatus) ? 'pointer' : 'default'};
-	transition: opacity 0.1s ease;
-	color: ${({ slotStatus }) =>
-		slotStatus === 'booked-jupiter' || slotStatus === 'booked-google'
-			? palette.white
-			: palette.text.primary};
-
-	&:hover {
-		opacity: ${({ slotStatus }) => (isClickableStatus(slotStatus) ? 0.9 : 1)};
-	}
-`;
-
-export const MobileSlotBuffer = styled(Box, {
-	shouldForwardProp: (prop) => prop !== 'bufferFor',
-})<{ bufferFor: 'booked-google' | 'booked-jupiter' }>`
-	width: 100%;
-	border-radius: ${spacing.small};
-	padding: ${spacing.xxs} ${spacing.small};
-	height: 56px;
-	display: flex;
-	flex-direction: row;
-	align-items: center;
-	gap: ${spacing.small};
-	border-left: 3px solid ${({ bufferFor }) => BUFFER_COLORS[bufferFor]};
-	background: ${({ bufferFor }) => hexToRgba(BUFFER_COLORS[bufferFor], 0.07)};
-`;
-
-export const MobileSlotTime = styled(Text)`
-	font-size: 12px;
-	font-weight: 600;
-	white-space: nowrap;
-	flex-shrink: 0;
-`;
-
-export const MobileSlotPatient = styled(Text)`
-	font-size: 13px;
-	font-weight: 600;
-	overflow: hidden;
-	white-space: nowrap;
-	text-overflow: ellipsis;
-	width: 100%;
-`;
-
-export const MobileSlotTherapy = styled(Text)`
-	font-size: 11px;
-	opacity: 0.8;
-	overflow: hidden;
-	white-space: nowrap;
-	text-overflow: ellipsis;
-	width: 100%;
-`;
-
-export const MobileSlotDetails = styled(Box)`
-	display: flex;
-	flex-direction: column;
-	gap: 2px;
-	flex: 1;
-	min-width: 0;
-`;
-
-export const MobileExpandButton = styled(ButtonBase)`
-	width: 100%;
-	padding: ${spacing.xs} 0;
-	font-size: 12px;
-	color: ${palette.brand.purple};
-	font-weight: 500;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	gap: ${spacing.xs};
-	margin-top: ${spacing.xs};
-	border-radius: ${spacing.xs};
-`;
-
-export const MobileEmptyDay = styled(Box)`
-	padding: ${spacing.medium} 0;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-`;
-
-export const MobileEmptyDayText = styled(Text)`
-	font-size: 13px;
-	color: ${palette.gray['05']};
-	text-align: center;
 `;
 
 // ─── Footer Legend ─────────────────────────────────────────────────────────────
@@ -538,4 +200,9 @@ export const WeekFooter = styled(Box)`
 	flex-shrink: 0;
 	justify-content: space-between;
 	margin-bottom: 0;
+`;
+
+export const WeekFooterActions = styled(Box)`
+	display: flex;
+	gap: ${spacing.xs};
 `;

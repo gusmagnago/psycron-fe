@@ -1,9 +1,7 @@
-import { Fragment, useCallback, useMemo, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useNavigate, useParams } from 'react-router-dom';
-import { Box } from '@mui/material';
+import { useParams } from 'react-router-dom';
 import { getAppointmentDetailsBySlotId } from '@psycron/api/user/availability';
-import type { AvailabilityLegendItem } from '@psycron/components/availability/AvailabilityLegend';
 import { AvailabilityLegend } from '@psycron/components/availability/AvailabilityLegend';
 import { NavButton } from '@psycron/components/availability/AvailabilityNavButton';
 import { AvailabilityTodayButton } from '@psycron/components/availability/AvailabilityTodayButton';
@@ -16,241 +14,97 @@ import {
 	Filter,
 	FilterFull,
 } from '@psycron/components/icons';
-import { useAvailability } from '@psycron/context/appointment/availability/AvailabilityContext';
-import { useCalendarPrefs } from '@psycron/hooks/useCalendarPrefs';
-import { useJupiterAvailabilityConfig } from '@psycron/hooks/useJupiterAvailabilityConfig';
 import { useTherapistId } from '@psycron/hooks/useTherapistId';
 import useViewport from '@psycron/hooks/useViewport';
-import i18n from '@psycron/i18n';
 import { PageLayout } from '@psycron/layouts/app/pages-layout/PageLayout';
-import {
-	AVAILABILITYPATH,
-	AVAILABILITYSETTINGS,
-	AVAILABILITYWEEK_BASE,
-} from '@psycron/pages/urls';
-import { palette } from '@psycron/theme/palette/palette.theme';
 import { useQueryClient } from '@tanstack/react-query';
-import {
-	addWeeks,
-	eachDayOfInterval,
-	endOfWeek,
-	format,
-	isAfter,
-	isBefore,
-	isToday,
-	parseISO,
-	startOfWeek,
-	subWeeks,
-} from 'date-fns';
+import { format, isPast, isToday, parseISO } from 'date-fns';
 
+import { DayHeaderPopover } from './day-header-popover/DayHeaderPopover';
 import { AvailabilityWeekDrawer } from './drawer/AvailabilityWeekDrawer';
 import { AvailabilityWeekFilters } from './filters/AvailabilityWeekFilters';
-import { useWeekSlots } from './hook/useWeekSlots';
+import { useAvailabilityWeekViewModel } from './hook/useAvailabilityWeekViewModel';
+import { useBlockDay, useUnblockDay } from './hook/useDayActions';
+import { AvailabilityWeekDesktopGrid } from './views/desktop-view/AvailabilityWeekDesktopGrid';
+import { AvailabilityWeekMobileList } from './views/mobile-view/AvailabilityWeekMobileList';
 import {
-	BUFFER_COLORS,
-	DayHeader,
-	DayName,
-	DayNumber,
 	FilterButton,
-	MobileDayCard,
-	MobileDayCardHeader,
-	MobileDayDate,
-	MobileDayList,
-	MobileDayName,
-	MobileDaySlots,
-	MobileEmptyDay,
-	MobileEmptyDayText,
-	MobileExpandButton,
-	MobileSlotBuffer,
-	MobileSlotCard,
-	MobileSlotCount,
-	MobileSlotDetails,
-	MobileSlotPatient,
-	MobileSlotTherapy,
-	MobileSlotTime,
-	SLOT_COLORS,
-	SlotBufferLabel,
-	SlotCell,
-	SlotCellBuffer,
-	SlotCellDisabled,
-	SlotPatientName,
-	SlotTherapyType,
-	TimeLabel,
-	TimeLabelText,
 	WeekCard,
 	WeekFeaturesActions,
 	WeekFeaturesWrapper,
 	WeekFooter,
-	WeekGrid,
-	WeekGridCorner,
-	WeekGridWrapper,
+	WeekFooterActions,
 	WeekHeader,
 	WeekNavRow,
 	WeekSubtitle,
 	WeekTitle,
+	WeekTitleBlock,
 } from './AvailabilityWeekPage.styles';
 import type { IWeekSlot } from './AvailabilityWeekPage.types';
-import {
-	formatTimeRange,
-	isClickable,
-	LEGEND_STATUSES,
-} from './AvailabilityWeekPage.utils';
 
 export const AvailabilityWeekPage = () => {
+	const todayCardId = 'availability-week-mobile-today';
 	const { t } = useTranslation();
-	const navigate = useNavigate();
 	const { date } = useParams<{ date: string }>();
-	const { firstDate, lastDate } = useAvailability();
 	const { isMobile } = useViewport();
 	const {
 		activeFilterCount,
+		allSessionTypes,
+		canGoNext,
+		canGoPrev,
 		clearFilters,
+		getDaySlots,
+		getVisibleDaySlots,
+		goToMonth,
+		goToNextWeek,
+		goToPrevWeek,
+		goToSettings,
+		goToTodayWeek,
+		isLoading,
+		legendItems,
+		mobileDays,
 		prefs,
-		toggleBookingSource,
+		timeSlots,
+		toggleDayExpanded,
 		toggleDeliveryMode,
 		toggleSessionType,
 		toggleShowCancelledSlots,
 		toggleShowFreeSlots,
 		toggleTimeOfDay,
-	} = useCalendarPrefs();
+		weekData,
+		weekDays,
+		weekRange,
+	} = useAvailabilityWeekViewModel({ date });
 
 	const [selectedSlot, setSelectedSlot] = useState<IWeekSlot | null>(null);
 	const [filterAnchorEl, setFilterAnchorEl] = useState<HTMLElement | null>(
 		null
 	);
-	const [expandedDays, setExpandedDays] = useState<Set<string>>(
-		() => new Set([format(new Date(), 'yyyy-MM-dd')])
-	);
-
-	const { availability } = useJupiterAvailabilityConfig();
-
-	const bufferTimeMinutes = availability?.bufferTimeMinutes ?? 0;
-
-	const baseDate = date ? parseISO(date) : new Date();
-	const weekStart = startOfWeek(baseDate, { weekStartsOn: 1 });
-	const weekEnd = endOfWeek(baseDate, { weekStartsOn: 1 });
-	const weekDays = eachDayOfInterval({ start: weekStart, end: weekEnd });
-
-	const { weekData, isLoading } = useWeekSlots(
-		weekStart,
-		weekEnd,
-		bufferTimeMinutes
-	);
-
-	const workingDays = weekDays.filter(
-		(d) => format(d, 'yyyy-MM-dd') in weekData
-	);
-
-	const getDaySlots = useCallback(
-		(day: Date): IWeekSlot[] => weekData[format(day, 'yyyy-MM-dd')] ?? [],
-		[weekData]
-	);
-
-	const weekRange = `${format(weekStart, 'MMM d')} – ${format(weekEnd, 'MMM d, yyyy')}`;
-
-	const allSessionTypes = useMemo(() => {
-		const types = new Set<string>();
-		weekDays.forEach((day) => {
-			getDaySlots(day).forEach((slot) => {
-				if (slot.therapyType) types.add(slot.therapyType);
-			});
-		});
-		return Array.from(types).sort();
-	}, [weekDays, getDaySlots]);
-
-	const timeSlots = useMemo(() => {
-		const times = new Set<string>();
-		Object.values(weekData).forEach((slots) =>
-			slots.forEach((s) => times.add(s.startTime))
-		);
-		return Array.from(times).sort();
-	}, [weekData]);
-
-	const getVisibleDaySlots = (day: Date): IWeekSlot[] => {
-		let slots = getDaySlots(day);
-
-		if (!prefs.showFreeSlots)
-			slots = slots.filter((s) => s.status !== 'available');
-		if (!prefs.showCancelledSlots)
-			slots = slots.filter((s) => s.status !== 'cancelled');
-
-		if (prefs.bookingSources.length > 0) {
-			slots = slots.filter((s) => {
-				if (s.status === 'booked-jupiter')
-					return prefs.bookingSources.includes('jupiter');
-				if (s.status === 'booked-google')
-					return prefs.bookingSources.includes('google');
-				if (s.status === 'buffer' && s.bufferFor) {
-					if (s.bufferFor === 'booked-jupiter')
-						return prefs.bookingSources.includes('jupiter');
-					if (s.bufferFor === 'booked-google')
-						return prefs.bookingSources.includes('google');
-				}
-				return true;
-			});
-		}
-
-		if (prefs.sessionTypes.length > 0) {
-			slots = slots.filter(
-				(s) => !s.therapyType || prefs.sessionTypes.includes(s.therapyType)
-			);
-		}
-
-		if (prefs.deliveryModes.length > 0) {
-			slots = slots.filter(
-				(s) => !s.deliveryMode || prefs.deliveryModes.includes(s.deliveryMode)
-			);
-		}
-
-		if (prefs.timeOfDay.length > 0) {
-			slots = slots.filter((s) => {
-				const hour = parseInt(s.startTime.split(':')[0], 10);
-				return prefs.timeOfDay.some((band) => {
-					if (band === 'morning') return hour >= 8 && hour < 12;
-					if (band === 'afternoon') return hour >= 12 && hour < 17;
-					return hour >= 17; // evening
-				});
-			});
-		}
-
-		return slots;
-	};
-
-	const firstISO = firstDate?.date ? parseISO(firstDate.date) : null;
-	const lastISO = lastDate?.date ? parseISO(lastDate.date) : null;
-
-	const canGoPrev = firstISO
-		? isAfter(weekStart, startOfWeek(firstISO, { weekStartsOn: 1 }))
-		: false;
-	const canGoNext = lastISO
-		? isBefore(weekStart, startOfWeek(lastISO, { weekStartsOn: 1 }))
-		: false;
-
-	const goToPrevWeek = () =>
-		navigate(
-			`/${i18n.language}/${AVAILABILITYWEEK_BASE}/${format(subWeeks(baseDate, 1), 'yyyy-MM-dd')}`
-		);
-
-	const goToNextWeek = () =>
-		navigate(
-			`/${i18n.language}/${AVAILABILITYWEEK_BASE}/${format(addWeeks(baseDate, 1), 'yyyy-MM-dd')}`
-		);
-
-	const COLLAPSED_SLOTS_LIMIT = 3;
-
-	const toggleDayExpanded = (dateStr: string) => {
-		setExpandedDays((prev) => {
-			const next = new Set(prev);
-			if (next.has(dateStr)) next.delete(dateStr);
-			else next.add(dateStr);
-			return next;
-		});
-	};
+	const [dayPopoverDate, setDayPopoverDate] = useState<string | null>(null);
+	const [shouldScrollToToday, setShouldScrollToToday] = useState(false);
 
 	const queryClient = useQueryClient();
 	const therapistId = useTherapistId();
 
+	const blockDay = useBlockDay(therapistId, () => {
+		setDayPopoverDate(null);
+	});
+	const unblockDay = useUnblockDay(therapistId, () => {
+		setDayPopoverDate(null);
+	});
+
+	const handleDayHeaderClick = (dateStr: string) => {
+		const dayDate = parseISO(dateStr);
+		if (isPast(dayDate) && !isToday(dayDate)) return;
+		setDayPopoverDate(dateStr);
+	};
+
 	const handleSlotClick = (slot: IWeekSlot) => setSelectedSlot(slot);
+
+	const handleTodayClick = useCallback(() => {
+		setShouldScrollToToday(true);
+		goToTodayWeek();
+	}, [goToTodayWeek]);
 
 	const handleSlotPointerDown = useCallback(
 		(slot: IWeekSlot) => {
@@ -271,19 +125,6 @@ export const AvailabilityWeekPage = () => {
 		[queryClient, therapistId]
 	);
 
-	const legendItems: AvailabilityLegendItem[] = LEGEND_STATUSES.map(
-		({ status, labelKey }) => ({
-			color:
-				status === 'buffer'
-					? BUFFER_COLORS['booked-jupiter']
-					: SLOT_COLORS[status],
-			label: t(labelKey),
-			...(status === 'available' && { borderColor: palette.gray['02'] }),
-			...(status === 'buffer' && { opacity: 0.4 }),
-			...(status === 'cancelled' && { opacity: 0.5 }),
-		})
-	);
-
 	const filterButton = (
 		<FilterButton
 			isActive={activeFilterCount > 0}
@@ -298,11 +139,7 @@ export const AvailabilityWeekPage = () => {
 
 	const navButtons = (
 		<>
-			<Button
-				small
-				tertiary
-				onClick={() => navigate(`/${i18n.language}/${AVAILABILITYPATH}`)}
-			>
+			<Button small tertiary onClick={goToMonth}>
 				<Calendar />
 				{!isMobile ? t('components.agenda.month') : null}
 			</Button>
@@ -310,7 +147,7 @@ export const AvailabilityWeekPage = () => {
 				small
 				tertiary
 				aria-label={t('availability.week.settings')}
-				onClick={() => navigate(`/${i18n.language}/${AVAILABILITYSETTINGS}`)}
+				onClick={goToSettings}
 			>
 				<Edit />
 				{!isMobile ? t('availability.week.settings') : null}
@@ -337,7 +174,29 @@ export const AvailabilityWeekPage = () => {
 		</NavButton>
 	);
 
-	const todayButton = <AvailabilityTodayButton iconOnly={isMobile} />;
+	useEffect(() => {
+		if (!isMobile || !shouldScrollToToday) return;
+
+		const todayCard = document.getElementById(todayCardId);
+		if (!todayCard) return;
+
+		const frameId = window.requestAnimationFrame(() => {
+			todayCard.scrollIntoView({
+				behavior: 'smooth',
+				block: 'start',
+			});
+			setShouldScrollToToday(false);
+		});
+
+		return () => window.cancelAnimationFrame(frameId);
+	}, [isMobile, mobileDays, shouldScrollToToday]);
+
+	const todayButton = (
+		<AvailabilityTodayButton
+			iconOnly={isMobile}
+			onClick={isMobile ? handleTodayClick : undefined}
+		/>
+	);
 
 	return (
 		<PageLayout
@@ -350,10 +209,10 @@ export const AvailabilityWeekPage = () => {
 					<WeekFeaturesWrapper>
 						<WeekNavRow>
 							{prevButton}
-							<Box>
+							<WeekTitleBlock>
 								<WeekTitle>{t('availability.week.title')}</WeekTitle>
 								<WeekSubtitle>{weekRange}</WeekSubtitle>
-							</Box>
+							</WeekTitleBlock>
 							{nextButton}
 						</WeekNavRow>
 						<WeekFeaturesActions>
@@ -365,216 +224,30 @@ export const AvailabilityWeekPage = () => {
 				</WeekHeader>
 
 				{isMobile ? (
-					<MobileDayList>
-						{workingDays.map((day, _id) => {
-							const dateStr = format(day, 'yyyy-MM-dd');
-							const todayDay = isToday(day);
-							const allSlots = getVisibleDaySlots(day);
-							const isExpanded = expandedDays.has(dateStr);
-							const visibleSlots = isExpanded
-								? allSlots
-								: allSlots.slice(0, COLLAPSED_SLOTS_LIMIT);
-							const hiddenCount = allSlots.length - COLLAPSED_SLOTS_LIMIT;
-
-							return (
-								<MobileDayCard
-									key={`mobile-day-${day.toISOString() + _id}`}
-									isToday={todayDay}
-								>
-									<MobileDayCardHeader>
-										<div>
-											<MobileDayName>{format(day, 'EEEE')}</MobileDayName>
-											<MobileDayDate
-												sx={
-													todayDay
-														? { color: 'brand.purple', fontWeight: 700 }
-														: undefined
-												}
-											>
-												{format(day, 'MMMM d')}
-											</MobileDayDate>
-										</div>
-										<MobileSlotCount>
-											{allSlots.length}{' '}
-											{allSlots.length === 1
-												? t('availability.week.slot')
-												: t('availability.week.slots')}
-										</MobileSlotCount>
-									</MobileDayCardHeader>
-									<MobileDaySlots>
-										{allSlots.length === 0 ? (
-											<MobileEmptyDay>
-												<MobileEmptyDayText>
-													{t('availability.week.no-appointments')}
-												</MobileEmptyDayText>
-											</MobileEmptyDay>
-										) : (
-											<>
-												{visibleSlots.map((slot) => {
-													const shouldClick = isClickable(slot?.status, day);
-
-													if (slot.status === 'buffer' && slot.bufferFor) {
-														return (
-															<MobileSlotBuffer
-																key={`mobile-buffer-${slot.id}`}
-																bufferFor={slot.bufferFor}
-															>
-																<MobileSlotTime>
-																	{slot.startTime}
-																</MobileSlotTime>
-																<SlotBufferLabel>
-																	{t('availability.week.buffer-label')}
-																</SlotBufferLabel>
-															</MobileSlotBuffer>
-														);
-													}
-													return (
-														<MobileSlotCard
-															key={`mobile-dslot-${slot.id}`}
-															slotStatus={slot.status}
-															onClick={() =>
-																shouldClick ? handleSlotClick(slot) : null
-															}
-															onPointerDown={() =>
-																shouldClick ? handleSlotPointerDown(slot) : null
-															}
-															disableRipple={!shouldClick}
-														>
-															<MobileSlotTime>
-																{formatTimeRange(slot.startTime, slot.duration)}
-															</MobileSlotTime>
-															<MobileSlotDetails>
-																{slot.patientName && (
-																	<MobileSlotPatient>
-																		{slot.patientName}
-																	</MobileSlotPatient>
-																)}
-																{slot.therapyType && (
-																	<MobileSlotTherapy>
-																		{slot.therapyType}
-																	</MobileSlotTherapy>
-																)}
-															</MobileSlotDetails>
-														</MobileSlotCard>
-													);
-												})}
-												{allSlots.length > COLLAPSED_SLOTS_LIMIT && (
-													<MobileExpandButton
-														onClick={() => toggleDayExpanded(dateStr)}
-													>
-														{isExpanded
-															? t('availability.week.collapse-day')
-															: t('availability.week.expand-day', {
-																	count: hiddenCount,
-																})}
-													</MobileExpandButton>
-												)}
-											</>
-										)}
-									</MobileDaySlots>
-								</MobileDayCard>
-							);
-						})}
-					</MobileDayList>
+					<AvailabilityWeekMobileList
+						days={mobileDays}
+						todayCardId={todayCardId}
+						onDayHeaderClick={handleDayHeaderClick}
+						onSlotClick={handleSlotClick}
+						onSlotPointerDown={handleSlotPointerDown}
+						onToggleDayExpanded={toggleDayExpanded}
+					/>
 				) : (
-					<WeekGridWrapper>
-						<WeekGrid>
-							<WeekGridCorner />
-
-							{weekDays.map((day, _id) => {
-								const isDisabled = !(format(day, 'yyyy-MM-dd') in weekData);
-								const todayDay = isToday(day);
-								return (
-									<DayHeader
-										key={`hd-${day.toISOString() + _id}`}
-										isDisabled={isDisabled}
-										isToday={todayDay}
-									>
-										<DayName>{format(day, 'EEE')}</DayName>
-										<DayNumber>{format(day, 'd')}</DayNumber>
-									</DayHeader>
-								);
-							})}
-
-							{timeSlots.map((time, rowIndex) => {
-								const isOddRow = rowIndex % 2 !== 0;
-								return (
-									<Fragment key={`time-slot-${time}`}>
-										<TimeLabel>
-											<TimeLabelText>{time}</TimeLabelText>
-										</TimeLabel>
-										{weekDays.map((day) => {
-											const isDisabled = !(
-												format(day, 'yyyy-MM-dd') in weekData
-											);
-											const todayDay = isToday(day);
-											const daySlots = getVisibleDaySlots(day);
-											const slot = isDisabled
-												? null
-												: (daySlots.find((s) => s.startTime === time) ?? null);
-
-											const shouldClick = isClickable(slot?.status, day);
-
-											if (!slot || !shouldClick) {
-												return (
-													<SlotCellDisabled
-														key={`slot-empty${day.toISOString()}-${time}`}
-														isOddRow={isOddRow}
-														isToday={todayDay}
-													/>
-												);
-											}
-											if (slot.status === 'buffer' && slot.bufferFor) {
-												return (
-													<SlotCellBuffer
-														key={`slot-buffer-${day.toISOString()}-${time}`}
-														bufferFor={slot.bufferFor}
-													>
-														<SlotBufferLabel>
-															{t('availability.week.buffer-label')}
-														</SlotBufferLabel>
-													</SlotCellBuffer>
-												);
-											}
-											return (
-												<SlotCell
-													key={`slot-cell-${day.toISOString()}-${time}`}
-													slotStatus={slot.status}
-													isOddRow={isOddRow}
-													isToday={todayDay}
-													onClick={() => {
-														shouldClick && handleSlotClick(slot);
-													}}
-													onPointerDown={() => {
-														shouldClick && handleSlotPointerDown(slot);
-													}}
-													disableRipple={!shouldClick}
-												>
-													{slot.patientName && (
-														<>
-															<SlotPatientName>
-																{slot.patientName}
-															</SlotPatientName>
-															<SlotTherapyType>
-																{slot.therapyType}
-															</SlotTherapyType>
-														</>
-													)}
-												</SlotCell>
-											);
-										})}
-									</Fragment>
-								);
-							})}
-						</WeekGrid>
-					</WeekGridWrapper>
+					<AvailabilityWeekDesktopGrid
+						getDaySlots={getDaySlots}
+						getVisibleDaySlots={getVisibleDaySlots}
+						onDayHeaderClick={handleDayHeaderClick}
+						onSlotClick={handleSlotClick}
+						onSlotPointerDown={handleSlotPointerDown}
+						timeSlots={timeSlots}
+						weekData={weekData}
+						weekDays={weekDays}
+					/>
 				)}
 
 				<WeekFooter>
 					<AvailabilityLegend items={legendItems} />
-					{!isMobile && (
-						<Box sx={{ display: 'flex', gap: 1 }}>{navButtons}</Box>
-					)}
+					{!isMobile && <WeekFooterActions>{navButtons}</WeekFooterActions>}
 				</WeekFooter>
 			</WeekCard>
 
@@ -584,7 +257,6 @@ export const AvailabilityWeekPage = () => {
 				anchorEl={filterAnchorEl}
 				onClearFilters={clearFilters}
 				onClose={() => setFilterAnchorEl(null)}
-				onToggleBookingSource={toggleBookingSource}
 				onToggleDeliveryMode={toggleDeliveryMode}
 				onToggleSessionType={toggleSessionType}
 				onToggleShowCancelledSlots={toggleShowCancelledSlots}
@@ -592,6 +264,42 @@ export const AvailabilityWeekPage = () => {
 				onToggleTimeOfDay={toggleTimeOfDay}
 				prefs={prefs}
 			/>
+
+			{dayPopoverDate &&
+				(() => {
+					const daySlots = getDaySlots(parseISO(dayPopoverDate));
+					const availabilityDayId = daySlots[0]?.availabilityDayId ?? '';
+					return (
+							<DayHeaderPopover
+								availabilityDayId={availabilityDayId}
+								dayDate={dayPopoverDate}
+								dayLabel={format(parseISO(dayPopoverDate), 'EEEE, MMMM d')}
+								isBlockDayPending={blockDay.isPending}
+							isPastDay={
+								isPast(parseISO(dayPopoverDate)) &&
+								!isToday(parseISO(dayPopoverDate))
+							}
+								isUnblockDayPending={unblockDay.isPending}
+								open={Boolean(dayPopoverDate)}
+								onBlockAll={() =>
+									blockDay.mutate({
+										availabilityDayId,
+										dayDate: dayPopoverDate,
+									})
+								}
+								onClose={() => {
+									setDayPopoverDate(null);
+								}}
+							onUnblockAll={() =>
+								unblockDay.mutate({
+									availabilityDayId,
+									dayDate: dayPopoverDate,
+								})
+							}
+							slots={daySlots}
+						/>
+					);
+				})()}
 
 			{selectedSlot && (
 				<AvailabilityWeekDrawer

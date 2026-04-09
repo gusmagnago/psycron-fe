@@ -11,7 +11,7 @@ import { Text } from '@psycron/components/text/Text';
 import { useAlert } from '@psycron/context/alert/AlertContext';
 import { PublicBookingShell } from '@psycron/layouts/public-booking/PublicBookingShell';
 import { useMutation, useQuery } from '@tanstack/react-query';
-import { addWeeks, format, isAfter, parseISO, startOfDay } from 'date-fns';
+import { addWeeks, format, parseISO, startOfDay } from 'date-fns';
 
 import { PublicBookingForm } from './components/PublicBookingForm';
 import { TherapistCard } from './components/TherapistCard';
@@ -35,6 +35,7 @@ import type {
 	IPublicSlot,
 	TimeOfDay,
 } from './BookAppointment.types';
+import { buildPublicSlotsByDay } from './BookAppointment.utils';
 
 const TIME_OF_DAY_OPTIONS: { label: string; value: TimeOfDay }[] = [
 	{ label: 'booking.filter.time-all', value: 'all' },
@@ -42,14 +43,6 @@ const TIME_OF_DAY_OPTIONS: { label: string; value: TimeOfDay }[] = [
 	{ label: 'booking.filter.time-afternoon', value: 'afternoon' },
 	{ label: 'booking.filter.time-evening', value: 'evening' },
 ];
-
-const matchesTimeOfDay = (startTime: string, tod: TimeOfDay): boolean => {
-	if (tod === 'all') return true;
-	const [h] = startTime.split(':').map(Number);
-	if (tod === 'morning') return h < 12;
-	if (tod === 'afternoon') return h >= 12 && h < 17;
-	return h >= 17;
-};
 
 export const BookAppointment = () => {
 	const { t } = useTranslation();
@@ -94,50 +87,15 @@ export const BookAppointment = () => {
 		queryKey: ['publicTherapist', therapistId],
 	});
 
-	const slots = useMemo<IPublicSlot[]>(() => {
-		if (!data?.dates) return [];
-		const fromDate = parseISO(filters.dateFrom);
-		const toDate = parseISO(filters.dateTo);
-
-		return data.dates
-			.filter((d) => {
-				const date = parseISO(d.date);
-				return (
-					isAfter(date, today) &&
-					!isAfter(fromDate, date) &&
-					!isAfter(date, toDate)
-				);
-			})
-			.flatMap((d) =>
-				(d.slots ?? [])
-					.filter(
-						(s) =>
-							(s.status === 'AVAILABLE' || s.status === 'BOOKED') &&
-							matchesTimeOfDay(s.startTime, filters.timeOfDay)
-					)
-					.map(
-						(s): IPublicSlot => ({
-							availabilityDayId: String(d.dateId),
-							date: d.date,
-							endTime: s.endTime,
-							isBooked: s.status === 'BOOKED',
-							letPatientChooseAddress: s.letPatientChooseAddress ?? false,
-							slotId: s._id,
-							startTime: s.startTime,
-						})
-					)
-			);
-	}, [data, filters, today]);
-
-	const slotsByDay = useMemo(() => {
-		const map = new Map<string, IPublicSlot[]>();
-		for (const slot of slots) {
-			const day = slot.date.slice(0, 10);
-			if (!map.has(day)) map.set(day, []);
-			map.get(day)!.push(slot);
-		}
-		return map;
-	}, [slots]);
+	const slotsByDay = useMemo(
+		() =>
+			buildPublicSlotsByDay({
+				dates: data?.dates ?? [],
+				filters,
+				today,
+			}),
+		[data?.dates, filters, today]
+	);
 
 	const bookingMutation = useMutation({
 		mutationFn: (values: IBookingFormValues) => {

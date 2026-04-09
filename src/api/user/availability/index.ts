@@ -9,6 +9,9 @@ import type {
 	CancelAppointmentPayload,
 	CancelAppointmentResponse,
 	IAvailabilityData,
+	IBatchBlockResponse,
+	IBatchUnblockResponse,
+	IBlockAllSlotsPayload,
 	IBookSlotByTherapistPayload,
 	IBookSlotByTherapistResponse,
 	ICheckDuplicatePayload,
@@ -20,6 +23,7 @@ import type {
 	IPatientSearchResponse,
 	IPublicSlotDetailsResponse,
 	ISessionResponse,
+	IUnblockAllSlotsPayload,
 	IUpdateAvailabilitySession,
 } from './index.types';
 
@@ -143,6 +147,28 @@ export const checkDuplicatePatient = async (
 	const response = await apiClient.post<ICheckDuplicateResponse>(
 		`/users/${therapistId}/patients/check-duplicate`,
 		payload
+	);
+	return response.data;
+};
+
+export const blockAllSlotsInDay = async ({
+	therapistId,
+	availabilityDayId,
+	blockReason,
+}: IBlockAllSlotsPayload): Promise<IBatchBlockResponse> => {
+	const response = await apiClient.post<IBatchBlockResponse>(
+		`/users/${therapistId}/availability/${availabilityDayId}/block-all`,
+		blockReason ? { blockReason } : {}
+	);
+	return response.data;
+};
+
+export const unblockAllSlotsInDay = async ({
+	therapistId,
+	availabilityDayId,
+}: IUnblockAllSlotsPayload): Promise<IBatchUnblockResponse> => {
+	const response = await apiClient.post<IBatchUnblockResponse>(
+		`/users/${therapistId}/availability/${availabilityDayId}/unblock-all`
 	);
 	return response.data;
 };

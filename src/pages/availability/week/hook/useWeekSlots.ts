@@ -20,6 +20,7 @@ const addMinutes = (time: string, minutes: number): string => {
 
 const toSlotStatus = (status: string): SlotStatus | null => {
 	if (status === 'AVAILABLE') return 'available';
+	if (status === 'BLOCKED') return 'blocked';
 	if (status === 'BOOKED') return 'booked-jupiter';
 	if (status === 'CANCELLED' || status === 'CANCELED') return 'cancelled';
 	return null;
@@ -56,6 +57,8 @@ export const useWeekSlots = (
 					_id: slot._id,
 					address: slot.address ?? null,
 					availabilityDayId: String(d.dateId),
+					blockedAt: slot.blockedAt ?? undefined,
+					blockReason: slot.blockReason ?? undefined,
 					date: dayStr,
 					deliveryMode: slot.deliveryMode ?? null,
 					duration: computeDuration(slot.startTime, slot.endTime),

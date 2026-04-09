@@ -8,7 +8,8 @@ export type DrawerView =
 	| 'default'
 	| 'editing'
 	| 'reschedule-or-cancel'
-	| 'reschedule-slots';
+	| 'reschedule-slots'
+	| 'unblock-confirm';
 
 export type LocationChoice = 'clinic' | 'custom' | 'patient';
 

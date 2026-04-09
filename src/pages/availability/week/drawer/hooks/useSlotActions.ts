@@ -30,12 +30,17 @@ export const useBlockSlot = (
 	const { t } = useTranslation();
 	const { showAlert } = useAlert();
 	const queryClient = useQueryClient();
+	const [blockReason, setBlockReason] = useState('');
 
 	const mutation = useMutation({
 		mutationFn: () =>
 			editSlotStatus({
 				availabilityDayId: slot.availabilityDayId ?? '',
-				data: { newStatus: 'BLOCKED', startTime: slot.startTime },
+				data: {
+					...(blockReason ? { blockReason } : {}),
+					newStatus: 'BLOCKED',
+					startTime: slot.startTime,
+				},
 				slotId: slot._id ?? slot.id,
 				therapistId: therapistId ?? '',
 			}),
@@ -55,6 +60,47 @@ export const useBlockSlot = (
 			});
 			queryClient.invalidateQueries({ queryKey: ['therapistAvailability'] });
 			onBlocked();
+		},
+	});
+
+	return { blockReason, mutation, setBlockReason };
+};
+
+// ─── useUnblockSlot ──────────────────────────────────────────────────────────
+
+export const useUnblockSlot = (
+	slot: IAvailabilityWeekDrawerProps['slot'],
+	therapistId: string | null,
+	onUnblocked: () => void
+) => {
+	const { t } = useTranslation();
+	const { showAlert } = useAlert();
+	const queryClient = useQueryClient();
+
+	const mutation = useMutation({
+		mutationFn: () =>
+			editSlotStatus({
+				availabilityDayId: slot.availabilityDayId ?? '',
+				data: { newStatus: 'AVAILABLE', startTime: slot.startTime },
+				slotId: slot._id ?? slot.id,
+				therapistId: therapistId ?? '',
+			}),
+		onError: () => {
+			showAlert({
+				message: t('availability.week.drawer.unblock-error'),
+				severity: 'error',
+			});
+		},
+		onSuccess: () => {
+			capture(PostHogEvent.AvailabilitySlotUnblocked, {
+				slot_start_time: slot.startTime,
+			});
+			showAlert({
+				message: t('availability.week.drawer.unblock-success'),
+				severity: 'success',
+			});
+			queryClient.invalidateQueries({ queryKey: ['therapistAvailability'] });
+			onUnblocked();
 		},
 	});
 

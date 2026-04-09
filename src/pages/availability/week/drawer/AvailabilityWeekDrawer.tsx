@@ -7,7 +7,6 @@ import {
 	Account,
 	Alert,
 	Calendar,
-	Google,
 	Watch,
 } from '@psycron/components/icons';
 import { Modal } from '@psycron/components/modal/Modal';
@@ -34,9 +33,11 @@ import {
 	useBlockSlot,
 	useCancelSlot,
 	useReschedule,
+	useUnblockSlot,
 } from './hooks/useSlotActions';
 import { useSlotAddress } from './hooks/useSlotAddress';
 import { SlotAvailableBody } from './views/slot-available-body/SlotAvailableBody';
+import { SlotBlockedBody } from './views/slot-blocked-body/SlotBlockedBody';
 import { SlotBookedBody } from './views/slot-booked-body/SlotBookedBody';
 import {
 	DeliveryBadge,
@@ -51,6 +52,8 @@ import { SlotDetailView } from './views/slot-detail-view/SlotDetailView';
 import { SlotEditForm } from './views/slot-edit-form/SlotEditForm';
 import { SlotReschedulePicker } from './views/slot-reschedule-picker/SlotReschedulePicker';
 import {
+	BlockConfirmWrapper,
+	BlockReasonField,
 	CancelViewBody,
 	ConfirmedBadge,
 	ConfirmedBadgeText,
@@ -102,6 +105,7 @@ export const AvailabilityWeekDrawer = ({
 
 	// ─── Slot flags ───────────────────────────────────────────────────────────
 	const isAvailable = slot.status === 'available';
+	const isBlocked = slot.status === 'blocked';
 	const isBooked =
 		slot.status === 'booked-jupiter' || slot.status === 'booked-google';
 	const isGoogle = slot.status === 'booked-google';
@@ -238,6 +242,7 @@ export const AvailabilityWeekDrawer = ({
 	);
 
 	const blockSlot = useBlockSlot(slot, therapistId, onClose);
+	const unblockSlot = useUnblockSlot(slot, therapistId, onClose);
 	const cancelSlot = useCancelSlot(slot, therapistId, onClose);
 
 	const reschedule = useReschedule(
@@ -403,8 +408,28 @@ export const AvailabilityWeekDrawer = ({
 				);
 			case 'block-confirm':
 				return (
+					<BlockConfirmWrapper>
+						<CancelViewBody>
+							{t('availability.week.drawer.block-confirm-body')}
+						</CancelViewBody>
+						<BlockReasonField
+							fullWidth
+							multiline
+							rows={2}
+							placeholder={t(
+								'availability.week.drawer.block-reason-placeholder'
+							)}
+							value={blockSlot.blockReason}
+							onChange={(e) => blockSlot.setBlockReason(e.target.value)}
+							size='small'
+							variant='outlined'
+						/>
+					</BlockConfirmWrapper>
+				);
+			case 'unblock-confirm':
+				return (
 					<CancelViewBody>
-						{t('availability.week.drawer.block-confirm-body')}
+						{t('availability.week.drawer.unblock-confirm-body')}
 					</CancelViewBody>
 				);
 			case 'reschedule-or-cancel':
@@ -432,6 +457,16 @@ export const AvailabilityWeekDrawer = ({
 					/>
 				);
 			default:
+				if (isBlocked) {
+					return (
+						<SlotBlockedBody
+							blockedAt={slot.blockedAt}
+							blockReason={slot.blockReason}
+							details={details}
+						/>
+					);
+				}
+
 				if (isBooked) {
 					return (
 						<SlotBookedBody
@@ -480,12 +515,14 @@ export const AvailabilityWeekDrawer = ({
 		editSlotForm,
 		hasConflict: !!conflict,
 		isAvailable,
+		isBlocked,
 		isChecking,
 		isPast,
 		isSubmitting,
 		reschedule,
 		setView,
 		submitBooking,
+		unblockSlot,
 		view,
 	});
 
@@ -494,14 +531,18 @@ export const AvailabilityWeekDrawer = ({
 		<>
 			<Drawer
 				ariaLabel={
-					isAvailable
-						? t('availability.week.drawer.book-slot')
-						: (patientName ?? '')
+					isBlocked
+						? t('availability.week.drawer.blocked-title')
+						: isAvailable
+							? t('availability.week.drawer.book-slot')
+							: (patientName ?? '')
 				}
 				title={
-					isAvailable
-						? t('availability.week.drawer.book-slot')
-						: (patientName ?? '')
+					isBlocked
+						? t('availability.week.drawer.blocked-title')
+						: isAvailable
+							? t('availability.week.drawer.book-slot')
+							: (patientName ?? '')
 				}
 				actions={
 					isPast ? (
@@ -515,11 +556,16 @@ export const AvailabilityWeekDrawer = ({
 				}
 				headerExtra={
 					<>
-						{!isAvailable && (
+						{!isAvailable && !isBlocked && (
 							<DrawerDetailLabel>{formattedDate}</DrawerDetailLabel>
 						)}
+						{isBlocked && (
+							<DrawerDetailLabel>
+								{t('availability.week.drawer.blocked-subtitle')}
+							</DrawerDetailLabel>
+						)}
 						<DrawerBadgeRow>
-							{isAvailable ? (
+							{isAvailable || isBlocked ? (
 								<ConfirmedBadge>
 									<ConfirmedBadgeText>
 										{slot.startTime} – {endTime}
@@ -539,15 +585,9 @@ export const AvailabilityWeekDrawer = ({
 											: t('availability.week.drawer.booked-in-person')}
 									</DeliveryBadge>
 									<SourceBadge isGoogle={isGoogle}>
-										{isGoogle ? (
-											<Google color={palette.white} />
-										) : (
-											<Account color={palette.brand.purple} />
-										)}
-										<SourceBadgeText isGoogle={isGoogle}>
-											{isGoogle
-												? 'Google'
-												: t('availability.week.drawer.source-manual')}
+										<Account color={palette.brand.purple} />
+										<SourceBadgeText isGoogle={false}>
+											{t('availability.week.drawer.source-manual')}
 										</SourceBadgeText>
 									</SourceBadge>
 								</>

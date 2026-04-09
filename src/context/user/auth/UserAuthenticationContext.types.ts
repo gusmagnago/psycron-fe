@@ -150,6 +150,8 @@ export interface ISlotPatientSummary {
 export interface ISlot {
 	_id: string;
 	address?: ISlotAddress | null;
+	blockReason?: string | null;
+	blockedAt?: ISODateString | null;
 	canceledAt?: ISODateString | null;
 	customReason?: string | null;
 	deliveryMode?: 'online' | 'in-person' | null;

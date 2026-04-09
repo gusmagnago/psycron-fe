@@ -1,5 +1,4 @@
 import type {
-	BookingSource,
 	CalendarPrefs,
 	DeliveryMode,
 	TimeOfDay,
@@ -11,7 +10,6 @@ export interface IAvailabilityWeekFiltersProps {
 	anchorEl: HTMLElement | null;
 	onClearFilters: () => void;
 	onClose: () => void;
-	onToggleBookingSource: (source: BookingSource) => void;
 	onToggleDeliveryMode: (mode: DeliveryMode) => void;
 	onToggleSessionType: (type: string) => void;
 	onToggleShowCancelledSlots: () => void;

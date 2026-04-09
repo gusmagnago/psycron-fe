@@ -26,9 +26,12 @@ export const enum PostHogEvent {
 	AuthSwitchFormClicked = 'auth switch form clicked',
 	AuthVerifyEmailFailed = 'auth verify email failed',
 	AuthVerifyEmailSucceeded = 'auth verify email succeeded',
+	AvailabilityDayBlocked = 'availability day blocked',
+	AvailabilityDayUnblocked = 'availability day unblocked',
 	AvailabilityLetPatientChooseAddress = 'availability let patient choose address toggled',
 	AvailabilitySettingSaved = 'availability setting saved',
 	AvailabilitySlotBlocked = 'availability slot blocked',
+	AvailabilitySlotUnblocked = 'availability slot unblocked',
 	BackofficeWorkerSessionFailed = 'backoffice worker session failed',
 
 	EditUserSubmitted = 'edit user submitted',
@@ -209,7 +212,21 @@ export type PostHogEventProps = {
 		setting: 'working_hours' | 'session_type' | 'session_duration' | 'timezone' | 'buffer_time' | 'recurrence_pattern' | 'google_calendar' | 'session_address' | 'specialty' | 'specialty_detail';
 	};
 
+	[PostHogEvent.AvailabilityDayBlocked]: {
+		blocked_count: number;
+		day_date: string;
+	};
+
+	[PostHogEvent.AvailabilityDayUnblocked]: {
+		day_date: string;
+		unblocked_count: number;
+	};
+
 	[PostHogEvent.AvailabilitySlotBlocked]: {
+		slot_start_time: string;
+	};
+
+	[PostHogEvent.AvailabilitySlotUnblocked]: {
 		slot_start_time: string;
 	};
 
