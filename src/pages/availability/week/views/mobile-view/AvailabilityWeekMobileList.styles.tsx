@@ -164,7 +164,7 @@ export const MobileSlotCard = styled(ButtonBase, {
 			: ''}
 `;
 
-export const MobileSlotBuffer = styled(Box, {
+export const MobileSlotBuffer = styled(ButtonBase, {
 	shouldForwardProp: (prop) => prop !== 'bufferFor',
 })<{ bufferFor: 'booked-google' | 'booked-jupiter' }>`
 	width: 100%;
@@ -177,6 +177,17 @@ export const MobileSlotBuffer = styled(Box, {
 	gap: ${spacing.small};
 	border-left: 3px solid ${({ bufferFor }) => BUFFER_COLORS[bufferFor]};
 	background: ${({ bufferFor }) => hexToRgba(BUFFER_COLORS[bufferFor], 0.07)};
+	cursor: pointer;
+	transition:
+		transform 0.15s ease,
+		box-shadow 0.15s ease,
+		opacity 0.1s ease;
+
+	&:hover {
+		opacity: 0.92;
+		box-shadow: ${shadowSmall};
+		transform: translateY(-1px);
+	}
 `;
 
 export const MobileSlotTime = styled(Text)`

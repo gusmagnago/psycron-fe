@@ -35,7 +35,10 @@ export const BUFFER_COLORS: Record<
 };
 
 export const isClickableStatus = (status: SlotStatus) =>
-	status.includes('booked') || status === 'available' || status === 'cancelled';
+	status.includes('booked') ||
+	status === 'available' ||
+	status === 'buffer' ||
+	status === 'cancelled';
 
 export const getSlotTextColor = (slotStatus: SlotStatus): string => {
 	if (slotStatus.includes('booked')) return palette.white;

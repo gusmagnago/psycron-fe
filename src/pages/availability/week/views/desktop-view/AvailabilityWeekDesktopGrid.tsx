@@ -99,6 +99,8 @@ export const AvailabilityWeekDesktopGrid = ({
 										<SlotCellBuffer
 											key={`slot-buffer-${day.toISOString()}-${time}`}
 											bufferFor={slot.bufferFor}
+											onClick={() => onSlotClick(slot)}
+											onPointerDown={() => onSlotPointerDown(slot)}
 										>
 											<SlotBufferLabel>
 												{t('availability.week.buffer-label')}

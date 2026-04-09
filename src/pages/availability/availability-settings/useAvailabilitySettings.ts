@@ -24,6 +24,13 @@ import {
 } from '@psycron/pages/urls';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
+import {
+	buildBufferAdviceRequest,
+	getBufferInputValue,
+	getBufferInsights,
+	isBufferMinutesValid,
+} from '../components/buffer-time-editor/BufferTimeEditor.utils';
+
 import type {
 	AddressFormValues,
 	ChecklistConfig,
@@ -209,7 +216,6 @@ export const useAvailabilitySettings = (): UseAvailabilitySettingsReturn => {
 	const isCancellationPolicyEnabled = useFeatureFlagEnabled(
 		'availability_cancellation_policy'
 	);
-	const isBufferTimeEnabled = useFeatureFlagEnabled('availability_buffer_time');
 	const isJupiterCtaEnabled = useFeatureFlagEnabled('jupiter_cta_availability');
 
 	const openDrawer = useCallback(
@@ -228,6 +234,8 @@ export const useAvailabilitySettings = (): UseAvailabilitySettingsReturn => {
 					);
 				} else if (key === 'timezone') {
 					setTimezoneInput(availability.timezone);
+				} else if (key === 'buffer-time') {
+					setBufferInput(getBufferInputValue(availability.bufferTimeMinutes));
 				} else if (key === 'recurrence-pattern') {
 					setRecurrencePatternInput(availability.recurrencePattern ?? '');
 				} else if (key === 'session-address') {
@@ -266,8 +274,7 @@ export const useAvailabilitySettings = (): UseAvailabilitySettingsReturn => {
 
 		const items = CHECKLIST_CONFIG.map((config): ChecklistItem => {
 			const isFlagDisabled =
-				(config.id === 'cancellation-policy' && !isCancellationPolicyEnabled) ||
-				(config.id === 'buffer-time' && !isBufferTimeEnabled);
+				config.id === 'cancellation-policy' && !isCancellationPolicyEnabled;
 
 			const isDisabled = isFlagDisabled || (config.disabled ?? false);
 
@@ -312,7 +319,6 @@ export const useAvailabilitySettings = (): UseAvailabilitySettingsReturn => {
 		});
 	}, [
 		availability,
-		isBufferTimeEnabled,
 		isCancellationPolicyEnabled,
 		openDrawer,
 		userDetails?.clinicAddress,
@@ -435,8 +441,8 @@ export const useAvailabilitySettings = (): UseAvailabilitySettingsReturn => {
 	});
 
 	const handleBufferSave = useCallback(() => {
+		if (!isBufferMinutesValid(bufferInput)) return;
 		const minutes = parseInt(bufferInput, 10);
-		if (isNaN(minutes) || minutes < 0 || minutes > 120) return;
 		settingsMutation.mutate({ bufferTimeMinutes: minutes });
 	}, [bufferInput, settingsMutation]);
 
@@ -595,12 +601,34 @@ export const useAvailabilitySettings = (): UseAvailabilitySettingsReturn => {
 		[t]
 	);
 
+	const bufferInsights = useMemo(
+		() =>
+			getBufferInsights({
+				availability,
+				availabilityData,
+				bufferInput,
+			}),
+		[availability, availabilityData, bufferInput]
+	);
+	const bufferAdviceRequest = useMemo(
+		() =>
+			buildBufferAdviceRequest({
+				availability,
+				availabilityData,
+				bufferInput,
+				locale: i18n.language.startsWith('pt') ? 'pt' : 'en',
+			}),
+		[availability, availabilityData, bufferInput, i18n.language]
+	);
+
 	return {
 		activeCount,
 		activeDrawer,
 		addressFormMethods,
 		availability,
 		bannerDismissed,
+		bufferAdviceRequest,
+		bufferInsights,
 		cancelTimezoneWarning,
 		confirmTimezoneSave,
 		isJupiterCtaEnabled: !!isJupiterCtaEnabled,

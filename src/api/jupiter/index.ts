@@ -12,6 +12,37 @@ export interface IGetWeekSlotsResponse {
 	days: IWeekSlotDay[];
 }
 
+export interface IBufferTimeAdviceRequestDay {
+	bookedSessions: number;
+	bookingDensity: number;
+	capacityImpactMinutes: number;
+	currentScheduleImpactMinutes: number;
+	date: string;
+	overflowMinutes: number;
+	totalSessions: number;
+	workloadBand: 'available' | 'busy' | 'full' | 'partial';
+}
+
+export interface IBufferTimeAdviceRequest {
+	futureDays: IBufferTimeAdviceRequestDay[];
+	locale: 'en' | 'pt';
+	overallWorkloadBand: 'available' | 'busy' | 'full' | 'partial';
+	selectedBufferMinutes: number;
+	sessionDurationMinutes: number | null;
+	timezone: string | null;
+	weeklyCapacityImpactMinutes: number;
+	weeklyCurrentImpactMinutes: number;
+	workingHours: string | null;
+}
+
+export interface IBufferTimeAdviceResponse {
+	lightDaySummary: string | null;
+	packedDaySummary: string | null;
+	recommendationSummary: string;
+	recommendedBufferMinutes: number;
+	warningSummary: string | null;
+}
+
 export type ParseField = 'working-days' | 'time-range' | 'session-duration' | 'specialty';
 
 export type ParseSpecialtyFlag = 'accepted' | 'rejected' | 'rephrase';
@@ -78,6 +109,17 @@ export const getWeekSlots = async (
 		'/jupiter/availability/slots',
 		{ params: { from, to } }
 	);
+	return response.data;
+};
+
+export const getBufferTimeAdvice = async (
+	payload: IBufferTimeAdviceRequest
+): Promise<IBufferTimeAdviceResponse> => {
+	const response = await apiClient.post<IBufferTimeAdviceResponse>(
+		'/jupiter/availability/buffer-advice',
+		payload
+	);
+
 	return response.data;
 };
 

@@ -108,6 +108,8 @@ export const AvailabilityWeekMobileList = ({
 												<MobileSlotBuffer
 													key={`mobile-buffer-${slot.id}`}
 													bufferFor={slot.bufferFor}
+													onClick={() => onSlotClick(slot)}
+													onPointerDown={() => onSlotPointerDown(slot)}
 												>
 													<MobileSlotTime>{slot.startTime}</MobileSlotTime>
 													<SlotBufferLabel>

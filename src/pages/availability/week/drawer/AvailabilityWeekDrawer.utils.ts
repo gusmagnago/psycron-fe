@@ -176,6 +176,7 @@ export const getCancelledSubtitle = (
 
 export const getDrawerTitle = ({
 	isAvailable,
+	isBuffer,
 	isBlocked,
 	isCancelled,
 	patientName,
@@ -183,12 +184,14 @@ export const getDrawerTitle = ({
 }: {
 	isAvailable: boolean;
 	isBlocked: boolean;
+	isBuffer: boolean;
 	isCancelled: boolean;
 	patientName?: string;
 	t: TFunction;
 }): string => {
 	if (isCancelled) return t('availability.week.drawer.cancelled-title');
 	if (isBlocked) return t('availability.week.drawer.blocked-title');
+	if (isBuffer) return t('availability.week.drawer.break-title');
 	if (isAvailable) return t('availability.week.drawer.book-slot');
 	return patientName ?? '';
 };

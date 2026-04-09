@@ -1,6 +1,9 @@
 import type { UseFormReturn } from 'react-hook-form';
 import type { IAvailabilityRecord } from '@psycron/api/availability/index.types';
+import type { IBufferTimeAdviceRequest } from '@psycron/api/jupiter';
 import type { IClinicAddress } from '@psycron/context/user/auth/UserAuthenticationContext.types';
+
+import type { IBufferTimeInsights } from '../components/buffer-time-editor/BufferTimeEditor.types';
 
 export type DrawerKey =
 	| 'buffer-time'
@@ -52,7 +55,9 @@ export interface UseAvailabilitySettingsReturn {
 	addressFormMethods: UseFormReturn<AddressFormValues>;
 	availability: IAvailabilityRecord | null | undefined;
 	bannerDismissed: boolean;
+	bufferAdviceRequest: IBufferTimeAdviceRequest | null;
 	bufferInput: string;
+	bufferInsights: IBufferTimeInsights;
 	cancelTimezoneWarning: () => void;
 	checklistItems: ChecklistItem[];
 	closeDrawer: () => void;

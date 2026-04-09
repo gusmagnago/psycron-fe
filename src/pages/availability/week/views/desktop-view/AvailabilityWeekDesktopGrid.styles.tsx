@@ -211,7 +211,7 @@ export const SlotCellDisabled = styled(Box, {
 			: ''}
 `;
 
-export const SlotCellBuffer = styled(Box, {
+export const SlotCellBuffer = styled(ButtonBase, {
 	shouldForwardProp: (prop) => prop !== 'bufferFor',
 })<{ bufferFor: 'booked-google' | 'booked-jupiter' }>`
 	height: 60px;
@@ -222,6 +222,16 @@ export const SlotCellBuffer = styled(Box, {
 	align-items: center;
 	border-left: 3px solid ${({ bufferFor }) => BUFFER_COLORS[bufferFor]};
 	background: ${({ bufferFor }) => hexToRgba(BUFFER_COLORS[bufferFor], 0.07)};
+	cursor: pointer;
+	transition:
+		box-shadow 0.15s ease,
+		transform 0.15s ease,
+		background-color 0.15s ease;
+
+	&:hover {
+		box-shadow: ${shadowSmall};
+		transform: translateY(-1px);
+	}
 `;
 
 export const SlotPatientName = styled(Text)`
