@@ -46,7 +46,7 @@ export const DrawerHeader = styled(Box)`
 	margin-bottom: ${spacing.large};
 `;
 
-export const DrawerTitle = styled(Text)`
+export const DrawerTitle = styled((props) => <Text component='div' {...props} />)`
 	font-size: 20px;
 	font-weight: 600;
 	color: ${palette.text.primary};

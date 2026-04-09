@@ -110,12 +110,14 @@ export interface IAvailabilityDate {
 	slots: Array<{
 		_id: string;
 		canceledAt?: string | null;
+		cancelledPatientName?: string | null;
 		customReason?: string | null;
 		deliveryMode?: 'online' | 'in-person' | null;
 		endTime: string;
 		note?: string;
 		patientId?: string;
 		reasonCode?: CancellationReasonEnum | null;
+		reopenedAt?: string | null;
 		source?: 'jupiter' | 'google';
 		startTime: string;
 		status: StatusEnum;

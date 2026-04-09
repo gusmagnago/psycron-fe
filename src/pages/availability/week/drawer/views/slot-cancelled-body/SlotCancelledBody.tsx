@@ -1,16 +1,13 @@
 import { useTranslation } from 'react-i18next';
 import { CancellationReasonEnum } from '@psycron/api/user/availability/index.types';
-import { Alert } from '@psycron/components/icons';
 import i18n from '@psycron/i18n';
-import { palette } from '@psycron/theme/palette/palette.theme';
 import { format, parseISO } from 'date-fns';
 import { enGB, ptBR } from 'date-fns/locale';
 
-import { SlotDetailView } from '../slot-detail-view/SlotDetailView';
+import { SlotSessionSection } from '../slot-session-section/SlotSessionSection';
 
 import {
 	CancelledAtText,
-	CancelledIconWrapper,
 	CancelledReasonLabel,
 	CancelledReasonSection,
 	CancelledReasonValue,
@@ -20,19 +17,15 @@ import type { ISlotCancelledBodyProps } from './SlotCancelledBody.types';
 export const SlotCancelledBody = ({
 	canceledAt,
 	customReason,
-	details,
 	reasonCode,
+	sessionDetails,
 }: ISlotCancelledBodyProps) => {
 	const { t } = useTranslation();
 	const dateLocale = i18n.language.startsWith('pt') ? ptBR : enGB;
 
 	return (
 		<>
-			<CancelledIconWrapper>
-				<Alert color={palette.warning.main} size={40} />
-			</CancelledIconWrapper>
-
-			<SlotDetailView details={details} />
+			<SlotSessionSection {...sessionDetails} />
 
 			{reasonCode != null && (
 				<CancelledReasonSection>

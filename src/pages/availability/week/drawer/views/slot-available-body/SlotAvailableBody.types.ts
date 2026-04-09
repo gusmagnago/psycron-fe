@@ -3,16 +3,19 @@ import type { ICreatePatientForm } from '@psycron/api/patient/index.types';
 import type { IPatientSearchResult } from '@psycron/api/user/availability/index.types';
 
 import type { ISlotLocationSectionProps } from '../slot-location-section/SlotLocationSection.types';
+import type { ISlotSessionSectionProps } from '../slot-session-section/SlotSessionSection.types';
 
 export interface ISlotAvailableBodyProps extends ISlotLocationSectionProps {
 	bookingLink: string;
 	methods: UseFormReturn<ICreatePatientForm>;
 	onPatientSelect: (patient: IPatientSearchResult) => void;
 	onSelectionClear: () => void;
+	reopenedCancellationNote?: string;
 	results: IPatientSearchResult[];
 	searchIsLoading: boolean;
 	searchQuery: string;
 	selectedPatient: IPatientSearchResult | null;
+	sessionDetails: ISlotSessionSectionProps;
 	sessionType?: string;
 	setSearchQuery: (query: string) => void;
 	shareText: string;

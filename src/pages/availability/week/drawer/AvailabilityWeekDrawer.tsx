@@ -7,8 +7,7 @@ import {
 	Account,
 	Alert,
 	Available,
-	Calendar,
-	Watch,
+	Ban,
 } from '@psycron/components/icons';
 import { Modal } from '@psycron/components/modal/Modal';
 import { useAvailability } from '@psycron/context/appointment/availability/AvailabilityContext';
@@ -50,7 +49,6 @@ import { ConflictBody } from './views/slot-booking-conflict/SlotBookingConflictV
 import { SlotCancelChoiceView } from './views/slot-cancel-choice-view/SlotCancelChoiceView';
 import { SlotCancelReasonForm } from './views/slot-cancel-reason-form/SlotCancelReasonForm';
 import { SlotCancelledBody } from './views/slot-cancelled-body/SlotCancelledBody';
-import { SlotDetailView } from './views/slot-detail-view/SlotDetailView';
 import { SlotEditForm } from './views/slot-edit-form/SlotEditForm';
 import { SlotReschedulePicker } from './views/slot-reschedule-picker/SlotReschedulePicker';
 import {
@@ -63,13 +61,13 @@ import {
 	ConfirmedBadgeText,
 	DrawerBadgeRow,
 	DrawerDetailLabel,
+	DrawerTitleRow,
 	SourceBadge,
 	SourceBadgeText,
 } from './AvailabilityWeekDrawer.styles';
 import type {
 	DrawerView,
 	IAvailabilityWeekDrawerProps,
-	IDrawerDetail,
 	IExistingBooking,
 	IRescheduleSlot,
 	LocationChoice,
@@ -78,6 +76,13 @@ import {
 	buildAvailabilityBookingLink,
 	computeEndTime,
 	computeTimeStrings,
+	EMPTY_ADDRESS,
+	getAvailableSessionDeliveryLabel,
+	getBookedDeliveryLabel,
+	getBookedShareWith,
+	getCancelledSubtitle,
+	getDrawerTitle,
+	getInitialLocationChoice,
 } from './AvailabilityWeekDrawer.utils';
 
 export const AvailabilityWeekDrawer = ({
@@ -92,21 +97,14 @@ export const AvailabilityWeekDrawer = ({
 	// ─── View state ───────────────────────────────────────────────────────────
 	const [view, setView] = useState<DrawerView>('default');
 	const [overrideAddress, setOverrideAddress] = useState(() => !!slot.address);
-
-	const getInitialLocationChoice = (): LocationChoice => {
-		if (slot.letPatientChooseAddress) return 'patient';
-		if (slot.address) return 'custom';
-		return 'clinic';
-	};
-	const [locationChoice, setLocationChoice] = useState<LocationChoice>(
-		getInitialLocationChoice
+	const [locationChoice, setLocationChoice] = useState<LocationChoice>(() =>
+		getInitialLocationChoice(slot)
 	);
 
 	useEffect(() => {
-		setLocationChoice(getInitialLocationChoice());
+		setLocationChoice(getInitialLocationChoice(slot));
 		setOverrideAddress(!!slot.address);
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [slot.address, slot.letPatientChooseAddress]);
+	}, [slot]);
 
 	// ─── Slot flags ───────────────────────────────────────────────────────────
 	const isAvailable = slot.status === 'available';
@@ -274,20 +272,12 @@ export const AvailabilityWeekDrawer = ({
 		}
 	};
 
-	// ─── Custom address field updater ─────────────────────────────────────────
-	const emptyAddress: ISlotAddress = {
-		city: '',
-		country: '',
-		postcode: '',
-		street: '',
-	};
-
 	const handleCustomAddressChange = (
 		field: keyof ISlotAddress,
 		value: string
 	) => {
 		slotAddress.setAddress({
-			...(slotAddress.address ?? emptyAddress),
+			...(slotAddress.address ?? EMPTY_ADDRESS),
 			[field]: value,
 		});
 	};
@@ -297,7 +287,7 @@ export const AvailabilityWeekDrawer = ({
 		value: string
 	) => {
 		editSlotForm.setAddress({
-			...(editSlotForm.address ?? emptyAddress),
+			...(editSlotForm.address ?? EMPTY_ADDRESS),
 			[field]: value,
 		});
 	};
@@ -342,9 +332,35 @@ export const AvailabilityWeekDrawer = ({
 				.filter(Boolean)
 				.join(' ') || undefined
 		: undefined;
-	const bookedShareWith = patientName
-		? t('components.share-button.share-with-name', { name: patientName })
-		: undefined;
+	const bookedShareWith = getBookedShareWith(t, patientName);
+	const cancelledSubtitle = getCancelledSubtitle(t, slot.triggeredBy);
+	const drawerTitle = getDrawerTitle({
+		isAvailable,
+		isBlocked,
+		isCancelled,
+		patientName,
+		t,
+	});
+	const slotTimeLabel = `${slot.startTime} – ${endTime}`;
+	const availableSessionDeliveryLabel = getAvailableSessionDeliveryLabel(
+		t,
+		sessionType
+	);
+	const isBookedOnline =
+		slot.deliveryMode === 'online' ||
+		(!slot.deliveryMode && sessionType === 'ONLINE');
+	const bookedDeliveryLabel = getBookedDeliveryLabel(t, isBookedOnline);
+	const reopenedCancellationNote =
+		isAvailable && slot.canceledAt && slot.reopenedAt
+			? t('availability.week.drawer.reopened-note-text', {
+					date: format(parseISO(slot.canceledAt), 'PPP', {
+						locale: dateLocale,
+					}),
+					name:
+						slot.cancelledPatientName ??
+						t('availability.week.drawer.reopened-note-fallback-name'),
+			  })
+			: undefined;
 
 	// ─── Available slot groups for reschedule picker ──────────────────────────
 
@@ -384,23 +400,83 @@ export const AvailabilityWeekDrawer = ({
 	}, [availabilityData?.dates, todayStr, dateLocale]);
 
 	// ─── Detail rows (available slots only) ──────────────────────────────────
-	const details: IDrawerDetail[] = [
-		{
-			icon: <Calendar color={palette.brand.purple} />,
-			key: 'date',
-			label: t('availability.week.drawer.date'),
-			value: formattedDate,
-		},
-		{
-			icon: <Watch color={palette.brand.purple} />,
-			key: 'time',
-			label: t('availability.week.drawer.your-time'),
-			sub: timeSub,
-			value: therapistTimeStr,
-		},
-	];
+	const sessionDetails = {
+		date: formattedDate,
+		duration: timeSub,
+		time: therapistTimeStr,
+		timeSub: isBooked ? patientTimeStr : null,
+	};
 
-	// ─── Body ─────────────────────────────────────────────────────────────────
+	const renderDefaultBody = () => {
+		if (isCancelled) {
+			return (
+				<SlotCancelledBody
+					canceledAt={slot.canceledAt}
+					customReason={slot.customReason}
+					reasonCode={slot.reasonCode}
+					sessionDetails={sessionDetails}
+				/>
+			);
+		}
+
+		if (isBlocked) {
+			return (
+				<SlotBlockedBody
+					blockedAt={slot.blockedAt}
+					blockReason={slot.blockReason}
+					sessionDetails={sessionDetails}
+				/>
+			);
+		}
+
+		if (isBooked) {
+			return (
+				<SlotBookedBody
+					appointmentDetails={appointmentDetailsBySlotId}
+					formattedDate={formattedDate}
+					isGoogle={isGoogle}
+					isLoading={isAppointmentDetailsBySlotIdLoading}
+					isPast={isPast}
+					patientName={patientName}
+					patientTimeStr={patientTimeStr}
+					sessionType={sessionType}
+					slot={slot}
+					therapistTimeStr={therapistTimeStr}
+					timeSub={timeSub}
+					bookingLink={bookingLink}
+					shareText={shareText}
+					shareTitle={shareTitle}
+					shareWith={bookedShareWith}
+				/>
+			);
+		}
+
+		return (
+			<>
+				<SlotAvailableBody
+					bookingLink={bookingLink}
+					customAddress={slotAddress.address}
+					locationChoice={locationChoice}
+					methods={methods}
+					onCustomAddressChange={handleCustomAddressChange}
+					onLocationChoiceChange={handleLocationChoiceChange}
+					onPatientSelect={handlePatientSelect}
+					onSelectionClear={handleSelectionClear}
+					reopenedCancellationNote={reopenedCancellationNote}
+					results={patientSearch.results}
+					searchIsLoading={patientSearch.isLoading}
+					searchQuery={patientSearch.searchQuery}
+					selectedPatient={patientSearch.selectedPatient}
+					sessionDetails={sessionDetails}
+					sessionType={sessionType}
+					setSearchQuery={patientSearch.setSearchQuery}
+					shareText={shareText}
+					shareTitle={shareTitle}
+				/>
+			</>
+		);
+	};
+
 	const renderBody = () => {
 		switch (view) {
 			case 'editing':
@@ -474,73 +550,114 @@ export const AvailabilityWeekDrawer = ({
 					/>
 				);
 			default:
-				if (isCancelled) {
-					return (
-						<SlotCancelledBody
-							canceledAt={slot.canceledAt}
-							customReason={slot.customReason}
-							details={details}
-							reasonCode={slot.reasonCode}
-						/>
-					);
-				}
-
-				if (isBlocked) {
-					return (
-						<SlotBlockedBody
-							blockedAt={slot.blockedAt}
-							blockReason={slot.blockReason}
-							details={details}
-						/>
-					);
-				}
-
-				if (isBooked) {
-					return (
-						<SlotBookedBody
-							appointmentDetails={appointmentDetailsBySlotId}
-							formattedDate={formattedDate}
-							isGoogle={isGoogle}
-							isLoading={isAppointmentDetailsBySlotIdLoading}
-							isPast={isPast}
-							patientName={patientName}
-							patientTimeStr={patientTimeStr}
-							sessionType={sessionType}
-							slot={slot}
-							therapistTimeStr={therapistTimeStr}
-							timeSub={timeSub}
-							bookingLink={bookingLink}
-							shareText={shareText}
-							shareTitle={shareTitle}
-							shareWith={bookedShareWith}
-						/>
-					);
-				}
-
-				return (
-					<>
-						<SlotDetailView details={details} />
-						<SlotAvailableBody
-							bookingLink={bookingLink}
-							customAddress={slotAddress.address}
-							locationChoice={locationChoice}
-							methods={methods}
-							onCustomAddressChange={handleCustomAddressChange}
-							onLocationChoiceChange={handleLocationChoiceChange}
-							onPatientSelect={handlePatientSelect}
-							onSelectionClear={handleSelectionClear}
-							results={patientSearch.results}
-							searchIsLoading={patientSearch.isLoading}
-							searchQuery={patientSearch.searchQuery}
-							selectedPatient={patientSearch.selectedPatient}
-							sessionType={sessionType}
-							setSearchQuery={patientSearch.setSearchQuery}
-							shareText={shareText}
-							shareTitle={shareTitle}
-						/>
-					</>
-				);
+				return renderDefaultBody();
 		}
+	};
+
+	const renderDrawerActions = () => {
+		if (isCancelled) {
+			return (
+				<>
+					<PastDisabledFooter>
+						<Alert color={palette.warning.main} />
+						{cancelledSubtitle}
+					</PastDisabledFooter>
+					<DrawerActions config={drawerActions} />
+				</>
+			);
+		}
+
+		if (isPast) {
+			return (
+				<PastDisabledFooter>
+					<Alert color={palette.gray['05']} />
+					{t('availability.week.drawer.booked-past-disabled')}
+				</PastDisabledFooter>
+			);
+		}
+
+		return <DrawerActions config={drawerActions} />;
+	};
+
+	const renderDrawerTitle = () => {
+		if (isBlocked) {
+			return (
+				<DrawerTitleRow>
+					{drawerTitle}
+					<Ban color={palette.error.main} />
+				</DrawerTitleRow>
+			);
+		}
+
+		if (isCancelled) {
+			return (
+				<DrawerTitleRow>
+					{drawerTitle}
+					<Alert color={palette.warning.main} />
+				</DrawerTitleRow>
+			);
+		}
+
+		return drawerTitle;
+	};
+
+	const renderHeaderMeta = () => {
+		if (!isAvailable && !isBlocked && !isCancelled) {
+			return <DrawerDetailLabel>{formattedDate}</DrawerDetailLabel>;
+		}
+
+		if (isBlocked) {
+			return (
+				<DrawerDetailLabel>
+					{t('availability.week.drawer.blocked-subtitle')}
+				</DrawerDetailLabel>
+			);
+		}
+
+		if (isCancelled) {
+			return <DrawerDetailLabel>{cancelledSubtitle}</DrawerDetailLabel>;
+		}
+
+		return null;
+	};
+
+	const renderHeaderBadges = () => {
+		if (isAvailable || isBlocked || isCancelled) {
+			return (
+				<>
+					<ConfirmedBadge>
+						<ConfirmedBadgeText>{slotTimeLabel}</ConfirmedBadgeText>
+					</ConfirmedBadge>
+					{isAvailable && (
+						<AvailableBadge>
+							<Available color={palette.success.dark} />
+							<AvailableBadgeText>
+								{t('availability.week.drawer.available-status-open')}
+							</AvailableBadgeText>
+						</AvailableBadge>
+					)}
+					{availableSessionDeliveryLabel && (
+						<DeliveryBadge isOnline={sessionType === 'ONLINE'}>
+							{availableSessionDeliveryLabel}
+						</DeliveryBadge>
+					)}
+				</>
+			);
+		}
+
+		return (
+			<>
+				<DeliveryBadge isOnline={isBookedOnline}>
+					{bookedDeliveryLabel}
+				</DeliveryBadge>
+				<SourceBadge isGoogle={isGoogle}>
+					<Account color={palette.brand.purple} />
+					<SourceBadgeText isGoogle={false}>
+						{t('availability.week.drawer.source-manual')}
+					</SourceBadgeText>
+				</SourceBadge>
+			</>
+		);
 	};
 
 	// ─── Actions ──────────────────────────────────────────────────────────────
@@ -551,6 +668,7 @@ export const AvailabilityWeekDrawer = ({
 		hasConflict: !!conflict,
 		isAvailable,
 		isBlocked,
+		isCancelled,
 		isChecking,
 		isPast,
 		isSubmitting,
@@ -565,112 +683,13 @@ export const AvailabilityWeekDrawer = ({
 	return (
 		<>
 			<Drawer
-				ariaLabel={
-					isCancelled
-						? t('availability.week.drawer.cancelled-title')
-						: isBlocked
-							? t('availability.week.drawer.blocked-title')
-							: isAvailable
-								? t('availability.week.drawer.book-slot')
-								: (patientName ?? '')
-				}
-				title={
-					isCancelled
-						? t('availability.week.drawer.cancelled-title')
-						: isBlocked
-							? t('availability.week.drawer.blocked-title')
-							: isAvailable
-								? t('availability.week.drawer.book-slot')
-								: (patientName ?? '')
-				}
-				actions={
-					isCancelled ? (
-						<PastDisabledFooter>
-							<Alert color={palette.warning.main} />
-							{slot.triggeredBy
-								? t(
-										`availability.week.drawer.cancelled-by-${slot.triggeredBy.toLowerCase()}`
-									)
-								: t('availability.week.drawer.cancelled-subtitle')}
-						</PastDisabledFooter>
-					) : isPast ? (
-						<PastDisabledFooter>
-							<Alert color={palette.gray['05']} />
-							{t('availability.week.drawer.booked-past-disabled')}
-						</PastDisabledFooter>
-					) : (
-						<DrawerActions config={drawerActions} />
-					)
-				}
+				ariaLabel={drawerTitle}
+				title={renderDrawerTitle()}
+				actions={renderDrawerActions()}
 				headerExtra={
 					<>
-						{!isAvailable && !isBlocked && !isCancelled && (
-							<DrawerDetailLabel>{formattedDate}</DrawerDetailLabel>
-						)}
-						{isBlocked && (
-							<DrawerDetailLabel>
-								{t('availability.week.drawer.blocked-subtitle')}
-							</DrawerDetailLabel>
-						)}
-						{isCancelled && (
-							<DrawerDetailLabel>
-								{slot.triggeredBy
-									? t(
-											`availability.week.drawer.cancelled-by-${slot.triggeredBy.toLowerCase()}`
-										)
-									: t('availability.week.drawer.cancelled-subtitle')}
-							</DrawerDetailLabel>
-						)}
-						<DrawerBadgeRow>
-							{isAvailable || isBlocked || isCancelled ? (
-								<>
-									<ConfirmedBadge>
-										<ConfirmedBadgeText>
-											{slot.startTime} – {endTime}
-										</ConfirmedBadgeText>
-									</ConfirmedBadge>
-									{isAvailable && (
-										<AvailableBadge>
-											<Available color={palette.success.dark} />
-											<AvailableBadgeText>
-												{t('availability.week.drawer.available-status-open')}
-											</AvailableBadgeText>
-										</AvailableBadge>
-									)}
-									{sessionType && (
-										<DeliveryBadge isOnline={sessionType === 'ONLINE'}>
-											{sessionType === 'ONLINE'
-												? t('availability.week.drawer.session-delivery-online')
-												: sessionType === 'IN_PERSON'
-													? t(
-															'availability.week.drawer.session-delivery-in-person'
-														)
-													: t('availability.week.drawer.booked-hybrid')}
-										</DeliveryBadge>
-									)}
-								</>
-							) : (
-								<>
-									<DeliveryBadge
-										isOnline={
-											slot.deliveryMode === 'online' ||
-											(!slot.deliveryMode && sessionType === 'ONLINE')
-										}
-									>
-										{slot.deliveryMode === 'online' ||
-										(!slot.deliveryMode && sessionType === 'ONLINE')
-											? t('availability.week.drawer.booked-online-session')
-											: t('availability.week.drawer.booked-in-person')}
-									</DeliveryBadge>
-									<SourceBadge isGoogle={isGoogle}>
-										<Account color={palette.brand.purple} />
-										<SourceBadgeText isGoogle={false}>
-											{t('availability.week.drawer.source-manual')}
-										</SourceBadgeText>
-									</SourceBadge>
-								</>
-							)}
-						</DrawerBadgeRow>
+						{renderHeaderMeta()}
+						<DrawerBadgeRow>{renderHeaderBadges()}</DrawerBadgeRow>
 					</>
 				}
 				onClose={onClose}

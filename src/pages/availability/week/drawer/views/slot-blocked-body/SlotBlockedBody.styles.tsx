@@ -4,13 +4,6 @@ import { Text } from '@psycron/components/text/Text';
 import { palette } from '@psycron/theme/palette/palette.theme';
 import { spacing } from '@psycron/theme/spacing/spacing.theme';
 
-export const BlockedIconWrapper = styled(Box)`
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	padding: ${spacing.medium} 0 ${spacing.small};
-`;
-
 export const BlockedReasonSection = styled(Box)`
 	display: flex;
 	flex-direction: column;

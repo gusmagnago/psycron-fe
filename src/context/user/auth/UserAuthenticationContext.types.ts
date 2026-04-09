@@ -153,6 +153,7 @@ export interface ISlot {
 	blockReason?: string | null;
 	blockedAt?: ISODateString | null;
 	canceledAt?: ISODateString | null;
+	cancelledPatientName?: string | null;
 	customReason?: string | null;
 	deliveryMode?: 'online' | 'in-person' | null;
 	endTime: string;
@@ -161,6 +162,7 @@ export interface ISlot {
 	patientId?: string;
 	patientSummary?: ISlotPatientSummary | null;
 	reasonCode?: number | null;
+	reopenedAt?: ISODateString | null;
 	startTime: string;
 	status: StatusEnum;
 	triggeredBy?: 'PATIENT' | 'THERAPIST' | null;

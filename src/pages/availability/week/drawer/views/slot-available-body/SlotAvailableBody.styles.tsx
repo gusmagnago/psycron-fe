@@ -48,3 +48,25 @@ export const BookingLinkHint = styled(Text)`
 	color: ${palette.gray['05']};
 	line-height: 1.5;
 `;
+
+export const ReopenedNote = styled(Box)`
+	display: flex;
+	flex-direction: column;
+	gap: ${spacing.space};
+	padding: ${spacing.small};
+	border-radius: ${spacing.mediumSmall};
+	background: ${hexToRgba(palette.warning.main, 0.08)};
+	border: 1px solid ${hexToRgba(palette.warning.main, 0.18)};
+`;
+
+export const ReopenedNoteLabel = styled(Text)`
+	font-size: 12px;
+	font-weight: 600;
+	color: ${palette.warning.dark};
+`;
+
+export const ReopenedNoteText = styled(Text)`
+	font-size: 13px;
+	color: ${palette.text.primary};
+	line-height: 1.5;
+`;

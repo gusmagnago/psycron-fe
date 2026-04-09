@@ -11,6 +11,7 @@ export interface IWeekSlot {
 	blockedAt?: string;
 	bufferFor?: 'booked-google' | 'booked-jupiter'; // only set when status === 'buffer'
 	canceledAt?: string;
+	cancelledPatientName?: string;
 	customReason?: string;
 	date: string; // 'YYYY-MM-DD'
 	deliveryMode?: DeliveryMode | null;
@@ -21,6 +22,7 @@ export interface IWeekSlot {
 	patientId?: string;
 	patientName?: string;
 	reasonCode?: number;
+	reopenedAt?: string;
 	startTime: string; // 'HH:mm'
 	status: SlotStatus;
 	therapyType?: string;

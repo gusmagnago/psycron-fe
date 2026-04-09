@@ -1,19 +1,33 @@
 import type {
 	IPreferredContact,
+	ISlotAddress,
 } from '@psycron/context/user/auth/UserAuthenticationContext.types';
 import { DOMAIN } from '@psycron/pages/urls';
 import { palette } from '@psycron/theme/palette/palette.theme';
 import type { Locale } from 'date-fns';
 import { format, parseISO } from 'date-fns';
 import { toZonedTime } from 'date-fns-tz';
+import type { TFunction } from 'i18next';
 
 import type { IWeekSlot } from '../AvailabilityWeekPage.types';
+
+import type {
+	IAvailabilityWeekDrawerProps,
+	LocationChoice,
+} from './AvailabilityWeekDrawer.types';
 
 export interface IContactLink {
 	href: string;
 	labelKey: string;
 	type: IPreferredContact['type'];
 }
+
+export const EMPTY_ADDRESS: ISlotAddress = {
+	city: '',
+	country: '',
+	postcode: '',
+	street: '',
+};
 
 const CONTACT_LINK_LABEL: Record<IPreferredContact['type'], string> = {
 	google_meet: 'availability.week.drawer.join-meet',
@@ -143,3 +157,68 @@ export const buildAvailabilityBookingLink = (
 
 	return url.toString();
 };
+
+export const getInitialLocationChoice = (
+	slot: IAvailabilityWeekDrawerProps['slot']
+): LocationChoice => {
+	if (slot.letPatientChooseAddress) return 'patient';
+	if (slot.address) return 'custom';
+	return 'clinic';
+};
+
+export const getCancelledSubtitle = (
+	t: TFunction,
+	triggeredBy?: string | null
+): string =>
+	triggeredBy
+		? t(`availability.week.drawer.cancelled-by-${triggeredBy.toLowerCase()}`)
+		: t('availability.week.drawer.cancelled-subtitle');
+
+export const getDrawerTitle = ({
+	isAvailable,
+	isBlocked,
+	isCancelled,
+	patientName,
+	t,
+}: {
+	isAvailable: boolean;
+	isBlocked: boolean;
+	isCancelled: boolean;
+	patientName?: string;
+	t: TFunction;
+}): string => {
+	if (isCancelled) return t('availability.week.drawer.cancelled-title');
+	if (isBlocked) return t('availability.week.drawer.blocked-title');
+	if (isAvailable) return t('availability.week.drawer.book-slot');
+	return patientName ?? '';
+};
+
+export const getAvailableSessionDeliveryLabel = (
+	t: TFunction,
+	sessionType?: string
+): string | null => {
+	if (!sessionType) return null;
+	if (sessionType === 'ONLINE') {
+		return t('availability.week.drawer.session-delivery-online');
+	}
+	if (sessionType === 'IN_PERSON') {
+		return t('availability.week.drawer.session-delivery-in-person');
+	}
+	return t('availability.week.drawer.booked-hybrid');
+};
+
+export const getBookedDeliveryLabel = (
+	t: TFunction,
+	isBookedOnline: boolean
+): string =>
+	isBookedOnline
+		? t('availability.week.drawer.booked-online-session')
+		: t('availability.week.drawer.booked-in-person');
+
+export const getBookedShareWith = (
+	t: TFunction,
+	patientName?: string
+): string | undefined =>
+	patientName
+		? t('components.share-button.share-with-name', { name: patientName })
+		: undefined;

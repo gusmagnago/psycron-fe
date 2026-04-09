@@ -54,7 +54,7 @@ export const useWeekSlots = (
 				const rawStatus = toSlotStatus(slot.status);
 				if (!rawStatus) return null;
 				const status =
-					rawStatus === 'available' && slot.canceledAt
+					rawStatus === 'available' && slot.canceledAt && !slot.reopenedAt
 						? 'cancelled' as const
 						: rawStatus;
 				return {
@@ -64,6 +64,7 @@ export const useWeekSlots = (
 					blockedAt: slot.blockedAt ?? undefined,
 					blockReason: slot.blockReason ?? undefined,
 					canceledAt: slot.canceledAt ?? undefined,
+					cancelledPatientName: slot.cancelledPatientName ?? undefined,
 					customReason: slot.customReason ?? undefined,
 					date: dayStr,
 					deliveryMode: slot.deliveryMode ?? null,
@@ -74,6 +75,7 @@ export const useWeekSlots = (
 					patientId: slot.patientId ? String(slot.patientId) : undefined,
 					patientName: slot.patientSummary?.fullName ?? undefined,
 					reasonCode: slot.reasonCode ?? undefined,
+					reopenedAt: slot.reopenedAt ?? undefined,
 					startTime: slot.startTime,
 					status,
 					triggeredBy: slot.triggeredBy ?? undefined,
