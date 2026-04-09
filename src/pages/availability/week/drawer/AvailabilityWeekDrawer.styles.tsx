@@ -30,6 +30,27 @@ export const ConfirmedBadgeText = styled(Text)`
 	font-weight: 500;
 `;
 
+export const AvailableBadge = styled(Box)`
+	display: inline-flex;
+	align-items: center;
+	gap: ${spacing.xxs};
+	padding: ${spacing.space} ${spacing.mediumSmall};
+	border-radius: ${spacing.extraSmall};
+	background: ${hexToRgba(palette.success.main, 0.12)};
+	color: ${palette.success.dark};
+
+	& svg {
+		width: 14px;
+		height: 14px;
+	}
+`;
+
+export const AvailableBadgeText = styled(Text)`
+	font-size: 12px;
+	font-weight: 600;
+	color: ${palette.success.dark};
+`;
+
 export const SourceBadge = styled(Box, {
 	shouldForwardProp: (prop) => prop !== 'isGoogle',
 })<{ isGoogle: boolean }>`

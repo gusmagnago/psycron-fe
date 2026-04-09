@@ -6,6 +6,7 @@ import type { PsycronTooltipProps } from './Tooltip.types';
 
 export const Tooltip = ({
 	children,
+	onClick,
 	placement,
 	title,
 	open,
@@ -38,7 +39,7 @@ export const Tooltip = ({
 					cursor: disabled ? 'not-allowed' : 'pointer',
 				}}
 			>
-				<TootleTipIconButton disabled={disabled}>
+				<TootleTipIconButton disabled={disabled} onClick={onClick}>
 					{children}
 				</TootleTipIconButton>
 			</span>

@@ -5,6 +5,7 @@ import type { IPatientSearchResult } from '@psycron/api/user/availability/index.
 import type { ISlotLocationSectionProps } from '../slot-location-section/SlotLocationSection.types';
 
 export interface ISlotAvailableBodyProps extends ISlotLocationSectionProps {
+	bookingLink: string;
 	methods: UseFormReturn<ICreatePatientForm>;
 	onPatientSelect: (patient: IPatientSearchResult) => void;
 	onSelectionClear: () => void;
@@ -14,4 +15,6 @@ export interface ISlotAvailableBodyProps extends ISlotLocationSectionProps {
 	selectedPatient: IPatientSearchResult | null;
 	sessionType?: string;
 	setSearchQuery: (query: string) => void;
+	shareText: string;
+	shareTitle: string;
 }

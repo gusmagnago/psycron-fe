@@ -1,7 +1,7 @@
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { Skeleton } from '@mui/material';
 import { bookAppointmentFromLink } from '@psycron/api/patient';
 import { getAvailabilityCalendar, getUserById } from '@psycron/api/user';
@@ -48,6 +48,7 @@ export const BookAppointment = () => {
 	const { t } = useTranslation();
 	const { userId: therapistId } = useParams<{ userId: string }>();
 	const navigate = useNavigate();
+	const [searchParams, setSearchParams] = useSearchParams();
 	const { showAlert } = useAlert();
 
 	const today = startOfDay(new Date());
@@ -60,6 +61,7 @@ export const BookAppointment = () => {
 		timeOfDay: 'all',
 	});
 	const [selectedSlot, setSelectedSlot] = useState<IPublicSlot | null>(null);
+	const sharedSlotId = searchParams.get('slotId');
 
 	const methods = useForm<IBookingFormValues>({
 		defaultValues: {
@@ -150,6 +152,21 @@ export const BookAppointment = () => {
 		},
 	});
 
+	useEffect(() => {
+		if (!sharedSlotId || selectedSlot) return;
+
+		for (const slots of slotsByDay.values()) {
+			const matchedSlot = slots.find(
+				(slot) => !slot.isBooked && slot.slotId === sharedSlotId
+			);
+
+			if (matchedSlot) {
+				setSelectedSlot(matchedSlot);
+				return;
+			}
+		}
+	}, [selectedSlot, sharedSlotId, slotsByDay]);
+
 	const handleSlotClick = useCallback((slot: IPublicSlot) => {
 		if (slot.isBooked) return;
 		setSelectedSlot(slot);
@@ -158,7 +175,12 @@ export const BookAppointment = () => {
 	const handleClose = useCallback(() => {
 		setSelectedSlot(null);
 		methods.reset();
-	}, [methods]);
+		if (searchParams.has('slotId')) {
+			const nextParams = new URLSearchParams(searchParams);
+			nextParams.delete('slotId');
+			setSearchParams(nextParams, { replace: true });
+		}
+	}, [methods, searchParams, setSearchParams]);
 
 	const handleSubmit = methods.handleSubmit((values) => {
 		bookingMutation.mutate(values);
