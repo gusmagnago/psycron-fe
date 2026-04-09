@@ -8,12 +8,12 @@ export const ShareButtonRoot = styled(Box)`
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	height: 24px;
-	width: 24px;
+	width: ${spacing.small};
+	height: ${spacing.small};
 
 	& span {
-		height: 24px;
-		width: 24px;
+		width: ${spacing.small};
+		height: ${spacing.small};
 		display: flex;
 		justify-content: center;
 		align-items: center;
@@ -24,7 +24,7 @@ export const ShareButtonsWrapper = styled(Box)`
 	background-color: ${palette.background.default};
 	position: absolute;
 	padding: ${spacing.xs};
-	border-radius: 20px;
+	border-radius: ${spacing.mediumSmall};
 	display: flex;
 	align-items: center;
 
