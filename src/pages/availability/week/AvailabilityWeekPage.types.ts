@@ -10,6 +10,8 @@ export interface IWeekSlot {
 	blockReason?: string;
 	blockedAt?: string;
 	bufferFor?: 'booked-google' | 'booked-jupiter'; // only set when status === 'buffer'
+	canceledAt?: string;
+	customReason?: string;
 	date: string; // 'YYYY-MM-DD'
 	deliveryMode?: DeliveryMode | null;
 	duration: number; // minutes
@@ -18,10 +20,12 @@ export interface IWeekSlot {
 	notes?: string;
 	patientId?: string;
 	patientName?: string;
+	reasonCode?: number;
 	startTime: string; // 'HH:mm'
 	status: SlotStatus;
 	therapyType?: string;
 	timezone?: string;
+	triggeredBy?: 'PATIENT' | 'THERAPIST';
 }
 
 export interface IAvailabilityWeekMobileDay {

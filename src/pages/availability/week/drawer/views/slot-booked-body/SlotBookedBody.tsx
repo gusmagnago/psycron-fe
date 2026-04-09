@@ -1,6 +1,7 @@
 import { useTranslation } from 'react-i18next';
 import { Skeleton } from '@mui/material';
 import { Avatar } from '@psycron/components/avatar/Avatar';
+import { ShareButton } from '@psycron/components/button/share/ShareButton';
 import { Divider } from '@psycron/components/divider/Divider';
 import {
 	Account,
@@ -58,6 +59,10 @@ export const SlotBookedBody = ({
 	slot,
 	therapistTimeStr,
 	timeSub,
+	shareText,
+	shareTitle,
+	shareWith,
+	bookingLink,
 }: ISlotBookedBodyProps) => {
 	const { t } = useTranslation();
 	const { copy, copiedKey } = useCopyToClipboard();
@@ -167,6 +172,13 @@ export const SlotBookedBody = ({
 								<Mail color={palette.brand.purple} />
 							</ContactShortcutButton>
 						)}
+						<ShareButton
+							absoluteUrl={bookingLink}
+							preferNativeShare
+							shareWith={shareWith}
+							textKey={shareText}
+							titleKey={shareTitle}
+						/>
 					</ContactShortcutsRow>
 				</IdentityInfo>
 			</IdentityBlock>

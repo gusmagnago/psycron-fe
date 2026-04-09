@@ -416,6 +416,7 @@
         "error-copy": "Erro ao copiar o link, tente novamente mais tarde."
       },
       "tooltip-tile": "Compartilhar {{with}}",
+      "share-with-name": "com {{name}}",
       "share-with-patients": "com seus pacientes",
       "share-infos": {
         "availability": {
@@ -889,6 +890,12 @@
         "blocked-at": "Bloqueado em {{date}}",
         "blocked-subtitle": "Pacientes não podem agendar este horário",
         "blocked-title": "Horário bloqueado",
+        "cancelled-at": "Cancelado em {{date}}",
+        "cancelled-reason-label": "Motivo do cancelamento",
+        "cancelled-by-patient": "Esta consulta foi cancelada pelo paciente",
+        "cancelled-by-therapist": "Esta consulta foi cancelada pelo terapeuta",
+        "cancelled-subtitle": "Esta consulta foi cancelada",
+        "cancelled-title": "Consulta cancelada",
         "booking-link-copy-aria": "Copiar link de agendamento para a área de transferência",
         "booking-link-hint": "Partilhe este link para abrir a página pública de agendamento com este horário pré-selecionado enquanto ele ainda estiver disponível.",
         "booking-link-label": "Link de agendamento",

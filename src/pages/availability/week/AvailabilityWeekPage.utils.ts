@@ -22,8 +22,9 @@ export const isClickable = (status: SlotStatus, slotDate: Date) => {
 	const isBlocked = status === 'blocked' && isFutureFromToday;
 
 	const isBuffer = status === 'buffer' && isFutureFromToday;
+	const isCancelled = status === 'cancelled';
 
-	const result = isBooked || isAvailable || isBlocked || isBuffer;
+	const result = isBooked || isAvailable || isBlocked || isBuffer || isCancelled;
 
 	return result;
 };

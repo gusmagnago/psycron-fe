@@ -203,7 +203,8 @@
       "3": "Financial Issues",
       "4": "Mental Issues",
       "5": "No-Show",
-      "6": "Other"
+      "6": "Other",
+      "7": "Other"
     },
     "cancellation-other-title": "Please specify the reason",
     "status": "Status",
@@ -415,6 +416,7 @@
         "error-copy": "We couldn't copy the link, please try again later."
       },
       "tooltip-tile": "Share {{with}}",
+      "share-with-name": "with {{name}}",
       "share-with-patients": "with your patients",
       "share-infos": {
         "availability": {
@@ -888,6 +890,12 @@
         "blocked-at": "Blocked on {{date}}",
         "blocked-subtitle": "Patients cannot book this time slot",
         "blocked-title": "Slot blocked",
+        "cancelled-at": "Cancelled on {{date}}",
+        "cancelled-reason-label": "Reason for cancellation",
+        "cancelled-by-patient": "This appointment was cancelled by the patient",
+        "cancelled-by-therapist": "This appointment was cancelled by the therapist",
+        "cancelled-subtitle": "This appointment was cancelled",
+        "cancelled-title": "Cancelled appointment",
         "booking-link-copy-aria": "Copy booking link to clipboard",
         "booking-link-hint": "Share this link to open the public booking page with this slot preselected when it is still available.",
         "booking-link-label": "Booking link",

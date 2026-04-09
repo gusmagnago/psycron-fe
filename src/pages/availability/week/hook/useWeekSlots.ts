@@ -51,14 +51,20 @@ export const useWeekSlots = (
 
 		const realSlots = slots
 			.map((slot, j): IWeekSlot | null => {
-				const status = toSlotStatus(slot.status);
-				if (!status) return null;
+				const rawStatus = toSlotStatus(slot.status);
+				if (!rawStatus) return null;
+				const status =
+					rawStatus === 'available' && slot.canceledAt
+						? 'cancelled' as const
+						: rawStatus;
 				return {
 					_id: slot._id,
 					address: slot.address ?? null,
 					availabilityDayId: String(d.dateId),
 					blockedAt: slot.blockedAt ?? undefined,
 					blockReason: slot.blockReason ?? undefined,
+					canceledAt: slot.canceledAt ?? undefined,
+					customReason: slot.customReason ?? undefined,
 					date: dayStr,
 					deliveryMode: slot.deliveryMode ?? null,
 					duration: computeDuration(slot.startTime, slot.endTime),
@@ -67,8 +73,10 @@ export const useWeekSlots = (
 					notes: slot.note,
 					patientId: slot.patientId ? String(slot.patientId) : undefined,
 					patientName: slot.patientSummary?.fullName ?? undefined,
+					reasonCode: slot.reasonCode ?? undefined,
 					startTime: slot.startTime,
 					status,
+					triggeredBy: slot.triggeredBy ?? undefined,
 				};
 			})
 			.filter((s): s is IWeekSlot => s !== null);

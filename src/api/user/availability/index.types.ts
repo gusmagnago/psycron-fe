@@ -76,7 +76,7 @@ export interface AppointmentDetailsBySlotIdResponse {
 		letPatientChooseAddress?: boolean;
 		patient: Partial<IPatient>;
 		patientId?: string;
-		reasonCode?: string | null;
+		reasonCode?: CancellationReasonEnum | null;
 		sessionCount?: number;
 		startTime: string;
 		status: ISlot['status'];
@@ -100,7 +100,7 @@ export enum StatusEnum {
 	AVAILABLE = 'AVAILABLE',
 	BLOCKED = 'BLOCKED',
 	BOOKED = 'BOOKED',
-	CANCELLED = 'CANCELLED',
+	CANCELED = 'CANCELED',
 	EMPTY = 'EMPTY',
 	ONHOLD = 'ONHOLD',
 }
@@ -119,6 +119,7 @@ export interface IAvailabilityDate {
 		source?: 'jupiter' | 'google';
 		startTime: string;
 		status: StatusEnum;
+		triggeredBy?: 'PATIENT' | 'THERAPIST' | null;
 	}>;
 }
 
@@ -183,7 +184,7 @@ export enum CancellationReasonEnum {
 	FINANCIAL_ISSUES = 3,
 	MENTAL_HEALTH = 4,
 	NO_SHOW = 5,
-	OTHER = 6,
+	OTHER = 7,
 }
 
 export interface CancelAppointmentPayload {

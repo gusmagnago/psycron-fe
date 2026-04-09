@@ -160,9 +160,10 @@ export interface ISlot {
 	note?: string;
 	patientId?: string;
 	patientSummary?: ISlotPatientSummary | null;
-	reasonCode?: string | null;
+	reasonCode?: number | null;
 	startTime: string;
 	status: StatusEnum;
+	triggeredBy?: 'PATIENT' | 'THERAPIST' | null;
 }
 
 export interface IAvailabilityDate {

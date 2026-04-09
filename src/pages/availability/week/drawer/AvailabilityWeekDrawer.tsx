@@ -49,6 +49,7 @@ import { SlotBookingConflictView } from './views/slot-booking-conflict/SlotBooki
 import { ConflictBody } from './views/slot-booking-conflict/SlotBookingConflictView.styles';
 import { SlotCancelChoiceView } from './views/slot-cancel-choice-view/SlotCancelChoiceView';
 import { SlotCancelReasonForm } from './views/slot-cancel-reason-form/SlotCancelReasonForm';
+import { SlotCancelledBody } from './views/slot-cancelled-body/SlotCancelledBody';
 import { SlotDetailView } from './views/slot-detail-view/SlotDetailView';
 import { SlotEditForm } from './views/slot-edit-form/SlotEditForm';
 import { SlotReschedulePicker } from './views/slot-reschedule-picker/SlotReschedulePicker';
@@ -110,6 +111,7 @@ export const AvailabilityWeekDrawer = ({
 	// ─── Slot flags ───────────────────────────────────────────────────────────
 	const isAvailable = slot.status === 'available';
 	const isBlocked = slot.status === 'blocked';
+	const isCancelled = slot.status === 'cancelled';
 	const isBooked =
 		slot.status === 'booked-jupiter' || slot.status === 'booked-google';
 	const isGoogle = slot.status === 'booked-google';
@@ -340,6 +342,9 @@ export const AvailabilityWeekDrawer = ({
 				.filter(Boolean)
 				.join(' ') || undefined
 		: undefined;
+	const bookedShareWith = patientName
+		? t('components.share-button.share-with-name', { name: patientName })
+		: undefined;
 
 	// ─── Available slot groups for reschedule picker ──────────────────────────
 
@@ -469,6 +474,17 @@ export const AvailabilityWeekDrawer = ({
 					/>
 				);
 			default:
+				if (isCancelled) {
+					return (
+						<SlotCancelledBody
+							canceledAt={slot.canceledAt}
+							customReason={slot.customReason}
+							details={details}
+							reasonCode={slot.reasonCode}
+						/>
+					);
+				}
+
 				if (isBlocked) {
 					return (
 						<SlotBlockedBody
@@ -493,6 +509,10 @@ export const AvailabilityWeekDrawer = ({
 							slot={slot}
 							therapistTimeStr={therapistTimeStr}
 							timeSub={timeSub}
+							bookingLink={bookingLink}
+							shareText={shareText}
+							shareTitle={shareTitle}
+							shareWith={bookedShareWith}
 						/>
 					);
 				}
@@ -546,21 +566,34 @@ export const AvailabilityWeekDrawer = ({
 		<>
 			<Drawer
 				ariaLabel={
-					isBlocked
-						? t('availability.week.drawer.blocked-title')
-						: isAvailable
-							? t('availability.week.drawer.book-slot')
-							: (patientName ?? '')
+					isCancelled
+						? t('availability.week.drawer.cancelled-title')
+						: isBlocked
+							? t('availability.week.drawer.blocked-title')
+							: isAvailable
+								? t('availability.week.drawer.book-slot')
+								: (patientName ?? '')
 				}
 				title={
-					isBlocked
-						? t('availability.week.drawer.blocked-title')
-						: isAvailable
-							? t('availability.week.drawer.book-slot')
-							: (patientName ?? '')
+					isCancelled
+						? t('availability.week.drawer.cancelled-title')
+						: isBlocked
+							? t('availability.week.drawer.blocked-title')
+							: isAvailable
+								? t('availability.week.drawer.book-slot')
+								: (patientName ?? '')
 				}
 				actions={
-					isPast ? (
+					isCancelled ? (
+						<PastDisabledFooter>
+							<Alert color={palette.warning.main} />
+							{slot.triggeredBy
+								? t(
+										`availability.week.drawer.cancelled-by-${slot.triggeredBy.toLowerCase()}`
+									)
+								: t('availability.week.drawer.cancelled-subtitle')}
+						</PastDisabledFooter>
+					) : isPast ? (
 						<PastDisabledFooter>
 							<Alert color={palette.gray['05']} />
 							{t('availability.week.drawer.booked-past-disabled')}
@@ -571,7 +604,7 @@ export const AvailabilityWeekDrawer = ({
 				}
 				headerExtra={
 					<>
-						{!isAvailable && !isBlocked && (
+						{!isAvailable && !isBlocked && !isCancelled && (
 							<DrawerDetailLabel>{formattedDate}</DrawerDetailLabel>
 						)}
 						{isBlocked && (
@@ -579,8 +612,17 @@ export const AvailabilityWeekDrawer = ({
 								{t('availability.week.drawer.blocked-subtitle')}
 							</DrawerDetailLabel>
 						)}
+						{isCancelled && (
+							<DrawerDetailLabel>
+								{slot.triggeredBy
+									? t(
+											`availability.week.drawer.cancelled-by-${slot.triggeredBy.toLowerCase()}`
+										)
+									: t('availability.week.drawer.cancelled-subtitle')}
+							</DrawerDetailLabel>
+						)}
 						<DrawerBadgeRow>
-							{isAvailable || isBlocked ? (
+							{isAvailable || isBlocked || isCancelled ? (
 								<>
 									<ConfirmedBadge>
 										<ConfirmedBadgeText>
@@ -596,13 +638,13 @@ export const AvailabilityWeekDrawer = ({
 										</AvailableBadge>
 									)}
 									{sessionType && (
-										<DeliveryBadge
-											isOnline={sessionType === 'ONLINE'}
-										>
+										<DeliveryBadge isOnline={sessionType === 'ONLINE'}>
 											{sessionType === 'ONLINE'
 												? t('availability.week.drawer.session-delivery-online')
 												: sessionType === 'IN_PERSON'
-													? t('availability.week.drawer.session-delivery-in-person')
+													? t(
+															'availability.week.drawer.session-delivery-in-person'
+														)
 													: t('availability.week.drawer.booked-hybrid')}
 										</DeliveryBadge>
 									)}
