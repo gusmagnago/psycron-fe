@@ -1,6 +1,7 @@
 import { useTranslation } from 'react-i18next';
 import { Skeleton } from '@mui/material';
 import { Avatar } from '@psycron/components/avatar/Avatar';
+import { ShareButton } from '@psycron/components/button/share/ShareButton';
 import { Divider } from '@psycron/components/divider/Divider';
 import {
 	Account,
@@ -12,10 +13,11 @@ import {
 	Mail,
 	MapPin,
 	Phone,
-	Watch,
 	WhatsApp,
 } from '@psycron/components/icons';
 import { palette } from '@psycron/theme/palette/palette.theme';
+
+import { SlotSessionSection } from '../slot-session-section/SlotSessionSection';
 
 import { BookedSection } from './booked-section/SlotBookedSection';
 import {
@@ -28,7 +30,6 @@ import {
 	DetailLabel,
 	DetailRow,
 	DetailRowLeft,
-	DetailSub,
 	DetailValue,
 	GoogleSyncBanner,
 	IdentityBlock,
@@ -58,6 +59,10 @@ export const SlotBookedBody = ({
 	slot,
 	therapistTimeStr,
 	timeSub,
+	shareText,
+	shareTitle,
+	shareWith,
+	bookingLink,
 }: ISlotBookedBodyProps) => {
 	const { t } = useTranslation();
 	const { copy, copiedKey } = useCopyToClipboard();
@@ -167,6 +172,13 @@ export const SlotBookedBody = ({
 								<Mail color={palette.brand.purple} />
 							</ContactShortcutButton>
 						)}
+						<ShareButton
+							absoluteUrl={bookingLink}
+							preferNativeShare
+							shareWith={shareWith}
+							textKey={shareText}
+							titleKey={shareTitle}
+						/>
 					</ContactShortcutsRow>
 				</IdentityInfo>
 			</IdentityBlock>
@@ -182,38 +194,12 @@ export const SlotBookedBody = ({
 			<Divider />
 
 			{/* ─── Session section ─── */}
-			<BookedSection
-				icon={<Watch color={palette.gray['05']} />}
-				title={t('availability.week.drawer.booked-section-session')}
-			>
-				<DetailRow>
-					<DetailRowLeft>
-						<DetailLabel>
-							{t('availability.week.drawer.booked-date')}
-						</DetailLabel>
-						<DetailValue>{formattedDate}</DetailValue>
-					</DetailRowLeft>
-				</DetailRow>
-
-				<DetailRow>
-					<DetailRowLeft>
-						<DetailLabel>
-							{t('availability.week.drawer.booked-time')}
-						</DetailLabel>
-						<DetailValue>{therapistTimeStr}</DetailValue>
-						{patientTimeStr && <DetailSub>{patientTimeStr}</DetailSub>}
-					</DetailRowLeft>
-				</DetailRow>
-
-				<DetailRow>
-					<DetailRowLeft>
-						<DetailLabel>
-							{t('availability.week.drawer.booked-duration')}
-						</DetailLabel>
-						<DetailValue>{timeSub}</DetailValue>
-					</DetailRowLeft>
-				</DetailRow>
-			</BookedSection>
+			<SlotSessionSection
+				date={formattedDate}
+				duration={timeSub}
+				time={therapistTimeStr}
+				timeSub={patientTimeStr}
+			/>
 
 			<Divider />
 

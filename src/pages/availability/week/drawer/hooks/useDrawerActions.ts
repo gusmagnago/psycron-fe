@@ -36,6 +36,7 @@ export interface IUseDrawerActionsInput {
 	hasConflict: boolean;
 	isAvailable: boolean;
 	isBlocked: boolean;
+	isCancelled: boolean;
 	isChecking: boolean;
 	isPast?: boolean;
 	isSubmitting: boolean;
@@ -53,6 +54,7 @@ export const useDrawerActions = ({
 	hasConflict,
 	isAvailable,
 	isBlocked,
+	isCancelled,
 	isChecking,
 	isPast,
 	isSubmitting,
@@ -169,6 +171,16 @@ export const useDrawerActions = ({
 				return {
 					primary: {
 						label: t('availability.week.drawer.unblock-slot'),
+						onClick: () => setView('unblock-confirm'),
+						tertiary: true,
+					},
+				};
+			}
+
+			if (isCancelled) {
+				return {
+					primary: {
+						label: t('availability.week.drawer.reopen-slot'),
 						onClick: () => setView('unblock-confirm'),
 						tertiary: true,
 					},

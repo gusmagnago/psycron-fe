@@ -4,7 +4,7 @@ import { Text } from '@psycron/components/text/Text';
 import { palette } from '@psycron/theme/palette/palette.theme';
 import { spacing } from '@psycron/theme/spacing/spacing.theme';
 
-export const BlockedReasonSection = styled(Box)`
+export const CancelledReasonSection = styled(Box)`
 	display: flex;
 	flex-direction: column;
 	gap: ${spacing.xs};
@@ -12,18 +12,18 @@ export const BlockedReasonSection = styled(Box)`
 	border-top: 1px solid ${palette.gray['02']};
 `;
 
-export const BlockedReasonLabel = styled(Text)`
+export const CancelledReasonLabel = styled(Text)`
 	font-size: 12px;
 	font-weight: 600;
 	color: ${palette.gray['05']};
 `;
 
-export const BlockedReasonValue = styled(Text)`
+export const CancelledReasonValue = styled(Text)`
 	font-size: 14px;
 	color: ${palette.text.primary};
 `;
 
-export const BlockedAtText = styled(Text)`
+export const CancelledAtText = styled(Text)`
 	font-size: 11px;
 	color: ${palette.gray['05']};
 	padding-top: ${spacing.xs};

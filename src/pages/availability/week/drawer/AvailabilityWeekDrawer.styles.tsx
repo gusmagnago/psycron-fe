@@ -132,6 +132,18 @@ export const DrawerDetailSub = styled(Text)`
 	text-align: left;
 `;
 
+export const DrawerTitleRow = styled(Box)`
+	display: inline-flex;
+	align-items: center;
+	gap: ${spacing.xs};
+
+	& svg {
+		width: 18px;
+		height: 18px;
+		flex-shrink: 0;
+	}
+`;
+
 // ─── Form ─────────────────────────────────────────────────────────────────────
 
 export const FormWrapper = styled(Box)`

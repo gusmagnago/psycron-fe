@@ -14,6 +14,7 @@ import { PatientNameAutocomplete } from '../patient-name-autocomplete/PatientNam
 import { SlotLocationSection } from '../slot-location-section/SlotLocationSection';
 import { SlotRecurrenceSection } from '../slot-recurrence-section/SlotRecurrenceSection';
 import { SlotSessionDeliverySection } from '../slot-session-delivery/SlotSessionDeliverySection';
+import { SlotSessionSection } from '../slot-session-section/SlotSessionSection';
 
 import {
 	BookingLinkHeader,
@@ -22,6 +23,9 @@ import {
 	BookingLinkSection,
 	BookingLinkValue,
 	BookingLinkValueRow,
+	ReopenedNote,
+	ReopenedNoteLabel,
+	ReopenedNoteText,
 } from './SlotAvailableBody.styles';
 import type { ISlotAvailableBodyProps } from './SlotAvailableBody.types';
 
@@ -30,10 +34,12 @@ export const SlotAvailableBody = ({
 	methods,
 	onPatientSelect,
 	onSelectionClear,
+	reopenedCancellationNote,
 	results,
 	searchIsLoading,
 	searchQuery,
 	selectedPatient,
+	sessionDetails,
 	sessionType,
 	setSearchQuery,
 	shareText,
@@ -80,6 +86,15 @@ export const SlotAvailableBody = ({
 		<FormProvider {...methods}>
 			<Box component='form'>
 				<FormWrapper>
+					<SlotSessionSection {...sessionDetails} />
+					{reopenedCancellationNote && (
+						<ReopenedNote>
+							<ReopenedNoteLabel>
+								{t('availability.week.drawer.reopened-note-label')}
+							</ReopenedNoteLabel>
+							<ReopenedNoteText>{reopenedCancellationNote}</ReopenedNoteText>
+						</ReopenedNote>
+					)}
 					<Divider />
 					<BookingLinkSection>
 						<BookingLinkHeader>
