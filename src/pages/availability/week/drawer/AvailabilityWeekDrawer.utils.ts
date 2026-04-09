@@ -1,6 +1,7 @@
 import type {
 	IPreferredContact,
 } from '@psycron/context/user/auth/UserAuthenticationContext.types';
+import { DOMAIN } from '@psycron/pages/urls';
 import { palette } from '@psycron/theme/palette/palette.theme';
 import type { Locale } from 'date-fns';
 import { format, parseISO } from 'date-fns';
@@ -131,4 +132,14 @@ export const computeTimeStrings = (
 				: null,
 		};
 	}
+};
+
+export const buildAvailabilityBookingLink = (
+	therapistId: string,
+	slotId: string
+): string => {
+	const url = new URL(`${DOMAIN}/${therapistId}/book-appointment`);
+	url.searchParams.set('slotId', slotId);
+
+	return url.toString();
 };

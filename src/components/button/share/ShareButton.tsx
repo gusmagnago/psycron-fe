@@ -1,17 +1,24 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import ReactGA from 'react-ga4';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
 import { EmailShareButton, WhatsappShareButton } from 'react-share';
-import { Box } from '@mui/material';
 import { Copy, Dots, Mail, Share, WhatsApp } from '@psycron/components/icons';
 import { Tooltip } from '@psycron/components/tooltip/Tooltip';
 import { useAlert } from '@psycron/context/alert/AlertContext';
+import { DOMAIN } from '@psycron/pages/urls';
 
 import type { IShareButton } from './ShareButton.types';
-import { ShareButtonsWrapper } from './ShareButtong.styles';
+import { ShareButtonRoot, ShareButtonsWrapper } from './ShareButtong.styles';
 
-export const ShareButton = ({ titleKey, textKey, url }: IShareButton) => {
+export const ShareButton = ({
+	absoluteUrl,
+	preferNativeShare = false,
+	shareWith,
+	textKey,
+	titleKey,
+	url,
+}: IShareButton) => {
 	const { t } = useTranslation();
 	const { locale } = useParams<{ locale: string }>();
 
@@ -19,7 +26,18 @@ export const ShareButton = ({ titleKey, textKey, url }: IShareButton) => {
 
 	const { showAlert } = useAlert();
 
-	const link = `http://psycron.app/${locale}/${url}`;
+	const link = useMemo(() => {
+		if (absoluteUrl) return absoluteUrl;
+		if (!url) return window.location.href;
+		if (/^https?:\/\//.test(url)) return url;
+
+		const normalizedPath = url.replace(/^\//, '');
+		const localizedPath = locale
+			? `${locale}/${normalizedPath}`
+			: normalizedPath;
+
+		return `${DOMAIN}/${localizedPath}`;
+	}, [absoluteUrl, locale, url]);
 
 	const trackShareEvent = (method: string, errorMessage?: string) => {
 		ReactGA.event({
@@ -59,7 +77,7 @@ export const ShareButton = ({ titleKey, textKey, url }: IShareButton) => {
 		const shareData = {
 			title: titleKey,
 			text: textKey,
-			url: link ? link : window.location.href,
+			url: link || window.location.href,
 		};
 
 		if (navigator.share) {
@@ -71,7 +89,15 @@ export const ShareButton = ({ titleKey, textKey, url }: IShareButton) => {
 					severity: 'success',
 				});
 			} catch (error) {
-				trackShareEvent('native', 'erro');
+				const isUserDismissedShare =
+					error instanceof DOMException && error.name === 'AbortError';
+
+				if (isUserDismissedShare) return;
+
+				trackShareEvent(
+					'native',
+					error instanceof Error ? error.name : 'error'
+				);
 				showAlert({
 					message: t('components.share-button.alert.error'),
 					severity: 'error',
@@ -95,14 +121,29 @@ export const ShareButton = ({ titleKey, textKey, url }: IShareButton) => {
 		}
 	};
 
+	const handleTriggerClick = async () => {
+		if (openShareButton) {
+			setOpenShareButton(false);
+			return;
+		}
+
+		if (preferNativeShare && navigator.share) {
+			await handleNativeShare();
+			return;
+		}
+
+		setOpenShareButton((prev) => !prev);
+	};
+
 	return (
-		<Box>
+		<ShareButtonRoot>
 			<Tooltip
 				title={t('components.share-button.tooltip-tile', {
-					with: t('components.share-button.share-with-patients'),
+					with:
+						shareWith ?? t('components.share-button.share-with-patients'),
 				})}
 				placement='left'
-				onClick={() => setOpenShareButton((prev) => !prev)}
+				onClick={handleTriggerClick}
 			>
 				<span>
 					<Share />
@@ -128,6 +169,6 @@ export const ShareButton = ({ titleKey, textKey, url }: IShareButton) => {
 					</Tooltip>
 				</ShareButtonsWrapper>
 			) : null}
-		</Box>
+		</ShareButtonRoot>
 	);
 };

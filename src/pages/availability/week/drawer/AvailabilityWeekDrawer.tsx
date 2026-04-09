@@ -6,6 +6,7 @@ import { Drawer } from '@psycron/components/drawer/Drawer';
 import {
 	Account,
 	Alert,
+	Available,
 	Calendar,
 	Watch,
 } from '@psycron/components/icons';
@@ -52,6 +53,8 @@ import { SlotDetailView } from './views/slot-detail-view/SlotDetailView';
 import { SlotEditForm } from './views/slot-edit-form/SlotEditForm';
 import { SlotReschedulePicker } from './views/slot-reschedule-picker/SlotReschedulePicker';
 import {
+	AvailableBadge,
+	AvailableBadgeText,
 	BlockConfirmWrapper,
 	BlockReasonField,
 	CancelViewBody,
@@ -71,6 +74,7 @@ import type {
 	LocationChoice,
 } from './AvailabilityWeekDrawer.types';
 import {
+	buildAvailabilityBookingLink,
 	computeEndTime,
 	computeTimeStrings,
 } from './AvailabilityWeekDrawer.utils';
@@ -319,6 +323,14 @@ export const AvailabilityWeekDrawer = ({
 	}, [slot, endTime, userDetails?.timeZone, dateLocale, patientTZOverride]);
 
 	const timeSub = `${t('availability.week.drawer.session-duration')}${slot.duration} ${t('availability.week.drawer.minutes')}`;
+	const bookingLink = therapistId
+		? buildAvailabilityBookingLink(therapistId, slot._id ?? slot.id)
+		: '';
+	const shareTitle = t('availability.week.drawer.booking-share-title', {
+		date: formattedDate,
+		time: `${slot.startTime} – ${endTime}`,
+	});
+	const shareText = t('availability.week.drawer.booking-share-text');
 
 	const patientName = appointmentDetailsBySlotId?.appointment?.patient
 		? [
@@ -489,6 +501,7 @@ export const AvailabilityWeekDrawer = ({
 					<>
 						<SlotDetailView details={details} />
 						<SlotAvailableBody
+							bookingLink={bookingLink}
 							customAddress={slotAddress.address}
 							locationChoice={locationChoice}
 							methods={methods}
@@ -502,6 +515,8 @@ export const AvailabilityWeekDrawer = ({
 							selectedPatient={patientSearch.selectedPatient}
 							sessionType={sessionType}
 							setSearchQuery={patientSearch.setSearchQuery}
+							shareText={shareText}
+							shareTitle={shareTitle}
 						/>
 					</>
 				);
@@ -566,11 +581,32 @@ export const AvailabilityWeekDrawer = ({
 						)}
 						<DrawerBadgeRow>
 							{isAvailable || isBlocked ? (
-								<ConfirmedBadge>
-									<ConfirmedBadgeText>
-										{slot.startTime} – {endTime}
-									</ConfirmedBadgeText>
-								</ConfirmedBadge>
+								<>
+									<ConfirmedBadge>
+										<ConfirmedBadgeText>
+											{slot.startTime} – {endTime}
+										</ConfirmedBadgeText>
+									</ConfirmedBadge>
+									{isAvailable && (
+										<AvailableBadge>
+											<Available color={palette.success.dark} />
+											<AvailableBadgeText>
+												{t('availability.week.drawer.available-status-open')}
+											</AvailableBadgeText>
+										</AvailableBadge>
+									)}
+									{sessionType && (
+										<DeliveryBadge
+											isOnline={sessionType === 'ONLINE'}
+										>
+											{sessionType === 'ONLINE'
+												? t('availability.week.drawer.session-delivery-online')
+												: sessionType === 'IN_PERSON'
+													? t('availability.week.drawer.session-delivery-in-person')
+													: t('availability.week.drawer.booked-hybrid')}
+										</DeliveryBadge>
+									)}
+								</>
 							) : (
 								<>
 									<DeliveryBadge

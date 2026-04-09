@@ -3,6 +3,8 @@ import { FormProvider, useWatch } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { Box, TextField } from '@mui/material';
 import type { ICreatePatientForm } from '@psycron/api/patient/index.types';
+import { ShareButton } from '@psycron/components/button/share/ShareButton';
+import { Divider } from '@psycron/components/divider/Divider';
 import { ContactsForm } from '@psycron/components/form/components/contacts/ContactsForm';
 import { PreferredContactForm } from '@psycron/components/form/components/preferred-contact/PreferredContactForm';
 import { TimezoneSelect } from '@psycron/components/form/components/timezone/TimezoneSelect';
@@ -13,9 +15,18 @@ import { SlotLocationSection } from '../slot-location-section/SlotLocationSectio
 import { SlotRecurrenceSection } from '../slot-recurrence-section/SlotRecurrenceSection';
 import { SlotSessionDeliverySection } from '../slot-session-delivery/SlotSessionDeliverySection';
 
+import {
+	BookingLinkHeader,
+	BookingLinkHint,
+	BookingLinkLabel,
+	BookingLinkSection,
+	BookingLinkValue,
+	BookingLinkValueRow,
+} from './SlotAvailableBody.styles';
 import type { ISlotAvailableBodyProps } from './SlotAvailableBody.types';
 
 export const SlotAvailableBody = ({
+	bookingLink,
 	methods,
 	onPatientSelect,
 	onSelectionClear,
@@ -25,10 +36,16 @@ export const SlotAvailableBody = ({
 	selectedPatient,
 	sessionType,
 	setSearchQuery,
+	shareText,
+	shareTitle,
 	...locationProps
 }: ISlotAvailableBodyProps) => {
 	const { t } = useTranslation();
-	const { control, register, formState: { errors } } = methods;
+	const {
+		control,
+		register,
+		formState: { errors },
+	} = methods;
 
 	const selectedPreferredType = useWatch({
 		control,
@@ -63,6 +80,27 @@ export const SlotAvailableBody = ({
 		<FormProvider {...methods}>
 			<Box component='form'>
 				<FormWrapper>
+					<Divider />
+					<BookingLinkSection>
+						<BookingLinkHeader>
+							<BookingLinkLabel>
+								{t('availability.week.drawer.booking-link-label')}
+							</BookingLinkLabel>
+							<ShareButton
+								absoluteUrl={bookingLink}
+								preferNativeShare
+								textKey={shareText}
+								titleKey={shareTitle}
+							/>
+						</BookingLinkHeader>
+						<BookingLinkValueRow>
+							<BookingLinkValue>{bookingLink}</BookingLinkValue>
+						</BookingLinkValueRow>
+						<BookingLinkHint>
+							{t('availability.week.drawer.booking-link-hint')}
+						</BookingLinkHint>
+					</BookingLinkSection>
+					<Divider />
 					<PatientNameAutocomplete
 						methods={methods}
 						onPatientSelect={onPatientSelect}
