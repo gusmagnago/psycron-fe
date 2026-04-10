@@ -4,6 +4,8 @@ import { AvailabilityCalendarPage } from '@psycron/pages/availability/page-calen
 import { AvailabilityWeekPage } from '@psycron/pages/availability/week/AvailabilityWeekPage';
 import { ConflictsPage } from '@psycron/pages/conflicts/ConflictsPage';
 import { Dashboard } from '@psycron/pages/dashboard/Dashboard';
+import { PatientListPage } from '@psycron/pages/patients/PatientListPage';
+import { PatientProfilePage } from '@psycron/pages/patients/PatientProfilePage';
 import {
 	AVAILABILITYGENERATE,
 	AVAILABILITYPATH,
@@ -14,6 +16,8 @@ import {
 	DASHBOARD,
 	EDITUSER,
 	EDITUSERBYSESSION,
+	PATIENTPROFILE,
+	PATIENTS,
 	USERDETAILS,
 } from '@psycron/pages/urls';
 // import { AddPatient } from '@psycron/pages/user/appointment/add-patient/AddPatient';
@@ -28,6 +32,8 @@ const privateRoutes = [
 		element: <Dashboard />,
 	},
 	{ path: CONFLICTS, element: <ConflictsPage /> },
+	{ path: PATIENTS, element: <PatientListPage /> },
+	{ path: PATIENTPROFILE, element: <PatientProfilePage /> },
 	{ path: USERDETAILS, element: <UserDetailsPage /> },
 	{ path: EDITUSER, element: <EditUser /> },
 	{ path: EDITUSERBYSESSION, element: <EditUser /> },

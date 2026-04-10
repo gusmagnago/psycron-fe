@@ -86,7 +86,6 @@ export const AppLayout: FC = () => {
 			name: t('globals.patients'),
 			icon: <PatientList />,
 			path: PATIENTS,
-			disabled: true,
 		},
 		{
 			name: t('globals.billing-manager'),
