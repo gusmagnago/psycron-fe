@@ -1,6 +1,8 @@
 export interface ISlotSessionSectionProps {
 	date: string;
 	duration: string;
-	time: string;
-	timeSub?: string | null;
+	patientTime?: string | null;
+	patientTimeZoneName?: string | null;
+	therapistTime: string;
+	therapistTimeZoneName?: string | null;
 }

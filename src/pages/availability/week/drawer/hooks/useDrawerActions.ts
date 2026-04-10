@@ -29,13 +29,22 @@ interface IRescheduleActions {
 	setSelectedSlot: (s: IRescheduleSlot | null) => void;
 }
 
+interface IBufferTimeActions {
+	inputIsValid: boolean;
+	removeMutation: { isPending: boolean; mutate: () => void };
+	reset: () => void;
+	saveMutation: { isPending: boolean; mutate: () => void };
+}
+
 export interface IUseDrawerActionsInput {
 	blockSlot: IBlockSlotActions;
+	bufferTime: IBufferTimeActions;
 	cancelSlot: ICancelSlotActions;
 	editSlotForm: IEditSlotFormActions;
 	hasConflict: boolean;
 	isAvailable: boolean;
 	isBlocked: boolean;
+	isBuffer: boolean;
 	isCancelled: boolean;
 	isChecking: boolean;
 	isPast?: boolean;
@@ -49,10 +58,12 @@ export interface IUseDrawerActionsInput {
 
 export const useDrawerActions = ({
 	blockSlot,
+	bufferTime,
 	cancelSlot,
 	editSlotForm,
 	hasConflict,
 	isAvailable,
+	isBuffer,
 	isBlocked,
 	isCancelled,
 	isChecking,
@@ -67,6 +78,26 @@ export const useDrawerActions = ({
 	const { t } = useTranslation();
 
 	switch (view) {
+		case 'buffer-edit':
+			return {
+				primary: {
+					disabled: bufferTime.saveMutation.isPending || !bufferTime.inputIsValid,
+					label: t('availability.week.drawer.break-edit-save'),
+					loading: bufferTime.saveMutation.isPending,
+					onClick: () => bufferTime.saveMutation.mutate(),
+					tertiary: true,
+					variant: 'contained',
+				},
+				secondary: {
+					disabled: bufferTime.saveMutation.isPending,
+					label: t('common.cancel'),
+					onClick: () => {
+						bufferTime.reset();
+						setView('default');
+					},
+				},
+			};
+
 		case 'editing':
 			return {
 				primary: {
@@ -173,6 +204,22 @@ export const useDrawerActions = ({
 						label: t('availability.week.drawer.unblock-slot'),
 						onClick: () => setView('unblock-confirm'),
 						tertiary: true,
+					},
+				};
+			}
+
+			if (isBuffer) {
+				return {
+					primary: {
+						label: t('availability.week.drawer.break-edit'),
+						onClick: () => setView('buffer-edit'),
+						tertiary: true,
+					},
+					secondary: {
+						disabled: bufferTime.removeMutation.isPending,
+						label: t('availability.week.drawer.break-remove'),
+						onClick: () => bufferTime.removeMutation.mutate(),
+						severity: 'error',
 					},
 				};
 			}

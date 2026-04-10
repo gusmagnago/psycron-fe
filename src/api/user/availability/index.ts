@@ -18,6 +18,8 @@ import type {
 	ICheckDuplicateResponse,
 	ICompleteSessionAvailabilityData,
 	ICompleteSessionAvailabilityResponse,
+	ICreateAvailabilityDateOverridePayload,
+	ICreateAvailabilityDateOverrideResponse,
 	IEditSlotStatus,
 	IInitiateAvailabilityResponse,
 	IPatientSearchResponse,
@@ -169,6 +171,17 @@ export const unblockAllSlotsInDay = async ({
 }: IUnblockAllSlotsPayload): Promise<IBatchUnblockResponse> => {
 	const response = await apiClient.post<IBatchUnblockResponse>(
 		`/users/${therapistId}/availability/${availabilityDayId}/unblock-all`
+	);
+	return response.data;
+};
+
+export const createAvailabilityDateOverride = async ({
+	therapistId,
+	...data
+}: ICreateAvailabilityDateOverridePayload): Promise<ICreateAvailabilityDateOverrideResponse> => {
+	const response = await apiClient.post<ICreateAvailabilityDateOverrideResponse>(
+		`/users/${therapistId}/availability/date-override`,
+		data
 	);
 	return response.data;
 };

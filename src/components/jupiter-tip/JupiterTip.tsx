@@ -15,6 +15,7 @@ import type { IJupiterTip } from './JupiterTip.types';
 export const JupiterTip = ({
 	actionLabel,
 	ariaLabel,
+	fullWidth,
 	onAction,
 	onDismiss,
 	text,
@@ -23,7 +24,11 @@ export const JupiterTip = ({
 	const { t } = useTranslation();
 
 	return (
-		<JupiterTipRoot aria-label={ariaLabel ?? title} role='complementary'>
+		<JupiterTipRoot
+			aria-label={ariaLabel ?? title}
+			fullWidth={fullWidth}
+			role='complementary'
+		>
 			<JupiterIconWrapper>
 				<Jupiter aria-hidden='true' />
 			</JupiterIconWrapper>

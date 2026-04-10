@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useParams } from 'react-router-dom';
+import { useParams, useSearchParams } from 'react-router-dom';
 import { getAppointmentDetailsBySlotId } from '@psycron/api/user/availability';
 import { AvailabilityLegend } from '@psycron/components/availability/AvailabilityLegend';
 import { NavButton } from '@psycron/components/availability/AvailabilityNavButton';
@@ -14,6 +14,7 @@ import {
 	Filter,
 	FilterFull,
 } from '@psycron/components/icons';
+import { useJupiterAvailabilityConfig } from '@psycron/hooks/useJupiterAvailabilityConfig';
 import { useTherapistId } from '@psycron/hooks/useTherapistId';
 import useViewport from '@psycron/hooks/useViewport';
 import { PageLayout } from '@psycron/layouts/app/pages-layout/PageLayout';
@@ -24,7 +25,9 @@ import { DayHeaderPopover } from './day-header-popover/DayHeaderPopover';
 import { AvailabilityWeekDrawer } from './drawer/AvailabilityWeekDrawer';
 import { AvailabilityWeekFilters } from './filters/AvailabilityWeekFilters';
 import { useAvailabilityWeekViewModel } from './hook/useAvailabilityWeekViewModel';
+import { useClosedDayOverride } from './hook/useClosedDayOverride';
 import { useBlockDay, useUnblockDay } from './hook/useDayActions';
+import { OpenClosedDayModal } from './open-closed-day-modal/OpenClosedDayModal';
 import { AvailabilityWeekDesktopGrid } from './views/desktop-view/AvailabilityWeekDesktopGrid';
 import { AvailabilityWeekMobileList } from './views/mobile-view/AvailabilityWeekMobileList';
 import {
@@ -42,10 +45,34 @@ import {
 } from './AvailabilityWeekPage.styles';
 import type { IWeekSlot } from './AvailabilityWeekPage.types';
 
+const parseDebugNowMinutes = (value: string | null): number | null => {
+	if (!value || !import.meta.env.DEV) return null;
+
+	const match = value.match(/^(\d{1,2}):(\d{2})$/);
+	if (!match) return null;
+
+	const hours = Number(match[1]);
+	const minutes = Number(match[2]);
+
+	if (
+		Number.isNaN(hours) ||
+		Number.isNaN(minutes) ||
+		hours < 0 ||
+		hours > 23 ||
+		minutes < 0 ||
+		minutes > 59
+	) {
+		return null;
+	}
+
+	return hours * 60 + minutes;
+};
+
 export const AvailabilityWeekPage = () => {
 	const todayCardId = 'availability-week-mobile-today';
 	const { t } = useTranslation();
 	const { date } = useParams<{ date: string }>();
+	const [searchParams] = useSearchParams();
 	const { isMobile } = useViewport();
 	const {
 		activeFilterCount,
@@ -64,7 +91,6 @@ export const AvailabilityWeekPage = () => {
 		legendItems,
 		mobileDays,
 		prefs,
-		timeSlots,
 		toggleDayExpanded,
 		toggleDeliveryMode,
 		toggleSessionType,
@@ -75,6 +101,7 @@ export const AvailabilityWeekPage = () => {
 		weekDays,
 		weekRange,
 	} = useAvailabilityWeekViewModel({ date });
+	const { availability } = useJupiterAvailabilityConfig();
 
 	const [selectedSlot, setSelectedSlot] = useState<IWeekSlot | null>(null);
 	const [filterAnchorEl, setFilterAnchorEl] = useState<HTMLElement | null>(
@@ -82,9 +109,14 @@ export const AvailabilityWeekPage = () => {
 	);
 	const [dayPopoverDate, setDayPopoverDate] = useState<string | null>(null);
 	const [shouldScrollToToday, setShouldScrollToToday] = useState(false);
+	const debugNowMinutes = parseDebugNowMinutes(searchParams.get('debugNow'));
 
 	const queryClient = useQueryClient();
 	const therapistId = useTherapistId();
+	const closedDayOverride = useClosedDayOverride({
+		availability,
+		therapistId,
+	});
 
 	const blockDay = useBlockDay(therapistId, () => {
 		setDayPopoverDate(null);
@@ -96,6 +128,10 @@ export const AvailabilityWeekPage = () => {
 	const handleDayHeaderClick = (dateStr: string) => {
 		const dayDate = parseISO(dateStr);
 		if (isPast(dayDate) && !isToday(dayDate)) return;
+		if (getDaySlots(dayDate).length === 0) {
+			closedDayOverride.open(dateStr);
+			return;
+		}
 		setDayPopoverDate(dateStr);
 	};
 
@@ -234,12 +270,12 @@ export const AvailabilityWeekPage = () => {
 					/>
 				) : (
 					<AvailabilityWeekDesktopGrid
+						debugNowMinutes={debugNowMinutes}
 						getDaySlots={getDaySlots}
 						getVisibleDaySlots={getVisibleDaySlots}
 						onDayHeaderClick={handleDayHeaderClick}
 						onSlotClick={handleSlotClick}
 						onSlotPointerDown={handleSlotPointerDown}
-						timeSlots={timeSlots}
 						weekData={weekData}
 						weekDays={weekDays}
 					/>
@@ -300,6 +336,24 @@ export const AvailabilityWeekPage = () => {
 						/>
 					);
 				})()}
+
+			<OpenClosedDayModal
+				endTime={closedDayOverride.endTime}
+				isConfirmDisabled={closedDayOverride.isConfirmDisabled}
+				isLoading={closedDayOverride.isPending}
+				mode={closedDayOverride.mode}
+				openDate={closedDayOverride.overrideDate}
+				overrideSlotOptions={closedDayOverride.overrideSlotOptions}
+				partialSlotOptions={closedDayOverride.partialSlotOptions}
+				selectedSpecificSlots={closedDayOverride.selectedSpecificSlots}
+				startTime={closedDayOverride.startTime}
+				onClose={closedDayOverride.close}
+				onConfirm={closedDayOverride.confirm}
+				onEndTimeChange={closedDayOverride.setEndTime}
+				onModeChange={closedDayOverride.setMode}
+				onSpecificSlotToggle={closedDayOverride.toggleSpecificSlot}
+				onStartTimeChange={closedDayOverride.setStartTime}
+			/>
 
 			{selectedSlot && (
 				<AvailabilityWeekDrawer

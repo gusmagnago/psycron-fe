@@ -1,14 +1,10 @@
 import { useEffect, useMemo, useState } from 'react';
+import { useWatch } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import type { IPatientSearchResult } from '@psycron/api/user/availability/index.types';
 import { StatusEnum } from '@psycron/api/user/availability/index.types';
 import { Drawer } from '@psycron/components/drawer/Drawer';
-import {
-	Account,
-	Alert,
-	Available,
-	Ban,
-} from '@psycron/components/icons';
+import { Account, Alert, Available, Ban } from '@psycron/components/icons';
 import { Modal } from '@psycron/components/modal/Modal';
 import { useAvailability } from '@psycron/context/appointment/availability/AvailabilityContext';
 import type {
@@ -19,6 +15,11 @@ import { useUserDetails } from '@psycron/context/user/details/UserDetailsContext
 import { useJupiterAvailabilityConfig } from '@psycron/hooks/useJupiterAvailabilityConfig';
 import { useSecureStorage } from '@psycron/hooks/useSecureStorage';
 import i18n from '@psycron/i18n';
+import { BufferTimeEditor } from '@psycron/pages/availability/components/buffer-time-editor/BufferTimeEditor';
+import {
+	buildBufferAdviceRequest,
+	getBufferInsights,
+} from '@psycron/pages/availability/components/buffer-time-editor/BufferTimeEditor.utils';
 import { palette } from '@psycron/theme/palette/palette.theme';
 import { THERAPIST_ID } from '@psycron/utils/tokens';
 import { format, parseISO } from 'date-fns';
@@ -26,6 +27,7 @@ import { enGB, ptBR } from 'date-fns/locale';
 
 import { DrawerActions } from './components/DrawerActions';
 import { useBookingForm } from './hooks/useBookingForm';
+import { useBufferTimeSetting } from './hooks/useBufferTimeSetting';
 import { useDrawerActions } from './hooks/useDrawerActions';
 import { useEditSlotForm } from './hooks/useEditSlotForm';
 import { usePatientSearch } from './hooks/usePatientSearch';
@@ -46,6 +48,7 @@ import {
 import { isPastAppointment } from './views/slot-booked-body/SlotBookedBody.utils';
 import { SlotBookingConflictView } from './views/slot-booking-conflict/SlotBookingConflictView';
 import { ConflictBody } from './views/slot-booking-conflict/SlotBookingConflictView.styles';
+import { SlotBreakBody } from './views/slot-break-body/SlotBreakBody';
 import { SlotCancelChoiceView } from './views/slot-cancel-choice-view/SlotCancelChoiceView';
 import { SlotCancelReasonForm } from './views/slot-cancel-reason-form/SlotCancelReasonForm';
 import { SlotCancelledBody } from './views/slot-cancelled-body/SlotCancelledBody';
@@ -108,6 +111,7 @@ export const AvailabilityWeekDrawer = ({
 
 	// ─── Slot flags ───────────────────────────────────────────────────────────
 	const isAvailable = slot.status === 'available';
+	const isBuffer = slot.status === 'buffer';
 	const isBlocked = slot.status === 'blocked';
 	const isCancelled = slot.status === 'cancelled';
 	const isBooked =
@@ -126,7 +130,7 @@ export const AvailabilityWeekDrawer = ({
 		availability?.specialty
 	);
 
-	const slotId = slot._id ?? slot.id;
+	const slotId = isBuffer ? null : (slot._id ?? slot.id);
 	const {
 		availabilityData,
 		appointmentDetailsBySlotId,
@@ -135,7 +139,7 @@ export const AvailabilityWeekDrawer = ({
 		undefined,
 		slot.availabilityDayId,
 		slotId,
-		slot.patientId
+		isBuffer ? undefined : slot.patientId
 	);
 
 	const patientSearch = usePatientSearch(therapistId);
@@ -159,6 +163,10 @@ export const AvailabilityWeekDrawer = ({
 		patientSearch.selectedPatient?._id,
 		sessionType
 	);
+	const watchedPatientTimeZone = useWatch({
+		control: methods.control,
+		name: 'timeZone',
+	});
 
 	const applyPatientToForm = (patient: IPatientSearchResult) => {
 		if (!patient) return;
@@ -255,6 +263,10 @@ export const AvailabilityWeekDrawer = ({
 		appointmentDetailsBySlotId,
 		onClose
 	);
+	const bufferTime = useBufferTimeSetting(
+		availability?.bufferTimeMinutes ?? slot.duration,
+		onClose
+	);
 
 	// ─── Location choice handler ───────────────────────────────────────────────
 	const handleLocationChoiceChange = (choice: LocationChoice) => {
@@ -300,9 +312,16 @@ export const AvailabilityWeekDrawer = ({
 	});
 
 	const patientTZOverride =
-		appointmentDetailsBySlotId?.appointment?.patient?.timeZone ?? undefined;
+		appointmentDetailsBySlotId?.appointment?.patient?.timeZone ??
+		watchedPatientTimeZone ??
+		undefined;
 
-	const { therapistTimeStr, patientTimeStr } = useMemo(() => {
+	const {
+		patientTimeStr,
+		patientTimeZoneName,
+		therapistTimeStr,
+		therapistTimeZoneName,
+	} = useMemo(() => {
 		const therapistTZ =
 			userDetails?.timeZone ?? Intl.DateTimeFormat().resolvedOptions().timeZone;
 		return computeTimeStrings(
@@ -336,6 +355,7 @@ export const AvailabilityWeekDrawer = ({
 	const cancelledSubtitle = getCancelledSubtitle(t, slot.triggeredBy);
 	const drawerTitle = getDrawerTitle({
 		isAvailable,
+		isBuffer,
 		isBlocked,
 		isCancelled,
 		patientName,
@@ -359,8 +379,27 @@ export const AvailabilityWeekDrawer = ({
 					name:
 						slot.cancelledPatientName ??
 						t('availability.week.drawer.reopened-note-fallback-name'),
-			  })
+				})
 			: undefined;
+	const bufferInsights = useMemo(
+		() =>
+			getBufferInsights({
+				availability,
+				availabilityData,
+				bufferInput: bufferTime.bufferInput,
+			}),
+		[availability, availabilityData, bufferTime.bufferInput]
+	);
+	const bufferAdviceRequest = useMemo(
+		() =>
+			buildBufferAdviceRequest({
+				availability,
+				availabilityData,
+				bufferInput: bufferTime.bufferInput,
+				locale: i18n.language.startsWith('pt') ? 'pt' : 'en',
+			}),
+		[availability, availabilityData, bufferTime.bufferInput]
+	);
 
 	// ─── Available slot groups for reschedule picker ──────────────────────────
 
@@ -403,8 +442,14 @@ export const AvailabilityWeekDrawer = ({
 	const sessionDetails = {
 		date: formattedDate,
 		duration: timeSub,
-		time: therapistTimeStr,
-		timeSub: isBooked ? patientTimeStr : null,
+		patientTime:
+			isBooked || isAvailable ? (patientTimeStr ?? therapistTimeStr) : null,
+		patientTimeZoneName:
+			isBooked || isAvailable
+				? (patientTimeZoneName ?? therapistTimeZoneName)
+				: null,
+		therapistTime: therapistTimeStr,
+		therapistTimeZoneName,
 	};
 
 	const renderDefaultBody = () => {
@@ -433,22 +478,23 @@ export const AvailabilityWeekDrawer = ({
 			return (
 				<SlotBookedBody
 					appointmentDetails={appointmentDetailsBySlotId}
-					formattedDate={formattedDate}
 					isGoogle={isGoogle}
 					isLoading={isAppointmentDetailsBySlotIdLoading}
 					isPast={isPast}
 					patientName={patientName}
-					patientTimeStr={patientTimeStr}
+					sessionDetails={sessionDetails}
 					sessionType={sessionType}
 					slot={slot}
-					therapistTimeStr={therapistTimeStr}
-					timeSub={timeSub}
 					bookingLink={bookingLink}
 					shareText={shareText}
 					shareTitle={shareTitle}
 					shareWith={bookedShareWith}
 				/>
 			);
+		}
+
+		if (isBuffer) {
+			return <SlotBreakBody sessionDetails={sessionDetails} />;
 		}
 
 		return (
@@ -479,6 +525,20 @@ export const AvailabilityWeekDrawer = ({
 
 	const renderBody = () => {
 		switch (view) {
+			case 'buffer-edit':
+				return (
+					<BlockConfirmWrapper>
+						<CancelViewBody>
+							{t('availability.week.drawer.break-edit-body')}
+						</CancelViewBody>
+						<BufferTimeEditor
+							adviceRequest={bufferAdviceRequest}
+							bufferInput={bufferTime.bufferInput}
+							insights={bufferInsights}
+							onChange={bufferTime.setBufferInput}
+						/>
+					</BlockConfirmWrapper>
+				);
 			case 'editing':
 				return (
 					<SlotEditForm
@@ -567,6 +627,10 @@ export const AvailabilityWeekDrawer = ({
 			);
 		}
 
+		if (isBuffer && view === 'default') {
+			return <DrawerActions config={drawerActions} />;
+		}
+
 		if (isPast) {
 			return (
 				<PastDisabledFooter>
@@ -602,6 +666,14 @@ export const AvailabilityWeekDrawer = ({
 	};
 
 	const renderHeaderMeta = () => {
+		if (isBuffer) {
+			return (
+				<DrawerDetailLabel>
+					{t('availability.week.drawer.break-subtitle')}
+				</DrawerDetailLabel>
+			);
+		}
+
 		if (!isAvailable && !isBlocked && !isCancelled) {
 			return <DrawerDetailLabel>{formattedDate}</DrawerDetailLabel>;
 		}
@@ -622,7 +694,7 @@ export const AvailabilityWeekDrawer = ({
 	};
 
 	const renderHeaderBadges = () => {
-		if (isAvailable || isBlocked || isCancelled) {
+		if (isAvailable || isBuffer || isBlocked || isCancelled) {
 			return (
 				<>
 					<ConfirmedBadge>
@@ -636,7 +708,7 @@ export const AvailabilityWeekDrawer = ({
 							</AvailableBadgeText>
 						</AvailableBadge>
 					)}
-					{availableSessionDeliveryLabel && (
+					{isAvailable && availableSessionDeliveryLabel && (
 						<DeliveryBadge isOnline={sessionType === 'ONLINE'}>
 							{availableSessionDeliveryLabel}
 						</DeliveryBadge>
@@ -663,10 +735,17 @@ export const AvailabilityWeekDrawer = ({
 	// ─── Actions ──────────────────────────────────────────────────────────────
 	const drawerActions = useDrawerActions({
 		blockSlot,
+		bufferTime: {
+			inputIsValid: bufferTime.isValid,
+			removeMutation: bufferTime.removeMutation,
+			reset: bufferTime.reset,
+			saveMutation: bufferTime.saveMutation,
+		},
 		cancelSlot,
 		editSlotForm,
 		hasConflict: !!conflict,
 		isAvailable,
+		isBuffer,
 		isBlocked,
 		isCancelled,
 		isChecking,

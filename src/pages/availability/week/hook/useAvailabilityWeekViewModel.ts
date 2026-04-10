@@ -146,14 +146,6 @@ export const useAvailabilityWeekViewModel = ({
 		return Array.from(types).sort();
 	}, [weekDays, getDaySlots]);
 
-	const timeSlots = useMemo(() => {
-		const times = new Set<string>();
-		Object.values(weekData).forEach((slots) =>
-			slots.forEach((slot) => times.add(slot.startTime))
-		);
-		return Array.from(times).sort();
-	}, [weekData]);
-
 	const mobileDays = useMemo<IAvailabilityWeekMobileDay[]>(
 		() =>
 			workingDays.map((day) => {
@@ -286,7 +278,6 @@ export const useAvailabilityWeekViewModel = ({
 		legendItems,
 		mobileDays,
 		prefs,
-		timeSlots,
 		toggleDayExpanded,
 		toggleDeliveryMode,
 		toggleSessionType,

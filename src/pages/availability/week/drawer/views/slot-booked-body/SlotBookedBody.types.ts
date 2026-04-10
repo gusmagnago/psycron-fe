@@ -1,21 +1,19 @@
 import type { AppointmentDetailsBySlotIdResponse } from '@psycron/api/user/availability/index.types';
 
 import type { IWeekSlot } from '../../../AvailabilityWeekPage.types';
+import type { ISlotSessionSectionProps } from '../slot-session-section/SlotSessionSection.types';
 
 export interface ISlotBookedBodyProps {
 	appointmentDetails?: AppointmentDetailsBySlotIdResponse;
 	bookingLink: string;
-	formattedDate: string;
 	isGoogle: boolean;
 	isLoading?: boolean;
 	isPast: boolean;
 	patientName?: string;
-	patientTimeStr: string | null;
+	sessionDetails: ISlotSessionSectionProps;
 	sessionType?: string;
 	shareText: string;
 	shareTitle: string;
 	shareWith?: string;
 	slot: IWeekSlot;
-	therapistTimeStr: string;
-	timeSub: string;
 }

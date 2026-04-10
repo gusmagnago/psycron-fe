@@ -4,6 +4,7 @@ import type { IWeekSlot } from '../AvailabilityWeekPage.types';
 
 export type DrawerView =
 	| 'block-confirm'
+	| 'buffer-edit'
 	| 'cancel-reason'
 	| 'default'
 	| 'editing'

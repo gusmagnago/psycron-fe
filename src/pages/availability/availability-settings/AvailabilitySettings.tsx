@@ -11,6 +11,7 @@ import { JupiterHelpCard } from '@psycron/components/jupiter-help-card/JupiterHe
 import { JupiterTip } from '@psycron/components/jupiter-tip/JupiterTip';
 import { Modal } from '@psycron/components/modal/Modal';
 import { PageLayout } from '@psycron/layouts/app/pages-layout/PageLayout';
+import { BufferTimeEditor } from '@psycron/pages/availability/components/buffer-time-editor/BufferTimeEditor';
 import { AVAILABILITYGENERATE } from '@psycron/pages/urls';
 
 import {
@@ -118,6 +119,8 @@ export const AvailabilitySettings = () => {
 		addressFormMethods,
 		availability,
 		bannerDismissed,
+		bufferAdviceRequest,
+		bufferInsights,
 		bufferInput,
 		cancelTimezoneWarning,
 		checklistItems,
@@ -479,26 +482,18 @@ export const AvailabilitySettings = () => {
 					<SettingsDrawer
 						ariaLabel={t('jupiter.post-publish.buffer-drawer-title')}
 						title={t('jupiter.post-publish.buffer-drawer-title')}
+						desc={t('jupiter.post-publish.buffer-drawer-desc')}
 						isSaving={isSaving}
 						onClose={closeDrawer}
 						onSave={handleBufferSave}
-						saveDisabled={
-							!bufferInput ||
-							isNaN(parseInt(bufferInput, 10)) ||
-							parseInt(bufferInput, 10) < 0 ||
-							parseInt(bufferInput, 10) > 120
-						}
+						saveDisabled={!bufferInput || Number(bufferInput) < 5 || Number(bufferInput) > 20}
 						showCancel
 					>
-						<TextField
-							autoFocus
-							fullWidth
-							helperText={t('jupiter.post-publish.buffer-input-helper')}
-							label={t('jupiter.post-publish.buffer-input-label')}
-							onChange={(e) => setBufferInput(e.target.value)}
-							size='small'
-							type='number'
-							value={bufferInput}
+						<BufferTimeEditor
+							adviceRequest={bufferAdviceRequest}
+							bufferInput={bufferInput}
+							insights={bufferInsights}
+							onChange={setBufferInput}
 						/>
 					</SettingsDrawer>
 				)}

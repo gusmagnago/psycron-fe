@@ -159,6 +159,27 @@ export interface IBatchUnblockResponse {
 	unblockedCount: number;
 }
 
+export type AvailabilityDateOverrideMode =
+	| 'FULL_DAY'
+	| 'TIME_RANGE'
+	| 'SPECIFIC_SLOTS';
+
+export interface ICreateAvailabilityDateOverridePayload {
+	date: string;
+	endTime?: string;
+	mode: AvailabilityDateOverrideMode;
+	slotStartTimes?: string[];
+	startTime?: string;
+	therapistId: string;
+}
+
+export interface ICreateAvailabilityDateOverrideResponse {
+	availabilityDayId: string | null;
+	date: string;
+	message: string;
+	slotCount: number;
+}
+
 export interface IEditSlotStatus {
 	availabilityDayId: string;
 	data: IEditSlotStatusData;
