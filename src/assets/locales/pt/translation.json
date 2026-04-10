@@ -987,7 +987,7 @@
           "placeholder": "Pesquise ou digite um novo nome",
           "type-to-search": "Digite pelo menos 2 caracteres para pesquisar"
         },
-        "patient-time": "Horário do paciente",
+        "patient-time": "Horário local do paciente",
         "reschedule": "Remarcar",
         "reschedule-choice-sub": "Mover para outro horário disponível",
         "reschedule-confirm": "Confirmar remarcação",
@@ -1005,7 +1005,7 @@
         "status-cancelled": "Cancelado",
         "status-confirmed": "Confirmado",
         "available-status-open": "Aberto para agendamento",
-        "your-time": "Seu horário",
+        "your-time": "Seu horário local",
         "appointment-address": "Endereço da consulta",
         "patient-phone": "Telefone do paciente",
         "patient-provides-address": "O paciente irá fornecer o endereço",
@@ -1081,8 +1081,16 @@
       "filter-time-evening": "Noite",
       "filter-time-morning": "Manhã",
       "filters": "Filtros",
+      "blocked-hover-label": "Horário bloqueado",
       "title": "Agenda da Semana",
       "settings": "Definições",
+      "default-blocked-day": {
+        "body": "{{day}} está atualmente bloqueado pelas suas definições de disponibilidade. Se continuar, todos os futuros {{weekday}} ficarão disponíveis usando o seu horário de trabalho atual.",
+        "confirm": "Definir dia completo como disponível",
+        "error": "Não foi possível atualizar a sua disponibilidade padrão. Tente novamente.",
+        "success": "A disponibilidade padrão foi atualizada com sucesso.",
+        "title": "Tornar este dia da semana disponível?"
+      },
       "day-header": {
         "actions": "Ações do dia",
         "block-all": "Bloquear todos os horários disponíveis",

@@ -101,10 +101,16 @@ export const computeTimeStrings = (
 	therapistTZ: string,
 	dateLocale: Locale,
 	patientTZOverride?: string
-): { patientTimeStr: string | null; therapistTimeStr: string } => {
+): {
+	patientTimeStr: string | null;
+	patientTimeZoneName: string | null;
+	therapistTimeStr: string;
+	therapistTimeZoneName: string;
+} => {
 	const rawPatientTZ = patientTZOverride ?? slot.timezone;
 	const patientTZ =
 		rawPatientTZ && isValidIANATZ(rawPatientTZ) ? rawPatientTZ : therapistTZ;
+	const therapistTimeZoneName = getCityFromTZ(therapistTZ);
 
 	const slotDate = parseISO(slot.date);
 	const [startH, startM] = slot.startTime.split(':').map(Number);
@@ -130,19 +136,23 @@ export const computeTimeStrings = (
 			? `${fmt(pStart, 'd MMM')} · `
 			: '';
 
-		const patientCity = rawPatientTZ ? getCityFromTZ(patientTZ) : null;
+		const patientTimeZoneName = rawPatientTZ ? getCityFromTZ(patientTZ) : null;
 
 		return {
+			patientTimeZoneName,
 			therapistTimeStr: `${fmt(tStart, 'HH:mm')} – ${fmt(tEnd, 'HH:mm')}`,
+			therapistTimeZoneName,
 			patientTimeStr: rawPatientTZ
-				? `${patientDatePrefix}${fmt(pStart, 'HH:mm')} – ${fmt(pEnd, 'HH:mm')}${patientCity ? ` (${patientCity})` : ''}`
+				? `${patientDatePrefix}${fmt(pStart, 'HH:mm')} – ${fmt(pEnd, 'HH:mm')}`
 				: null,
 		};
 	} catch {
 		return {
+			patientTimeZoneName: rawPatientTZ ? getCityFromTZ(patientTZ) : null,
 			therapistTimeStr: `${slot.startTime} – ${endTime}`,
+			therapistTimeZoneName,
 			patientTimeStr: rawPatientTZ
-				? `${slot.startTime} – ${endTime} (${rawPatientTZ})`
+				? `${slot.startTime} – ${endTime}`
 				: null,
 		};
 	}

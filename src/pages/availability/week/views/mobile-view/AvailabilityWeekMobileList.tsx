@@ -104,16 +104,20 @@ export const AvailabilityWeekMobileList = ({
 										const shouldClick = isClickable(slot.status, day.date);
 
 										if (slot.status === 'buffer' && slot.bufferFor) {
+											const isCompact = slot.duration <= 10;
 											return (
 												<MobileSlotBuffer
 													key={`mobile-buffer-${slot.id}`}
 													bufferFor={slot.bufferFor}
+													bufferMinutes={slot.duration}
 													onClick={() => onSlotClick(slot)}
 													onPointerDown={() => onSlotPointerDown(slot)}
 												>
 													<MobileSlotTime>{slot.startTime}</MobileSlotTime>
 													<SlotBufferLabel>
-														{t('availability.week.buffer-label')}
+														{isCompact
+															? `${slot.duration}m`
+															: `${t('availability.week.buffer-label')} · ${slot.duration}m`}
 													</SlotBufferLabel>
 												</MobileSlotBuffer>
 											);

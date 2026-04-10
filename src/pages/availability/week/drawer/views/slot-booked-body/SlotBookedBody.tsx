@@ -49,16 +49,13 @@ import { useCopyToClipboard } from './SlotBookedBody.utils';
 
 export const SlotBookedBody = ({
 	appointmentDetails,
-	formattedDate,
 	isGoogle,
 	isLoading,
 	isPast,
 	patientName,
-	patientTimeStr,
+	sessionDetails,
 	sessionType,
 	slot,
-	therapistTimeStr,
-	timeSub,
 	shareText,
 	shareTitle,
 	shareWith,
@@ -194,12 +191,7 @@ export const SlotBookedBody = ({
 			<Divider />
 
 			{/* ─── Session section ─── */}
-			<SlotSessionSection
-				date={formattedDate}
-				duration={timeSub}
-				time={therapistTimeStr}
-				timeSub={patientTimeStr}
-			/>
+			<SlotSessionSection {...sessionDetails} />
 
 			<Divider />
 

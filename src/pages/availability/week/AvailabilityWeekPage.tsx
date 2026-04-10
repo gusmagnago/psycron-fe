@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useParams } from 'react-router-dom';
+import { useParams, useSearchParams } from 'react-router-dom';
+import { updateAvailabilitySettings } from '@psycron/api/availability';
 import { getAppointmentDetailsBySlotId } from '@psycron/api/user/availability';
 import { AvailabilityLegend } from '@psycron/components/availability/AvailabilityLegend';
 import { NavButton } from '@psycron/components/availability/AvailabilityNavButton';
@@ -14,10 +15,16 @@ import {
 	Filter,
 	FilterFull,
 } from '@psycron/components/icons';
+import { Modal } from '@psycron/components/modal/Modal';
+import { useAlert } from '@psycron/context/alert/AlertContext';
+import {
+	JUPITER_AVAILABILITY_CONFIG_KEY,
+	useJupiterAvailabilityConfig,
+} from '@psycron/hooks/useJupiterAvailabilityConfig';
 import { useTherapistId } from '@psycron/hooks/useTherapistId';
 import useViewport from '@psycron/hooks/useViewport';
 import { PageLayout } from '@psycron/layouts/app/pages-layout/PageLayout';
-import { useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { format, isPast, isToday, parseISO } from 'date-fns';
 
 import { DayHeaderPopover } from './day-header-popover/DayHeaderPopover';
@@ -42,11 +49,45 @@ import {
 } from './AvailabilityWeekPage.styles';
 import type { IWeekSlot } from './AvailabilityWeekPage.types';
 
+const parseDebugNowMinutes = (value: string | null): number | null => {
+	if (!value || !import.meta.env.DEV) return null;
+
+	const match = value.match(/^(\d{1,2}):(\d{2})$/);
+	if (!match) return null;
+
+	const hours = Number(match[1]);
+	const minutes = Number(match[2]);
+
+	if (
+		Number.isNaN(hours) ||
+		Number.isNaN(minutes) ||
+		hours < 0 ||
+		hours > 23 ||
+		minutes < 0 ||
+		minutes > 59
+	) {
+		return null;
+	}
+
+	return hours * 60 + minutes;
+};
+
 export const AvailabilityWeekPage = () => {
+	const WEEKDAY_KEYS = [
+		'SUNDAY',
+		'MONDAY',
+		'TUESDAY',
+		'WEDNESDAY',
+		'THURSDAY',
+		'FRIDAY',
+		'SATURDAY',
+	] as const;
 	const todayCardId = 'availability-week-mobile-today';
 	const { t } = useTranslation();
 	const { date } = useParams<{ date: string }>();
+	const [searchParams] = useSearchParams();
 	const { isMobile } = useViewport();
+	const { showAlert } = useAlert();
 	const {
 		activeFilterCount,
 		allSessionTypes,
@@ -64,7 +105,6 @@ export const AvailabilityWeekPage = () => {
 		legendItems,
 		mobileDays,
 		prefs,
-		timeSlots,
 		toggleDayExpanded,
 		toggleDeliveryMode,
 		toggleSessionType,
@@ -75,13 +115,18 @@ export const AvailabilityWeekPage = () => {
 		weekDays,
 		weekRange,
 	} = useAvailabilityWeekViewModel({ date });
+	const { availability } = useJupiterAvailabilityConfig();
 
 	const [selectedSlot, setSelectedSlot] = useState<IWeekSlot | null>(null);
 	const [filterAnchorEl, setFilterAnchorEl] = useState<HTMLElement | null>(
 		null
 	);
 	const [dayPopoverDate, setDayPopoverDate] = useState<string | null>(null);
+	const [defaultBlockedDate, setDefaultBlockedDate] = useState<string | null>(
+		null
+	);
 	const [shouldScrollToToday, setShouldScrollToToday] = useState(false);
+	const debugNowMinutes = parseDebugNowMinutes(searchParams.get('debugNow'));
 
 	const queryClient = useQueryClient();
 	const therapistId = useTherapistId();
@@ -92,10 +137,51 @@ export const AvailabilityWeekPage = () => {
 	const unblockDay = useUnblockDay(therapistId, () => {
 		setDayPopoverDate(null);
 	});
+	const enableWorkingDay = useMutation({
+		mutationFn: async (weekday: string) => {
+			if (!availability?.timeRange) {
+				throw new Error('Missing availability time range');
+			}
+
+			const nextWorkingDays = Array.from(
+				new Set([...(availability.workingDays ?? []), weekday])
+			);
+
+			return updateAvailabilitySettings({
+				timeRange: availability.timeRange,
+				workingDays: nextWorkingDays,
+			});
+		},
+		onError: () => {
+			showAlert({
+				message: t('availability.week.default-blocked-day.error'),
+				severity: 'error',
+			});
+		},
+		onSuccess: (updated) => {
+			queryClient.setQueryData(
+				[JUPITER_AVAILABILITY_CONFIG_KEY],
+				updated
+			);
+			queryClient.invalidateQueries({ queryKey: ['therapistAvailability'] });
+			queryClient.invalidateQueries({
+				queryKey: [JUPITER_AVAILABILITY_CONFIG_KEY],
+			});
+			showAlert({
+				message: t('availability.week.default-blocked-day.success'),
+				severity: 'success',
+			});
+			setDefaultBlockedDate(null);
+		},
+	});
 
 	const handleDayHeaderClick = (dateStr: string) => {
 		const dayDate = parseISO(dateStr);
 		if (isPast(dayDate) && !isToday(dayDate)) return;
+		if (getDaySlots(dayDate).length === 0) {
+			setDefaultBlockedDate(dateStr);
+			return;
+		}
 		setDayPopoverDate(dateStr);
 	};
 
@@ -234,12 +320,12 @@ export const AvailabilityWeekPage = () => {
 					/>
 				) : (
 					<AvailabilityWeekDesktopGrid
+						debugNowMinutes={debugNowMinutes}
 						getDaySlots={getDaySlots}
 						getVisibleDaySlots={getVisibleDaySlots}
 						onDayHeaderClick={handleDayHeaderClick}
 						onSlotClick={handleSlotClick}
 						onSlotPointerDown={handleSlotPointerDown}
-						timeSlots={timeSlots}
 						weekData={weekData}
 						weekDays={weekDays}
 					/>
@@ -300,6 +386,32 @@ export const AvailabilityWeekPage = () => {
 						/>
 					);
 				})()}
+
+			{defaultBlockedDate && (
+				<Modal
+					openModal
+					title={t('availability.week.default-blocked-day.title')}
+					onClose={() => setDefaultBlockedDate(null)}
+					cardActionsProps={{
+						actionName: t('availability.week.default-blocked-day.confirm'),
+						hasSecondAction: true,
+						isLoading: enableWorkingDay.isPending,
+						onClick: () =>
+							enableWorkingDay.mutate(
+								WEEKDAY_KEYS[parseISO(defaultBlockedDate).getDay()]
+							),
+						secondAction: () => setDefaultBlockedDate(null),
+						secondActionName: t('availability.week.drawer.cancel-back'),
+					}}
+				>
+					{t('availability.week.default-blocked-day.body', {
+						day: format(parseISO(defaultBlockedDate), 'EEEE, MMMM d'),
+						weekday: t(
+							`jupiter.days.${WEEKDAY_KEYS[parseISO(defaultBlockedDate).getDay()]}`
+						),
+					})}
+				</Modal>
+			)}
 
 			{selectedSlot && (
 				<AvailabilityWeekDrawer

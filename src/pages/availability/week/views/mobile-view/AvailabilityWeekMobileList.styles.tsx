@@ -14,6 +14,7 @@ import {
 	SLOT_COLORS,
 } from '../../AvailabilityWeekPage.styles';
 import type { SlotStatus } from '../../AvailabilityWeekPage.types';
+import { getBufferHeight } from '../../AvailabilityWeekPage.utils';
 
 export const MobileDayList = styled(Box)`
 	display: flex;
@@ -165,18 +166,28 @@ export const MobileSlotCard = styled(ButtonBase, {
 `;
 
 export const MobileSlotBuffer = styled(ButtonBase, {
-	shouldForwardProp: (prop) => prop !== 'bufferFor',
-})<{ bufferFor: 'booked-google' | 'booked-jupiter' }>`
+	shouldForwardProp: (prop) => prop !== 'bufferFor' && prop !== 'bufferMinutes',
+})<{
+	bufferFor: 'booked-google' | 'booked-jupiter';
+	bufferMinutes: number;
+}>`
 	width: 100%;
-	border-radius: ${spacing.small};
-	padding: ${spacing.xxs} ${spacing.small};
-	height: 56px;
+	border-radius: ${spacing.xs};
+	padding: 0 ${spacing.small};
+	height: ${({ bufferMinutes }) => getBufferHeight(bufferMinutes, 'mobile')}px;
 	display: flex;
 	flex-direction: row;
 	align-items: center;
 	gap: ${spacing.small};
 	border-left: 3px solid ${({ bufferFor }) => BUFFER_COLORS[bufferFor]};
-	background: ${({ bufferFor }) => hexToRgba(BUFFER_COLORS[bufferFor], 0.07)};
+	background: repeating-linear-gradient(
+			-45deg,
+			transparent,
+			transparent 3px,
+			${({ bufferFor }) => hexToRgba(BUFFER_COLORS[bufferFor], 0.06)} 3px,
+			${({ bufferFor }) => hexToRgba(BUFFER_COLORS[bufferFor], 0.06)} 6px
+		),
+		${({ bufferFor }) => hexToRgba(BUFFER_COLORS[bufferFor], 0.07)};
 	cursor: pointer;
 	transition:
 		transform 0.15s ease,

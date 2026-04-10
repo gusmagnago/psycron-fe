@@ -987,7 +987,7 @@
           "placeholder": "Search or type a new name",
           "type-to-search": "Type at least 2 characters to search"
         },
-        "patient-time": "Patient time",
+        "patient-time": "Patient's local time",
         "reschedule": "Reschedule",
         "reschedule-choice-sub": "Move to a different time slot",
         "reschedule-confirm": "Confirm reschedule",
@@ -1005,7 +1005,7 @@
         "status-cancelled": "Cancelled",
         "status-confirmed": "Confirmed",
         "available-status-open": "Open for booking",
-        "your-time": "Your time",
+        "your-time": "Your local time",
         "appointment-address": "Appointment address",
         "patient-phone": "Patient's phone",
         "patient-provides-address": "Patient will provide the address",
@@ -1078,11 +1078,19 @@
       "filters": "Filters",
       "collapse-day": "Show less",
       "expand-day": "+{{count}} more",
+      "blocked-hover-label": "Blocked slot",
       "show-available-slots": "Show available times ({{count}})",
       "slot": "slot",
       "slots": "slots",
       "title": "Week Schedule",
       "settings": "Settings",
+      "default-blocked-day": {
+        "body": "{{day}} is currently blocked by your default availability settings. If you continue, all future {{weekday}}s will become available using your current working hours.",
+        "confirm": "Set full day available",
+        "error": "Could not update your default availability. Please try again.",
+        "success": "Default availability updated successfully.",
+        "title": "Make this weekday available?"
+      },
       "day-header": {
         "actions": "Day actions",
         "block-all": "Block all available slots",

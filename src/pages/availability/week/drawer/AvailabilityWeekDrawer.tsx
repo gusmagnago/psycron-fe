@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
+import { useWatch } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import type { IPatientSearchResult } from '@psycron/api/user/availability/index.types';
 import { StatusEnum } from '@psycron/api/user/availability/index.types';
@@ -162,6 +163,10 @@ export const AvailabilityWeekDrawer = ({
 		patientSearch.selectedPatient?._id,
 		sessionType
 	);
+	const watchedPatientTimeZone = useWatch({
+		control: methods.control,
+		name: 'timeZone',
+	});
 
 	const applyPatientToForm = (patient: IPatientSearchResult) => {
 		if (!patient) return;
@@ -307,9 +312,16 @@ export const AvailabilityWeekDrawer = ({
 	});
 
 	const patientTZOverride =
-		appointmentDetailsBySlotId?.appointment?.patient?.timeZone ?? undefined;
+		appointmentDetailsBySlotId?.appointment?.patient?.timeZone ??
+		watchedPatientTimeZone ??
+		undefined;
 
-	const { therapistTimeStr, patientTimeStr } = useMemo(() => {
+	const {
+		patientTimeStr,
+		patientTimeZoneName,
+		therapistTimeStr,
+		therapistTimeZoneName,
+	} = useMemo(() => {
 		const therapistTZ =
 			userDetails?.timeZone ?? Intl.DateTimeFormat().resolvedOptions().timeZone;
 		return computeTimeStrings(
@@ -430,8 +442,14 @@ export const AvailabilityWeekDrawer = ({
 	const sessionDetails = {
 		date: formattedDate,
 		duration: timeSub,
-		time: therapistTimeStr,
-		timeSub: isBooked ? patientTimeStr : null,
+		patientTime:
+			isBooked || isAvailable ? (patientTimeStr ?? therapistTimeStr) : null,
+		patientTimeZoneName:
+			isBooked || isAvailable
+				? (patientTimeZoneName ?? therapistTimeZoneName)
+				: null,
+		therapistTime: therapistTimeStr,
+		therapistTimeZoneName,
 	};
 
 	const renderDefaultBody = () => {
@@ -460,16 +478,13 @@ export const AvailabilityWeekDrawer = ({
 			return (
 				<SlotBookedBody
 					appointmentDetails={appointmentDetailsBySlotId}
-					formattedDate={formattedDate}
 					isGoogle={isGoogle}
 					isLoading={isAppointmentDetailsBySlotIdLoading}
 					isPast={isPast}
 					patientName={patientName}
-					patientTimeStr={patientTimeStr}
+					sessionDetails={sessionDetails}
 					sessionType={sessionType}
 					slot={slot}
-					therapistTimeStr={therapistTimeStr}
-					timeSub={timeSub}
 					bookingLink={bookingLink}
 					shareText={shareText}
 					shareTitle={shareTitle}

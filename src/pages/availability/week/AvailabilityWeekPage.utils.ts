@@ -53,3 +53,19 @@ export const sortMobileDaySlots = (slots: IWeekSlot[]): IWeekSlot[] =>
 
 export const isFreeOnlyMobileDay = (slots: IWeekSlot[]): boolean =>
 	slots.length > 0 && slots.every(isFreeMobileSlot);
+
+// ─── Buffer height ────────────────────────────────────────────────────────────
+
+const MIN_BUFFER_HEIGHT_DESKTOP = 16;
+const MIN_BUFFER_HEIGHT_MOBILE = 24;
+
+export const getBufferHeight = (
+	bufferMinutes: number,
+	platform: 'desktop' | 'mobile'
+): number => {
+	const minHeight =
+		platform === 'desktop'
+			? MIN_BUFFER_HEIGHT_DESKTOP
+			: MIN_BUFFER_HEIGHT_MOBILE;
+	return Math.max(bufferMinutes * 2, minHeight);
+};
