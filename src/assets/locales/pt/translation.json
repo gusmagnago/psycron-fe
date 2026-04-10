@@ -1256,16 +1256,26 @@
         "generic": "Dados de paciente existentes"
       }
     },
-    "detail": {
-      "incoming-patient": "Paciente recebido",
-      "matched-by": "Detectado por",
-      "candidate-records": "Registros candidatos",
-      "conflicting-date": "Data em conflito",
-      "conflicting-time": "Hora em conflito",
-      "recurrence-pattern": "Padrão de recorrência",
-      "not-provided": "Não informado"
-    },
+		"detail": {
+			"incoming-patient": "Paciente recebido",
+			"existing-patient": "Paciente existente",
+			"matched-by": "Detectado por",
+			"candidate-records": "Registros candidatos",
+			"conflicting-details": "Detalhes em conflito",
+			"conflicting-date": "Data em conflito",
+			"conflicting-time": "Hora em conflito",
+			"recurrence-pattern": "Padrão de recorrência",
+			"preferred-contact": "Contato preferido",
+			"additional-candidates": "{{count}} outro possível registro ainda está na fila para revisão.",
+			"additional-candidates_other": "{{count}} outros possíveis registros ainda estão na fila para revisão.",
+			"not-provided": "Não informado"
+		},
     "actions": {
+      "recommended-title": "Resolução recomendada",
+      "recommended-hint": "Una ambos os registros e mantenha um único paciente como fonte principal.",
+      "alternatives-title": "Outras opções",
+      "alternatives-hint": "Use apenas um registro se não quiser unir os dois agora.",
+      "merge": "Unir pacientes",
       "keep-existing": "Manter paciente existente",
       "keep-new": "Manter novo paciente",
       "dismiss": "Dispensar",

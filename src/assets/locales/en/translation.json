@@ -1256,16 +1256,26 @@
         "generic": "Existing patient details"
       }
     },
-    "detail": {
-      "incoming-patient": "Incoming patient",
-      "matched-by": "Matched by",
-      "candidate-records": "Candidate records",
-      "conflicting-date": "Conflicting date",
-      "conflicting-time": "Conflicting time",
-      "recurrence-pattern": "Recurrence pattern",
-      "not-provided": "Not provided"
-    },
+		"detail": {
+			"incoming-patient": "Incoming patient",
+			"existing-patient": "Existing patient",
+			"matched-by": "Matched by",
+			"candidate-records": "Candidate records",
+			"conflicting-details": "Conflicting details",
+			"conflicting-date": "Conflicting date",
+			"conflicting-time": "Conflicting time",
+			"recurrence-pattern": "Recurrence pattern",
+			"preferred-contact": "Preferred contact",
+			"additional-candidates": "{{count}} more possible match is still queued for review.",
+			"additional-candidates_other": "{{count}} more possible matches are still queued for review.",
+			"not-provided": "Not provided"
+		},
     "actions": {
+      "recommended-title": "Recommended resolution",
+      "recommended-hint": "Merge both records and keep one patient as the source of truth.",
+      "alternatives-title": "Other options",
+      "alternatives-hint": "Use one record only if you do not want to merge them now.",
+      "merge": "Merge patients",
       "keep-existing": "Keep existing patient",
       "keep-new": "Keep new patient",
       "dismiss": "Dismiss",

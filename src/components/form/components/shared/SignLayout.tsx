@@ -26,7 +26,7 @@ export const SignLayout: FC<ISignLayout> = ({
 }: ISignLayout) => {
 	const { t } = useTranslation();
 
-	const isTestEnv = window.location.hostname.startsWith('test.');
+	const isTestEnv = window.location.hostname.startsWith('dev.');
 
 	const onClick = (): void => {
 		capture(PostHogEvent.AuthSwitchFormClicked, {

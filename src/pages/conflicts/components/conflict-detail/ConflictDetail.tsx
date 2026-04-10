@@ -1,18 +1,16 @@
 import { useTranslation } from 'react-i18next';
+import type {
+	IPatientDuplicateConflictMetadata,
+	ISlotReplicationConflictMetadata,
+} from '@psycron/api/user/conflicts/index.types';
 import { Button } from '@psycron/components/button/Button';
 import { Text } from '@psycron/components/text/Text';
 
 import {
-	ConflictActions,
 	ConflictDescription,
-	ConflictDetailHeader,
-	ConflictDetailMetaRow,
-	ConflictDetailPanel,
-	ConflictMetaGrid,
 	ConflictStatusPill,
 	ConflictTitle,
 	ConflictTypeLabel,
-	EmptyState,
 } from '../../ConflictsPage.styles';
 import {
 	getConflictDisplayCopy,
@@ -20,7 +18,23 @@ import {
 	getConflictTypeLabel,
 } from '../../ConflictsPage.utils';
 
-import type { ConflictDetailProps } from './ConflictDetail.types';
+import {
+	ConflictActionAlternatives,
+	ConflictActionFooter,
+	ConflictActionHeading,
+	ConflictActionHint,
+	ConflictActions,
+	ConflictActionSection,
+	ConflictDetailHeader,
+	ConflictDetailMetaRow,
+	ConflictDetailPanel,
+	ConflictDetailSkeleton,
+	ConflictDetailSkeletonBlock,
+	ConflictDetailSkeletonRow,
+	ConflictMetaGrid,
+	EmptyState,
+} from './styles/ConflictDetail.styles';
+import type { ConflictDetailProps } from './types/ConflictDetail.types';
 import { PatientDuplicateConflictDetail } from './PatientDuplicateConflictDetail';
 import { SlotReplicationConflictDetail } from './SlotReplicationConflictDetail';
 
@@ -39,56 +53,111 @@ export const ConflictDetail = ({
 		);
 	}
 
-	const metadata =
+	const duplicateMetadata =
 		conflict.type === 'PATIENT_DUPLICATE'
-			? (
-					<PatientDuplicateConflictDetail metadata={conflict.metadata} t={t} />
-				)
-			: <SlotReplicationConflictDetail metadata={conflict.metadata} t={t} />;
+			? (conflict.metadata as IPatientDuplicateConflictMetadata)
+			: null;
+	const slotReplicationMetadata =
+		conflict.type === 'SLOT_REPLICATION'
+			? (conflict.metadata as ISlotReplicationConflictMetadata)
+			: null;
+	const metadata =
+		conflict.type === 'PATIENT_DUPLICATE' && duplicateMetadata ? (
+			<PatientDuplicateConflictDetail
+				metadata={duplicateMetadata}
+				shouldFetchCandidates={conflict.status === 'OPEN' && !isUpdating}
+				t={t}
+			/>
+		) : (
+			<SlotReplicationConflictDetail metadata={slotReplicationMetadata!} t={t} />
+		);
+	const canMergePatients =
+		Boolean(duplicateMetadata?.candidatePatients[0]?._id) &&
+		Boolean(duplicateMetadata?.candidatePatients[1]?._id);
 
 	const actions =
 		conflict.type === 'PATIENT_DUPLICATE' ? (
 			<ConflictActions>
-				<Button
-					small
-					disabled={isUpdating}
-					onClick={() =>
-						onUpdateConflict({
-							actionTaken: 'KEEP_EXISTING_PATIENT',
-							conflictId: conflict._id,
-							status: 'RESOLVED',
-						})
-					}
-				>
-					{t('conflicts.actions.keep-existing')}
-				</Button>
-				<Button
-					small
-					disabled={isUpdating}
-					onClick={() =>
-						onUpdateConflict({
-							actionTaken: 'KEEP_NEW_PATIENT',
-							conflictId: conflict._id,
-							status: 'RESOLVED',
-						})
-					}
-				>
-					{t('conflicts.actions.keep-new')}
-				</Button>
-				<Button
-					small
-					variant='outlined'
-					disabled={isUpdating}
-					onClick={() =>
-						onUpdateConflict({
-							actionTaken: 'DISMISSED',
-							conflictId: conflict._id,
-							status: 'DISMISSED',
-						})
-					}
-				>
-					{t('conflicts.actions.dismiss')}
-				</Button>
+				<ConflictActionSection>
+					<ConflictActionHeading>
+						{t('conflicts.actions.recommended-title')}
+					</ConflictActionHeading>
+					<ConflictActionHint>
+						{t('conflicts.actions.recommended-hint')}
+					</ConflictActionHint>
+					<Button
+						fullWidth
+						tertiary
+						variant='contained'
+						disabled={isUpdating || !canMergePatients}
+						onClick={() =>
+							onUpdateConflict({
+								actionTaken: 'MERGE_PATIENTS',
+								conflictId: conflict._id,
+								primaryPatientId: duplicateMetadata?.candidatePatients[0]?._id,
+								secondaryPatientId:
+									duplicateMetadata?.candidatePatients[1]?._id,
+								status: 'RESOLVED',
+							})
+						}
+					>
+						{t('conflicts.actions.merge')}
+					</Button>
+				</ConflictActionSection>
+				<ConflictActionSection>
+					<ConflictActionHeading>
+						{t('conflicts.actions.alternatives-title')}
+					</ConflictActionHeading>
+					<ConflictActionHint>
+						{t('conflicts.actions.alternatives-hint')}
+					</ConflictActionHint>
+					<ConflictActionAlternatives>
+						<Button
+							small
+							secondary
+							disabled={isUpdating}
+							onClick={() =>
+								onUpdateConflict({
+									actionTaken: 'KEEP_EXISTING_PATIENT',
+									conflictId: conflict._id,
+									status: 'RESOLVED',
+								})
+							}
+						>
+							{t('conflicts.actions.keep-existing')}
+						</Button>
+						<Button
+							small
+							variant='outlined'
+							disabled={isUpdating}
+							onClick={() =>
+								onUpdateConflict({
+									actionTaken: 'KEEP_NEW_PATIENT',
+									conflictId: conflict._id,
+									status: 'RESOLVED',
+								})
+							}
+						>
+							{t('conflicts.actions.keep-new')}
+						</Button>
+					</ConflictActionAlternatives>
+				</ConflictActionSection>
+				<ConflictActionFooter>
+					<Button
+						small
+						tertiary
+						disabled={isUpdating}
+						onClick={() =>
+							onUpdateConflict({
+								actionTaken: 'DISMISSED',
+								conflictId: conflict._id,
+								status: 'DISMISSED',
+							})
+						}
+					>
+						{t('conflicts.actions.dismiss')}
+					</Button>
+				</ConflictActionFooter>
 			</ConflictActions>
 		) : (
 			<ConflictActions>
@@ -138,8 +207,28 @@ export const ConflictDetail = ({
 				<ConflictTitle>{displayCopy.title}</ConflictTitle>
 				<ConflictDescription>{displayCopy.description}</ConflictDescription>
 			</ConflictDetailHeader>
-			<ConflictMetaGrid>{metadata}</ConflictMetaGrid>
-			{actions}
+			{isUpdating ? (
+				<ConflictDetailSkeleton>
+					<ConflictDetailSkeletonRow>
+						<ConflictDetailSkeletonBlock height={96} variant='rounded' />
+						<ConflictDetailSkeletonBlock height={96} variant='rounded' />
+					</ConflictDetailSkeletonRow>
+					<ConflictDetailSkeletonRow>
+						<ConflictDetailSkeletonBlock height={280} variant='rounded' />
+						<ConflictDetailSkeletonBlock height={280} variant='rounded' />
+					</ConflictDetailSkeletonRow>
+					<ConflictDetailSkeletonRow>
+						<ConflictDetailSkeletonBlock height={48} variant='rounded' />
+						<ConflictDetailSkeletonBlock height={48} variant='rounded' />
+						<ConflictDetailSkeletonBlock height={48} variant='rounded' />
+					</ConflictDetailSkeletonRow>
+				</ConflictDetailSkeleton>
+			) : (
+				<>
+					<ConflictMetaGrid>{metadata}</ConflictMetaGrid>
+					{actions}
+				</>
+			)}
 		</ConflictDetailPanel>
 	);
 };

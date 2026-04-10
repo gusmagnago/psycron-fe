@@ -56,6 +56,8 @@ export interface IGetConflictCountResponse {
 export interface IUpdateConflictPayload {
 	actionTaken?: string;
 	conflictId: string;
+	primaryPatientId?: string;
+	secondaryPatientId?: string;
 	status: Extract<ConflictStatus, 'DISMISSED' | 'RESOLVED'>;
 	therapistId: string;
 }

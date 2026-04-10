@@ -21,7 +21,6 @@ import {
 	FiltersRow,
 	FiltersSection,
 	SidebarCount,
-	SidebarEyebrow,
 	SidebarHeader,
 	SidebarSubtitle,
 	SidebarTitle,
@@ -38,8 +37,8 @@ export const ConflictsPage = () => {
 	const {
 		conflicts,
 		handleUpdateConflict,
-		isLoading,
 		isUpdating,
+		isLoading,
 		selectedConflict,
 		selectedConflictId,
 		setSelectedConflictId,
@@ -48,18 +47,18 @@ export const ConflictsPage = () => {
 		statusFilter,
 		typeFilter,
 	} = useConflictsPageState({ t });
+
 	const dateLocale = i18n.language === 'pt' ? ptBR : enUS;
 
 	return (
 		<PageLayout
 			title={t('conflicts.title')}
 			subTitle={t('conflicts.subtitle')}
-			isLoading={isLoading}
+			isLoading={isLoading && !isUpdating}
 		>
 			<ConflictsLayout>
 				<ConflictsSidebar>
 					<SidebarHeader>
-						<SidebarEyebrow>{t('conflicts.queue.eyebrow')}</SidebarEyebrow>
 						<SidebarTitleRow>
 							<SidebarTitle>{t('conflicts.queue.title')}</SidebarTitle>
 							<SidebarCount>{conflicts.length}</SidebarCount>
