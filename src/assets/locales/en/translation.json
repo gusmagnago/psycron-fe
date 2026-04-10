@@ -298,6 +298,7 @@
     },
     "navbar": {
       "dashboard": "Dashboard",
+      "conflicts": "Conflicts",
       "user-settings": "User settings",
       "test": "Tests"
     },
@@ -1175,6 +1176,49 @@
       "recurrence-pattern-drawer-title": "Recurrence pattern",
       "working-hours-start-label": "Start",
       "working-hours-time-label": "Time range"
+    }
+  }
+  ,
+  "conflicts": {
+    "title": "Conflict panel",
+    "subtitle": "Review and resolve booking and patient conflicts in one place.",
+    "empty": "No conflicts match your current filters.",
+    "filters": {
+      "status": "Status",
+      "type": "Type",
+      "open": "Open",
+      "all-statuses": "All statuses",
+      "all-types": "All types"
+    },
+    "queue": {
+      "eyebrow": "Operations",
+      "title": "Conflict queue",
+      "subtitle": "Review the items that still need your decision."
+    },
+    "status": {
+      "open": "Open",
+      "resolved": "Resolved",
+      "dismissed": "Dismissed"
+    },
+    "types": {
+      "patient-duplicate": "Patient duplicate",
+      "slot-replication": "Slot replication"
+    },
+    "detail": {
+      "incoming-patient": "Incoming patient",
+      "matched-by": "Matched by",
+      "candidate-records": "Candidate records",
+      "conflicting-date": "Conflicting date",
+      "conflicting-time": "Conflicting time",
+      "recurrence-pattern": "Recurrence pattern",
+      "not-provided": "Not provided"
+    },
+    "actions": {
+      "keep-existing": "Keep existing patient",
+      "keep-new": "Keep new patient",
+      "dismiss": "Dismiss",
+      "mark-resolved": "Mark resolved",
+      "error": "We couldn't update this conflict. Please try again."
     }
   }
 }

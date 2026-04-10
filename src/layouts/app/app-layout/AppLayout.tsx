@@ -3,9 +3,11 @@ import { useTranslation } from 'react-i18next';
 import { Outlet } from 'react-router-dom';
 import { Box, Divider } from '@mui/material';
 import { AppAnalytics } from '@psycron/analytics/posthog/AppAnalytics';
+import { getConflictCount } from '@psycron/api/user/conflicts';
 import { EnvironmentBanner } from '@psycron/components/environment-banner/EnvironmentBanner';
 import { AvailabilityGate } from '@psycron/components/guards/AvailabilityGate';
 import {
+	Alert,
 	Calendar,
 	DashboardIcon,
 	Help,
@@ -25,11 +27,13 @@ import { useAuthSession } from '@psycron/hooks/useAuthSession';
 import useViewport from '@psycron/hooks/useViewport';
 import {
 	AVAILABILITYPATH,
+	CONFLICTS,
 	DASHBOARD,
 	LOGOUT,
 	PATIENTS,
 	PAYMENTS,
 } from '@psycron/pages/urls';
+import { useQuery } from '@tanstack/react-query';
 
 import {
 	Content,
@@ -49,6 +53,11 @@ export const AppLayout: FC = () => {
 
 	const { isUserDetailsVisible, userDetails, toggleUserDetails } =
 		useUserDetails();
+	const { data: conflictCountData } = useQuery({
+		queryKey: ['conflictCount', userDetails?._id],
+		queryFn: () => getConflictCount(userDetails?._id ?? ''),
+		enabled: Boolean(userDetails?._id),
+	});
 
 	const menuItems = [
 		{
@@ -66,6 +75,12 @@ export const AppLayout: FC = () => {
 			name: t('globals.appointments-manager'),
 			icon: <Calendar />,
 			path: AVAILABILITYPATH,
+		},
+		{
+			name: t('components.navbar.conflicts'),
+			icon: <Alert />,
+			path: CONFLICTS,
+			badgeCount: conflictCountData?.count ?? 0,
 		},
 		{
 			name: t('globals.patients'),

@@ -10,7 +10,7 @@ export const PageLayoutWrapper = styled(Box)`
 `;
 
 export const PageTitleWrapper = styled(Box)`
-	height: 60px;
+	min-height: 60px;
 `;
 
 export const PageTitle = styled(Text)`
