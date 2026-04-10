@@ -1,6 +1,7 @@
 import { useTranslation } from 'react-i18next';
 import { PageLayout } from '@psycron/layouts/app/pages-layout/PageLayout';
 import { format } from 'date-fns';
+import { enUS, ptBR } from 'date-fns/locale';
 
 import { ConflictDetail } from './components/conflict-detail/ConflictDetail';
 import { useConflictsPageState } from './hooks/useConflictsPageState';
@@ -27,12 +28,13 @@ import {
 	SidebarTitleRow,
 } from './ConflictsPage.styles';
 import {
+	getConflictDisplayCopy,
 	getConflictStatusLabel,
 	getConflictTypeLabel,
 } from './ConflictsPage.utils';
 
 export const ConflictsPage = () => {
-	const { t } = useTranslation();
+	const { i18n, t } = useTranslation();
 	const {
 		conflicts,
 		handleUpdateConflict,
@@ -46,6 +48,7 @@ export const ConflictsPage = () => {
 		statusFilter,
 		typeFilter,
 	} = useConflictsPageState({ t });
+	const dateLocale = i18n.language === 'pt' ? ptBR : enUS;
 
 	return (
 		<PageLayout
@@ -112,30 +115,36 @@ export const ConflictsPage = () => {
 					</FiltersSection>
 
 					<ConflictList>
-						{conflicts.map((conflict) => (
-							<ConflictCard
-								isSelected={conflict._id === selectedConflictId}
-								key={conflict._id}
-								onClick={() => setSelectedConflictId(conflict._id)}
-								type='button'
-							>
-								<ConflictCardMetaRow>
-									<ConflictTypeLabel>
-										{getConflictTypeLabel(conflict.type, t)}
-									</ConflictTypeLabel>
-									<ConflictStatusPill>
-										{getConflictStatusLabel(conflict.status, t)}
-									</ConflictStatusPill>
-								</ConflictCardMetaRow>
-								<ConflictTitle>{conflict.title}</ConflictTitle>
-								<ConflictDescription>
-									{conflict.description}
-								</ConflictDescription>
-								<ConflictCardDate>
-									{format(new Date(conflict.createdAt), 'PPP')}
-								</ConflictCardDate>
-							</ConflictCard>
-						))}
+						{conflicts.map((conflict) => {
+							const displayCopy = getConflictDisplayCopy(conflict, t);
+
+							return (
+								<ConflictCard
+									isSelected={conflict._id === selectedConflictId}
+									key={conflict._id}
+									onClick={() => setSelectedConflictId(conflict._id)}
+									type='button'
+								>
+									<ConflictCardMetaRow>
+										<ConflictTypeLabel>
+											{getConflictTypeLabel(conflict.type, t)}
+										</ConflictTypeLabel>
+										<ConflictStatusPill>
+											{getConflictStatusLabel(conflict.status, t)}
+										</ConflictStatusPill>
+									</ConflictCardMetaRow>
+									<ConflictTitle>{displayCopy.title}</ConflictTitle>
+									<ConflictDescription>
+										{displayCopy.description}
+									</ConflictDescription>
+									<ConflictCardDate>
+										{format(new Date(conflict.createdAt), 'PPP', {
+											locale: dateLocale,
+										})}
+									</ConflictCardDate>
+								</ConflictCard>
+							);
+						})}
 					</ConflictList>
 				</ConflictsSidebar>
 

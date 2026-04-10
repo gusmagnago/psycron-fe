@@ -15,6 +15,7 @@ import {
 	EmptyState,
 } from '../../ConflictsPage.styles';
 import {
+	getConflictDisplayCopy,
 	getConflictStatusLabel,
 	getConflictTypeLabel,
 } from '../../ConflictsPage.utils';
@@ -121,6 +122,8 @@ export const ConflictDetail = ({
 			</ConflictActions>
 		);
 
+	const displayCopy = getConflictDisplayCopy(conflict, t);
+
 	return (
 		<ConflictDetailPanel>
 			<ConflictDetailHeader>
@@ -132,8 +135,8 @@ export const ConflictDetail = ({
 						{getConflictStatusLabel(conflict.status, t)}
 					</ConflictStatusPill>
 				</ConflictDetailMetaRow>
-				<ConflictTitle>{conflict.title}</ConflictTitle>
-				<ConflictDescription>{conflict.description}</ConflictDescription>
+				<ConflictTitle>{displayCopy.title}</ConflictTitle>
+				<ConflictDescription>{displayCopy.description}</ConflictDescription>
 			</ConflictDetailHeader>
 			<ConflictMetaGrid>{metadata}</ConflictMetaGrid>
 			{actions}

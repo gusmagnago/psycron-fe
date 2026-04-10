@@ -36,6 +36,17 @@ export const getConflictCount = async (
 	return response.data;
 };
 
+export const scanPatientDuplicates = async (
+	therapistId: string
+): Promise<{ newConflicts: number; scannedPatients: number }> => {
+	const response = await apiClient.post<{
+		newConflicts: number;
+		scannedPatients: number;
+	}>(`/users/${therapistId}/conflicts/scan-duplicates`);
+
+	return response.data;
+};
+
 export const updateConflict = async ({
 	actionTaken,
 	conflictId,

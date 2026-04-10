@@ -5,6 +5,7 @@ import {
 	ConflictMetaLabel,
 	ConflictMetaValue,
 } from '../../ConflictsPage.styles';
+import { getPatientDuplicateMatchLabel } from '../../ConflictsPage.utils';
 
 interface PatientDuplicateConflictDetailProps {
 	metadata: IPatientDuplicateConflictMetadata;
@@ -33,7 +34,9 @@ export const PatientDuplicateConflictDetail = ({
 			</ConflictMetaGroup>
 			<ConflictMetaGroup>
 				<ConflictMetaLabel>{t('conflicts.detail.matched-by')}</ConflictMetaLabel>
-				<ConflictMetaValue>{metadata.match}</ConflictMetaValue>
+				<ConflictMetaValue>
+					{getPatientDuplicateMatchLabel(metadata, t)}
+				</ConflictMetaValue>
 			</ConflictMetaGroup>
 			<ConflictMetaGroup>
 				<ConflictMetaLabel>{t('conflicts.detail.candidate-records')}</ConflictMetaLabel>

@@ -1,9 +1,11 @@
 import { useTranslation } from 'react-i18next';
+import { useNavigate, useParams } from 'react-router-dom';
 import { Box } from '@mui/material';
 import { Button } from '@psycron/components/button/Button';
 import { AddPatientForm } from '@psycron/components/form/AddPatient/AddPatientForm';
 import { Google, Mail, Phone, WhatsApp } from '@psycron/components/icons';
 import { PageLayout } from '@psycron/layouts/app/pages-layout/PageLayout';
+import { CONFLICTS } from '@psycron/pages/urls';
 import { format } from 'date-fns';
 import { enUS, ptBR } from 'date-fns/locale';
 
@@ -12,6 +14,7 @@ import {
 	AddPatientAction,
 	ControlField,
 	ControlsBar,
+	DuplicateWarningPill,
 	EmptyBody,
 	EmptyState,
 	EmptyTitle,
@@ -96,7 +99,10 @@ const getPreferredContactIcon = (
 
 export const PatientListPage = () => {
 	const { i18n, t } = useTranslation();
+	const navigate = useNavigate();
+	const { locale } = useParams<{ locale: string }>();
 	const {
+		duplicatePatientIds,
 		filteredPatients,
 		hasPatients,
 		isDesktopTable,
@@ -109,6 +115,11 @@ export const PatientListPage = () => {
 		sortBy,
 		statusFilter,
 	} = usePatientListPageState();
+
+	const goToConflicts = (event: React.MouseEvent) => {
+		event.stopPropagation();
+		navigate(`/${locale}/${CONFLICTS}?type=PATIENT_DUPLICATE`);
+	};
 
 	const emptyTitle = hasPatients
 		? t('patients.list.empty.filtered-title')
@@ -228,6 +239,11 @@ export const PatientListPage = () => {
 												patient.contacts?.phone ||
 												t('patients.list.not-available')}
 										</SecondaryValue>
+										{duplicatePatientIds.has(patient._id) ? (
+											<DuplicateWarningPill onClick={goToConflicts} type='button'>
+												{t('patients.list.possible-duplicate')}
+											</DuplicateWarningPill>
+										) : null}
 									</PrimaryCell>
 									<PrimaryCell>
 										<SimpleValue>
@@ -280,11 +296,18 @@ export const PatientListPage = () => {
 													t('patients.list.not-available')}
 											</SecondaryValue>
 										</PrimaryCell>
-										<StatusPill active={patient.isActive}>
-											{patient.isActive
-												? t('patients.list.status-active')
-												: t('patients.list.status-inactive')}
-										</StatusPill>
+										<Box display='flex' gap='4px' alignItems='center' flexWrap='wrap'>
+											{duplicatePatientIds.has(patient._id) ? (
+												<DuplicateWarningPill onClick={goToConflicts} type='button'>
+													{t('patients.list.possible-duplicate')}
+												</DuplicateWarningPill>
+											) : null}
+											<StatusPill active={patient.isActive}>
+												{patient.isActive
+													? t('patients.list.status-active')
+													: t('patients.list.status-inactive')}
+											</StatusPill>
+										</Box>
 									</MobileCardTop>
 
 									<MobileMetaGrid>

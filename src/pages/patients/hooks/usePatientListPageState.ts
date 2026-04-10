@@ -1,11 +1,16 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { getPatientById } from '@psycron/api/patient';
+import {
+	getConflicts,
+	scanPatientDuplicates,
+} from '@psycron/api/user/conflicts';
+import type { IPatientDuplicateConflictMetadata } from '@psycron/api/user/conflicts/index.types';
 import type { IPatient } from '@psycron/context/user/auth/UserAuthenticationContext.types';
 import { useUserDetails } from '@psycron/context/user/details/UserDetailsContext';
 import useViewport from '@psycron/hooks/useViewport';
 import { PATIENTS } from '@psycron/pages/urls';
-import { useQueries } from '@tanstack/react-query';
+import { useMutation, useQueries, useQuery } from '@tanstack/react-query';
 
 export type PatientListStatusFilter = 'all' | 'active' | 'inactive';
 export type PatientListSort =
@@ -113,7 +118,41 @@ export const usePatientListPageState = () => {
 	const [statusFilter, setStatusFilter] =
 		useState<PatientListStatusFilter>('all');
 
-	const patientIds = userDetails?.patients ?? [];
+	const patientIds = [...new Set(userDetails?.patients ?? [])];
+
+	const scanMutation = useMutation({
+		mutationFn: () => scanPatientDuplicates(therapistId),
+	});
+
+	useEffect(() => {
+		if (therapistId && patientIds.length > 0) {
+			scanMutation.mutate();
+		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [therapistId]);
+
+	const { data: conflictsData } = useQuery({
+		enabled: Boolean(therapistId),
+		queryFn: () =>
+			getConflicts({
+				status: 'OPEN',
+				therapistId,
+				type: 'PATIENT_DUPLICATE',
+			}),
+		queryKey: ['conflicts', therapistId, 'PATIENT_DUPLICATE', 'OPEN'],
+	});
+
+	const duplicatePatientIds = useMemo(() => {
+		const ids = new Set<string>();
+		for (const conflict of conflictsData?.conflicts ?? []) {
+			const metadata =
+				conflict.metadata as IPatientDuplicateConflictMetadata;
+			for (const candidate of metadata.candidatePatients ?? []) {
+				ids.add(candidate._id);
+			}
+		}
+		return ids;
+	}, [conflictsData]);
 
 	const patientQueries = useQueries({
 		queries: patientIds.map((patientId) => ({
@@ -158,6 +197,7 @@ export const usePatientListPageState = () => {
 	};
 
 	return {
+		duplicatePatientIds,
 		filteredPatients,
 		hasPatients: patients.length > 0,
 		isDesktopTable: !isSmallerThanTablet,

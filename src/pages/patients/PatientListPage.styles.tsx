@@ -223,6 +223,26 @@ export const StatusPill = styled(Box, {
 	text-transform: uppercase;
 `;
 
+export const DuplicateWarningPill = styled('button')`
+	align-items: center;
+	background: ${hexToRgba(palette.warning.main, 0.12)};
+	border: 1px solid ${hexToRgba(palette.warning.main, 0.22)};
+	border-radius: 999px;
+	color: ${palette.warning.dark};
+	cursor: pointer;
+	display: inline-flex;
+	font-size: 0.72rem;
+	font-weight: 700;
+	justify-content: center;
+	padding: 0.18rem ${spacing.xs};
+	text-transform: uppercase;
+	white-space: nowrap;
+
+	&:hover {
+		background: ${hexToRgba(palette.warning.main, 0.2)};
+	}
+`;
+
 export const MobileCards = styled(Box)`
 	display: flex;
 	flex-direction: column;
