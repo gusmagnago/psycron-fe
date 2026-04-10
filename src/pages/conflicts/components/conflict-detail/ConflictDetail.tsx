@@ -1,11 +1,6 @@
 import { useTranslation } from 'react-i18next';
-import type {
-	IPatientDuplicateConflictMetadata,
-	ISlotReplicationConflictMetadata,
-} from '@psycron/api/user/conflicts/index.types';
 import { Button } from '@psycron/components/button/Button';
 import { Text } from '@psycron/components/text/Text';
-import { format } from 'date-fns';
 
 import {
 	ConflictActions,
@@ -14,9 +9,6 @@ import {
 	ConflictDetailMetaRow,
 	ConflictDetailPanel,
 	ConflictMetaGrid,
-	ConflictMetaGroup,
-	ConflictMetaLabel,
-	ConflictMetaValue,
 	ConflictStatusPill,
 	ConflictTitle,
 	ConflictTypeLabel,
@@ -28,71 +20,8 @@ import {
 } from '../../ConflictsPage.utils';
 
 import type { ConflictDetailProps } from './ConflictDetail.types';
-
-const renderPatientDuplicateMetadata = (
-	metadata: IPatientDuplicateConflictMetadata,
-	t: (key: string) => string
-) => {
-	const incomingName = [
-		metadata.incomingPatient?.firstName,
-		metadata.incomingPatient?.lastName,
-	]
-		.filter(Boolean)
-		.join(' ')
-		.trim();
-
-	return (
-		<>
-			<ConflictMetaGroup>
-				<ConflictMetaLabel>{t('conflicts.detail.incoming-patient')}</ConflictMetaLabel>
-				<ConflictMetaValue>
-					{incomingName || t('conflicts.detail.not-provided')}
-				</ConflictMetaValue>
-			</ConflictMetaGroup>
-			<ConflictMetaGroup>
-				<ConflictMetaLabel>{t('conflicts.detail.matched-by')}</ConflictMetaLabel>
-				<ConflictMetaValue>{metadata.match}</ConflictMetaValue>
-			</ConflictMetaGroup>
-			<ConflictMetaGroup>
-				<ConflictMetaLabel>{t('conflicts.detail.candidate-records')}</ConflictMetaLabel>
-				<ConflictMetaValue>
-					{metadata.candidatePatients
-						.map((patient) =>
-							[patient.firstName, patient.lastName].filter(Boolean).join(' ')
-						)
-						.filter(Boolean)
-						.join(', ') || t('conflicts.detail.not-provided')}
-				</ConflictMetaValue>
-			</ConflictMetaGroup>
-		</>
-	);
-};
-
-const renderSlotReplicationMetadata = (
-	metadata: ISlotReplicationConflictMetadata,
-	t: (key: string) => string
-) => (
-	<>
-		<ConflictMetaGroup>
-			<ConflictMetaLabel>{t('conflicts.detail.conflicting-date')}</ConflictMetaLabel>
-			<ConflictMetaValue>
-				{metadata.conflictingDate
-					? format(new Date(metadata.conflictingDate), 'PPP')
-					: t('conflicts.detail.not-provided')}
-			</ConflictMetaValue>
-		</ConflictMetaGroup>
-		<ConflictMetaGroup>
-			<ConflictMetaLabel>{t('conflicts.detail.conflicting-time')}</ConflictMetaLabel>
-			<ConflictMetaValue>{metadata.conflictingStartTime}</ConflictMetaValue>
-		</ConflictMetaGroup>
-		<ConflictMetaGroup>
-			<ConflictMetaLabel>{t('conflicts.detail.recurrence-pattern')}</ConflictMetaLabel>
-			<ConflictMetaValue>
-				{metadata.recurrencePattern ?? t('conflicts.detail.not-provided')}
-			</ConflictMetaValue>
-		</ConflictMetaGroup>
-	</>
-);
+import { PatientDuplicateConflictDetail } from './PatientDuplicateConflictDetail';
+import { SlotReplicationConflictDetail } from './SlotReplicationConflictDetail';
 
 export const ConflictDetail = ({
 	conflict,
@@ -111,14 +40,10 @@ export const ConflictDetail = ({
 
 	const metadata =
 		conflict.type === 'PATIENT_DUPLICATE'
-			? renderPatientDuplicateMetadata(
-					conflict.metadata as IPatientDuplicateConflictMetadata,
-					t
+			? (
+					<PatientDuplicateConflictDetail metadata={conflict.metadata} t={t} />
 				)
-			: renderSlotReplicationMetadata(
-					conflict.metadata as ISlotReplicationConflictMetadata,
-					t
-				);
+			: <SlotReplicationConflictDetail metadata={conflict.metadata} t={t} />;
 
 	const actions =
 		conflict.type === 'PATIENT_DUPLICATE' ? (

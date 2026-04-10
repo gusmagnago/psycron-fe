@@ -1180,8 +1180,6 @@
   }
   ,
   "conflicts": {
-    "mock-mode": "(mock mode)",
-    "mock-notice": "Showing mocked conflicts so you can preview the queue, the states, and the resolution flow locally.",
     "title": "Conflict panel",
     "subtitle": "Review and resolve booking and patient conflicts in one place.",
     "empty": "No conflicts match your current filters.",

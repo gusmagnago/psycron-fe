@@ -102,27 +102,6 @@ export const SidebarSubtitle = styled(Text)`
 	}
 `;
 
-export const MockModeNotice = styled(Box)`
-	background: linear-gradient(
-		135deg,
-		${hexToRgba(palette.secondary.main, 0.12)} 0%,
-		${hexToRgba(palette.secondary.main, 0.04)} 100%
-	);
-	border: 1px solid ${hexToRgba(palette.secondary.main, 0.16)};
-	border-radius: ${spacing.medium};
-	padding: ${spacing.small};
-`;
-
-export const MockModeText = styled(Text)`
-	color: ${palette.gray['06']};
-	font-size: 0.9rem;
-	line-height: 1.55;
-
-	${isMobileMedia} {
-		font-size: 0.85rem;
-	}
-`;
-
 export const FiltersSection = styled(Box)`
 	display: flex;
 	flex-direction: column;

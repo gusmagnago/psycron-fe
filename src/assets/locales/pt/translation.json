@@ -1180,8 +1180,6 @@
   }
   ,
   "conflicts": {
-    "mock-mode": "(modo mock)",
-    "mock-notice": "Mostrando conflitos simulados para que você possa validar a fila, os estados e o fluxo de resolução localmente.",
     "title": "Painel de conflitos",
     "subtitle": "Revise e resolva conflitos de agenda e de pacientes em um só lugar.",
     "empty": "Nenhum conflito corresponde aos filtros atuais.",
