@@ -1085,11 +1085,19 @@
       "title": "Agenda da Semana",
       "settings": "Definições",
       "default-blocked-day": {
-        "body": "{{day}} está atualmente bloqueado pelas suas definições de disponibilidade. Se continuar, todos os futuros {{weekday}} ficarão disponíveis usando o seu horário de trabalho atual.",
-        "confirm": "Definir dia completo como disponível",
-        "error": "Não foi possível atualizar a sua disponibilidade padrão. Tente novamente.",
-        "success": "A disponibilidade padrão foi atualizada com sucesso.",
-        "title": "Tornar este dia da semana disponível?"
+        "body": "{{day}} está fechado pelas suas definições padrão de disponibilidade. Abra apenas esta data como dia completo, parte do dia ou horários específicos.",
+        "confirm": "Abrir este dia",
+        "end-time": "Hora de fim",
+        "error": "Não foi possível abrir este dia. Tente novamente.",
+        "open-full-day": "Abrir dia completo",
+        "open-full-day-desc": "Crie todos os horários disponíveis para esta data usando o seu horário habitual.",
+        "open-part-day": "Abrir parte do dia",
+        "open-part-day-desc": "Escolha um intervalo de horas personalizado apenas para esta data.",
+        "open-specific-slots": "Abrir horários específicos",
+        "open-specific-slots-desc": "Selecione apenas os horários exatos que quer disponibilizar.",
+        "start-time": "Hora de início",
+        "success": "Este dia agora está disponível.",
+        "title": "Abrir este dia fechado?"
       },
       "day-header": {
         "actions": "Ações do dia",

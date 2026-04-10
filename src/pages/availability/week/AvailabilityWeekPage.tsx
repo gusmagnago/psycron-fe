@@ -1,8 +1,12 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useParams, useSearchParams } from 'react-router-dom';
-import { updateAvailabilitySettings } from '@psycron/api/availability';
-import { getAppointmentDetailsBySlotId } from '@psycron/api/user/availability';
+import { TextField } from '@mui/material';
+import {
+	createAvailabilityDateOverride,
+	getAppointmentDetailsBySlotId,
+} from '@psycron/api/user/availability';
+import type { AvailabilityDateOverrideMode } from '@psycron/api/user/availability/index.types';
 import { AvailabilityLegend } from '@psycron/components/availability/AvailabilityLegend';
 import { NavButton } from '@psycron/components/availability/AvailabilityNavButton';
 import { AvailabilityTodayButton } from '@psycron/components/availability/AvailabilityTodayButton';
@@ -17,10 +21,7 @@ import {
 } from '@psycron/components/icons';
 import { Modal } from '@psycron/components/modal/Modal';
 import { useAlert } from '@psycron/context/alert/AlertContext';
-import {
-	JUPITER_AVAILABILITY_CONFIG_KEY,
-	useJupiterAvailabilityConfig,
-} from '@psycron/hooks/useJupiterAvailabilityConfig';
+import { useJupiterAvailabilityConfig } from '@psycron/hooks/useJupiterAvailabilityConfig';
 import { useTherapistId } from '@psycron/hooks/useTherapistId';
 import useViewport from '@psycron/hooks/useViewport';
 import { PageLayout } from '@psycron/layouts/app/pages-layout/PageLayout';
@@ -35,6 +36,15 @@ import { useBlockDay, useUnblockDay } from './hook/useDayActions';
 import { AvailabilityWeekDesktopGrid } from './views/desktop-view/AvailabilityWeekDesktopGrid';
 import { AvailabilityWeekMobileList } from './views/mobile-view/AvailabilityWeekMobileList';
 import {
+	ClosedDayModalBody,
+	ClosedDayModalText,
+	ClosedDayOptionButton,
+	ClosedDayOptionDescription,
+	ClosedDayOptionsGrid,
+	ClosedDayOptionTitle,
+	ClosedDaySlotButton,
+	ClosedDaySlotsGrid,
+	ClosedDayTimeRangeRow,
 	FilterButton,
 	WeekCard,
 	WeekFeaturesActions,
@@ -48,6 +58,11 @@ import {
 	WeekTitleBlock,
 } from './AvailabilityWeekPage.styles';
 import type { IWeekSlot } from './AvailabilityWeekPage.types';
+import {
+	generateSlotStartTimes,
+	parseDurationMinutes,
+	parseTimeRange,
+} from './AvailabilityWeekPage.utils';
 
 const parseDebugNowMinutes = (value: string | null): number | null => {
 	if (!value || !import.meta.env.DEV) return null;
@@ -73,15 +88,6 @@ const parseDebugNowMinutes = (value: string | null): number | null => {
 };
 
 export const AvailabilityWeekPage = () => {
-	const WEEKDAY_KEYS = [
-		'SUNDAY',
-		'MONDAY',
-		'TUESDAY',
-		'WEDNESDAY',
-		'THURSDAY',
-		'FRIDAY',
-		'SATURDAY',
-	] as const;
 	const todayCardId = 'availability-week-mobile-today';
 	const { t } = useTranslation();
 	const { date } = useParams<{ date: string }>();
@@ -125,6 +131,13 @@ export const AvailabilityWeekPage = () => {
 	const [defaultBlockedDate, setDefaultBlockedDate] = useState<string | null>(
 		null
 	);
+	const [defaultBlockedMode, setDefaultBlockedMode] =
+		useState<AvailabilityDateOverrideMode>('FULL_DAY');
+	const [overrideStartTime, setOverrideStartTime] = useState('09:00');
+	const [overrideEndTime, setOverrideEndTime] = useState('17:00');
+	const [selectedSpecificSlots, setSelectedSpecificSlots] = useState<string[]>(
+		[]
+	);
 	const [shouldScrollToToday, setShouldScrollToToday] = useState(false);
 	const debugNowMinutes = parseDebugNowMinutes(searchParams.get('debugNow'));
 
@@ -137,19 +150,35 @@ export const AvailabilityWeekPage = () => {
 	const unblockDay = useUnblockDay(therapistId, () => {
 		setDayPopoverDate(null);
 	});
-	const enableWorkingDay = useMutation({
-		mutationFn: async (weekday: string) => {
-			if (!availability?.timeRange) {
-				throw new Error('Missing availability time range');
+	const openClosedDay = useMutation({
+		mutationFn: async () => {
+			if (!defaultBlockedDate) {
+				throw new Error('Missing override date');
 			}
 
-			const nextWorkingDays = Array.from(
-				new Set([...(availability.workingDays ?? []), weekday])
-			);
+			if (defaultBlockedMode === 'FULL_DAY') {
+				return createAvailabilityDateOverride({
+					date: defaultBlockedDate,
+					mode: 'FULL_DAY',
+					therapistId,
+				});
+			}
 
-			return updateAvailabilitySettings({
-				timeRange: availability.timeRange,
-				workingDays: nextWorkingDays,
+			if (defaultBlockedMode === 'TIME_RANGE') {
+				return createAvailabilityDateOverride({
+					date: defaultBlockedDate,
+					endTime: overrideEndTime,
+					mode: 'TIME_RANGE',
+					startTime: overrideStartTime,
+					therapistId,
+				});
+			}
+
+			return createAvailabilityDateOverride({
+				date: defaultBlockedDate,
+				mode: 'SPECIFIC_SLOTS',
+				slotStartTimes: selectedSpecificSlots,
+				therapistId,
 			});
 		},
 		onError: () => {
@@ -158,22 +187,67 @@ export const AvailabilityWeekPage = () => {
 				severity: 'error',
 			});
 		},
-		onSuccess: (updated) => {
-			queryClient.setQueryData(
-				[JUPITER_AVAILABILITY_CONFIG_KEY],
-				updated
-			);
+		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: ['therapistAvailability'] });
-			queryClient.invalidateQueries({
-				queryKey: [JUPITER_AVAILABILITY_CONFIG_KEY],
-			});
 			showAlert({
 				message: t('availability.week.default-blocked-day.success'),
 				severity: 'success',
 			});
 			setDefaultBlockedDate(null);
+			setSelectedSpecificSlots([]);
 		},
 	});
+
+	const baseTimeRange = useMemo(() => {
+		if (!availability?.timeRange) return null;
+		try {
+			return parseTimeRange(availability.timeRange);
+		} catch {
+			return null;
+		}
+	}, [availability?.timeRange]);
+
+	const sessionDurationMinutes = useMemo(() => {
+		if (!availability?.sessionDuration) return null;
+		try {
+			return parseDurationMinutes(availability.sessionDuration);
+		} catch {
+			return null;
+		}
+	}, [availability?.sessionDuration]);
+
+	useEffect(() => {
+		if (!defaultBlockedDate || !baseTimeRange) return;
+
+		setDefaultBlockedMode('FULL_DAY');
+		setOverrideStartTime(baseTimeRange.startTime);
+		setOverrideEndTime(baseTimeRange.endTime);
+		setSelectedSpecificSlots([]);
+	}, [baseTimeRange, defaultBlockedDate]);
+
+	const specificSlotOptions =
+		baseTimeRange && sessionDurationMinutes
+			? generateSlotStartTimes(
+					baseTimeRange.startTime,
+					baseTimeRange.endTime,
+					sessionDurationMinutes
+				)
+			: [];
+
+	const partialSlotOptions =
+		sessionDurationMinutes && overrideStartTime < overrideEndTime
+			? generateSlotStartTimes(
+					overrideStartTime,
+					overrideEndTime,
+					sessionDurationMinutes
+				)
+			: [];
+
+	const isClosedDayConfirmDisabled =
+		!availability?.timeRange ||
+		!availability?.sessionDuration ||
+		(defaultBlockedMode === 'TIME_RANGE' && partialSlotOptions.length === 0) ||
+		(defaultBlockedMode === 'SPECIFIC_SLOTS' && selectedSpecificSlots.length === 0);
 
 	const handleDayHeaderClick = (dateStr: string) => {
 		const dayDate = parseISO(dateStr);
@@ -186,6 +260,14 @@ export const AvailabilityWeekPage = () => {
 	};
 
 	const handleSlotClick = (slot: IWeekSlot) => setSelectedSlot(slot);
+
+	const handleSpecificSlotToggle = (startTime: string) => {
+		setSelectedSpecificSlots((current) =>
+			current.includes(startTime)
+				? current.filter((item) => item !== startTime)
+				: [...current, startTime].sort()
+		);
+	};
 
 	const handleTodayClick = useCallback(() => {
 		setShouldScrollToToday(true);
@@ -394,22 +476,104 @@ export const AvailabilityWeekPage = () => {
 					onClose={() => setDefaultBlockedDate(null)}
 					cardActionsProps={{
 						actionName: t('availability.week.default-blocked-day.confirm'),
+						disabled: isClosedDayConfirmDisabled,
 						hasSecondAction: true,
-						isLoading: enableWorkingDay.isPending,
-						onClick: () =>
-							enableWorkingDay.mutate(
-								WEEKDAY_KEYS[parseISO(defaultBlockedDate).getDay()]
-							),
+						loading: openClosedDay.isPending,
+						onClick: () => openClosedDay.mutate(),
 						secondAction: () => setDefaultBlockedDate(null),
 						secondActionName: t('availability.week.drawer.cancel-back'),
 					}}
 				>
-					{t('availability.week.default-blocked-day.body', {
-						day: format(parseISO(defaultBlockedDate), 'EEEE, MMMM d'),
-						weekday: t(
-							`jupiter.days.${WEEKDAY_KEYS[parseISO(defaultBlockedDate).getDay()]}`
-						),
-					})}
+					<ClosedDayModalBody>
+						<ClosedDayModalText>
+							{t('availability.week.default-blocked-day.body', {
+								day: format(parseISO(defaultBlockedDate), 'EEEE, MMMM d'),
+							})}
+						</ClosedDayModalText>
+
+						<ClosedDayOptionsGrid>
+							<ClosedDayOptionButton
+								isSelected={defaultBlockedMode === 'FULL_DAY'}
+								onClick={() => setDefaultBlockedMode('FULL_DAY')}
+								type='button'
+							>
+								<ClosedDayOptionTitle>
+									{t('availability.week.default-blocked-day.open-full-day')}
+								</ClosedDayOptionTitle>
+								<ClosedDayOptionDescription>
+									{t(
+										'availability.week.default-blocked-day.open-full-day-desc'
+									)}
+								</ClosedDayOptionDescription>
+							</ClosedDayOptionButton>
+							<ClosedDayOptionButton
+								isSelected={defaultBlockedMode === 'TIME_RANGE'}
+								onClick={() => setDefaultBlockedMode('TIME_RANGE')}
+								type='button'
+							>
+								<ClosedDayOptionTitle>
+									{t('availability.week.default-blocked-day.open-part-day')}
+								</ClosedDayOptionTitle>
+								<ClosedDayOptionDescription>
+									{t(
+										'availability.week.default-blocked-day.open-part-day-desc'
+									)}
+								</ClosedDayOptionDescription>
+							</ClosedDayOptionButton>
+							<ClosedDayOptionButton
+								isSelected={defaultBlockedMode === 'SPECIFIC_SLOTS'}
+								onClick={() => setDefaultBlockedMode('SPECIFIC_SLOTS')}
+								type='button'
+							>
+								<ClosedDayOptionTitle>
+									{t(
+										'availability.week.default-blocked-day.open-specific-slots'
+									)}
+								</ClosedDayOptionTitle>
+								<ClosedDayOptionDescription>
+									{t(
+										'availability.week.default-blocked-day.open-specific-slots-desc'
+									)}
+								</ClosedDayOptionDescription>
+							</ClosedDayOptionButton>
+						</ClosedDayOptionsGrid>
+
+						{defaultBlockedMode === 'TIME_RANGE' && (
+							<ClosedDayTimeRangeRow>
+								<TextField
+									fullWidth
+									label={t(
+										'availability.week.default-blocked-day.start-time'
+									)}
+									onChange={(e) => setOverrideStartTime(e.target.value)}
+									type='time'
+									value={overrideStartTime}
+								/>
+								<TextField
+									fullWidth
+									label={t('availability.week.default-blocked-day.end-time')}
+									onChange={(e) => setOverrideEndTime(e.target.value)}
+									type='time'
+									value={overrideEndTime}
+								/>
+							</ClosedDayTimeRangeRow>
+						)}
+
+						{defaultBlockedMode === 'SPECIFIC_SLOTS' && (
+							<ClosedDaySlotsGrid>
+								{specificSlotOptions.map((slotStartTime) => (
+									<ClosedDaySlotButton
+										isSelected={selectedSpecificSlots.includes(slotStartTime)}
+										key={slotStartTime}
+										onClick={() => handleSpecificSlotToggle(slotStartTime)}
+										type='button'
+									>
+										{slotStartTime}
+									</ClosedDaySlotButton>
+								))}
+							</ClosedDaySlotsGrid>
+						)}
+					</ClosedDayModalBody>
 				</Modal>
 			)}
 

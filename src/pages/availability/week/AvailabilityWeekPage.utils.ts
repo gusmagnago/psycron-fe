@@ -69,3 +69,49 @@ export const getBufferHeight = (
 			: MIN_BUFFER_HEIGHT_MOBILE;
 	return Math.max(bufferMinutes * 2, minHeight);
 };
+
+export const parseTimeRange = (
+	timeRange: string
+): { endTime: string; startTime: string } => {
+	const parts = timeRange.split(/\s*[–—-]\s*/);
+
+	if (parts.length !== 2) {
+		throw new Error(`Invalid time range format: ${timeRange}`);
+	}
+
+	return {
+		endTime: parts[1].trim(),
+		startTime: parts[0].trim(),
+	};
+};
+
+export const parseDurationMinutes = (sessionDuration: string): number => {
+	const match = sessionDuration.match(/(\d+)/);
+	if (!match) {
+		throw new Error(`Invalid session duration: ${sessionDuration}`);
+	}
+
+	return Number(match[1]);
+};
+
+const addMinutes = (time: string, minutes: number): string => {
+	const [hours, mins] = time.split(':').map(Number);
+	const totalMinutes = hours * 60 + mins + minutes;
+	return `${String(Math.floor(totalMinutes / 60)).padStart(2, '0')}:${String(totalMinutes % 60).padStart(2, '0')}`;
+};
+
+export const generateSlotStartTimes = (
+	startTime: string,
+	endTime: string,
+	durationMinutes: number
+): string[] => {
+	const slots: string[] = [];
+	let current = startTime;
+
+	while (addMinutes(current, durationMinutes) <= endTime) {
+		slots.push(current);
+		current = addMinutes(current, durationMinutes);
+	}
+
+	return slots;
+};

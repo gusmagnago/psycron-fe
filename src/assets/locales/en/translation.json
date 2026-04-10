@@ -1085,11 +1085,19 @@
       "title": "Week Schedule",
       "settings": "Settings",
       "default-blocked-day": {
-        "body": "{{day}} is currently blocked by your default availability settings. If you continue, all future {{weekday}}s will become available using your current working hours.",
-        "confirm": "Set full day available",
-        "error": "Could not update your default availability. Please try again.",
-        "success": "Default availability updated successfully.",
-        "title": "Make this weekday available?"
+        "body": "{{day}} is closed by your default availability settings. Open only this date as a full day, part of the day, or selected time slots.",
+        "confirm": "Open this day",
+        "end-time": "End time",
+        "error": "Could not open this day. Please try again.",
+        "open-full-day": "Open full day",
+        "open-full-day-desc": "Create all available slots for this date using your usual working hours.",
+        "open-part-day": "Open part of day",
+        "open-part-day-desc": "Choose a custom time range for this specific date only.",
+        "open-specific-slots": "Open specific slots",
+        "open-specific-slots-desc": "Select only the exact times you want to make available.",
+        "start-time": "Start time",
+        "success": "This day is now available.",
+        "title": "Open this closed day?"
       },
       "day-header": {
         "actions": "Day actions",
