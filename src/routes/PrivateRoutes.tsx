@@ -2,6 +2,7 @@ import { AvailabilitySettings } from '@psycron/pages/availability/availability-s
 import { GenerateAvailability } from '@psycron/pages/availability/GenerateAvailability';
 import { AvailabilityCalendarPage } from '@psycron/pages/availability/page-calendar/AvailabilityCalendarPage';
 import { AvailabilityWeekPage } from '@psycron/pages/availability/week/AvailabilityWeekPage';
+import { ConflictsPage } from '@psycron/pages/conflicts/ConflictsPage';
 import { Dashboard } from '@psycron/pages/dashboard/Dashboard';
 import {
 	AVAILABILITYGENERATE,
@@ -9,6 +10,7 @@ import {
 	AVAILABILITYSETTINGS,
 	AVAILABILITYWEEK,
 	CHANGEPASSWORD,
+	CONFLICTS,
 	DASHBOARD,
 	EDITUSER,
 	EDITUSERBYSESSION,
@@ -25,6 +27,7 @@ const privateRoutes = [
 		path: DASHBOARD,
 		element: <Dashboard />,
 	},
+	{ path: CONFLICTS, element: <ConflictsPage /> },
 	{ path: USERDETAILS, element: <UserDetailsPage /> },
 	{ path: EDITUSER, element: <EditUser /> },
 	{ path: EDITUSERBYSESSION, element: <EditUser /> },

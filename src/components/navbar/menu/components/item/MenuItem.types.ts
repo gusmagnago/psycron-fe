@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react';
 
 export interface IMenuItem {
+	badgeCount?: number;
 	closeMenu?: () => void;
 	component?: ReactNode;
 	disabled?: boolean;

@@ -3,6 +3,7 @@ import { Text } from '@psycron/components/text/Text';
 import { useCanHover } from '@psycron/hooks/userCanHover';
 
 import {
+	MenuBadge,
 	MenuIconWrap,
 	MobileMenuIconWrapper,
 	MobileMenuItem,
@@ -11,6 +12,7 @@ import {
 import type { IMenuItem } from './MenuItem.types';
 
 export const MenuItem = ({
+	badgeCount,
 	icon,
 	name,
 	isFooterIcon,
@@ -55,6 +57,9 @@ export const MenuItem = ({
 						}}
 					>
 						{renderedIcon}
+						{badgeCount ? (
+							<MenuBadge>{badgeCount > 99 ? '99+' : badgeCount}</MenuBadge>
+						) : null}
 					</MenuIconWrap>
 				</StyledMenuItem>
 			)}

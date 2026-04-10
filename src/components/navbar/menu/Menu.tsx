@@ -38,7 +38,16 @@ export const Menu = ({
 		<>
 			{items?.map(
 				(
-					{ icon, name, path, onClick, component, disabled, hoverIcon },
+					{
+						badgeCount,
+						icon,
+						name,
+						path,
+						onClick,
+						component,
+						disabled,
+						hoverIcon,
+					},
 					index
 				) => {
 					return (
@@ -51,6 +60,7 @@ export const Menu = ({
 							) : (
 								<>
 									<MenuItem
+										badgeCount={badgeCount}
 										key={`item-${name}-${index}`}
 										icon={icon}
 										name={name}

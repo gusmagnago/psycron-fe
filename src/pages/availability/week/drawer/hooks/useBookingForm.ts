@@ -157,6 +157,8 @@ export const useBookingForm = (
 							? { email: payload.contacts.email }
 							: {}),
 					} as { email?: string; phone: string },
+					firstName: payload.firstName,
+					lastName: payload.lastName,
 				});
 				setIsChecking(false);
 

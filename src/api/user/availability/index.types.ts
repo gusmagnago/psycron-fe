@@ -268,6 +268,8 @@ export interface ICheckDuplicatePayload {
 		email?: string;
 		phone: string;
 	};
+	firstName?: string;
+	lastName?: string;
 }
 
 export interface IBookSlotByTherapistPayload {

@@ -12,6 +12,25 @@ export const MenuIconWrap = styled('span')`
 	display: inline-flex;
 	align-items: center;
 	justify-content: center;
+	position: relative;
+`;
+
+export const MenuBadge = styled('span')`
+	position: absolute;
+	top: -4px;
+	right: -6px;
+	min-width: 16px;
+	height: 16px;
+	padding: 0 4px;
+	border-radius: 999px;
+	background: ${palette.error.main};
+	color: ${palette.white};
+	font-size: 10px;
+	font-weight: 700;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	line-height: 1;
 `;
 
 export const StyledMenuItem = styled(Tooltip, {

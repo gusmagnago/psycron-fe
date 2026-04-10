@@ -298,6 +298,7 @@
     },
     "navbar": {
       "dashboard": "Painel",
+      "conflicts": "Conflitos",
       "user-settings": "Configurações",
       "test": "Testes"
     },
@@ -1175,6 +1176,51 @@
       "recurrence-pattern-drawer-title": "Padrão de recorrência",
       "working-hours-start-label": "Início",
       "working-hours-time-label": "Intervalo de horário"
+    }
+  }
+  ,
+  "conflicts": {
+    "mock-mode": "(modo mock)",
+    "mock-notice": "Mostrando conflitos simulados para que você possa validar a fila, os estados e o fluxo de resolução localmente.",
+    "title": "Painel de conflitos",
+    "subtitle": "Revise e resolva conflitos de agenda e de pacientes em um só lugar.",
+    "empty": "Nenhum conflito corresponde aos filtros atuais.",
+    "filters": {
+      "status": "Status",
+      "type": "Tipo",
+      "open": "Em aberto",
+      "all-statuses": "Todos os status",
+      "all-types": "Todos os tipos"
+    },
+    "queue": {
+      "eyebrow": "Operação",
+      "title": "Fila de conflitos",
+      "subtitle": "Revise os itens que ainda precisam da sua decisão."
+    },
+    "status": {
+      "open": "Em aberto",
+      "resolved": "Resolvido",
+      "dismissed": "Dispensado"
+    },
+    "types": {
+      "patient-duplicate": "Paciente duplicado",
+      "slot-replication": "Replicação de horário"
+    },
+    "detail": {
+      "incoming-patient": "Paciente recebido",
+      "matched-by": "Detectado por",
+      "candidate-records": "Registros candidatos",
+      "conflicting-date": "Data em conflito",
+      "conflicting-time": "Hora em conflito",
+      "recurrence-pattern": "Padrão de recorrência",
+      "not-provided": "Não informado"
+    },
+    "actions": {
+      "keep-existing": "Manter paciente existente",
+      "keep-new": "Manter novo paciente",
+      "dismiss": "Dispensar",
+      "mark-resolved": "Marcar como resolvido",
+      "error": "Não foi possível atualizar este conflito. Tente novamente."
     }
   }
 }
