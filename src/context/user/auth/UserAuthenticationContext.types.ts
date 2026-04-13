@@ -188,13 +188,17 @@ export interface IPreferredContact {
 }
 
 export interface IPatient extends IBaseUser {
+	address?: ISlotAddress | null;
 	cancelledAppointments?: ICancelledAppointment[];
 	createdBy?: ITherapist | string;
+	mergedAt?: ISODateString | null;
+	mergedIntoPatientId?: string | null;
 	notifications?: INotification[];
 	preferredContact?: IPreferredContact | null;
 
 	role: 'PATIENT';
 	sessionDates: ISessionDatesGroup[];
+	status?: 'ACTIVE' | 'ARCHIVED' | 'MERGED';
 	timeZone?: string;
 }
 

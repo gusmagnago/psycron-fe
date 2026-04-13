@@ -9,21 +9,12 @@ import { useAlert } from '@psycron/context/alert/AlertContext';
 import { useTherapistId } from '@psycron/hooks/useTherapistId';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
-export interface UpdateConflictInput {
-	actionTaken?: string;
-	conflictId: string;
-	primaryPatientId?: string;
-	secondaryPatientId?: string;
-	status: Extract<ConflictStatus, 'DISMISSED' | 'RESOLVED'>;
-}
+import type {
+	UpdateConflictInput,
+	UseConflictsPageStateParams,
+} from './useConflictsPageState.types';
 
-interface UseConflictsPageStateParams {
-	t: (key: string) => string;
-}
-
-export const useConflictsPageState = ({
-	t,
-}: UseConflictsPageStateParams) => {
+export const useConflictsPageState = ({ t }: UseConflictsPageStateParams) => {
 	const therapistId = useTherapistId();
 	const { showAlert } = useAlert();
 	const queryClient = useQueryClient();
@@ -102,6 +93,14 @@ export const useConflictsPageState = ({
 								? {
 										...conflict,
 										actionTaken: input.actionTaken ?? null,
+										resolutionDetails:
+											input.actionTaken === 'MERGE_PATIENTS'
+												? {
+														fieldSelections: input.fieldSelections ?? {},
+														primaryPatientId: input.primaryPatientId,
+														secondaryPatientId: input.secondaryPatientId,
+													}
+												: null,
 										resolvedAt: new Date().toISOString(),
 										status: input.status,
 									}
@@ -123,7 +122,7 @@ export const useConflictsPageState = ({
 
 			return { previousConflictQueries, previousCount };
 		},
-		onSuccess: ({ conflict }) => {
+		onSuccess: ({ conflict }, input) => {
 			queryClient.setQueriesData<{ conflicts: IConflict[] }>(
 				{ queryKey: ['conflicts', therapistId] },
 				(old) => {
@@ -146,6 +145,33 @@ export const useConflictsPageState = ({
 				queryKey: ['conflictCount', therapistId],
 				refetchType: 'active',
 			});
+
+			if (input.actionTaken === 'MERGE_PATIENTS') {
+				queryClient.invalidateQueries({
+					queryKey: ['userDetails', therapistId],
+					refetchType: 'active',
+				});
+
+				if (input.primaryPatientId) {
+					queryClient.invalidateQueries({
+						queryKey: ['patientListItem', therapistId, input.primaryPatientId],
+						refetchType: 'active',
+					});
+				}
+
+				if (input.secondaryPatientId) {
+					queryClient.removeQueries({
+						queryKey: ['patientListItem', therapistId, input.secondaryPatientId],
+					});
+					queryClient.removeQueries({
+						queryKey: [
+							'conflictCandidatePatient',
+							therapistId,
+							input.secondaryPatientId,
+						],
+					});
+				}
+			}
 		},
 		onError: (_error, _variables, context) => {
 			context?.previousConflictQueries?.forEach(([queryKey, data]) => {

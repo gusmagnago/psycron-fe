@@ -1,5 +1,19 @@
 export type ConflictType = 'SLOT_REPLICATION' | 'PATIENT_DUPLICATE';
 export type ConflictStatus = 'OPEN' | 'RESOLVED' | 'DISMISSED';
+export type PatientMergeFieldSource = 'primary' | 'secondary';
+export type PatientMergeField =
+	| 'address'
+	| 'contacts.email'
+	| 'contacts.phone'
+	| 'contacts.whatsapp'
+	| 'firstName'
+	| 'lastName'
+	| 'preferredContact'
+	| 'timeZone';
+
+export type PatientMergeFieldSelections = Partial<
+	Record<PatientMergeField, PatientMergeFieldSource>
+>;
 
 export interface IConflictPatientSummary {
 	_id: string;
@@ -31,12 +45,19 @@ export interface IPatientDuplicateConflictMetadata {
 	match: 'multiple' | 'single';
 }
 
+export interface IConflictResolutionDetails {
+	fieldSelections?: PatientMergeFieldSelections;
+	primaryPatientId?: string;
+	secondaryPatientId?: string;
+}
+
 export interface IConflict {
 	_id: string;
 	actionTaken?: string | null;
 	createdAt: string;
 	description: string;
 	metadata: ISlotReplicationConflictMetadata | IPatientDuplicateConflictMetadata;
+	resolutionDetails?: IConflictResolutionDetails | null;
 	resolvedAt?: string | null;
 	status: ConflictStatus;
 	therapistId: string;
@@ -56,6 +77,7 @@ export interface IGetConflictCountResponse {
 export interface IUpdateConflictPayload {
 	actionTaken?: string;
 	conflictId: string;
+	fieldSelections?: PatientMergeFieldSelections;
 	primaryPatientId?: string;
 	secondaryPatientId?: string;
 	status: Extract<ConflictStatus, 'DISMISSED' | 'RESOLVED'>;

@@ -1270,6 +1270,43 @@
 			"additional-candidates_other": "{{count}} outros possíveis registros ainda estão na fila para revisão.",
 			"not-provided": "Não informado"
 		},
+    "merge-review": {
+      "title": "Escolha o que manter",
+      "description": "Agendamentos, cancelamentos e notificações serão combinados automaticamente. Escolha os dados de perfil que devem permanecer no paciente principal.",
+      "primary": "Manter de {{name}}",
+      "secondary": "Usar de {{name}}",
+      "confirm": "Confirmar união",
+      "fields": {
+        "firstName": "Nome",
+        "lastName": "Sobrenome",
+        "contacts": {
+          "email": "Email",
+          "phone": "Telefone",
+          "whatsapp": "WhatsApp"
+        },
+        "preferredContact": "Contato preferido",
+        "timeZone": "Fuso horário",
+        "address": "Endereço"
+      }
+    },
+    "resolution": {
+      "title": "Histórico da resolução",
+      "completed-at": "Concluído em {{date}}.",
+      "actions": {
+        "auto-dismissed-stale": "O Psycron fechou este conflito porque os registros duplicados não estão mais ativos.",
+        "dismissed": "O terapeuta dispensou este conflito sem alterar os registros de pacientes.",
+        "keep-existing": "O terapeuta manteve o paciente existente e não uniu os registros.",
+        "keep-new": "O terapeuta manteve o novo paciente e não uniu os registros.",
+        "marked-resolved": "O terapeuta marcou este conflito como resolvido.",
+        "merged": "O terapeuta uniu os registros de pacientes duplicados.",
+        "merge-reconciled": "O Psycron fechou este conflito porque outra união já tratou o paciente duplicado.",
+        "unknown": "Este conflito foi fechado."
+      },
+      "sources": {
+        "primary": "Mantido de {{name}}",
+        "secondary": "Alterado para {{name}}"
+      }
+    },
     "actions": {
       "recommended-title": "Resolução recomendada",
       "recommended-hint": "Una ambos os registros e mantenha um único paciente como fonte principal.",

@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import type {
 	IPatientDuplicateConflictMetadata,
@@ -35,7 +36,9 @@ import {
 	EmptyState,
 } from './styles/ConflictDetail.styles';
 import type { ConflictDetailProps } from './types/ConflictDetail.types';
+import { ConflictResolutionSummary } from './ConflictResolutionSummary';
 import { PatientDuplicateConflictDetail } from './PatientDuplicateConflictDetail';
+import { PatientDuplicateMergeReview } from './PatientDuplicateMergeReview';
 import { SlotReplicationConflictDetail } from './SlotReplicationConflictDetail';
 
 export const ConflictDetail = ({
@@ -44,6 +47,11 @@ export const ConflictDetail = ({
 	onUpdateConflict,
 }: ConflictDetailProps) => {
 	const { t } = useTranslation();
+	const [isMergeReviewOpen, setIsMergeReviewOpen] = useState(false);
+
+	useEffect(() => {
+		setIsMergeReviewOpen(false);
+	}, [conflict?._id]);
 
 	if (!conflict) {
 		return (
@@ -76,7 +84,9 @@ export const ConflictDetail = ({
 		Boolean(duplicateMetadata?.candidatePatients[1]?._id);
 
 	const actions =
-		conflict.type === 'PATIENT_DUPLICATE' ? (
+		conflict.status !== 'OPEN' ? (
+			<ConflictResolutionSummary conflict={conflict} />
+		) : conflict.type === 'PATIENT_DUPLICATE' ? (
 			<ConflictActions>
 				<ConflictActionSection>
 					<ConflictActionHeading>
@@ -90,20 +100,31 @@ export const ConflictDetail = ({
 						tertiary
 						variant='contained'
 						disabled={isUpdating || !canMergePatients}
-						onClick={() =>
-							onUpdateConflict({
-								actionTaken: 'MERGE_PATIENTS',
-								conflictId: conflict._id,
-								primaryPatientId: duplicateMetadata?.candidatePatients[0]?._id,
-								secondaryPatientId:
-									duplicateMetadata?.candidatePatients[1]?._id,
-								status: 'RESOLVED',
-							})
-						}
+						onClick={() => setIsMergeReviewOpen(true)}
 					>
 						{t('conflicts.actions.merge')}
 					</Button>
 				</ConflictActionSection>
+				{isMergeReviewOpen && duplicateMetadata ? (
+					<PatientDuplicateMergeReview
+						metadata={duplicateMetadata}
+						onCancel={() => setIsMergeReviewOpen(false)}
+						onConfirm={({
+							fieldSelections,
+							primaryPatientId,
+							secondaryPatientId,
+						}) =>
+							onUpdateConflict({
+								actionTaken: 'MERGE_PATIENTS',
+								conflictId: conflict._id,
+								fieldSelections,
+								primaryPatientId,
+								secondaryPatientId,
+								status: 'RESOLVED',
+							})
+						}
+					/>
+				) : null}
 				<ConflictActionSection>
 					<ConflictActionHeading>
 						{t('conflicts.actions.alternatives-title')}

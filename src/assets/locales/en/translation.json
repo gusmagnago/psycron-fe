@@ -1270,6 +1270,43 @@
 			"additional-candidates_other": "{{count}} more possible matches are still queued for review.",
 			"not-provided": "Not provided"
 		},
+    "merge-review": {
+      "title": "Choose what to keep",
+      "description": "Bookings, cancellations, and notifications will be combined automatically. Choose the profile details that should remain on the surviving patient.",
+      "primary": "Keep from {{name}}",
+      "secondary": "Use from {{name}}",
+      "confirm": "Confirm merge",
+      "fields": {
+        "firstName": "First name",
+        "lastName": "Last name",
+        "contacts": {
+          "email": "Email",
+          "phone": "Phone",
+          "whatsapp": "WhatsApp"
+        },
+        "preferredContact": "Preferred contact",
+        "timeZone": "Timezone",
+        "address": "Address"
+      }
+    },
+    "resolution": {
+      "title": "Resolution history",
+      "completed-at": "Completed on {{date}}.",
+      "actions": {
+        "auto-dismissed-stale": "Psycron closed this because the duplicate records are no longer active.",
+        "dismissed": "The therapist dismissed this conflict without changing patient records.",
+        "keep-existing": "The therapist kept the existing patient record and did not merge records.",
+        "keep-new": "The therapist kept the new patient record and did not merge records.",
+        "marked-resolved": "The therapist marked this conflict as resolved.",
+        "merged": "The therapist merged the duplicate patient records.",
+        "merge-reconciled": "Psycron closed this because another merge already handled the duplicate patient.",
+        "unknown": "This conflict was closed."
+      },
+      "sources": {
+        "primary": "Kept from {{name}}",
+        "secondary": "Changed to {{name}}"
+      }
+    },
     "actions": {
       "recommended-title": "Recommended resolution",
       "recommended-hint": "Merge both records and keep one patient as the source of truth.",

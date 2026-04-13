@@ -250,6 +250,165 @@ export const ConflictActionFooter = styled(Box)`
 	}
 `;
 
+export const ResolutionPanel = styled(Box)`
+	background: ${hexToRgba(palette.tertiary.main, 0.08)};
+	border: 1px solid ${hexToRgba(palette.tertiary.main, 0.18)};
+	border-radius: ${spacing.medium};
+	display: flex;
+	flex-direction: column;
+	gap: ${spacing.xs};
+	margin-top: auto;
+	padding: ${spacing.small};
+`;
+
+export const ResolutionTitle = styled(Text)`
+	color: ${palette.text.primary};
+	font-size: 0.96rem;
+	font-weight: 800;
+`;
+
+export const ResolutionSummaryText = styled(Text)`
+	color: ${palette.gray['05']};
+	font-size: 0.88rem;
+	line-height: 1.5;
+	overflow-wrap: anywhere;
+`;
+
+export const ResolutionDetailGrid = styled(Box)`
+	display: grid;
+	gap: ${spacing.xs};
+	grid-template-columns: repeat(2, minmax(0, 1fr));
+	padding-top: ${spacing.xs};
+
+	${isMobileMedia} {
+		grid-template-columns: 1fr;
+	}
+`;
+
+export const ResolutionField = styled(Box)`
+	background: ${hexToRgba(palette.background.paper, 0.72)};
+	border: 1px solid ${hexToRgba(palette.gray['04'], 0.1)};
+	border-radius: ${spacing.small};
+	display: flex;
+	flex-direction: column;
+	gap: ${spacing.xxs};
+	padding: ${spacing.xs};
+`;
+
+export const ResolutionFieldLabel = styled(Text)`
+	color: ${palette.gray['05']};
+	font-size: 0.74rem;
+	font-weight: 800;
+	letter-spacing: 0.04em;
+	text-transform: uppercase;
+`;
+
+export const ResolutionFieldSource = styled(Text)`
+	color: ${palette.text.primary};
+	font-size: 0.84rem;
+	font-weight: 700;
+`;
+
+export const MergeReviewPanel = styled(Box)`
+	background: ${hexToRgba(palette.background.default, 0.78)};
+	border: 1px solid ${hexToRgba(palette.gray['04'], 0.14)};
+	border-radius: ${spacing.medium};
+	display: flex;
+	flex-direction: column;
+	gap: ${spacing.small};
+	padding: ${spacing.small};
+`;
+
+export const MergeReviewHeader = styled(Box)`
+	display: flex;
+	flex-direction: column;
+	gap: ${spacing.xxs};
+`;
+
+export const MergeReviewTitle = styled(Text)`
+	color: ${palette.text.primary};
+	font-size: 1rem;
+	font-weight: 800;
+`;
+
+export const MergeReviewGrid = styled(Box)`
+	display: grid;
+	gap: ${spacing.small};
+	grid-template-columns: repeat(2, minmax(0, 1fr));
+
+	${isMobileMedia} {
+		grid-template-columns: 1fr;
+	}
+`;
+
+export const MergeReviewField = styled(Box)`
+	display: flex;
+	flex-direction: column;
+	gap: ${spacing.xs};
+`;
+
+export const MergeReviewFieldLabel = styled(Text)`
+	color: ${palette.gray['05']};
+	font-size: 0.78rem;
+	font-weight: 800;
+	letter-spacing: 0.04em;
+	text-transform: uppercase;
+`;
+
+export const MergeReviewOption = styled.button`
+	background: ${hexToRgba(palette.background.paper, 0.86)};
+	border: 1px solid ${hexToRgba(palette.gray['04'], 0.14)};
+	border-radius: ${spacing.small};
+	cursor: pointer;
+	display: flex;
+	flex-direction: column;
+	gap: ${spacing.xxs};
+	padding: ${spacing.xs};
+	text-align: left;
+	transition:
+		background-color 160ms ease,
+		border-color 160ms ease,
+		box-shadow 160ms ease;
+
+	&[aria-checked='true'] {
+		background: ${hexToRgba(palette.tertiary.main, 0.1)};
+		border-color: ${hexToRgba(palette.tertiary.main, 0.42)};
+		box-shadow: 0 0 0 2px ${hexToRgba(palette.tertiary.main, 0.1)};
+	}
+
+	&:disabled {
+		cursor: not-allowed;
+		opacity: 0.7;
+	}
+`;
+
+export const MergeReviewOptionLabel = styled(Text)`
+	color: ${palette.text.primary};
+	font-size: 0.82rem;
+	font-weight: 700;
+`;
+
+export const MergeReviewOptionValue = styled(Text)`
+	color: ${palette.gray['05']};
+	font-size: 0.88rem;
+	line-height: 1.45;
+	overflow-wrap: anywhere;
+`;
+
+export const MergeReviewActions = styled(Box)`
+	display: flex;
+	gap: ${spacing.xs};
+	justify-content: flex-end;
+
+	${isMobileMedia} {
+		flex-direction: column-reverse;
+
+		& > button {
+			width: 100%;
+		}
+	}
+`;
+
 export const ConflictDetailSkeleton = styled(Box)`
 	display: flex;
 	flex-direction: column;

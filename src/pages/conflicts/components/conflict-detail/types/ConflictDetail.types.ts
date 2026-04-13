@@ -2,6 +2,7 @@ import type {
 	IConflict,
 	IPatientDuplicateConflictMetadata,
 	ISlotReplicationConflictMetadata,
+	PatientMergeFieldSelections,
 } from '@psycron/api/user/conflicts/index.types';
 
 import type { UpdateConflictInput } from '../../../hooks/useConflictsPageState';
@@ -16,6 +17,20 @@ export interface PatientDuplicateConflictDetailProps {
 	metadata: IPatientDuplicateConflictMetadata;
 	shouldFetchCandidates?: boolean;
 	t: (key: string) => string;
+}
+
+export interface PatientDuplicateMergeReviewProps {
+	metadata: IPatientDuplicateConflictMetadata;
+	onCancel: () => void;
+	onConfirm: (input: {
+		fieldSelections: PatientMergeFieldSelections;
+		primaryPatientId: string;
+		secondaryPatientId: string;
+	}) => void;
+}
+
+export interface ConflictResolutionSummaryProps {
+	conflict: IConflict;
 }
 
 export interface SlotReplicationConflictDetailProps {

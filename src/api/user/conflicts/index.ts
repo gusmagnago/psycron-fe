@@ -50,6 +50,7 @@ export const scanPatientDuplicates = async (
 export const updateConflict = async ({
 	actionTaken,
 	conflictId,
+	fieldSelections,
 	primaryPatientId,
 	secondaryPatientId,
 	status,
@@ -57,7 +58,7 @@ export const updateConflict = async ({
 }: IUpdateConflictPayload): Promise<IUpdateConflictResponse> => {
 	const response = await apiClient.patch<IUpdateConflictResponse>(
 		`/users/${therapistId}/conflicts/${conflictId}`,
-		{ actionTaken, primaryPatientId, secondaryPatientId, status }
+		{ actionTaken, fieldSelections, primaryPatientId, secondaryPatientId, status }
 	);
 
 	return response.data;

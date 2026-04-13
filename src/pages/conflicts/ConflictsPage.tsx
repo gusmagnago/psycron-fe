@@ -38,7 +38,7 @@ export const ConflictsPage = () => {
 		conflicts,
 		handleUpdateConflict,
 		isUpdating,
-		isLoading,
+
 		selectedConflict,
 		selectedConflictId,
 		setSelectedConflictId,
@@ -51,11 +51,7 @@ export const ConflictsPage = () => {
 	const dateLocale = i18n.language === 'pt' ? ptBR : enUS;
 
 	return (
-		<PageLayout
-			title={t('conflicts.title')}
-			subTitle={t('conflicts.subtitle')}
-			isLoading={isLoading && !isUpdating}
-		>
+		<PageLayout title={t('conflicts.title')} subTitle={t('conflicts.subtitle')}>
 			<ConflictsLayout>
 				<ConflictsSidebar>
 					<SidebarHeader>
