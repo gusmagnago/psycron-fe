@@ -15,6 +15,14 @@ export type PatientMergeFieldSelections = Partial<
 	Record<PatientMergeField, PatientMergeFieldSource>
 >;
 
+export interface IPatientMergeFieldSnapshot {
+	field: PatientMergeField;
+	source: PatientMergeFieldSource;
+	sourcePatientId: string;
+	sourcePatientName: string;
+	value?: string | null;
+}
+
 export interface IConflictPatientSummary {
 	_id: string;
 	firstName?: string;
@@ -47,6 +55,7 @@ export interface IPatientDuplicateConflictMetadata {
 
 export interface IConflictResolutionDetails {
 	fieldSelections?: PatientMergeFieldSelections;
+	fieldSnapshots?: IPatientMergeFieldSnapshot[];
 	primaryPatientId?: string;
 	secondaryPatientId?: string;
 }

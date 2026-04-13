@@ -1,7 +1,4 @@
 import { useTranslation } from 'react-i18next';
-import { getPatientById } from '@psycron/api/patient';
-import { useTherapistId } from '@psycron/hooks/useTherapistId';
-import { useQueries } from '@tanstack/react-query';
 import { format } from 'date-fns';
 import { enUS, ptBR } from 'date-fns/locale';
 
@@ -15,11 +12,6 @@ import {
 	ResolutionTitle,
 } from './styles/ConflictDetail.styles';
 import type { ConflictResolutionSummaryProps } from './types/ConflictDetail.types';
-import {
-	getPatientMergeFieldValue,
-	getPatientName,
-	PATIENT_DUPLICATE_MERGE_FIELDS,
-} from './utils/ConflictDetail.utils';
 
 const getActionTranslationKey = (actionTaken?: string | null): string => {
 	switch (actionTaken) {
@@ -46,28 +38,9 @@ export const ConflictResolutionSummary = ({
 	conflict,
 }: ConflictResolutionSummaryProps) => {
 	const { i18n, t } = useTranslation();
-	const therapistId = useTherapistId();
 	const isMergeResolution = conflict.actionTaken === 'MERGE_PATIENTS';
 	const resolutionDetails = conflict.resolutionDetails;
-	const hasRecordedFieldSelections = Boolean(
-		Object.keys(resolutionDetails?.fieldSelections ?? {}).length
-	);
-	const patientIds = [
-		resolutionDetails?.primaryPatientId,
-		resolutionDetails?.secondaryPatientId,
-	].filter((patientId): patientId is string => Boolean(patientId));
-
-	const patientQueries = useQueries({
-		queries: patientIds.map((patientId) => ({
-			enabled: Boolean(isMergeResolution && therapistId && patientId),
-			queryFn: () => getPatientById(therapistId, patientId),
-			queryKey: ['conflictResolutionPatient', therapistId, patientId],
-			staleTime: 1000 * 60 * 5,
-		})),
-	});
-
-	const primaryPatient = patientQueries[0]?.data ?? null;
-	const secondaryPatient = patientQueries[1]?.data ?? null;
+	const fieldSnapshots = resolutionDetails?.fieldSnapshots ?? [];
 	const dateLocale = i18n.language === 'pt' ? ptBR : enUS;
 	const resolvedAt = conflict.resolvedAt
 		? format(new Date(conflict.resolvedAt), 'PPP p', { locale: dateLocale })
@@ -83,31 +56,25 @@ export const ConflictResolutionSummary = ({
 				{t('conflicts.resolution.completed-at', { date: resolvedAt })}
 			</ResolutionSummaryText>
 
-			{isMergeResolution && hasRecordedFieldSelections ? (
+			{isMergeResolution && fieldSnapshots.length ? (
 				<ResolutionDetailGrid>
-					{PATIENT_DUPLICATE_MERGE_FIELDS.map((field) => {
-						const selectedSource =
-							resolutionDetails?.fieldSelections?.[field] ?? 'primary';
-						const selectedPatient =
-							selectedSource === 'secondary' ? secondaryPatient : primaryPatient;
-						const selectedPatientName =
-							getPatientName(selectedPatient) ||
-							t('conflicts.detail.not-provided');
-						const selectedValue =
-							getPatientMergeFieldValue(field, selectedPatient) ??
-							t('conflicts.detail.not-provided');
+					{fieldSnapshots.map((snapshot) => {
 						const sourceLabelKey =
-							selectedSource === 'secondary'
+							snapshot.source === 'secondary'
 								? 'conflicts.resolution.sources.secondary'
 								: 'conflicts.resolution.sources.primary';
+						const sourcePatientName =
+							snapshot.sourcePatientName || t('conflicts.detail.not-provided');
+						const selectedValue =
+							snapshot.value || t('conflicts.detail.not-provided');
 
 						return (
-							<ResolutionField key={field}>
+							<ResolutionField key={snapshot.field}>
 								<ResolutionFieldLabel>
-									{t(`conflicts.merge-review.fields.${field}`)}
+									{t(`conflicts.merge-review.fields.${snapshot.field}`)}
 								</ResolutionFieldLabel>
 								<ResolutionFieldSource>
-									{t(sourceLabelKey, { name: selectedPatientName })}
+									{t(sourceLabelKey, { name: sourcePatientName })}
 								</ResolutionFieldSource>
 								<ResolutionSummaryText>{selectedValue}</ResolutionSummaryText>
 							</ResolutionField>
