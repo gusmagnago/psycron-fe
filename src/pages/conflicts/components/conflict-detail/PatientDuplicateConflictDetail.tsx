@@ -1,6 +1,7 @@
 import { getPatientById } from '@psycron/api/patient';
 import type { IPatient } from '@psycron/context/user/auth/UserAuthenticationContext.types';
 import { useTherapistId } from '@psycron/hooks/useTherapistId';
+import { getPatientFullName } from '@psycron/utils/patient/patient.utils';
 import { useQueries } from '@tanstack/react-query';
 import axios from 'axios';
 
@@ -125,9 +126,7 @@ export const PatientDuplicateConflictDetail = ({
 							</ConflictMetaLabel>
 							<ComparisonCardTitle>
 								{primaryCandidate
-									? [primaryCandidate.firstName, primaryCandidate.lastName]
-											.filter(Boolean)
-											.join(' ')
+									? getPatientFullName(primaryCandidate)
 									: t('conflicts.detail.not-provided')}
 							</ComparisonCardTitle>
 						</ComparisonCardHeader>

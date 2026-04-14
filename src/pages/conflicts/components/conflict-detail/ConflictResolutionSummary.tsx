@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next';
+import { getDateLocale } from '@psycron/utils/date/date.utils';
 import { format } from 'date-fns';
-import { enUS, ptBR } from 'date-fns/locale';
 
 import {
 	ResolutionDetailGrid,
@@ -41,7 +41,7 @@ export const ConflictResolutionSummary = ({
 	const isMergeResolution = conflict.actionTaken === 'MERGE_PATIENTS';
 	const resolutionDetails = conflict.resolutionDetails;
 	const fieldSnapshots = resolutionDetails?.fieldSnapshots ?? [];
-	const dateLocale = i18n.language === 'pt' ? ptBR : enUS;
+	const dateLocale = getDateLocale(i18n.language);
 	const resolvedAt = conflict.resolvedAt
 		? format(new Date(conflict.resolvedAt), 'PPP p', { locale: dateLocale })
 		: t('conflicts.detail.not-provided');

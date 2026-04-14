@@ -1,4 +1,5 @@
 import { Box, css, styled } from '@mui/material';
+import { StatusEnum } from '@psycron/api/user/availability/index.types';
 import { Text } from '@psycron/components/text/Text';
 import {
 	isMobileMedia,
@@ -124,7 +125,7 @@ export const StyledStatusCell = styled(Text, {
 						border-color: ${palette.info.main};
 						background-color: ${palette.info.light};
 					`
-				: status === 'CANCELLED'
+				: status === StatusEnum.CANCELED
 					? css`
 							border-color: ${palette.error.main};
 							background-color: ${palette.error.light};

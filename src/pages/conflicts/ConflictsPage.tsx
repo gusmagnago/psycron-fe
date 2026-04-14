@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next';
 import { PageLayout } from '@psycron/layouts/app/pages-layout/PageLayout';
+import { getDateLocale } from '@psycron/utils/date/date.utils';
 import { format } from 'date-fns';
-import { enUS, ptBR } from 'date-fns/locale';
 
 import { ConflictDetail } from './components/conflict-detail/ConflictDetail';
 import { useConflictsPageState } from './hooks/useConflictsPageState';
@@ -48,7 +48,7 @@ export const ConflictsPage = () => {
 		typeFilter,
 	} = useConflictsPageState({ t });
 
-	const dateLocale = i18n.language === 'pt' ? ptBR : enUS;
+	const dateLocale = getDateLocale(i18n.language);
 
 	return (
 		<PageLayout title={t('conflicts.title')} subTitle={t('conflicts.subtitle')}>

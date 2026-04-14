@@ -154,7 +154,7 @@ export const PatientTableRow = styled('button')`
 		transform 160ms ease;
 
 	&:hover {
-		background: ${hexToRgba(palette.secondary.main, 0.05)};
+		background: ${palette.brand.light};
 	}
 
 	&:last-of-type {
@@ -261,6 +261,10 @@ export const MobileCard = styled('button')`
 	gap: ${spacing.small};
 	padding: ${spacing.small};
 	text-align: left;
+
+	&:hover {
+		background: ${palette.brand.light};
+	}
 `;
 
 export const MobileCardTop = styled(Box)`
@@ -268,6 +272,14 @@ export const MobileCardTop = styled(Box)`
 	display: flex;
 	gap: ${spacing.small};
 	justify-content: space-between;
+`;
+
+export const MobileCardBadges = styled(Box)`
+	align-items: center;
+	display: flex;
+	flex-wrap: wrap;
+	gap: ${spacing.xxs};
+	justify-content: flex-end;
 `;
 
 export const MobileMetaGrid = styled(Box)`

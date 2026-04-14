@@ -4,8 +4,8 @@ import { AvailabilityCalendarPage } from '@psycron/pages/availability/page-calen
 import { AvailabilityWeekPage } from '@psycron/pages/availability/week/AvailabilityWeekPage';
 import { ConflictsPage } from '@psycron/pages/conflicts/ConflictsPage';
 import { Dashboard } from '@psycron/pages/dashboard/Dashboard';
+import { PatientProfilePage } from '@psycron/pages/patients/patient-details/PatientProfilePage';
 import { PatientListPage } from '@psycron/pages/patients/PatientListPage';
-import { PatientProfilePage } from '@psycron/pages/patients/PatientProfilePage';
 import {
 	AVAILABILITYGENERATE,
 	AVAILABILITYPATH,

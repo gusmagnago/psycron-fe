@@ -10,7 +10,11 @@ import {
 import { getPublicPatientSessions } from '@psycron/api/patient';
 import type { IPublicSessionDate, IPublicSessionSlot } from '@psycron/api/patient/index.types';
 import { cancelAppointmentByPatient } from '@psycron/api/user/availability';
-import type { CancellationReasonEnum } from '@psycron/api/user/availability/index.types';
+import type {
+	CancellationReasonEnum} from '@psycron/api/user/availability/index.types';
+import {
+	StatusEnum,
+} from '@psycron/api/user/availability/index.types';
 import { Button } from '@psycron/components/button/Button';
 import { useAlert } from '@psycron/context/alert/AlertContext';
 import { PublicBookingShell } from '@psycron/layouts/public-booking/PublicBookingShell';
@@ -107,7 +111,7 @@ export const AppointmentsList = () => {
 					</Typography>
 				</SessionHeader>
 
-				{!sessionIsPast && slot.status !== 'CANCELLED' && (
+				{!sessionIsPast && slot.status !== StatusEnum.CANCELED && (
 					<>
 						{isCancelling ? (
 							<CancelForm>

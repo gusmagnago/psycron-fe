@@ -3,6 +3,7 @@ import type {
 	IConflict,
 	IPatientDuplicateConflictMetadata,
 } from '@psycron/api/user/conflicts/index.types';
+import { getPatientFullName } from '@psycron/utils/patient/patient.utils';
 
 export const getConflictTypeLabel = (
 	type: ConflictType,
@@ -27,7 +28,7 @@ const getCandidateNames = (
 	t: (key: string) => string
 ): string => {
 	const names = metadata.candidatePatients
-		.map((patient) => [patient.firstName, patient.lastName].filter(Boolean).join(' '))
+		.map((patient) => getPatientFullName(patient))
 		.filter(Boolean);
 
 	if (!names.length) return t('conflicts.detail.not-provided');

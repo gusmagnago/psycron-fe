@@ -1,5 +1,7 @@
+import { StatusEnum } from '@psycron/api/user/availability/index.types';
 import type { IAvailabilityDateRef } from '@psycron/api/user/index.types';
 import { useAvailability } from '@psycron/context/appointment/availability/AvailabilityContext';
+import { isCanceledSlotStatus } from '@psycron/utils/availability/availability.utils';
 import { format, isWithinInterval, parseISO } from 'date-fns';
 
 import type { IWeekSlot, SlotStatus } from '../AvailabilityWeekPage.types';
@@ -19,10 +21,10 @@ const addMinutes = (time: string, minutes: number): string => {
 };
 
 const toSlotStatus = (status: string): SlotStatus | null => {
-	if (status === 'AVAILABLE') return 'available';
-	if (status === 'BLOCKED') return 'blocked';
-	if (status === 'BOOKED') return 'booked-jupiter';
-	if (status === 'CANCELLED' || status === 'CANCELED') return 'cancelled';
+	if (status === StatusEnum.AVAILABLE) return 'available';
+	if (status === StatusEnum.BLOCKED) return 'blocked';
+	if (status === StatusEnum.BOOKED) return 'booked-jupiter';
+	if (isCanceledSlotStatus(status)) return 'cancelled';
 	return null;
 };
 

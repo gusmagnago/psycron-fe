@@ -1,13 +1,13 @@
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams } from 'react-router-dom';
-import { Box } from '@mui/material';
 import { Button } from '@psycron/components/button/Button';
 import { AddPatientForm } from '@psycron/components/form/AddPatient/AddPatientForm';
-import { Google, Mail, Phone, WhatsApp } from '@psycron/components/icons';
 import { PageLayout } from '@psycron/layouts/app/pages-layout/PageLayout';
 import { CONFLICTS } from '@psycron/pages/urls';
-import { format } from 'date-fns';
-import { enUS, ptBR } from 'date-fns/locale';
+import {
+	formatLocalizedDate,
+	formatTimezoneLabel,
+} from '@psycron/utils/date/date.utils';
 
 import { usePatientListPageState } from './hooks/usePatientListPageState';
 import {
@@ -23,6 +23,7 @@ import {
 	IconCell,
 	MetaLabel,
 	MobileCard,
+	MobileCardBadges,
 	MobileCards,
 	MobileCardTop,
 	MobileMetaGrid,
@@ -39,63 +40,7 @@ import {
 	StatusPill,
 	StyledMenuItem,
 } from './PatientListPage.styles';
-
-const getDateLocale = (language: string) => (language === 'pt' ? ptBR : enUS);
-
-const formatPatientDate = (
-	value: string | null,
-	fallback: string,
-	language: string
-): string => {
-	if (!value) return fallback;
-
-	return format(new Date(value), 'PPP', {
-		locale: getDateLocale(language),
-	});
-};
-
-const formatTimezoneLabel = (
-	timeZone: string | undefined,
-	language: string,
-	fallback: string
-): string => {
-	if (!timeZone) return fallback;
-
-	try {
-		const formatter = new Intl.DateTimeFormat(
-			language === 'pt' ? 'pt-BR' : 'en-US',
-			{
-				timeZone,
-				timeZoneName: 'longGeneric',
-			}
-		);
-		const part = formatter
-			.formatToParts(new Date())
-			.find((item) => item.type === 'timeZoneName')?.value;
-
-		return part || timeZone.replaceAll('_', ' ');
-	} catch {
-		return timeZone.replaceAll('_', ' ');
-	}
-};
-
-const getPreferredContactIcon = (
-	type: string | undefined,
-	fallbackLabel: string
-) => {
-	switch (type) {
-		case 'phone':
-			return <Phone title={fallbackLabel} />;
-		case 'whatsapp':
-			return <WhatsApp title={fallbackLabel} />;
-		case 'google_meet':
-			return <Google title={fallbackLabel} />;
-		case 'zoom':
-			return <Mail title={fallbackLabel} />;
-		default:
-			return <Mail title={fallbackLabel} />;
-	}
-};
+import { getPreferredContactIcon } from './PatientListPage.utils';
 
 export const PatientListPage = () => {
 	const { i18n, t } = useTranslation();
@@ -198,7 +143,7 @@ export const PatientListPage = () => {
 					</FieldGroup>
 
 					<AddPatientAction>
-						<AddPatientForm />
+						<AddPatientForm shortButton={false} />
 					</AddPatientAction>
 				</ControlsBar>
 
@@ -240,7 +185,10 @@ export const PatientListPage = () => {
 												t('patients.list.not-available')}
 										</SecondaryValue>
 										{duplicatePatientIds.has(patient._id) ? (
-											<DuplicateWarningPill onClick={goToConflicts} type='button'>
+											<DuplicateWarningPill
+												onClick={goToConflicts}
+												type='button'
+											>
 												{t('patients.list.possible-duplicate')}
 											</DuplicateWarningPill>
 										) : null}
@@ -256,10 +204,7 @@ export const PatientListPage = () => {
 										</SecondaryValue>
 									</PrimaryCell>
 									<IconCell>
-										{getPreferredContactIcon(
-											patient.preferredContactType,
-											t('patients.list.columns.preferred-contact')
-										)}
+										{getPreferredContactIcon(patient.preferredContactType)}
 									</IconCell>
 									<SimpleValue>
 										{formatTimezoneLabel(
@@ -269,7 +214,7 @@ export const PatientListPage = () => {
 										)}
 									</SimpleValue>
 									<SimpleValue>
-										{formatPatientDate(
+										{formatLocalizedDate(
 											patient.lastAppointmentDate,
 											t('patients.list.no-appointments'),
 											i18n.language
@@ -296,9 +241,12 @@ export const PatientListPage = () => {
 													t('patients.list.not-available')}
 											</SecondaryValue>
 										</PrimaryCell>
-										<Box display='flex' gap='4px' alignItems='center' flexWrap='wrap'>
+										<MobileCardBadges>
 											{duplicatePatientIds.has(patient._id) ? (
-												<DuplicateWarningPill onClick={goToConflicts} type='button'>
+												<DuplicateWarningPill
+													onClick={goToConflicts}
+													type='button'
+												>
 													{t('patients.list.possible-duplicate')}
 												</DuplicateWarningPill>
 											) : null}
@@ -307,12 +255,14 @@ export const PatientListPage = () => {
 													? t('patients.list.status-active')
 													: t('patients.list.status-inactive')}
 											</StatusPill>
-										</Box>
+										</MobileCardBadges>
 									</MobileCardTop>
 
 									<MobileMetaGrid>
 										<MobileMetaItem>
-											<MetaLabel>{t('patients.list.columns.contact')}</MetaLabel>
+											<MetaLabel>
+												{t('patients.list.columns.contact')}
+											</MetaLabel>
 											<SimpleValue>
 												{patient.contacts?.phone ||
 													patient.contacts?.email ||
@@ -323,15 +273,14 @@ export const PatientListPage = () => {
 											<MetaLabel>
 												{t('patients.list.columns.preferred-contact')}
 											</MetaLabel>
-											<Box display='flex' alignItems='center'>
-												{getPreferredContactIcon(
-													patient.preferredContactType,
-													t('patients.list.columns.preferred-contact')
-												)}
-											</Box>
+											<IconCell>
+												{getPreferredContactIcon(patient.preferredContactType)}
+											</IconCell>
 										</MobileMetaItem>
 										<MobileMetaItem>
-											<MetaLabel>{t('patients.list.columns.timezone')}</MetaLabel>
+											<MetaLabel>
+												{t('patients.list.columns.timezone')}
+											</MetaLabel>
 											<SimpleValue>
 												{formatTimezoneLabel(
 													patient.timeZone,
@@ -345,7 +294,7 @@ export const PatientListPage = () => {
 												{t('patients.list.columns.last-appointment')}
 											</MetaLabel>
 											<SimpleValue>
-												{formatPatientDate(
+												{formatLocalizedDate(
 													patient.lastAppointmentDate,
 													t('patients.list.no-appointments'),
 													i18n.language
@@ -353,7 +302,9 @@ export const PatientListPage = () => {
 											</SimpleValue>
 										</MobileMetaItem>
 										<MobileMetaItem>
-											<MetaLabel>{t('patients.list.columns.sessions')}</MetaLabel>
+											<MetaLabel>
+												{t('patients.list.columns.sessions')}
+											</MetaLabel>
 											<SimpleValue>{patient.totalSessions}</SimpleValue>
 										</MobileMetaItem>
 									</MobileMetaGrid>

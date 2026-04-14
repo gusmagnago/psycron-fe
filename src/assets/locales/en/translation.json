@@ -138,7 +138,55 @@
       "contact-method-not-set": "Not set",
       "possible-duplicate": "Possible duplicate"
     },
-    "profile-placeholder": "Detailed patient profile is the next step of the Patient Center."
+    "profile": {
+      "subtitle": "Review contact details, care preferences, and session history.",
+      "member-since": "Patient since {{date}}",
+      "unknown-patient": "unknown patient",
+      "merged-note": "This patient record was merged into {{patientId}} and is kept for audit history.",
+      "not-found": "We could not load this patient. They may have been archived or merged into another record.",
+      "actions": {
+        "call": "Call",
+        "whatsapp": "WhatsApp",
+        "email": "Email"
+      },
+      "status": {
+        "active": "Active",
+        "archived": "Archived",
+        "merged": "Merged"
+      },
+      "stats": {
+        "total": "Total sessions",
+        "upcoming": "Upcoming",
+        "completed": "Completed",
+        "cancelled": "Cancelled"
+      },
+      "sections": {
+        "details": "Patient details",
+        "timeline": "Session timeline"
+      },
+      "preferred-contact": {
+        "phone": "Phone",
+        "whatsapp": "WhatsApp",
+        "google-meet": "Google Meet",
+        "zoom": "Zoom",
+        "not-set": "Not set"
+      },
+      "next-session": "Next session",
+      "last-session": "Last completed session",
+      "no-upcoming-session": "No upcoming session scheduled",
+      "no-completed-session": "No completed sessions yet",
+      "no-sessions": "No sessions have been scheduled for this patient yet.",
+      "delivery": {
+        "online": "Online",
+        "in-person": "In person",
+        "not-set": "Delivery mode not set"
+      },
+      "sessions": {
+        "upcoming": "Upcoming",
+        "completed": "Completed",
+        "cancelled": "Cancelled"
+      }
+    }
   },
   "auth": {
     "error": {

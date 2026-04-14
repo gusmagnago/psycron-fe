@@ -3,6 +3,10 @@ import type {
 	PatientMergeField,
 } from '@psycron/api/user/conflicts/index.types';
 import type { IPatient } from '@psycron/context/user/auth/UserAuthenticationContext.types';
+import {
+	formatPatientAddress,
+	getPatientFullName,
+} from '@psycron/utils/patient/patient.utils';
 
 export const PATIENT_DUPLICATE_MERGE_FIELDS = [
 	'firstName',
@@ -18,16 +22,13 @@ export const PATIENT_DUPLICATE_MERGE_FIELDS = [
 export const getIncomingPatientName = (
 	metadata: IPatientDuplicateConflictMetadata
 ) =>
-	[metadata.incomingPatient?.firstName, metadata.incomingPatient?.lastName]
-		.filter(Boolean)
-		.join(' ')
-		.trim();
+	getPatientFullName(metadata.incomingPatient);
 
 export const getCandidatePatientNames = (
 	metadata: IPatientDuplicateConflictMetadata
 ) =>
 	metadata.candidatePatients
-		.map((patient) => [patient.firstName, patient.lastName].filter(Boolean).join(' '))
+		.map((patient) => getPatientFullName(patient))
 		.filter(Boolean);
 
 export const getConflictingDetails = (
@@ -44,15 +45,10 @@ export const getPrimaryCandidate = (patients: IPatient[]) => patients[0] ?? null
 export const getExtraCandidates = (patients: IPatient[]) => patients.slice(1);
 
 export const getPatientName = (patient?: IPatient | null): string =>
-	[patient?.firstName, patient?.lastName].filter(Boolean).join(' ');
+	getPatientFullName(patient);
 
 const formatAddress = (patient?: IPatient | null): string | undefined => {
-	const address = patient?.address;
-	if (!address) return undefined;
-
-	return [address.street, address.city, address.postcode, address.country]
-		.filter(Boolean)
-		.join(', ');
+	return formatPatientAddress(patient?.address);
 };
 
 const formatPreferredContact = (

@@ -138,7 +138,55 @@
       "contact-method-not-set": "Não definido",
       "possible-duplicate": "Possível duplicata"
     },
-    "profile-placeholder": "O perfil detalhado do paciente é o próximo passo da Central de Pacientes."
+    "profile": {
+      "subtitle": "Revise contatos, preferências de cuidado e histórico de sessões.",
+      "member-since": "Paciente desde {{date}}",
+      "unknown-patient": "paciente desconhecido",
+      "merged-note": "Este registro foi mesclado em {{patientId}} e fica disponível para histórico de auditoria.",
+      "not-found": "Não conseguimos carregar este paciente. Ele pode ter sido arquivado ou mesclado em outro registro.",
+      "actions": {
+        "call": "Ligar",
+        "whatsapp": "WhatsApp",
+        "email": "Email"
+      },
+      "status": {
+        "active": "Ativo",
+        "archived": "Arquivado",
+        "merged": "Mesclado"
+      },
+      "stats": {
+        "total": "Total de sessões",
+        "upcoming": "Próximas",
+        "completed": "Concluídas",
+        "cancelled": "Canceladas"
+      },
+      "sections": {
+        "details": "Dados do paciente",
+        "timeline": "Linha do tempo"
+      },
+      "preferred-contact": {
+        "phone": "Telefone",
+        "whatsapp": "WhatsApp",
+        "google-meet": "Google Meet",
+        "zoom": "Zoom",
+        "not-set": "Não definido"
+      },
+      "next-session": "Próxima sessão",
+      "last-session": "Última sessão concluída",
+      "no-upcoming-session": "Nenhuma próxima sessão agendada",
+      "no-completed-session": "Nenhuma sessão concluída ainda",
+      "no-sessions": "Nenhuma sessão foi agendada para este paciente ainda.",
+      "delivery": {
+        "online": "Online",
+        "in-person": "Presencial",
+        "not-set": "Formato não definido"
+      },
+      "sessions": {
+        "upcoming": "Próxima",
+        "completed": "Concluída",
+        "cancelled": "Cancelada"
+      }
+    }
   },
   "auth": {
     "error": {
