@@ -122,7 +122,7 @@ export const PatientTableSurface = styled(Box)`
 export const PatientTableHeader = styled(Box)`
 	display: grid;
 	gap: ${spacing.small};
-	grid-template-columns: minmax(12rem, 1.7fr) minmax(10rem, 1.1fr) minmax(5rem, 0.55fr) minmax(9rem, 0.95fr) minmax(9rem, 1fr) minmax(5rem, 0.4fr);
+	grid-template-columns: minmax(12rem, 1.55fr) minmax(10rem, 1.05fr) minmax(5rem, 0.5fr) minmax(9rem, 0.9fr) minmax(10rem, 1fr) minmax(9rem, 0.95fr) minmax(5rem, 0.4fr);
 	min-width: 100%;
 	padding: ${spacing.small} ${spacing.medium};
 	background: ${hexToRgba(palette.background.default, 0.7)};
@@ -137,6 +137,35 @@ export const PatientHeaderCell = styled(Text)`
 	text-transform: uppercase;
 `;
 
+export const SortableHeaderButton = styled('button', {
+	shouldForwardProp: (prop) => prop !== 'isActive',
+})<{ isActive: boolean }>`
+	align-items: center;
+	background: transparent;
+	border: none;
+	color: ${({ isActive }) =>
+		isActive ? palette.text.primary : palette.gray['05']};
+	cursor: pointer;
+	display: inline-flex;
+	font: inherit;
+	font-size: 0.78rem;
+	font-weight: 700;
+	gap: ${spacing.xxs};
+	letter-spacing: 0.04em;
+	padding: 0;
+	text-transform: uppercase;
+
+	&:hover {
+		color: ${palette.text.primary};
+	}
+`;
+
+export const SortIndicator = styled('span')`
+	font-size: 0.72rem;
+	font-weight: 800;
+	line-height: 1;
+`;
+
 export const PatientTableRow = styled('button')`
 	align-items: center;
 	background: ${palette.background.paper};
@@ -145,7 +174,7 @@ export const PatientTableRow = styled('button')`
 	cursor: pointer;
 	display: grid;
 	gap: ${spacing.small};
-	grid-template-columns: minmax(12rem, 1.7fr) minmax(10rem, 1.1fr) minmax(5rem, 0.55fr) minmax(9rem, 0.95fr) minmax(9rem, 1fr) minmax(5rem, 0.4fr);
+	grid-template-columns: minmax(12rem, 1.55fr) minmax(10rem, 1.05fr) minmax(5rem, 0.5fr) minmax(9rem, 0.9fr) minmax(10rem, 1fr) minmax(9rem, 0.95fr) minmax(5rem, 0.4fr);
 	min-width: 100%;
 	padding: ${spacing.small} ${spacing.medium};
 	text-align: left;
@@ -184,6 +213,32 @@ export const SecondaryValue = styled(Text)`
 
 export const SimpleValue = styled(Text)`
 	font-size: 0.92rem;
+`;
+
+export const BillingCell = styled(Box)`
+	display: flex;
+	min-width: 0;
+`;
+
+export const BillingSummary = styled('span')`
+	display: inline-flex;
+	flex-direction: column;
+	gap: ${spacing.xxs};
+	max-width: 100%;
+	min-width: 0;
+`;
+
+export const BillingTooltipContent = styled(Box)`
+	display: flex;
+	flex-direction: column;
+	gap: ${spacing.xxs};
+	max-width: 16rem;
+`;
+
+export const BillingTooltipRow = styled(Box)`
+	display: flex;
+	flex-direction: column;
+	gap: 0.1rem;
 `;
 
 export const IconCell = styled(Box)`

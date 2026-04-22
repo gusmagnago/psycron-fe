@@ -31,7 +31,6 @@ export const HeroCard = styled(Box)`
 		${hexToRgba(palette.background.paper, 0.98)} 0%,
 		${palette.brand.light} 100%
 	);
-	border: 1px solid ${hexToRgba(palette.brand.purple, 0.12)};
 	border-radius: ${spacing.large};
 	box-shadow: ${shadowMedium};
 	display: grid;
@@ -50,10 +49,6 @@ export const IdentityCluster = styled(Box)`
 	display: flex;
 	gap: ${spacing.medium};
 	min-width: 0;
-
-	${isMobileMedia} {
-		align-items: flex-start;
-	}
 `;
 
 export const IdentityText = styled(Box)`
@@ -61,6 +56,19 @@ export const IdentityText = styled(Box)`
 	flex-direction: column;
 	gap: ${spacing.xs};
 	min-width: 0;
+`;
+
+export const HeroHeaderRow = styled(Box)`
+	align-items: center;
+	display: flex;
+	gap: ${spacing.small};
+	justify-content: flex-start;
+`;
+
+export const HeroActions = styled(Box)`
+	align-items: center;
+	display: flex;
+	gap: ${spacing.xs};
 `;
 
 export const PatientName = styled(Text)`
@@ -150,7 +158,6 @@ export const StatsGrid = styled(Box)`
 
 export const StatCard = styled(Box)`
 	background: ${hexToRgba(palette.background.paper, 0.76)};
-	border: 1px solid ${hexToRgba(palette.gray['04'], 0.14)};
 	border-radius: ${spacing.medium};
 	box-shadow: ${shadowSmall};
 	padding: ${spacing.small};
@@ -183,7 +190,6 @@ export const ContentGrid = styled(Box)`
 
 export const SectionCard = styled(Box)`
 	background: ${palette.background.paper};
-	border: 1px solid ${hexToRgba(palette.gray['04'], 0.12)};
 	border-radius: ${spacing.large};
 	box-shadow: ${shadowSmall};
 	display: flex;
@@ -209,7 +215,6 @@ export const DetailGrid = styled(Box)`
 
 export const DetailItem = styled(Box)`
 	background: ${hexToRgba(palette.background.default, 0.62)};
-	border: 1px solid ${hexToRgba(palette.gray['04'], 0.08)};
 	border-radius: ${spacing.medium};
 	display: flex;
 	flex-direction: column;

@@ -1,17 +1,24 @@
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams } from 'react-router-dom';
+import { Box, Tooltip } from '@mui/material';
 import { Button } from '@psycron/components/button/Button';
 import { AddPatientForm } from '@psycron/components/form/AddPatient/AddPatientForm';
+import { ChevronDown, ChevronUp } from '@psycron/components/icons';
 import { PageLayout } from '@psycron/layouts/app/pages-layout/PageLayout';
 import { CONFLICTS } from '@psycron/pages/urls';
 import {
 	formatLocalizedDate,
 	formatTimezoneLabel,
 } from '@psycron/utils/date/date.utils';
+import { getPatientBillingViewModel } from '@psycron/utils/patient/patient.utils';
 
 import { usePatientListPageState } from './hooks/usePatientListPageState';
 import {
 	AddPatientAction,
+	BillingCell,
+	BillingSummary,
+	BillingTooltipContent,
+	BillingTooltipRow,
 	ControlField,
 	ControlsBar,
 	DuplicateWarningPill,
@@ -37,10 +44,22 @@ import {
 	PrimaryValue,
 	SecondaryValue,
 	SimpleValue,
+	SortableHeaderButton,
+	SortIndicator,
 	StatusPill,
 	StyledMenuItem,
 } from './PatientListPage.styles';
 import { getPreferredContactIcon } from './PatientListPage.utils';
+import type {
+	PatientListSortDirection,
+	PatientListSortField,
+} from './PatientsPage.types';
+import {
+	decodePatientListSortValue,
+	encodePatientListSortValue,
+	getPatientListSortDefaultDirection,
+	PATIENT_LIST_SORT_OPTIONS,
+} from './PatientsPage.utils';
 
 export const PatientListPage = () => {
 	const { i18n, t } = useTranslation();
@@ -55,9 +74,11 @@ export const PatientListPage = () => {
 		openPatientProfile,
 		searchQuery,
 		setSearchQuery,
-		setSortBy,
+		setSortDirection,
+		setSortField,
 		setStatusFilter,
-		sortBy,
+		sortDirection,
+		sortField,
 		statusFilter,
 	} = usePatientListPageState();
 
@@ -72,6 +93,72 @@ export const PatientListPage = () => {
 	const emptyBody = hasPatients
 		? t('patients.list.empty.filtered-body')
 		: t('patients.list.empty.initial-body');
+	const sortValue = encodePatientListSortValue(sortField, sortDirection);
+	const handleSortChange = (field: PatientListSortField) => {
+		if (sortField === field) {
+			setSortDirection((current: PatientListSortDirection) =>
+				current === 'asc' ? 'desc' : 'asc'
+			);
+			return;
+		}
+
+		setSortField(field);
+		setSortDirection(getPatientListSortDefaultDirection(field));
+	};
+	const renderSortableHeader = (field: PatientListSortField, label: string) => (
+		<SortableHeaderButton
+			isActive={sortField === field}
+			onClick={() => handleSortChange(field)}
+			type='button'
+		>
+			{label}
+			{sortField === field ? (
+				<SortIndicator>
+					{sortDirection === 'asc' ? <ChevronUp /> : <ChevronDown />}
+				</SortIndicator>
+			) : null}
+		</SortableHeaderButton>
+	);
+	const renderBillingCell = (patient: (typeof filteredPatients)[number]) => {
+		const billingViewModel = getPatientBillingViewModel(
+			patient.billing,
+			i18n.language,
+			t
+		);
+		const tooltipContent = billingViewModel.isConfigured ? (
+			<BillingTooltipContent>
+				<BillingTooltipRow>
+					<MetaLabel>{t('patients.profile.billing.model')}</MetaLabel>
+					<SimpleValue>{billingViewModel.modelLabel}</SimpleValue>
+				</BillingTooltipRow>
+				<BillingTooltipRow>
+					<MetaLabel>{t('patients.profile.billing.category')}</MetaLabel>
+					<SimpleValue>{billingViewModel.categoryLabel}</SimpleValue>
+				</BillingTooltipRow>
+				<BillingTooltipRow>
+					<MetaLabel>{t('patients.profile.billing.amount')}</MetaLabel>
+					<SimpleValue>{billingViewModel.amountLabel}</SimpleValue>
+				</BillingTooltipRow>
+			</BillingTooltipContent>
+		) : (
+			t('patients.list.billing.none')
+		);
+
+		return (
+			<Tooltip arrow placement='top' title={tooltipContent}>
+				<BillingCell>
+					<BillingSummary>
+						<SimpleValue>{billingViewModel.summaryPrimary}</SimpleValue>
+						{billingViewModel.summarySecondary ? (
+							<SecondaryValue>
+								{billingViewModel.summarySecondary}
+							</SecondaryValue>
+						) : null}
+					</BillingSummary>
+				</BillingCell>
+			</Tooltip>
+		);
+	};
 
 	return (
 		<PageLayout
@@ -120,25 +207,28 @@ export const PatientListPage = () => {
 						<ControlField
 							select
 							fullWidth
-							value={sortBy}
-							onChange={(event) =>
-								setSortBy(
-									event.target.value as
-										| 'name-asc'
-										| 'last-appointment-desc'
-										| 'total-sessions-desc'
-								)
-							}
+							value={sortValue}
+							onChange={(event) => {
+								const { direction: nextDirection, field: nextField } =
+									decodePatientListSortValue(event.target.value);
+								setSortField(nextField);
+								setSortDirection(nextDirection);
+							}}
 						>
-							<StyledMenuItem value='name-asc'>
-								{t('patients.list.sort-name')}
-							</StyledMenuItem>
-							<StyledMenuItem value='last-appointment-desc'>
-								{t('patients.list.sort-last-appointment')}
-							</StyledMenuItem>
-							<StyledMenuItem value='total-sessions-desc'>
-								{t('patients.list.sort-total-sessions')}
-							</StyledMenuItem>
+							{PATIENT_LIST_SORT_OPTIONS.map((option) => (
+								<StyledMenuItem
+									key={encodePatientListSortValue(
+										option.field,
+										option.direction
+									)}
+									value={encodePatientListSortValue(
+										option.field,
+										option.direction
+									)}
+								>
+									{t(option.labelKey)}
+								</StyledMenuItem>
+							))}
 						</ControlField>
 					</FieldGroup>
 
@@ -152,7 +242,10 @@ export const PatientListPage = () => {
 						<PatientTableSurface>
 							<PatientTableHeader>
 								<PatientHeaderCell>
-									{t('patients.list.columns.patient')}
+									{renderSortableHeader(
+										'name',
+										t('patients.list.columns.patient')
+									)}
 								</PatientHeaderCell>
 								<PatientHeaderCell>
 									{t('patients.list.columns.contact')}
@@ -164,10 +257,19 @@ export const PatientListPage = () => {
 									{t('patients.list.columns.timezone')}
 								</PatientHeaderCell>
 								<PatientHeaderCell>
-									{t('patients.list.columns.last-appointment')}
+									{t('patients.list.columns.billing')}
 								</PatientHeaderCell>
 								<PatientHeaderCell>
-									{t('patients.list.columns.sessions')}
+									{renderSortableHeader(
+										'last-appointment',
+										t('patients.list.columns.last-appointment')
+									)}
+								</PatientHeaderCell>
+								<PatientHeaderCell>
+									{renderSortableHeader(
+										'total-sessions',
+										t('patients.list.columns.sessions')
+									)}
 								</PatientHeaderCell>
 							</PatientTableHeader>
 
@@ -213,6 +315,7 @@ export const PatientListPage = () => {
 											t('patients.list.not-available')
 										)}
 									</SimpleValue>
+									{renderBillingCell(patient)}
 									<SimpleValue>
 										{formatLocalizedDate(
 											patient.lastAppointmentDate,
@@ -288,6 +391,12 @@ export const PatientListPage = () => {
 													t('patients.list.not-available')
 												)}
 											</SimpleValue>
+										</MobileMetaItem>
+										<MobileMetaItem>
+											<MetaLabel>
+												{t('patients.list.columns.billing')}
+											</MetaLabel>
+											<Box>{renderBillingCell(patient)}</Box>
 										</MobileMetaItem>
 										<MobileMetaItem>
 											<MetaLabel>

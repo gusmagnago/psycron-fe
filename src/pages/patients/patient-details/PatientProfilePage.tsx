@@ -1,8 +1,12 @@
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
 import { Avatar } from '@psycron/components/avatar/Avatar';
+import { Button } from '@psycron/components/button/Button';
+import { ShareButton } from '@psycron/components/button/share/ShareButton';
 import {
 	Calendar,
+	Edit,
 	Mail,
 	MapPin,
 	Phone,
@@ -11,7 +15,7 @@ import {
 import { usePatient } from '@psycron/context/patient/PatientContext';
 import { useTherapistId } from '@psycron/hooks/useTherapistId';
 import { PageLayout } from '@psycron/layouts/app/pages-layout/PageLayout';
-import { PATIENTS } from '@psycron/pages/urls';
+import { DOMAIN, PATIENTS } from '@psycron/pages/urls';
 import { palette } from '@psycron/theme/palette/palette.theme';
 import {
 	formatDateTimeRange,
@@ -20,6 +24,7 @@ import {
 } from '@psycron/utils/date/date.utils';
 import {
 	formatPatientAddress,
+	getPatientBillingViewModel,
 	getPatientFullName,
 } from '@psycron/utils/patient/patient.utils';
 
@@ -32,6 +37,7 @@ import {
 	getRecentSessions,
 } from '../PatientsPage.utils';
 
+import { PatientEditForm } from './edit-patient-form/PatientEditForm';
 import {
 	ContentGrid,
 	DetailGrid,
@@ -39,7 +45,9 @@ import {
 	DetailLabel,
 	DetailValue,
 	EmptyPanel,
+	HeroActions,
 	HeroCard,
+	HeroHeaderRow,
 	IdentityCluster,
 	IdentityText,
 	MutedValue,
@@ -66,6 +74,7 @@ import {
 export const PatientProfilePage = () => {
 	const { i18n, t } = useTranslation();
 	const { patientId } = useParams<{ patientId: string }>();
+	const [editFormOpen, setEditFormOpen] = useState(false);
 	const therapistId = useTherapistId();
 	const { isPatientDetailsLoading, patientDetails } = usePatient(
 		therapistId,
@@ -81,6 +90,22 @@ export const PatientProfilePage = () => {
 	const recentSessions = getRecentSessions(sessions);
 	const status = patientDetails?.status ?? 'ACTIVE';
 	const title = patientName || t('globals.patient');
+	const sharePatientId = patientDetails
+		? status === 'MERGED' && patientDetails.mergedIntoPatientId
+			? patientDetails.mergedIntoPatientId
+			: patientDetails._id
+		: null;
+	const publicSessionsPath = sharePatientId
+		? `${sharePatientId}/appointments`
+		: '';
+	const publicSessionsLink = sharePatientId
+		? `${DOMAIN}/${i18n.language}/${publicSessionsPath}`
+		: '';
+	const billingViewModel = getPatientBillingViewModel(
+		patientDetails?.billing,
+		i18n.language,
+		t
+	);
 
 	const renderSessionStatus = (
 		isCancelled: boolean,
@@ -109,9 +134,33 @@ export const PatientProfilePage = () => {
 								large
 							/>
 							<IdentityText>
-								<StatusPill status={status}>
-									{t(`patients.profile.status.${status.toLowerCase()}`)}
-								</StatusPill>
+								<HeroHeaderRow>
+									<StatusPill status={status}>
+										{t(`patients.profile.status.${status.toLowerCase()}`)}
+									</StatusPill>
+									<HeroActions>
+										{patientDetails ? (
+											<ShareButton
+												preferNativeShare
+												shareWith={patientName}
+												textKey={t('patients.profile.share.text')}
+												titleKey={t('patients.profile.share.title')}
+												url={publicSessionsPath}
+											/>
+										) : null}
+										{status !== 'MERGED' ? (
+											<Button
+												onClick={() => setEditFormOpen(true)}
+												startIcon={<Edit />}
+												variant='outlined'
+												tertiary
+												small
+											>
+												{t('patients.profile.actions.edit')}
+											</Button>
+										) : null}
+									</HeroActions>
+								</HeroHeaderRow>
 								<PatientName>{patientName}</PatientName>
 								<PatientMeta>
 									{t('patients.profile.member-since', {
@@ -145,7 +194,9 @@ export const PatientProfilePage = () => {
 										</ShortcutLink>
 									) : null}
 									{patientDetails.contacts?.email ? (
-										<ShortcutLink href={`mailto:${patientDetails.contacts.email}`}>
+										<ShortcutLink
+											href={`mailto:${patientDetails.contacts.email}`}
+										>
 											<Mail color={palette.secondary.main} />
 											{t('patients.profile.actions.email')}
 										</ShortcutLink>
@@ -176,7 +227,9 @@ export const PatientProfilePage = () => {
 
 					<ContentGrid>
 						<SectionCard>
-							<SectionTitle>{t('patients.profile.sections.details')}</SectionTitle>
+							<SectionTitle>
+								{t('patients.profile.sections.details')}
+							</SectionTitle>
 							<DetailGrid>
 								<DetailItem>
 									<DetailLabel>{t('globals.email')}</DetailLabel>
@@ -214,7 +267,9 @@ export const PatientProfilePage = () => {
 									) : null}
 								</DetailItem>
 								<DetailItem>
-									<DetailLabel>{t('patients.list.columns.timezone')}</DetailLabel>
+									<DetailLabel>
+										{t('patients.list.columns.timezone')}
+									</DetailLabel>
 									<DetailValue>
 										{formatTimezoneLabel(
 											patientDetails.timeZone,
@@ -229,6 +284,32 @@ export const PatientProfilePage = () => {
 										{formatPatientAddress(patientDetails.address, fallback)}
 									</DetailValue>
 								</DetailItem>
+								<DetailItem>
+									<DetailLabel>{t('patients.profile.billing.model')}</DetailLabel>
+									<DetailValue>{billingViewModel.modelLabel}</DetailValue>
+								</DetailItem>
+								<DetailItem>
+									<DetailLabel>
+										{t('patients.profile.billing.category')}
+									</DetailLabel>
+									<DetailValue>{billingViewModel.categoryLabel}</DetailValue>
+								</DetailItem>
+								<DetailItem>
+									<DetailLabel>{t('patients.profile.billing.amount')}</DetailLabel>
+									<DetailValue>
+										{billingViewModel.amountLabel ?? fallback}
+									</DetailValue>
+								</DetailItem>
+								<DetailItem>
+									<DetailLabel>{t('patients.profile.share.link-label')}</DetailLabel>
+									<ShortcutLink
+										href={publicSessionsLink}
+										rel='noopener noreferrer'
+										target='_blank'
+									>
+										{t('patients.profile.actions.open-sessions')}
+									</ShortcutLink>
+								</DetailItem>
 							</DetailGrid>
 							{status === 'MERGED' ? (
 								<MutedValue>
@@ -242,10 +323,14 @@ export const PatientProfilePage = () => {
 						</SectionCard>
 
 						<SectionCard>
-							<SectionTitle>{t('patients.profile.sections.timeline')}</SectionTitle>
+							<SectionTitle>
+								{t('patients.profile.sections.timeline')}
+							</SectionTitle>
 							<DetailGrid>
 								<DetailItem>
-									<DetailLabel>{t('patients.profile.next-session')}</DetailLabel>
+									<DetailLabel>
+										{t('patients.profile.next-session')}
+									</DetailLabel>
 									<DetailValue>
 										{nextSession
 											? formatDateTimeRange(
@@ -258,7 +343,9 @@ export const PatientProfilePage = () => {
 									</DetailValue>
 								</DetailItem>
 								<DetailItem>
-									<DetailLabel>{t('patients.profile.last-session')}</DetailLabel>
+									<DetailLabel>
+										{t('patients.profile.last-session')}
+									</DetailLabel>
 									<DetailValue>
 										{lastSession
 											? formatDateTimeRange(
@@ -320,14 +407,18 @@ export const PatientProfilePage = () => {
 									))
 								) : (
 									<EmptyPanel>
-										<MutedValue>
-											{t('patients.profile.no-sessions')}
-										</MutedValue>
+										<MutedValue>{t('patients.profile.no-sessions')}</MutedValue>
 									</EmptyPanel>
 								)}
 							</SessionList>
 						</SectionCard>
 					</ContentGrid>
+					<PatientEditForm
+						onClose={() => setEditFormOpen(false)}
+						open={editFormOpen}
+						patient={patientDetails}
+						therapistId={therapistId}
+					/>
 				</ProfileLayout>
 			) : (
 				<EmptyPanel>

@@ -9,10 +9,18 @@ export type PatientStatus = NonNullable<IPatient['status']>;
 
 export type PatientListStatusFilter = 'active' | 'all' | 'inactive';
 
-export type PatientListSort =
-	| 'last-appointment-desc'
-	| 'name-asc'
-	| 'total-sessions-desc';
+export type PatientListSortField =
+	| 'last-appointment'
+	| 'name'
+	| 'total-sessions';
+export type PatientListSortDirection = 'asc' | 'desc';
+
+export interface PatientListSortOption {
+	defaultDirection: PatientListSortDirection;
+	direction: PatientListSortDirection;
+	field: PatientListSortField;
+	labelKey: string;
+}
 
 export interface PatientListItem extends IPatient {
 	fullName: string;

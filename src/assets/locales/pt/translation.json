@@ -115,13 +115,17 @@
       "status-inactive": "Inativo",
       "sort-label": "Ordenar por",
       "sort-name": "Nome (A-Z)",
+      "sort-name-desc": "Nome (Z-A)",
+      "sort-last-appointment-asc": "Último atendimento (mais antigo primeiro)",
       "sort-last-appointment": "Último atendimento",
+      "sort-total-sessions-asc": "Total de sessões (menor primeiro)",
       "sort-total-sessions": "Total de sessões",
       "columns": {
         "patient": "Paciente",
         "contact": "Contato",
         "preferred-contact": "Contato preferido",
         "timezone": "Fuso horário",
+        "billing": "Cobrança",
         "last-appointment": "Último atendimento",
         "sessions": "Sessões",
         "status": "Status"
@@ -133,6 +137,11 @@
         "filtered-body": "Tente ajustar a busca ou os filtros para encontrar o paciente que você procura."
       },
       "clear-search": "Limpar busca",
+      "billing": {
+        "none": "Não definido",
+        "per-session-short": "/ sessão",
+        "monthly-short": "/ mês"
+      },
       "not-available": "Não informado",
       "no-appointments": "Sem atendimentos ainda",
       "contact-method-not-set": "Não definido",
@@ -146,8 +155,15 @@
       "not-found": "Não conseguimos carregar este paciente. Ele pode ter sido arquivado ou mesclado em outro registro.",
       "actions": {
         "call": "Ligar",
+        "edit": "Editar paciente",
+        "open-sessions": "Abrir página de sessões",
         "whatsapp": "WhatsApp",
         "email": "Email"
+      },
+      "edit": {
+        "title": "Editar dados do paciente",
+        "description": "Atualize contatos, preferências de atendimento, fuso horário e endereço.",
+        "save": "Salvar alterações"
       },
       "status": {
         "active": "Ativo",
@@ -161,8 +177,34 @@
         "cancelled": "Canceladas"
       },
       "sections": {
+        "billing": "Cobrança",
         "details": "Dados do paciente",
         "timeline": "Linha do tempo"
+      },
+      "billing": {
+        "model": "Modelo de cobrança",
+        "category": "Categoria de cobrança",
+        "amount": "Preço",
+        "currency": "Moeda",
+        "models": {
+          "per-session": "Pago por sessão",
+          "monthly": "Pago mensalmente"
+        },
+        "categories": {
+          "standard": "Padrão",
+          "social": "Atendimento social",
+          "pro-bono": "Pro bono"
+        },
+        "category-descriptions": {
+          "standard": "Atendimento pago normalmente, pela tarifa acordada.",
+          "social": "Atendimento com valor reduzido ou apoio social, acompanhado separadamente.",
+          "pro_bono": "Atendimento gratuito, sem expectativa de pagamento."
+        }
+      },
+      "share": {
+        "title": "Sua página de sessões",
+        "text": "Use este link para ver e gerir as suas sessões agendadas.",
+        "link-label": "Link público de sessões"
       },
       "preferred-contact": {
         "phone": "Telefone",
@@ -1332,6 +1374,7 @@
           "phone": "Telefone",
           "whatsapp": "WhatsApp"
         },
+        "billing": "Cobrança",
         "preferredContact": "Contato preferido",
         "timeZone": "Fuso horário",
         "address": "Endereço"

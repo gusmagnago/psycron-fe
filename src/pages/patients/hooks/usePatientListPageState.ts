@@ -13,10 +13,12 @@ import { PATIENTS } from '@psycron/pages/urls';
 import { useMutation, useQueries, useQuery } from '@tanstack/react-query';
 
 import type {
-	PatientListSort,
+	PatientListSortDirection,
+	PatientListSortField,
 	PatientListStatusFilter,
 } from '../PatientsPage.types';
 import {
+	getPatientListSortDefaultDirection,
 	mapPatientToListItem,
 	sortPatientListItems,
 } from '../PatientsPage.utils';
@@ -28,7 +30,10 @@ export const usePatientListPageState = () => {
 	const { isUserDetailsLoading, therapistId, userDetails } = useUserDetails();
 
 	const [searchQuery, setSearchQuery] = useState('');
-	const [sortBy, setSortBy] = useState<PatientListSort>('name-asc');
+	const [sortDirection, setSortDirection] = useState<PatientListSortDirection>(
+		getPatientListSortDefaultDirection('name')
+	);
+	const [sortField, setSortField] = useState<PatientListSortField>('name');
 	const [statusFilter, setStatusFilter] =
 		useState<PatientListStatusFilter>('all');
 
@@ -102,8 +107,8 @@ export const usePatientListPageState = () => {
 			return matchesSearch && matchesStatus;
 		});
 
-		return sortPatientListItems(nextItems, sortBy);
-	}, [patients, searchQuery, sortBy, statusFilter]);
+		return sortPatientListItems(nextItems, sortField, sortDirection);
+	}, [patients, searchQuery, sortDirection, sortField, statusFilter]);
 
 	const openPatientProfile = (patientId: string): void => {
 		navigate(`/${locale}/${PATIENTS}/${patientId}`);
@@ -119,9 +124,11 @@ export const usePatientListPageState = () => {
 		openPatientProfile,
 		searchQuery,
 		setSearchQuery,
-		setSortBy,
+		setSortDirection,
+		setSortField,
 		setStatusFilter,
-		sortBy,
+		sortDirection,
+		sortField,
 		statusFilter,
 	};
 };

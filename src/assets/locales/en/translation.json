@@ -115,13 +115,17 @@
       "status-inactive": "Inactive",
       "sort-label": "Sort by",
       "sort-name": "Name (A-Z)",
+      "sort-name-desc": "Name (Z-A)",
+      "sort-last-appointment-asc": "Last appointment (oldest first)",
       "sort-last-appointment": "Last appointment",
+      "sort-total-sessions-asc": "Total sessions (lowest first)",
       "sort-total-sessions": "Total sessions",
       "columns": {
         "patient": "Patient",
         "contact": "Contact",
         "preferred-contact": "Preferred contact",
         "timezone": "Timezone",
+        "billing": "Billing",
         "last-appointment": "Last appointment",
         "sessions": "Sessions",
         "status": "Status"
@@ -133,6 +137,11 @@
         "filtered-body": "Try adjusting your search or filters to find the patient you are looking for."
       },
       "clear-search": "Clear search",
+      "billing": {
+        "none": "Not set",
+        "per-session-short": "/ session",
+        "monthly-short": "/ month"
+      },
       "not-available": "Not available",
       "no-appointments": "No appointments yet",
       "contact-method-not-set": "Not set",
@@ -146,8 +155,15 @@
       "not-found": "We could not load this patient. They may have been archived or merged into another record.",
       "actions": {
         "call": "Call",
+        "edit": "Edit patient",
+        "open-sessions": "Open sessions page",
         "whatsapp": "WhatsApp",
         "email": "Email"
+      },
+      "edit": {
+        "title": "Edit patient details",
+        "description": "Update contact details, care preferences, timezone, and address.",
+        "save": "Save changes"
       },
       "status": {
         "active": "Active",
@@ -161,8 +177,34 @@
         "cancelled": "Cancelled"
       },
       "sections": {
+        "billing": "Billing",
         "details": "Patient details",
         "timeline": "Session timeline"
+      },
+      "billing": {
+        "model": "Billing model",
+        "category": "Billing category",
+        "amount": "Price",
+        "currency": "Currency",
+        "models": {
+          "per-session": "Paid per session",
+          "monthly": "Paid monthly"
+        },
+        "categories": {
+          "standard": "Standard",
+          "social": "Social care",
+          "pro-bono": "Pro bono"
+        },
+        "category-descriptions": {
+          "standard": "Regular paid care at the agreed rate.",
+          "social": "Reduced-fee or socially supported care, tracked separately.",
+          "pro_bono": "Free care with no payment expected."
+        }
+      },
+      "share": {
+        "title": "Your sessions page",
+        "text": "Use this link to view and manage your scheduled sessions.",
+        "link-label": "Public sessions link"
       },
       "preferred-contact": {
         "phone": "Phone",
@@ -1332,6 +1374,7 @@
           "phone": "Phone",
           "whatsapp": "WhatsApp"
         },
+        "billing": "Billing",
         "preferredContact": "Preferred contact",
         "timeZone": "Timezone",
         "address": "Address"
