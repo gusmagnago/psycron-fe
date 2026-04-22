@@ -103,6 +103,133 @@
     "loading": "Loading...",
     "required": "Required"
   },
+  "patients": {
+    "list": {
+      "title": "Patient Center",
+      "subtitle": "Browse, search and manage your patients.",
+      "search-label": "Search",
+      "search-placeholder": "Search by name, email, or phone",
+      "status-label": "Status",
+      "status-all": "All patients",
+      "status-active": "Active",
+      "status-inactive": "Inactive",
+      "sort-label": "Sort by",
+      "sort-name": "Name (A-Z)",
+      "sort-name-desc": "Name (Z-A)",
+      "sort-last-appointment-asc": "Last appointment (oldest first)",
+      "sort-last-appointment": "Last appointment",
+      "sort-total-sessions-asc": "Total sessions (lowest first)",
+      "sort-total-sessions": "Total sessions",
+      "columns": {
+        "patient": "Patient",
+        "contact": "Contact",
+        "preferred-contact": "Preferred contact",
+        "timezone": "Timezone",
+        "billing": "Billing",
+        "last-appointment": "Last appointment",
+        "sessions": "Sessions",
+        "status": "Status"
+      },
+      "empty": {
+        "initial-title": "No patients yet",
+        "initial-body": "When you add or book your first patient, they will appear here and become part of your Patient Center.",
+        "filtered-title": "No patients match these filters",
+        "filtered-body": "Try adjusting your search or filters to find the patient you are looking for."
+      },
+      "clear-search": "Clear search",
+      "billing": {
+        "none": "Not set",
+        "per-session-short": "/ session",
+        "monthly-short": "/ month"
+      },
+      "not-available": "Not available",
+      "no-appointments": "No appointments yet",
+      "contact-method-not-set": "Not set",
+      "possible-duplicate": "Possible duplicate"
+    },
+    "profile": {
+      "subtitle": "Review contact details, care preferences, and session history.",
+      "member-since": "Patient since {{date}}",
+      "unknown-patient": "unknown patient",
+      "merged-note": "This patient record was merged into {{patientId}} and is kept for audit history.",
+      "not-found": "We could not load this patient. They may have been archived or merged into another record.",
+      "actions": {
+        "call": "Call",
+        "edit": "Edit patient",
+        "open-sessions": "Open sessions page",
+        "whatsapp": "WhatsApp",
+        "email": "Email"
+      },
+      "edit": {
+        "title": "Edit patient details",
+        "description": "Update contact details, care preferences, timezone, and address.",
+        "save": "Save changes"
+      },
+      "status": {
+        "active": "Active",
+        "archived": "Archived",
+        "merged": "Merged"
+      },
+      "stats": {
+        "total": "Total sessions",
+        "upcoming": "Upcoming",
+        "completed": "Completed",
+        "cancelled": "Cancelled"
+      },
+      "sections": {
+        "billing": "Billing",
+        "details": "Patient details",
+        "timeline": "Session timeline"
+      },
+      "billing": {
+        "model": "Billing model",
+        "category": "Billing category",
+        "amount": "Price",
+        "currency": "Currency",
+        "models": {
+          "per-session": "Paid per session",
+          "monthly": "Paid monthly"
+        },
+        "categories": {
+          "standard": "Standard",
+          "social": "Social care",
+          "pro-bono": "Pro bono"
+        },
+        "category-descriptions": {
+          "standard": "Regular paid care at the agreed rate.",
+          "social": "Reduced-fee or socially supported care, tracked separately.",
+          "pro_bono": "Free care with no payment expected."
+        }
+      },
+      "share": {
+        "title": "Your sessions page",
+        "text": "Use this link to view and manage your scheduled sessions.",
+        "link-label": "Public sessions link"
+      },
+      "preferred-contact": {
+        "phone": "Phone",
+        "whatsapp": "WhatsApp",
+        "google-meet": "Google Meet",
+        "zoom": "Zoom",
+        "not-set": "Not set"
+      },
+      "next-session": "Next session",
+      "last-session": "Last completed session",
+      "no-upcoming-session": "No upcoming session scheduled",
+      "no-completed-session": "No completed sessions yet",
+      "no-sessions": "No sessions have been scheduled for this patient yet.",
+      "delivery": {
+        "online": "Online",
+        "in-person": "In person",
+        "not-set": "Delivery mode not set"
+      },
+      "sessions": {
+        "upcoming": "Upcoming",
+        "completed": "Completed",
+        "cancelled": "Cancelled"
+      }
+    }
+  },
   "auth": {
     "error": {
       "login-failed": "Invalid email or password. Please check your credentials and try again.",
@@ -1177,11 +1304,10 @@
       "working-hours-start-label": "Start",
       "working-hours-time-label": "Time range"
     }
-  }
-  ,
+  },
   "conflicts": {
     "title": "Conflict panel",
-    "subtitle": "Review and resolve booking and patient conflicts in one place.",
+    "subtitle": "Review and resolve booking and patient conflicts.",
     "empty": "No conflicts match your current filters.",
     "filters": {
       "status": "Status",
@@ -1204,16 +1330,80 @@
       "patient-duplicate": "Patient duplicate",
       "slot-replication": "Slot replication"
     },
-    "detail": {
-      "incoming-patient": "Incoming patient",
-      "matched-by": "Matched by",
-      "candidate-records": "Candidate records",
-      "conflicting-date": "Conflicting date",
-      "conflicting-time": "Conflicting time",
-      "recurrence-pattern": "Recurrence pattern",
-      "not-provided": "Not provided"
+    "patient-duplicate": {
+      "title": "Possible duplicate patient",
+      "and": "and",
+      "summary": {
+        "phone-and-email": "Matches existing patient records by phone {{phone}} and email {{email}}. Review: {{candidates}}.",
+        "phone-only": "Matches existing patient records by phone {{phone}}. Review: {{candidates}}.",
+        "email-only": "Matches existing patient records by email {{email}}. Review: {{candidates}}.",
+        "generic": "Matches an existing patient record. Review: {{candidates}}."
+      },
+      "match": {
+        "phone-and-email": "Phone {{phone}} and email {{email}}",
+        "phone-only": "Phone {{phone}}",
+        "email-only": "Email {{email}}",
+        "generic": "Existing patient details"
+      }
+    },
+		"detail": {
+			"incoming-patient": "Incoming patient",
+			"existing-patient": "Existing patient",
+			"matched-by": "Matched by",
+			"candidate-records": "Candidate records",
+			"conflicting-details": "Conflicting details",
+			"conflicting-date": "Conflicting date",
+			"conflicting-time": "Conflicting time",
+			"recurrence-pattern": "Recurrence pattern",
+			"preferred-contact": "Preferred contact",
+			"additional-candidates": "{{count}} more possible match is still queued for review.",
+			"additional-candidates_other": "{{count}} more possible matches are still queued for review.",
+			"not-provided": "Not provided"
+		},
+    "merge-review": {
+      "title": "Choose what to keep",
+      "description": "Bookings, cancellations, and notifications will be combined automatically. Choose the profile details that should remain on the surviving patient.",
+      "primary": "Keep from {{name}}",
+      "secondary": "Use from {{name}}",
+      "confirm": "Confirm merge",
+      "fields": {
+        "firstName": "First name",
+        "lastName": "Last name",
+        "contacts": {
+          "email": "Email",
+          "phone": "Phone",
+          "whatsapp": "WhatsApp"
+        },
+        "billing": "Billing",
+        "preferredContact": "Preferred contact",
+        "timeZone": "Timezone",
+        "address": "Address"
+      }
+    },
+    "resolution": {
+      "title": "Resolution history",
+      "completed-at": "Completed on {{date}}.",
+      "actions": {
+        "auto-dismissed-stale": "Psycron closed this because the duplicate records are no longer active.",
+        "dismissed": "The therapist dismissed this conflict without changing patient records.",
+        "keep-existing": "The therapist kept the existing patient record and did not merge records.",
+        "keep-new": "The therapist kept the new patient record and did not merge records.",
+        "marked-resolved": "The therapist marked this conflict as resolved.",
+        "merged": "The therapist merged the duplicate patient records.",
+        "merge-reconciled": "Psycron closed this because another merge already handled the duplicate patient.",
+        "unknown": "This conflict was closed."
+      },
+      "sources": {
+        "primary": "Kept from {{name}}",
+        "secondary": "Changed to {{name}}"
+      }
     },
     "actions": {
+      "recommended-title": "Recommended resolution",
+      "recommended-hint": "Merge both records and keep one patient as the source of truth.",
+      "alternatives-title": "Other options",
+      "alternatives-hint": "Use one record only if you do not want to merge them now.",
+      "merge": "Merge patients",
       "keep-existing": "Keep existing patient",
       "keep-new": "Keep new patient",
       "dismiss": "Dismiss",

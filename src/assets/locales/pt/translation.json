@@ -103,6 +103,133 @@
     "loading": "Carregando...",
     "required": "Obrigatório"
   },
+  "patients": {
+    "list": {
+      "title": "Central de Pacientes",
+      "subtitle": "Busque, filtre e gerencie a sua lista de pacientes.",
+      "search-label": "Busca",
+      "search-placeholder": "Buscar por nome, email ou telefone",
+      "status-label": "Status",
+      "status-all": "Todos os pacientes",
+      "status-active": "Ativo",
+      "status-inactive": "Inativo",
+      "sort-label": "Ordenar por",
+      "sort-name": "Nome (A-Z)",
+      "sort-name-desc": "Nome (Z-A)",
+      "sort-last-appointment-asc": "Último atendimento (mais antigo primeiro)",
+      "sort-last-appointment": "Último atendimento",
+      "sort-total-sessions-asc": "Total de sessões (menor primeiro)",
+      "sort-total-sessions": "Total de sessões",
+      "columns": {
+        "patient": "Paciente",
+        "contact": "Contato",
+        "preferred-contact": "Contato preferido",
+        "timezone": "Fuso horário",
+        "billing": "Cobrança",
+        "last-appointment": "Último atendimento",
+        "sessions": "Sessões",
+        "status": "Status"
+      },
+      "empty": {
+        "initial-title": "Você ainda não tem pacientes",
+        "initial-body": "Quando você adicionar ou agendar seu primeiro paciente, ele aparecerá aqui como parte da sua Central de Pacientes.",
+        "filtered-title": "Nenhum paciente corresponde a estes filtros",
+        "filtered-body": "Tente ajustar a busca ou os filtros para encontrar o paciente que você procura."
+      },
+      "clear-search": "Limpar busca",
+      "billing": {
+        "none": "Não definido",
+        "per-session-short": "/ sessão",
+        "monthly-short": "/ mês"
+      },
+      "not-available": "Não informado",
+      "no-appointments": "Sem atendimentos ainda",
+      "contact-method-not-set": "Não definido",
+      "possible-duplicate": "Possível duplicata"
+    },
+    "profile": {
+      "subtitle": "Revise contatos, preferências de cuidado e histórico de sessões.",
+      "member-since": "Paciente desde {{date}}",
+      "unknown-patient": "paciente desconhecido",
+      "merged-note": "Este registro foi mesclado em {{patientId}} e fica disponível para histórico de auditoria.",
+      "not-found": "Não conseguimos carregar este paciente. Ele pode ter sido arquivado ou mesclado em outro registro.",
+      "actions": {
+        "call": "Ligar",
+        "edit": "Editar paciente",
+        "open-sessions": "Abrir página de sessões",
+        "whatsapp": "WhatsApp",
+        "email": "Email"
+      },
+      "edit": {
+        "title": "Editar dados do paciente",
+        "description": "Atualize contatos, preferências de atendimento, fuso horário e endereço.",
+        "save": "Salvar alterações"
+      },
+      "status": {
+        "active": "Ativo",
+        "archived": "Arquivado",
+        "merged": "Mesclado"
+      },
+      "stats": {
+        "total": "Total de sessões",
+        "upcoming": "Próximas",
+        "completed": "Concluídas",
+        "cancelled": "Canceladas"
+      },
+      "sections": {
+        "billing": "Cobrança",
+        "details": "Dados do paciente",
+        "timeline": "Linha do tempo"
+      },
+      "billing": {
+        "model": "Modelo de cobrança",
+        "category": "Categoria de cobrança",
+        "amount": "Preço",
+        "currency": "Moeda",
+        "models": {
+          "per-session": "Pago por sessão",
+          "monthly": "Pago mensalmente"
+        },
+        "categories": {
+          "standard": "Padrão",
+          "social": "Atendimento social",
+          "pro-bono": "Pro bono"
+        },
+        "category-descriptions": {
+          "standard": "Atendimento pago normalmente, pela tarifa acordada.",
+          "social": "Atendimento com valor reduzido ou apoio social, acompanhado separadamente.",
+          "pro_bono": "Atendimento gratuito, sem expectativa de pagamento."
+        }
+      },
+      "share": {
+        "title": "Sua página de sessões",
+        "text": "Use este link para ver e gerir as suas sessões agendadas.",
+        "link-label": "Link público de sessões"
+      },
+      "preferred-contact": {
+        "phone": "Telefone",
+        "whatsapp": "WhatsApp",
+        "google-meet": "Google Meet",
+        "zoom": "Zoom",
+        "not-set": "Não definido"
+      },
+      "next-session": "Próxima sessão",
+      "last-session": "Última sessão concluída",
+      "no-upcoming-session": "Nenhuma próxima sessão agendada",
+      "no-completed-session": "Nenhuma sessão concluída ainda",
+      "no-sessions": "Nenhuma sessão foi agendada para este paciente ainda.",
+      "delivery": {
+        "online": "Online",
+        "in-person": "Presencial",
+        "not-set": "Formato não definido"
+      },
+      "sessions": {
+        "upcoming": "Próxima",
+        "completed": "Concluída",
+        "cancelled": "Cancelada"
+      }
+    }
+  },
   "auth": {
     "error": {
       "login-failed": "Email ou senha inválidos. Por favor, verifique suas credenciais e tente novamente.",
@@ -1177,11 +1304,10 @@
       "working-hours-start-label": "Início",
       "working-hours-time-label": "Intervalo de horário"
     }
-  }
-  ,
+  },
   "conflicts": {
     "title": "Painel de conflitos",
-    "subtitle": "Revise e resolva conflitos de agenda e de pacientes em um só lugar.",
+    "subtitle": "Revise e resolva conflitos de agenda e de pacientes.",
     "empty": "Nenhum conflito corresponde aos filtros atuais.",
     "filters": {
       "status": "Status",
@@ -1204,16 +1330,80 @@
       "patient-duplicate": "Paciente duplicado",
       "slot-replication": "Replicação de horário"
     },
-    "detail": {
-      "incoming-patient": "Paciente recebido",
-      "matched-by": "Detectado por",
-      "candidate-records": "Registros candidatos",
-      "conflicting-date": "Data em conflito",
-      "conflicting-time": "Hora em conflito",
-      "recurrence-pattern": "Padrão de recorrência",
-      "not-provided": "Não informado"
+    "patient-duplicate": {
+      "title": "Possível paciente duplicado",
+      "and": "e",
+      "summary": {
+        "phone-and-email": "Corresponde a registros existentes pelo telefone {{phone}} e pelo email {{email}}. Revisar: {{candidates}}.",
+        "phone-only": "Corresponde a registros existentes pelo telefone {{phone}}. Revisar: {{candidates}}.",
+        "email-only": "Corresponde a registros existentes pelo email {{email}}. Revisar: {{candidates}}.",
+        "generic": "Corresponde a um registro de paciente existente. Revisar: {{candidates}}."
+      },
+      "match": {
+        "phone-and-email": "Telefone {{phone}} e email {{email}}",
+        "phone-only": "Telefone {{phone}}",
+        "email-only": "Email {{email}}",
+        "generic": "Dados de paciente existentes"
+      }
+    },
+		"detail": {
+			"incoming-patient": "Paciente recebido",
+			"existing-patient": "Paciente existente",
+			"matched-by": "Detectado por",
+			"candidate-records": "Registros candidatos",
+			"conflicting-details": "Detalhes em conflito",
+			"conflicting-date": "Data em conflito",
+			"conflicting-time": "Hora em conflito",
+			"recurrence-pattern": "Padrão de recorrência",
+			"preferred-contact": "Contato preferido",
+			"additional-candidates": "{{count}} outro possível registro ainda está na fila para revisão.",
+			"additional-candidates_other": "{{count}} outros possíveis registros ainda estão na fila para revisão.",
+			"not-provided": "Não informado"
+		},
+    "merge-review": {
+      "title": "Escolha o que manter",
+      "description": "Agendamentos, cancelamentos e notificações serão combinados automaticamente. Escolha os dados de perfil que devem permanecer no paciente principal.",
+      "primary": "Manter de {{name}}",
+      "secondary": "Usar de {{name}}",
+      "confirm": "Confirmar união",
+      "fields": {
+        "firstName": "Nome",
+        "lastName": "Sobrenome",
+        "contacts": {
+          "email": "Email",
+          "phone": "Telefone",
+          "whatsapp": "WhatsApp"
+        },
+        "billing": "Cobrança",
+        "preferredContact": "Contato preferido",
+        "timeZone": "Fuso horário",
+        "address": "Endereço"
+      }
+    },
+    "resolution": {
+      "title": "Histórico da resolução",
+      "completed-at": "Concluído em {{date}}.",
+      "actions": {
+        "auto-dismissed-stale": "O Psycron fechou este conflito porque os registros duplicados não estão mais ativos.",
+        "dismissed": "O terapeuta dispensou este conflito sem alterar os registros de pacientes.",
+        "keep-existing": "O terapeuta manteve o paciente existente e não uniu os registros.",
+        "keep-new": "O terapeuta manteve o novo paciente e não uniu os registros.",
+        "marked-resolved": "O terapeuta marcou este conflito como resolvido.",
+        "merged": "O terapeuta uniu os registros de pacientes duplicados.",
+        "merge-reconciled": "O Psycron fechou este conflito porque outra união já tratou o paciente duplicado.",
+        "unknown": "Este conflito foi fechado."
+      },
+      "sources": {
+        "primary": "Mantido de {{name}}",
+        "secondary": "Alterado para {{name}}"
+      }
     },
     "actions": {
+      "recommended-title": "Resolução recomendada",
+      "recommended-hint": "Una ambos os registros e mantenha um único paciente como fonte principal.",
+      "alternatives-title": "Outras opções",
+      "alternatives-hint": "Use apenas um registro se não quiser unir os dois agora.",
+      "merge": "Unir pacientes",
       "keep-existing": "Manter paciente existente",
       "keep-new": "Manter novo paciente",
       "dismiss": "Dispensar",

@@ -163,8 +163,8 @@ export const usePatient = (therapisId?: string, patientId?: string | null) => {
 		isSuccess: isPatientDetailsSucces,
 	} = useQuery<IPatient>({
 		queryKey: ['patientDetails', patientId],
-		queryFn: () => getPatientById(therapisId, patientId),
-		enabled: Boolean(patientId && patientId !== 'undefined'),
+		queryFn: () => getPatientById(therapisId as string, patientId as string),
+		enabled: Boolean(therapisId && patientId && patientId !== 'undefined'),
 		initialData: cachedPatient,
 	});
 

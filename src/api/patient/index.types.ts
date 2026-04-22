@@ -2,6 +2,7 @@ import type {
 	IBookSessionWithLink,
 	IContactInfo,
 	IPatient,
+	IPatientBilling,
 	IPreferredContact,
 	ISlotAddress,
 } from '@psycron/context/user/auth/UserAuthenticationContext.types';
@@ -27,12 +28,15 @@ export interface IPatientByIdResponse {
 
 export interface PatientFormData {
 	_id?: string;
+	address?: ISlotAddress | null;
+	billing?: IPatientBilling | null;
 	countryCode?: string;
 	email?: string;
 	firstName: string;
 	lastName: string;
 	phone: string;
-	preferredContact?: IPreferredContact;
+	preferredContact?: IPreferredContact | null;
+	timeZone?: string;
 	whatsapp?: string;
 }
 export interface IEditPatientDetailsById {
@@ -42,7 +46,7 @@ export interface IEditPatientDetailsById {
 
 export interface IEditPatientDetailsByIdResponse {
 	message: string;
-	patient: PatientFormData;
+	patient: IPatient;
 	status: string;
 }
 

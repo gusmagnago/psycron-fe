@@ -1,5 +1,5 @@
 import styled from '@emotion/styled';
-import { Box } from '@mui/material';
+import { Box, Skeleton } from '@mui/material';
 import { Text } from '@psycron/components/text/Text';
 import { isMobileMedia } from '@psycron/theme/media-queries/mediaQueries';
 import { hexToRgba, palette } from '@psycron/theme/palette/palette.theme';
@@ -50,14 +50,6 @@ export const SidebarHeader = styled(Box)`
 	display: flex;
 	flex-direction: column;
 	gap: ${spacing.xxs};
-`;
-
-export const SidebarEyebrow = styled(Text)`
-	color: ${palette.gray['05']};
-	font-size: 0.75rem;
-	font-weight: 700;
-	letter-spacing: 0.08em;
-	text-transform: uppercase;
 `;
 
 export const SidebarTitleRow = styled(Box)`
@@ -281,117 +273,23 @@ export const ConflictDescription = styled(Text)`
 	}
 `;
 
-export const ConflictDetailPanel = styled(Box)`
-	background: linear-gradient(
-		180deg,
-		${hexToRgba(palette.background.paper, 0.98)} 0%,
-		${hexToRgba(palette.background.paper, 0.94)} 100%
-	);
-	border: 1px solid ${hexToRgba(palette.gray['04'], 0.12)};
-	border-radius: ${spacing.large};
-	box-shadow: ${shadowMedium};
-	display: flex;
-	flex-direction: column;
-	gap: ${spacing.medium};
-	min-height: 32rem;
-	padding: ${spacing.large};
-
-	${isMobileMedia} {
-		gap: ${spacing.small};
-		min-height: auto;
-		padding: ${spacing.small};
-	}
+export const ConflictsSidebarSkeleton = styled(ConflictsSidebar)`
+	pointer-events: none;
 `;
 
-export const ConflictDetailHeader = styled(Box)`
+export const SidebarSkeletonGroup = styled(Box)`
 	display: flex;
 	flex-direction: column;
 	gap: ${spacing.xs};
 `;
 
-export const ConflictDetailMetaRow = styled(Box)`
-	align-items: center;
+export const SidebarSkeletonRow = styled(Box)`
 	display: flex;
 	flex-wrap: wrap;
 	gap: ${spacing.xs};
-
-	${isMobileMedia} {
-		align-items: flex-start;
-		flex-direction: column;
-	}
 `;
 
-export const ConflictMetaGrid = styled(Box)`
-	display: grid;
-	grid-template-columns: repeat(2, minmax(0, 1fr));
-	gap: ${spacing.small};
-
-	${isMobileMedia} {
-		grid-template-columns: 1fr;
-	}
-`;
-
-export const ConflictMetaGroup = styled(Box)`
-	background: ${hexToRgba(palette.background.default, 0.72)};
-	border: 1px solid ${hexToRgba(palette.gray['04'], 0.1)};
+export const SidebarSkeletonBlock = styled(Skeleton)`
 	border-radius: ${spacing.medium};
-	display: flex;
-	flex-direction: column;
-	gap: ${spacing.xxs};
-	padding: ${spacing.small};
-`;
-
-export const ConflictMetaLabel = styled(Text)`
-	color: ${palette.gray['05']};
-	font-size: 0.8rem;
-	font-weight: 600;
-	text-transform: uppercase;
-`;
-
-export const ConflictMetaValue = styled(Text)`
-	color: ${palette.text.primary};
-	font-size: 0.95rem;
-
-	${isMobileMedia} {
-		font-size: 0.9rem;
-	}
-`;
-
-export const ConflictActions = styled(Box)`
-	display: flex;
-	flex-wrap: wrap;
-	gap: ${spacing.xs};
-	margin-top: auto;
-	padding-top: ${spacing.small};
-
-	${isMobileMedia} {
-		flex-direction: column;
-	}
-
-	& > button {
-		width: 100%;
-	}
-`;
-
-export const EmptyState = styled(Box)`
-	align-items: center;
-	background: linear-gradient(
-		180deg,
-		${hexToRgba(palette.background.paper, 0.94)} 0%,
-		${hexToRgba(palette.background.default, 0.9)} 100%
-	);
-	border: 1px dashed ${hexToRgba(palette.gray['04'], 0.25)};
-	border-radius: ${spacing.large};
-	display: flex;
-	flex: 1;
-	flex-direction: column;
-	gap: ${spacing.xs};
-	justify-content: center;
-	padding: ${spacing.large};
-	text-align: center;
-
-	${isMobileMedia} {
-		min-height: 16rem;
-		padding: ${spacing.medium};
-	}
+	transform: none;
 `;

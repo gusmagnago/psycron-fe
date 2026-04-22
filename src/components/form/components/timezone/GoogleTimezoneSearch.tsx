@@ -86,9 +86,10 @@ export const GoogleTimezoneSearch = ({
 				<TextField
 					fullWidth
 					label={t('availability.week.drawer.patient-timezone')}
-					placeholder={t(
-						'availability.week.drawer.patient-timezone-placeholder'
-					)}
+					placeholder={
+						initialValue ||
+						t('availability.week.drawer.patient-timezone-placeholder')
+					}
 					value={inputValue}
 					helperText={detectedTz ?? undefined}
 					onChange={(e) => {

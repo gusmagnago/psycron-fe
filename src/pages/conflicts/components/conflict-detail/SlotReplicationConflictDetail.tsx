@@ -1,16 +1,11 @@
-import type { ISlotReplicationConflictMetadata } from '@psycron/api/user/conflicts/index.types';
 import { format } from 'date-fns';
 
 import {
 	ConflictMetaGroup,
 	ConflictMetaLabel,
 	ConflictMetaValue,
-} from '../../ConflictsPage.styles';
-
-interface SlotReplicationConflictDetailProps {
-	metadata: ISlotReplicationConflictMetadata;
-	t: (key: string) => string;
-}
+} from './styles/ConflictDetail.styles';
+import type { SlotReplicationConflictDetailProps } from './types/ConflictDetail.types';
 
 export const SlotReplicationConflictDetail = ({
 	metadata,

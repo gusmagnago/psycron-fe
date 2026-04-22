@@ -34,6 +34,7 @@ export const EDITUSER = `${EDITUSERPATH}/${USERID}`;
 export const EDITUSERBYSESSION = `${EDITUSER}/:session`;
 export const CHANGEPASSWORD = `${EDITUSER}/password`;
 export const PATIENTS = 'patients';
+export const PATIENTPROFILE = `${PATIENTS}/${PATIENTID}`;
 export const PAYMENTS = 'payments';
 export const AVAILABILITYPATH = 'availability';
 export const APPOINTMENTS = 'appointments';

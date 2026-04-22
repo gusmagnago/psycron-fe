@@ -1,5 +1,6 @@
 import { useTranslation } from 'react-i18next';
 import { PageLayout } from '@psycron/layouts/app/pages-layout/PageLayout';
+import { getDateLocale } from '@psycron/utils/date/date.utils';
 import { format } from 'date-fns';
 
 import { ConflictDetail } from './components/conflict-detail/ConflictDetail';
@@ -20,24 +21,24 @@ import {
 	FiltersRow,
 	FiltersSection,
 	SidebarCount,
-	SidebarEyebrow,
 	SidebarHeader,
 	SidebarSubtitle,
 	SidebarTitle,
 	SidebarTitleRow,
 } from './ConflictsPage.styles';
 import {
+	getConflictDisplayCopy,
 	getConflictStatusLabel,
 	getConflictTypeLabel,
 } from './ConflictsPage.utils';
 
 export const ConflictsPage = () => {
-	const { t } = useTranslation();
+	const { i18n, t } = useTranslation();
 	const {
 		conflicts,
 		handleUpdateConflict,
-		isLoading,
 		isUpdating,
+
 		selectedConflict,
 		selectedConflictId,
 		setSelectedConflictId,
@@ -47,16 +48,13 @@ export const ConflictsPage = () => {
 		typeFilter,
 	} = useConflictsPageState({ t });
 
+	const dateLocale = getDateLocale(i18n.language);
+
 	return (
-		<PageLayout
-			title={t('conflicts.title')}
-			subTitle={t('conflicts.subtitle')}
-			isLoading={isLoading}
-		>
+		<PageLayout title={t('conflicts.title')} subTitle={t('conflicts.subtitle')}>
 			<ConflictsLayout>
 				<ConflictsSidebar>
 					<SidebarHeader>
-						<SidebarEyebrow>{t('conflicts.queue.eyebrow')}</SidebarEyebrow>
 						<SidebarTitleRow>
 							<SidebarTitle>{t('conflicts.queue.title')}</SidebarTitle>
 							<SidebarCount>{conflicts.length}</SidebarCount>
@@ -112,30 +110,36 @@ export const ConflictsPage = () => {
 					</FiltersSection>
 
 					<ConflictList>
-						{conflicts.map((conflict) => (
-							<ConflictCard
-								isSelected={conflict._id === selectedConflictId}
-								key={conflict._id}
-								onClick={() => setSelectedConflictId(conflict._id)}
-								type='button'
-							>
-								<ConflictCardMetaRow>
-									<ConflictTypeLabel>
-										{getConflictTypeLabel(conflict.type, t)}
-									</ConflictTypeLabel>
-									<ConflictStatusPill>
-										{getConflictStatusLabel(conflict.status, t)}
-									</ConflictStatusPill>
-								</ConflictCardMetaRow>
-								<ConflictTitle>{conflict.title}</ConflictTitle>
-								<ConflictDescription>
-									{conflict.description}
-								</ConflictDescription>
-								<ConflictCardDate>
-									{format(new Date(conflict.createdAt), 'PPP')}
-								</ConflictCardDate>
-							</ConflictCard>
-						))}
+						{conflicts.map((conflict) => {
+							const displayCopy = getConflictDisplayCopy(conflict, t);
+
+							return (
+								<ConflictCard
+									isSelected={conflict._id === selectedConflictId}
+									key={conflict._id}
+									onClick={() => setSelectedConflictId(conflict._id)}
+									type='button'
+								>
+									<ConflictCardMetaRow>
+										<ConflictTypeLabel>
+											{getConflictTypeLabel(conflict.type, t)}
+										</ConflictTypeLabel>
+										<ConflictStatusPill>
+											{getConflictStatusLabel(conflict.status, t)}
+										</ConflictStatusPill>
+									</ConflictCardMetaRow>
+									<ConflictTitle>{displayCopy.title}</ConflictTitle>
+									<ConflictDescription>
+										{displayCopy.description}
+									</ConflictDescription>
+									<ConflictCardDate>
+										{format(new Date(conflict.createdAt), 'PPP', {
+											locale: dateLocale,
+										})}
+									</ConflictCardDate>
+								</ConflictCard>
+							);
+						})}
 					</ConflictList>
 				</ConflictsSidebar>
 

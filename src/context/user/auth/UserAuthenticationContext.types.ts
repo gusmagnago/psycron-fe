@@ -181,20 +181,39 @@ export interface ISessionDatesGroup {
 }
 
 export type PreferredContactType = 'google_meet' | 'phone' | 'whatsapp' | 'zoom';
+export type PatientBillingModel = 'monthly' | 'per_session';
+export type PatientBillingCategory = 'pro_bono' | 'social' | 'standard';
 
 export interface IPreferredContact {
 	type: PreferredContactType;
 	value: string;
 }
 
+export interface IPatientBillingPrice {
+	amount: number;
+	currency: string;
+}
+
+export interface IPatientBilling {
+	category: PatientBillingCategory;
+	model: PatientBillingModel;
+	monthlyPrice?: IPatientBillingPrice | null;
+	sessionPrice?: IPatientBillingPrice | null;
+}
+
 export interface IPatient extends IBaseUser {
+	address?: ISlotAddress | null;
+	billing?: IPatientBilling | null;
 	cancelledAppointments?: ICancelledAppointment[];
 	createdBy?: ITherapist | string;
+	mergedAt?: ISODateString | null;
+	mergedIntoPatientId?: string | null;
 	notifications?: INotification[];
 	preferredContact?: IPreferredContact | null;
 
 	role: 'PATIENT';
 	sessionDates: ISessionDatesGroup[];
+	status?: 'ACTIVE' | 'ARCHIVED' | 'MERGED';
 	timeZone?: string;
 }
 
