@@ -8,6 +8,7 @@ import {
 	AccentBar,
 	Actions,
 	FallbackActions,
+	HeaderActions,
 	HeaderContent,
 	HeaderRow,
 	RoleChip,
@@ -25,6 +26,8 @@ export const PatientDrawerShell = ({
 	ariaLabel,
 	children,
 	closeLabel = 'Close',
+	headerExtra,
+	hideFallbackClose = false,
 	onClose,
 	roleLabel,
 	statusLabel,
@@ -55,7 +58,10 @@ export const PatientDrawerShell = ({
 							</Text>
 						) : null}
 					</HeaderContent>
-					<CloseButton onClick={onClose} />
+					<HeaderActions>
+						{headerExtra}
+						<CloseButton onClick={onClose} />
+					</HeaderActions>
 				</ShellHeader>
 
 				<ShellBody>{children}</ShellBody>
@@ -65,7 +71,7 @@ export const PatientDrawerShell = ({
 						<Divider />
 						<Actions>{actions}</Actions>
 					</>
-				) : (
+				) : hideFallbackClose ? null : (
 					<FallbackActions>
 						<Button onClick={onClose} tertiary variant='text'>
 							{closeLabel}

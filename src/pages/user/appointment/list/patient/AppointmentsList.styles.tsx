@@ -196,6 +196,7 @@ export const ActionsRow = styled(Box)`
 	display: flex;
 	flex-wrap: wrap;
 	gap: ${spacing.xs};
+	justify-content: space-between;
 `;
 
 export const InlineForm = styled(Box)`

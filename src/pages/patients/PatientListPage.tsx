@@ -19,6 +19,7 @@ import {
 	BillingSummary,
 	BillingTooltipContent,
 	BillingTooltipRow,
+	CancellationNoticePill,
 	ControlField,
 	ControlsBar,
 	DuplicateWarningPill,
@@ -159,6 +160,16 @@ export const PatientListPage = () => {
 			</Tooltip>
 		);
 	};
+	const renderCancellationNotice = (
+		patient: (typeof filteredPatients)[number]
+	) =>
+		patient.cancelledSessions > 0 ? (
+			<CancellationNoticePill>
+				{t('patients.list.cancelled-sessions-notice', {
+					count: patient.cancelledSessions,
+				})}
+			</CancellationNoticePill>
+		) : null;
 
 	return (
 		<PageLayout
@@ -294,6 +305,7 @@ export const PatientListPage = () => {
 												{t('patients.list.possible-duplicate')}
 											</DuplicateWarningPill>
 										) : null}
+										{renderCancellationNotice(patient)}
 									</PrimaryCell>
 									<PrimaryCell>
 										<SimpleValue>
@@ -353,6 +365,7 @@ export const PatientListPage = () => {
 													{t('patients.list.possible-duplicate')}
 												</DuplicateWarningPill>
 											) : null}
+											{renderCancellationNotice(patient)}
 											<StatusPill active={patient.isActive}>
 												{patient.isActive
 													? t('patients.list.status-active')

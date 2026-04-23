@@ -30,8 +30,8 @@ export const PageLayout = ({
 				<PageTitleWrapper>
 					<PageTitle>{title}</PageTitle>
 					{subTitle ? (
-						<Box pt={spacing.mediumSmall}>
-							<Text fontSize='1rem'>{subTitle}</Text>
+						<Box pt={spacing.xs}>
+							<Text fontSize='0.9rem'>{subTitle}</Text>
 						</Box>
 					) : null}
 					{backButton ? <NavigateLink isBack to={backTo} /> : null}

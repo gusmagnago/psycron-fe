@@ -298,6 +298,21 @@ export const DuplicateWarningPill = styled('button')`
 	}
 `;
 
+export const CancellationNoticePill = styled(Box)`
+	align-items: center;
+	background: ${hexToRgba(palette.error.main, 0.1)};
+	border: 1px solid ${hexToRgba(palette.error.main, 0.18)};
+	border-radius: 999px;
+	color: ${palette.error.main};
+	display: inline-flex;
+	font-size: 0.72rem;
+	font-weight: 700;
+	justify-content: center;
+	padding: 0.18rem ${spacing.xs};
+	text-transform: uppercase;
+	white-space: nowrap;
+`;
+
 export const MobileCards = styled(Box)`
 	display: flex;
 	flex-direction: column;

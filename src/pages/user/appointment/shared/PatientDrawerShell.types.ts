@@ -4,6 +4,8 @@ export interface PatientDrawerShellProps {
 	ariaLabel: string;
 	children: React.ReactNode;
 	closeLabel?: string;
+	headerExtra?: React.ReactNode;
+	hideFallbackClose?: boolean;
 	onClose: () => void;
 	roleLabel: string;
 	statusLabel?: string;

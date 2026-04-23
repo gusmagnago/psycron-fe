@@ -13,6 +13,11 @@ import { SaveUser as IconSaveUser } from './user/SaveUser';
 import { UserSettings as IconUserSettings } from './user/UserSettings';
 import { Account as IconAccount } from './Account';
 import { Address as IconAddress } from './Address';
+import { AlarmClock as IconAlarmClock } from './AlarmClock';
+import { AlarmClockCheck as IconAlarmClockCheck } from './AlarmClockCheck';
+import { AlarmClockMinus as IconAlarmClockMinus } from './AlarmClockMinus';
+import { AlarmClockOff as IconAlarmClockOff } from './AlarmClockOff';
+import { AlarmClockPlus as IconAlarmClockPlus } from './AlarmClockPlus';
 import { Alert as IconAlert } from './Alert';
 import { Appointment as IconAppointment } from './Appointment';
 import { Available as IconAvailable } from './Available';
@@ -78,6 +83,11 @@ import { Visible as IconVisible } from './Visible';
 import { Watch as IconWatch } from './Watch';
 import { WhatsApp as IconWhatsApp } from './Whatsapp';
 
+export const AlarmClock = withIconColor(IconAlarmClock);
+export const AlarmClockCheck = withIconColor(IconAlarmClockCheck);
+export const AlarmClockMinus = withIconColor(IconAlarmClockMinus);
+export const AlarmClockOff = withIconColor(IconAlarmClockOff);
+export const AlarmClockPlus = withIconColor(IconAlarmClockPlus);
 export const Patients = withIconColor(IconPatients);
 
 export const LockKeyhole = withIconColor(IconLockKeyhole);

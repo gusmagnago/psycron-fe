@@ -153,7 +153,7 @@
       "awaiting-address": "Aguardando o endereço da sessão",
       "call-therapist": "Ligar para terapeuta",
       "copy-phone": "Copiar telefone",
-      "cancel": "Cancelar",
+      "cancel": "Cancelar agendamento",
       "reschedule": "Reagendar",
       "confirm-reschedule": "Confirmar reagendamento",
       "reschedule-success": "Agendamento reagendado com sucesso.",
@@ -180,13 +180,14 @@
     }
   },
   "common": {
+    "back": "Voltar",
+    "cancel": "Cancelar",
     "close": "Fechar",
-    "today": "Hoje",
+    "loading": "Carregando...",
+    "required": "Obrigatório",
     "save": "Salvar",
     "saving": "Salvando...",
-    "cancel": "Cancelar",
-    "loading": "Carregando...",
-    "required": "Obrigatório"
+    "today": "Hoje"
   },
   "patients": {
     "list": {
@@ -230,7 +231,9 @@
       "not-available": "Não informado",
       "no-appointments": "Sem atendimentos ainda",
       "contact-method-not-set": "Não definido",
-      "possible-duplicate": "Possível duplicata"
+      "possible-duplicate": "Possível duplicata",
+      "cancelled-sessions-notice": "{{count}} sessão cancelada",
+      "cancelled-sessions-notice_other": "{{count}} sessões canceladas"
     },
     "profile": {
       "subtitle": "Revise contatos, preferências de cuidado e histórico de sessões.",
@@ -249,6 +252,43 @@
         "title": "Editar dados do paciente",
         "description": "Atualize contatos, preferências de atendimento, fuso horário e endereço.",
         "save": "Salvar alterações"
+      },
+      "session-drawer": {
+        "title": "Detalhes da sessão",
+        "open-label": "Abrir detalhes da sessão de {{date}}",
+        "status": "Status",
+        "delivery": "Formato da sessão",
+        "cancelled-at": "Cancelado em",
+        "cancellation-reason": "Motivo do cancelamento",
+        "cancelled-by": "Cancelado por",
+        "cancelled-by-patient": "Paciente",
+        "cancelled-by-therapist": "Terapeuta",
+        "cancelled-by-unknown": "Não informado",
+        "notification": "Notificação",
+        "notification-sent": "Notificação enviada",
+        "notification-not-sent": "Notificação não enviada",
+        "cancel-confirm": "Confirmar cancelamento",
+        "cancel-custom-reason": "Descreva o motivo",
+        "cancel-error": "Não foi possível cancelar esta sessão. Tente novamente.",
+        "cancel-reason-prompt": "Por que você está cancelando esta sessão?",
+        "cancel-session": "Cancelar sessão",
+        "cancel-success": "Sessão cancelada com sucesso.",
+        "cancelled-title": "Sessão cancelada",
+        "completed-title": "Sessão concluída",
+        "notify": "Notificar paciente",
+        "notify-error": "Não foi possível enviar a notificação. Tente novamente.",
+        "notify-success": "Paciente notificado com sucesso.",
+        "read-only": "Sessões canceladas estão disponíveis apenas para consulta.",
+        "reschedule": "Reagendar",
+        "reschedule-confirm": "Confirmar remarcação",
+        "reschedule-error": "Não foi possível reagendar este agendamento. Tente novamente.",
+        "reschedule-no-slots": "Não há horários disponíveis para remarcar. Tente ajustar os seus horários de trabalho.",
+        "reschedule-prompt": "Selecione um novo horário para esta consulta.",
+        "reschedule-success": "Agendamento reagendado com sucesso.",
+        "role": "Sessão do paciente",
+        "upcoming-title": "Sessão agendada",
+        "update-error": "Não foi possível atualizar esta sessão. Tente novamente.",
+        "update-success": "Sessão atualizada com sucesso."
       },
       "status": {
         "active": "Ativo",
@@ -511,6 +551,7 @@
     "navbar": {
       "dashboard": "Painel",
       "conflicts": "Conflitos",
+      "notifications": "Notificações",
       "user-settings": "Configurações",
       "test": "Testes"
     },
@@ -628,7 +669,7 @@
         "error": "Erro ao compartilhar, tente novamente mais tarde.",
         "error-copy": "Erro ao copiar o link, tente novamente mais tarde."
       },
-      "tooltip-tile": "Compartilhar {{with}}",
+      "tooltip-tile": "Compartilhar com {{with}}",
       "share-with-name": "com {{name}}",
       "share-with-patients": "com seus pacientes",
       "share-infos": {
@@ -1431,20 +1472,20 @@
         "generic": "Dados de paciente existentes"
       }
     },
-		"detail": {
-			"incoming-patient": "Paciente recebido",
-			"existing-patient": "Paciente existente",
-			"matched-by": "Detectado por",
-			"candidate-records": "Registros candidatos",
-			"conflicting-details": "Detalhes em conflito",
-			"conflicting-date": "Data em conflito",
-			"conflicting-time": "Hora em conflito",
-			"recurrence-pattern": "Padrão de recorrência",
-			"preferred-contact": "Contato preferido",
-			"additional-candidates": "{{count}} outro possível registro ainda está na fila para revisão.",
-			"additional-candidates_other": "{{count}} outros possíveis registros ainda estão na fila para revisão.",
-			"not-provided": "Não informado"
-		},
+    "detail": {
+      "incoming-patient": "Paciente recebido",
+      "existing-patient": "Paciente existente",
+      "matched-by": "Detectado por",
+      "candidate-records": "Registros candidatos",
+      "conflicting-details": "Detalhes em conflito",
+      "conflicting-date": "Data em conflito",
+      "conflicting-time": "Hora em conflito",
+      "recurrence-pattern": "Padrão de recorrência",
+      "preferred-contact": "Contato preferido",
+      "additional-candidates": "{{count}} outro possível registro ainda está na fila para revisão.",
+      "additional-candidates_other": "{{count}} outros possíveis registros ainda estão na fila para revisão.",
+      "not-provided": "Não informado"
+    },
     "merge-review": {
       "title": "Escolha o que manter",
       "description": "Agendamentos, cancelamentos e notificações serão combinados automaticamente. Escolha os dados de perfil que devem permanecer no paciente principal.",

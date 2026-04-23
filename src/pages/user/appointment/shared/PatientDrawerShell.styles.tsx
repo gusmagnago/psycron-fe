@@ -72,6 +72,13 @@ export const StatusChip = styled(Chip, {
 	font-weight: 700;
 `;
 
+export const HeaderActions = styled(Box)`
+	align-items: center;
+	display: flex;
+	flex-shrink: 0;
+	gap: ${spacing.xs};
+`;
+
 export const ShellBody = styled(Box)`
 	display: flex;
 	flex: 1;

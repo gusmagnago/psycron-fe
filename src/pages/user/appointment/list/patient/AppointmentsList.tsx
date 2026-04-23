@@ -245,9 +245,13 @@ export const AppointmentsList = () => {
 	}, [sessions]);
 
 	const appointmentDates = useMemo(
-		() => Array.from(appointmentsByDay.keys()).map((day) => parseISO(day)),
+		() =>
+			Array.from(appointmentsByDay.keys())
+				.map((day) => parseISO(day))
+				.sort((a, b) => a.getTime() - b.getTime()),
 		[appointmentsByDay]
 	);
+	const firstAppointmentDate = appointmentDates[0] ?? null;
 
 	useEffect(() => {
 		if (selectedDate || appointmentDates.length === 0) return;
@@ -411,6 +415,10 @@ export const AppointmentsList = () => {
 		setSelectedDate(date);
 		setHighlightedDayKey(format(date, 'yyyy-MM-dd'));
 		setVisibleMonth(date);
+	};
+
+	const focusToday = () => {
+		focusCalendarDate(startOfDay(new Date()));
 	};
 
 	const handleNextAppointmentsScroll = (event: UIEvent<HTMLElement>) => {
@@ -610,10 +618,14 @@ export const AppointmentsList = () => {
 					language={i18n.language}
 					mainSubtitle={t('booking.calendar.agenda-subtitle')}
 					mainTitle={t('booking.calendar.agenda-main-title')}
+					centerPrimaryActions
+					compactPrimaryActions
+					minNavigableDate={firstAppointmentDate}
 					monthLabel={t('booking.calendar.view-month')}
 					month={visibleMonth}
 					onMonthChange={setVisibleMonth}
 					onSelectDate={focusCalendarDate}
+					onTodayClick={focusToday}
 					onViewModeChange={setCalendarViewMode}
 					selectedDate={selectedDate}
 					sidebar={
@@ -659,9 +671,12 @@ export const AppointmentsList = () => {
 							</AgendaStatGrid>
 						</AgendaSidebar>
 					}
+					todayLabel={t('common.today')}
 					topActions={
 						<Button
 							onClick={() => navigate(`/${locale}/${therapistId}/book-appointment`)}
+							small
+							sx={{ fontSize: '0.8rem' }}
 							variant='contained'
 						>
 							{t('booking.patient-drawer.book-new')}
@@ -692,7 +707,7 @@ export const AppointmentsList = () => {
 										</Button>
 										<Button
 											onClick={() => setDrawerMode('cancel')}
-											severity='warning'
+											severity='error'
 											variant='outlined'
 										>
 											{t('booking.patient-drawer.cancel')}
@@ -708,15 +723,16 @@ export const AppointmentsList = () => {
 													therapistId: selectedAppointment.therapistId,
 												})
 											}
+											severity='error'
 											variant='contained'
 										>
 											{t('booking.cancel.confirm')}
 										</Button>
 										<Button
 											onClick={() => setDrawerMode('details')}
-											variant='text'
+											secondary
 										>
-											{t('common.cancel')}
+											{t('common.back')}
 										</Button>
 									</ActionsRow>
 								) : (
@@ -735,9 +751,9 @@ export const AppointmentsList = () => {
 												setDrawerMode('details');
 												setSelectedRescheduleSlot(null);
 											}}
-											variant='text'
+											secondary
 										>
-											{t('common.cancel')}
+											{t('common.back')}
 										</Button>
 									</ActionsRow>
 								)

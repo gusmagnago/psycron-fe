@@ -12,6 +12,8 @@ export interface PublicSchedulingDayMeta {
 }
 
 export interface PublicSchedulingCalendarProps {
+	centerPrimaryActions?: boolean;
+	compactPrimaryActions?: boolean;
 	detailBody: ReactNode;
 	detailSubtitle?: string | null;
 	detailTitle: string;
@@ -20,13 +22,16 @@ export interface PublicSchedulingCalendarProps {
 	language: string;
 	mainSubtitle?: string | null;
 	mainTitle: string;
+	minNavigableDate?: Date | null;
 	month: Date;
 	monthLabel: string;
 	onMonthChange: (date: Date) => void;
 	onSelectDate: (date: Date) => void;
+	onTodayClick?: () => void;
 	onViewModeChange?: (viewMode: PublicSchedulingViewMode) => void;
 	selectedDate: Date | null;
 	sidebar: ReactNode;
+	todayLabel?: string;
 	topActions?: ReactNode;
 	viewMode?: PublicSchedulingViewMode;
 	weekLabel: string;

@@ -1,4 +1,7 @@
-import type { IPatient } from '@psycron/context/user/auth/UserAuthenticationContext.types';
+import type {
+	INotification,
+	IPatient,
+} from '@psycron/context/user/auth/UserAuthenticationContext.types';
 import { isCanceledSlot } from '@psycron/utils/availability/availability.utils';
 import { getPatientFullName } from '@psycron/utils/patient/patient.utils';
 import { isPast } from 'date-fns';
@@ -82,25 +85,60 @@ const getSessionStartDate = (date: string, startTime: string): Date =>
 
 export const getPatientSessions = (
 	patient?: IPatient
-): PatientSessionRow[] =>
-	(patient?.sessionDates ?? [])
+): PatientSessionRow[] => {
+	const includedSlotIds = new Set<string>();
+	const sessionRows = (patient?.sessionDates ?? [])
 		.flatMap((sessionDate) =>
 			(sessionDate.slots ?? []).map((slot) => {
+				includedSlotIds.add(slot._id);
 				const startsAt = getSessionStartDate(
 					sessionDate.date,
 					slot.startTime
 				);
 
 				return {
+					availabilityDayId: sessionDate._id,
+					canceledAt: slot.canceledAt,
+					customReason: slot.customReason,
 					date: sessionDate.date,
 					isCancelled: isCanceledSlot(slot),
 					isPast: isPast(startsAt),
+					reasonCode: slot.reasonCode,
 					slot,
 					startsAt,
+					triggeredBy: slot.triggeredBy,
 				};
 			})
-		)
-		.sort((a, b) => a.startsAt.getTime() - b.startsAt.getTime());
+		);
+	const standaloneCancelledRows = (patient?.cancelledAppointments ?? [])
+		.filter((appointment) => !includedSlotIds.has(appointment.slotId))
+		.map((appointment) => {
+			const startsAt = getSessionStartDate(
+				appointment.date,
+				appointment.startTime
+			);
+
+			return {
+				canceledAt: appointment.cancelledAt,
+				customReason: appointment.customReason,
+				date: appointment.date,
+				isCancelled: true,
+				isPast: isPast(startsAt),
+				reasonCode: appointment.reasonCode,
+				slot: {
+					_id: appointment.slotId,
+					endTime: appointment.endTime,
+					startTime: appointment.startTime,
+				},
+				startsAt,
+				triggeredBy: appointment.triggeredBy,
+			};
+		});
+
+	return [...sessionRows, ...standaloneCancelledRows].sort(
+		(a, b) => a.startsAt.getTime() - b.startsAt.getTime()
+	);
+};
 
 export const getPatientStats = (
 	sessions: PatientSessionRow[]
@@ -121,6 +159,9 @@ export const getPatientStats = (
 	};
 };
 
+export const getPatientCancellationCount = (patient?: IPatient): number =>
+	getPatientStats(getPatientSessions(patient)).cancelledSessions;
+
 export const getLastCompletedSession = (
 	sessions: PatientSessionRow[]
 ): PatientSessionRow | undefined =>
@@ -140,6 +181,51 @@ export const getRecentSessions = (
 	[...sessions]
 		.sort((a, b) => b.startsAt.getTime() - a.startsAt.getTime())
 		.slice(0, limit);
+
+export const getSessionsAscending = (
+	sessions: PatientSessionRow[]
+): PatientSessionRow[] =>
+	[...sessions].sort((a, b) => a.startsAt.getTime() - b.startsAt.getTime());
+
+export const getSessionCancelledByLabelKey = (
+	triggeredBy?: PatientSessionRow['triggeredBy']
+): string => {
+	if (triggeredBy === 'PATIENT') {
+		return 'patients.profile.session-drawer.cancelled-by-patient';
+	}
+
+	if (triggeredBy === 'THERAPIST') {
+		return 'patients.profile.session-drawer.cancelled-by-therapist';
+	}
+
+	return 'patients.profile.session-drawer.cancelled-by-unknown';
+};
+
+export const getSessionCancellationNotificationWasSent = (
+	session: PatientSessionRow,
+	notifications?: INotification[]
+): boolean => {
+	if (!notifications?.length) return false;
+
+	const canceledAtTime = session.canceledAt
+		? new Date(session.canceledAt).getTime()
+		: null;
+
+	return notifications.some((notification) => {
+		const sentAtTime = new Date(notification.sentAt).getTime();
+		const notificationText =
+			`${notification.content} ${notification.messageType}`.toLowerCase();
+		const isCancellationNotification =
+			notificationText.includes('cancel') ||
+			notificationText.includes('cancelad');
+
+		if (!isCancellationNotification) return false;
+		if (!canceledAtTime || Number.isNaN(canceledAtTime)) return true;
+		if (Number.isNaN(sentAtTime)) return false;
+
+		return sentAtTime >= canceledAtTime;
+	});
+};
 
 export const getPreferredContactLabelKey = (type?: string): string => {
 	switch (type) {
@@ -173,6 +259,7 @@ export const mapPatientToListItem = (patient: IPatient): PatientListItem => {
 	return {
 		...patient,
 		fullName,
+		cancelledSessions: stats.cancelledSessions,
 		isActive: stats.upcomingSessions > 0,
 		lastAppointmentDate:
 			sessions.length > 0

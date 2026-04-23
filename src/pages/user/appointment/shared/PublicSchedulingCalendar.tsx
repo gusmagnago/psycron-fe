@@ -17,6 +17,7 @@ import {
 	MainActions,
 	MainHeader,
 	MainPanel,
+	MainPrimaryActions,
 	MonthGrid,
 	NavIconButton,
 	SchedulerHeader,
@@ -29,16 +30,20 @@ import {
 } from './PublicSchedulingCalendar.styles';
 import type { PublicSchedulingCalendarProps } from './PublicSchedulingCalendar.types';
 import {
+	canNavigateToPreviousSchedulingPeriod,
 	getNextSchedulingPeriod,
 	getPreviousSchedulingPeriod,
 	getSchedulingCalendarDays,
 	getSchedulingPeriodLabel,
 	getSchedulingWeekdayLabels,
+	isSchedulingDateInCurrentPeriod,
 	isSchedulingDayInPeriod,
 	isSchedulingDaySelected,
 } from './PublicSchedulingCalendar.utils';
 
 export const PublicSchedulingCalendar = ({
+	centerPrimaryActions = false,
+	compactPrimaryActions = false,
 	detailBody,
 	detailSubtitle,
 	detailTitle,
@@ -48,18 +53,31 @@ export const PublicSchedulingCalendar = ({
 	monthLabel,
 	mainSubtitle,
 	mainTitle,
+	minNavigableDate,
 	month,
 	onMonthChange,
 	onSelectDate,
+	onTodayClick,
 	onViewModeChange,
 	selectedDate,
 	sidebar,
+	todayLabel,
 	topActions,
 	viewMode = 'month',
 	weekLabel,
 }: PublicSchedulingCalendarProps) => {
 	const calendarDays = getSchedulingCalendarDays(month, viewMode);
 	const weekdayLabels = getSchedulingWeekdayLabels(language);
+	const canGoPrevious = canNavigateToPreviousSchedulingPeriod(
+		month,
+		viewMode,
+		minNavigableDate
+	);
+	const isTodayVisible = isSchedulingDateInCurrentPeriod(
+		new Date(),
+		month,
+		viewMode
+	);
 
 	return (
 		<SchedulerWrapper>
@@ -84,21 +102,36 @@ export const PublicSchedulingCalendar = ({
 						) : null}
 					</MainHeader>
 
-					<MainActions>
-						<ViewToggle>
-							<ViewToggleButton
-								isActive={viewMode === 'month'}
-								onClick={() => onViewModeChange?.('month')}
-							>
-								{monthLabel}
-							</ViewToggleButton>
-							<ViewToggleButton
-								isActive={viewMode === 'week'}
-								onClick={() => onViewModeChange?.('week')}
-							>
-								{weekLabel}
-							</ViewToggleButton>
-						</ViewToggle>
+					<MainActions centerPrimaryActions={centerPrimaryActions}>
+						<MainPrimaryActions>
+							<ViewToggle>
+								<ViewToggleButton
+									isCompact={compactPrimaryActions}
+									isActive={viewMode === 'month'}
+									onClick={() => onViewModeChange?.('month')}
+								>
+									{monthLabel}
+								</ViewToggleButton>
+								<ViewToggleButton
+									isCompact={compactPrimaryActions}
+									isActive={viewMode === 'week'}
+									onClick={() => onViewModeChange?.('week')}
+								>
+									{weekLabel}
+								</ViewToggleButton>
+								{todayLabel && onTodayClick ? (
+									<ViewToggleButton
+										disabled={isTodayVisible}
+										isActive={isTodayVisible}
+										isCompact={compactPrimaryActions}
+										isTodayButton
+										onClick={onTodayClick}
+									>
+										{todayLabel}
+									</ViewToggleButton>
+								) : null}
+							</ViewToggle>
+						</MainPrimaryActions>
 						{topActions}
 					</MainActions>
 
@@ -109,8 +142,13 @@ export const PublicSchedulingCalendar = ({
 						<CalendarHeaderActions>
 							<NavIconButton
 								aria-label='Previous period'
+								disabled={!canGoPrevious}
 								onClick={() =>
-									onMonthChange(getPreviousSchedulingPeriod(month, viewMode))
+									canGoPrevious
+										? onMonthChange(
+												getPreviousSchedulingPeriod(month, viewMode)
+											)
+										: undefined
 								}
 							>
 								<ChevronLeft />
@@ -160,7 +198,10 @@ export const PublicSchedulingCalendar = ({
 											{Array.from({
 												length: Math.min(indicatorCount, 3),
 											}).map((_, index) => (
-												<DayIndicator key={`${day.toISOString()}-${index}`} tone={tone} />
+												<DayIndicator
+													key={`${day.toISOString()}-${index}`}
+													tone={tone}
+												/>
 											))}
 										</DayIndicators>
 										<DayCount isSelected={isSelected}>

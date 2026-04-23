@@ -1,6 +1,9 @@
 import styled from '@emotion/styled';
 import { Box, ButtonBase, IconButton } from '@mui/material';
-import { isSmallerThanTabletMedia } from '@psycron/theme/media-queries/mediaQueries';
+import {
+	isSmallerThanMediumMedia,
+	isSmallerThanTabletMedia,
+} from '@psycron/theme/media-queries/mediaQueries';
 import { hexToRgba, palette } from '@psycron/theme/palette/palette.theme';
 import { shadowMedium, shadowSmall } from '@psycron/theme/shadow/shadow.theme';
 import { spacing } from '@psycron/theme/spacing/spacing.theme';
@@ -66,12 +69,22 @@ export const MainHeader = styled(Box)`
 	gap: ${spacing.xs};
 `;
 
-export const MainActions = styled(Box)`
+export const MainActions = styled(Box, {
+	shouldForwardProp: (prop) => prop !== 'centerPrimaryActions',
+})<{ centerPrimaryActions: boolean }>`
 	align-items: center;
 	display: flex;
 	flex-wrap: wrap;
-	gap: ${spacing.small};
+	gap: ${spacing.xs};
 	justify-content: space-between;
+
+	${isSmallerThanMediumMedia} {
+		flex-wrap: nowrap;
+	}
+`;
+
+export const MainPrimaryActions = styled(Box)`
+	display: flex;
 `;
 
 export const CalendarHeader = styled(Box)`
@@ -96,6 +109,12 @@ export const NavIconButton = styled(IconButton)`
 		background: ${palette.primary.surface.light};
 		box-shadow: ${shadowMedium};
 	}
+
+	&.Mui-disabled {
+		background: ${palette.background.default};
+		box-shadow: none;
+		color: ${palette.text.disabled};
+	}
 `;
 
 export const ViewToggle = styled(Box)`
@@ -109,22 +128,47 @@ export const ViewToggle = styled(Box)`
 `;
 
 export const ViewToggleButton = styled(ButtonBase, {
-	shouldForwardProp: (prop) => prop !== 'isActive',
-})<{ isActive: boolean }>`
-	background: ${({ isActive }) =>
-		isActive ? palette.brand.purple : 'transparent'};
+	shouldForwardProp: (prop) =>
+		!['isActive', 'isCompact', 'isTodayButton'].includes(String(prop)),
+})<{ isActive: boolean; isCompact: boolean; isTodayButton?: boolean }>`
+	background: ${({ isActive, isTodayButton }) =>
+		isActive && isTodayButton
+			? palette.white
+			: isActive
+				? palette.brand.purple
+				: 'transparent'};
+	border: ${({ isActive, isTodayButton }) =>
+		isActive && isTodayButton
+			? `2px solid ${palette.brand.purple}`
+			: '2px solid transparent'};
 	border-radius: ${spacing.small};
-	color: ${({ isActive }) =>
-		isActive ? palette.white : palette.text.secondary};
-	font-size: 0.75rem;
+	color: ${({ isActive, isTodayButton }) =>
+		isActive && isTodayButton
+			? palette.brand.purple
+			: isActive
+				? palette.white
+				: palette.text.secondary};
+	font-size: ${({ isCompact }) => (isCompact ? '0.68rem' : '0.75rem')};
 	font-weight: 700;
 	letter-spacing: 0.04em;
-	padding: ${spacing.xs} ${spacing.small};
+	padding: ${({ isCompact }) =>
+		isCompact
+			? `${spacing.xxs} ${spacing.xs}`
+			: `${spacing.xs} ${spacing.small}`};
 	text-transform: uppercase;
 
 	&:hover {
-		color: ${({ isActive }) =>
-			isActive ? palette.white : palette.text.primary};
+		color: ${({ isActive, isTodayButton }) =>
+			isActive && isTodayButton
+				? palette.brand.purple
+				: isActive
+					? palette.white
+					: palette.text.primary};
+	}
+
+	&.Mui-disabled {
+		color: ${palette.text.disabled};
+		opacity: 1;
 	}
 `;
 

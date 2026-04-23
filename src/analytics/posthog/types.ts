@@ -39,6 +39,17 @@ export const enum PostHogEvent {
 
 	MarketingConsentToggleFailed = 'marketing consent toggle failed',
 	MarketingConsentToggleSaved = 'marketing consent toggle saved',
+	PatientCenterSessionCancelPlaceholderShown = 'patient center session cancel placeholder shown',
+
+	PatientCenterSessionCancelled = 'patient center session cancelled',
+
+	PatientCenterSessionDrawerOpened = 'patient center session drawer opened',
+
+	PatientCenterSessionNotified = 'patient center session notified',
+	PatientCenterSessionNotifyPlaceholderShown = 'patient center session notify placeholder shown',
+
+	PatientCenterSessionRescheduled = 'patient center session rescheduled',
+
 	SettingsLegalLinkClicked = 'settings legal link clicked',
 
 	UserDetailsClosed = 'user details closed',
@@ -46,6 +57,7 @@ export const enum PostHogEvent {
 	UserDetailsDataExportFailed = 'user details data export failed',
 
 	UserDetailsDataExportSucceeded = 'user details data export succeeded',
+
 	UserDetailsDeleteConfirmed = 'user details delete confirmed',
 
 	UserDetailsDeleteDialogClosed = 'user details delete dialog closed',
@@ -55,16 +67,11 @@ export const enum PostHogEvent {
 	UserDetailsDeleteFailed = 'user details delete failed',
 
 	UserDetailsDeleteSucceeded = 'user details delete succeeded',
-
 	UserDetailsEditSessionClicked = 'user details edit session clicked',
-
 	UserDetailsEditUserClicked = 'user details edit user clicked',
-
 	UserDetailsOpened = 'user details opened',
-
 	UserDetailsPatientsCtaClicked = 'user details patients cta clicked',
-
-	UserDetailsPatientsNavigationClicked = 'user details patients navigation clicked',
+	UserDetailsPatientsNavigationClicked = 'user details patients navigation clicked'
 }
 
 export type ExceptionContext = {
@@ -239,4 +246,19 @@ export type PostHogEventProps = {
 		new_slot_start_time: string;
 		reason_code: string;
 	};
+
+	[PostHogEvent.PatientCenterSessionDrawerOpened]: {
+		session_status: 'cancelled' | 'past' | 'upcoming';
+	};
+	[PostHogEvent.PatientCenterSessionRescheduled]: {
+		session_date: string;
+	};
+	[PostHogEvent.PatientCenterSessionCancelPlaceholderShown]: never;
+	[PostHogEvent.PatientCenterSessionCancelled]: {
+		session_date: string;
+	};
+	[PostHogEvent.PatientCenterSessionNotified]: {
+		session_date: string;
+	};
+	[PostHogEvent.PatientCenterSessionNotifyPlaceholderShown]: never;
 };
