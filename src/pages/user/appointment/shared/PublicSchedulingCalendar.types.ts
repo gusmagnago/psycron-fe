@@ -12,7 +12,6 @@ export interface PublicSchedulingDayMeta {
 }
 
 export interface PublicSchedulingCalendarProps {
-	centerPrimaryActions?: boolean;
 	compactPrimaryActions?: boolean;
 	detailBody: ReactNode;
 	detailSubtitle?: string | null;

@@ -25,10 +25,9 @@ import { PatientDrawerShell } from '@psycron/pages/user/appointment/shared/Patie
 import {
 	formatDateTimeRange,
 	formatLocalizedDate,
-	getDateLocale,
 } from '@psycron/utils/date/date.utils';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { addMonths, format, isAfter, isSameDay, parseISO } from 'date-fns';
+import { addMonths, format } from 'date-fns';
 
 import {
 	getSessionCancellationNotificationWasSent,
@@ -56,19 +55,20 @@ import {
 	RescheduleSlotsRow,
 } from './SessionDrawer.styles';
 import type {
+	DrawerMode,
 	SessionDrawerProps,
-	SessionDrawerRescheduleGroup,
 	SessionDrawerRescheduleSlot,
 } from './SessionDrawer.types';
-
-const THERAPIST_CANCEL_REASONS = [
-	{ label: 'globals.cancellation-reason.2', value: 2 },
-	{ label: 'globals.cancellation-reason.5', value: 5 },
-	{ label: 'globals.cancellation-reason.1', value: 1 },
-	{ label: 'globals.cancellation-reason.7', value: 7 },
-] as const;
-
-type DrawerMode = 'details' | 'cancel' | 'reschedule';
+import {
+	getSessionCancellationReasonLabel,
+	getSessionDrawerAccentColor,
+	getSessionDrawerMutationErrorKey,
+	getSessionDrawerMutationSeverity,
+	getSessionDrawerRescheduleGroups,
+	getSessionDrawerStatusKey,
+	getSessionDrawerTitleKey,
+	THERAPIST_CANCEL_REASONS,
+} from './SessionDrawer.utils';
 
 export const SessionDrawer = ({
 	notifications,
@@ -128,49 +128,26 @@ export const SessionDrawer = ({
 		staleTime: 1000 * 60,
 	});
 
-	const rescheduleSlotGroups = useMemo<SessionDrawerRescheduleGroup[]>(() => {
-		const today = new Date();
+	const rescheduleSlotGroups = useMemo(
+		() =>
+			getSessionDrawerRescheduleGroups({
+				availabilityDates: availabilityCalendar?.dates,
+				language: i18n.language,
+				sessionSlotId: session.slot._id,
+			}),
+		[availabilityCalendar?.dates, i18n.language, session.slot._id]
+	);
 
-		return (availabilityCalendar?.dates ?? [])
-			.map((dateRef) => {
-				const dayDate = parseISO(dateRef.date);
-				const slots = (dateRef.slots ?? [])
-					.filter((slot) => slot.status === 'AVAILABLE')
-					.filter((slot) => slot._id !== session.slot._id)
-					.filter((slot) => {
-						if (isAfter(dayDate, today)) return true;
-						if (!isSameDay(dayDate, today)) return false;
-
-						return slot.startTime > format(today, 'HH:mm');
-					})
-					.map(
-						(slot): SessionDrawerRescheduleSlot => ({
-							availabilityDayId: String(dateRef.dateId),
-							date: dateRef.date,
-							endTime: slot.endTime,
-							slotId: slot._id,
-							startTime: slot.startTime,
-						})
-					);
-
-				return {
-					date: dateRef.date,
-					formattedDate: format(dayDate, 'EEEE, MMM d', {
-						locale: getDateLocale(i18n.language),
-					}),
-					slots,
-				};
-			})
-			.filter((group) => group.slots.length > 0)
-			.slice(0, 8);
-	}, [availabilityCalendar?.dates, i18n.language, session.slot._id]);
-
-	const handleClose = () => {
-		if (rescheduleM.isPending || cancelM.isPending) return;
-		setDrawerMode('details');
+	const resetDrawerState = (nextMode: DrawerMode = 'details') => {
+		setDrawerMode(nextMode);
 		setReasonCode('');
 		setCustomReason('');
 		setSelectedRescheduleSlot(null);
+	};
+
+	const handleClose = () => {
+		if (rescheduleM.isPending || cancelM.isPending) return;
+		resetDrawerState();
 		onClose();
 	};
 
@@ -207,20 +184,14 @@ export const SessionDrawer = ({
 			});
 		},
 		onError: (err) => {
-			const isNoChange = err instanceof Error && err.message === 'no-change';
-			const isMissingSlot =
-				err instanceof Error && err.message === 'missing-slot';
 			showAlert({
 				message: t(
-					isMissingSlot
-						? 'patients.profile.session-drawer.reschedule-prompt'
-						: isNoChange
-							? 'patients.profile.session-drawer.update-no-change'
-							: session.isCancelled
-								? 'patients.profile.session-drawer.reschedule-error'
-								: 'patients.profile.session-drawer.update-error'
+					getSessionDrawerMutationErrorKey({
+						error: err,
+						isCancelled: session.isCancelled,
+					})
 				),
-				severity: isNoChange || isMissingSlot ? 'info' : 'error',
+				severity: getSessionDrawerMutationSeverity(err),
 			});
 		},
 		onSuccess: () => {
@@ -294,39 +265,6 @@ export const SessionDrawer = ({
 		},
 	});
 
-	const accentColor = session.isCancelled
-		? '#E05B5B'
-		: session.isPast
-			? '#94A3B8'
-			: '#2F9E44';
-
-	const getTitle = (): string => {
-		if (session.isCancelled)
-			return t('patients.profile.session-drawer.cancelled-title');
-		if (session.isPast)
-			return t('patients.profile.session-drawer.completed-title');
-
-		return t('patients.profile.session-drawer.upcoming-title');
-	};
-
-	const getStatusLabel = (): string => {
-		if (session.isCancelled) return t('patients.profile.sessions.cancelled');
-		if (session.isPast) return t('patients.profile.sessions.completed');
-
-		return t('patients.profile.sessions.upcoming');
-	};
-
-	const renderCancellationReason = (): string => {
-		if (session.reasonCode == null) return fallback;
-
-		const reason = t(`globals.cancellation-reason.${session.reasonCode}`);
-		const shouldShowCustom =
-			(session.reasonCode === 6 || session.reasonCode === 7) &&
-			session.customReason;
-
-		return shouldShowCustom ? `${reason} - ${session.customReason}` : reason;
-	};
-
 	const renderNotifyIconButton = () => {
 		const tooltipText = notifyM.isPending
 			? t('patients.profile.session-drawer.notify-sending')
@@ -386,8 +324,7 @@ export const SessionDrawer = ({
 							disabled={rescheduleM.isPending}
 							fullWidth
 							onClick={() => {
-								setDrawerMode('details');
-								setSelectedRescheduleSlot(null);
+								resetDrawerState();
 							}}
 							variant='text'
 						>
@@ -437,9 +374,7 @@ export const SessionDrawer = ({
 						disabled={cancelM.isPending}
 						fullWidth
 						onClick={() => {
-							setDrawerMode('details');
-							setReasonCode('');
-							setCustomReason('');
+							resetDrawerState();
 						}}
 						variant='text'
 					>
@@ -473,7 +408,7 @@ export const SessionDrawer = ({
 
 	return (
 		<PatientDrawerShell
-			accentColor={accentColor}
+			accentColor={getSessionDrawerAccentColor(session)}
 			actions={renderActions()}
 			ariaLabel={t('patients.profile.session-drawer.title')}
 			closeLabel={t('common.close')}
@@ -491,14 +426,14 @@ export const SessionDrawer = ({
 			hideFallbackClose={session.isCancelled || session.isPast}
 			onClose={handleClose}
 			roleLabel={t('patients.profile.session-drawer.role')}
-			statusLabel={getStatusLabel()}
+			statusLabel={t(getSessionDrawerStatusKey(session))}
 			subtitle={`${patientName} · ${formatDateTimeRange(
 				session.startsAt,
 				session.slot.startTime,
 				session.slot.endTime,
 				i18n.language
 			)}`}
-			title={getTitle()}
+			title={t(getSessionDrawerTitleKey(session))}
 		>
 			<DrawerDetailsList>
 				<DrawerDetailItem>
@@ -521,7 +456,7 @@ export const SessionDrawer = ({
 						isCancelled={session.isCancelled}
 						isPast={session.isPast}
 					>
-						{getStatusLabel()}
+						{t(getSessionDrawerStatusKey(session))}
 					</SessionStatus>
 				</DrawerDetailItem>
 				{session.isCancelled ? (
@@ -543,7 +478,14 @@ export const SessionDrawer = ({
 							<DetailLabel>
 								{t('patients.profile.session-drawer.cancellation-reason')}
 							</DetailLabel>
-							<DetailValue>{renderCancellationReason()}</DetailValue>
+							<DetailValue>
+								{getSessionCancellationReasonLabel({
+									customReason: session.customReason,
+									fallback,
+									reasonCode: session.reasonCode,
+									t,
+								})}
+							</DetailValue>
 						</DrawerDetailItem>
 						<DrawerDetailItem>
 							<DetailLabel>

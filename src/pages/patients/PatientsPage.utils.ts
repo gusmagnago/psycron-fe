@@ -174,14 +174,6 @@ export const getNextSession = (
 ): PatientSessionRow | undefined =>
 	sessions.find((session) => !session.isPast && !session.isCancelled);
 
-export const getRecentSessions = (
-	sessions: PatientSessionRow[],
-	limit = 6
-): PatientSessionRow[] =>
-	[...sessions]
-		.sort((a, b) => b.startsAt.getTime() - a.startsAt.getTime())
-		.slice(0, limit);
-
 export const getSessionsAscending = (
 	sessions: PatientSessionRow[]
 ): PatientSessionRow[] =>

@@ -42,7 +42,6 @@ import {
 } from './PublicSchedulingCalendar.utils';
 
 export const PublicSchedulingCalendar = ({
-	centerPrimaryActions = false,
 	compactPrimaryActions = false,
 	detailBody,
 	detailSubtitle,
@@ -102,7 +101,7 @@ export const PublicSchedulingCalendar = ({
 						) : null}
 					</MainHeader>
 
-					<MainActions centerPrimaryActions={centerPrimaryActions}>
+					<MainActions>
 						<MainPrimaryActions>
 							<ViewToggle>
 								<ViewToggleButton

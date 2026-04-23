@@ -69,9 +69,7 @@ export const MainHeader = styled(Box)`
 	gap: ${spacing.xs};
 `;
 
-export const MainActions = styled(Box, {
-	shouldForwardProp: (prop) => prop !== 'centerPrimaryActions',
-})<{ centerPrimaryActions: boolean }>`
+export const MainActions = styled(Box)`
 	align-items: center;
 	display: flex;
 	flex-wrap: wrap;

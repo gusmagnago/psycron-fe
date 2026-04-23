@@ -2,6 +2,8 @@ import type { INotification } from '@psycron/context/user/auth/UserAuthenticatio
 
 import type { PatientSessionRow } from '../../PatientsPage.types';
 
+export type DrawerMode = 'details' | 'cancel' | 'reschedule';
+
 export interface SessionDrawerRescheduleSlot {
 	availabilityDayId: string;
 	date: string;

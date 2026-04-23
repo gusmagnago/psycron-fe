@@ -5,7 +5,7 @@ import { TextField, Typography } from '@mui/material';
 import { editAppointment } from '@psycron/api/appointment';
 import { getPublicPatientSessions } from '@psycron/api/patient';
 import type {
-	IPublicSessionDate,
+	IPublicPatientSessionsResponse,
 	IPublicSessionSlot,
 } from '@psycron/api/patient/index.types';
 import { getAvailabilityCalendar, getUserById } from '@psycron/api/user';
@@ -13,7 +13,6 @@ import {
 	cancelAppointmentByPatient,
 	type CancellationReasonEnum,
 } from '@psycron/api/user/availability';
-import { StatusEnum } from '@psycron/api/user/availability/index.types';
 import { Avatar } from '@psycron/components/avatar/Avatar';
 import { Button } from '@psycron/components/button/Button';
 import { useAlert } from '@psycron/context/alert/AlertContext';
@@ -24,7 +23,7 @@ import {
 } from '@psycron/utils/date/date.utils';
 import { formatPatientAddress } from '@psycron/utils/patient/patient.utils';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { format, isPast, isSameMonth, parseISO, startOfDay } from 'date-fns';
+import { format, isSameMonth, parseISO, startOfDay } from 'date-fns';
 
 import {
 	AgendaAppointmentCard,
@@ -42,7 +41,6 @@ import {
 	StatusBadge,
 } from '../../booking/BookAppointment.styles';
 import type { IPublicSlot } from '../../booking/BookAppointment.types';
-import { buildPublicSlotsByDay } from '../../booking/BookAppointment.utils';
 import { PatientDrawerShell } from '../../shared/PatientDrawerShell';
 import { PublicSchedulingCalendar } from '../../shared/PublicSchedulingCalendar';
 import type { PublicSchedulingViewMode } from '../../shared/PublicSchedulingCalendar.types';
@@ -64,6 +62,18 @@ import {
 	TherapistRow,
 	TherapistText,
 } from './AppointmentsList.styles';
+import type { DrawerMode, SessionRow } from './AppointmentsList.types';
+import {
+	buildSessionRows,
+	getAppointmentCardTone,
+	getAppointmentDates,
+	getAppointmentStatusLabelKey,
+	getNextUpcomingAppointments,
+	getRescheduleSlotsByDay,
+	getSessionCounts,
+	groupNextAppointmentsByMonth,
+	groupSessionsByDay,
+} from './AppointmentsList.utils';
 
 const CANCEL_REASONS = [
 	{ label: 'booking.cancel.reason.emergency', value: 1 },
@@ -73,23 +83,6 @@ const CANCEL_REASONS = [
 	{ label: 'booking.cancel.reason.other', value: 6 },
 ] as const;
 const NEXT_APPOINTMENTS_BATCH_SIZE = 8;
-
-type AppointmentStatus = 'booked' | 'cancelled' | 'past';
-type DrawerMode = 'details' | 'cancel' | 'reschedule';
-
-interface SessionRow {
-	canceledAt?: string | null;
-	customReason?: string;
-	date: string;
-	dateId: string;
-	endDateTime: Date;
-	isPast: boolean;
-	reasonCode?: number;
-	slot: IPublicSessionSlot;
-	status: AppointmentStatus;
-	therapistId: string;
-	triggeredBy?: 'PATIENT' | 'THERAPIST';
-}
 
 const formatDateTime = (
 	date: string,
@@ -166,89 +159,15 @@ export const AppointmentsList = () => {
 		queryKey: ['publicAgendaAvailability', therapistId],
 	});
 
-	const sessions = useMemo<SessionRow[]>(() => {
-		const cancelledBySlotId = new Map(
-			(data?.patient?.cancelledAppointments ?? []).map((item) => [item.slotId, item])
-		);
-		const includedSlotIds = new Set<string>();
+	const sessions = useMemo<SessionRow[]>(
+		() => buildSessionRows(data?.patient as IPublicPatientSessionsResponse['patient']),
+		[data?.patient]
+	);
 
-		const sessionRows = (data?.patient?.sessionDates ?? []).flatMap((group: IPublicSessionDate) =>
-			group.slots.map((slot) => {
-				includedSlotIds.add(slot._id);
-				const sessionDate = format(parseISO(group.date), 'yyyy-MM-dd');
-				const cancelled = cancelledBySlotId.get(slot._id);
-				const endDateTime = parseISO(`${sessionDate}T${slot.endTime}:00`);
-				const slotIsPast = isPast(endDateTime);
-				const isCancelled =
-					slot.status === StatusEnum.CANCELED ||
-					slot.status?.toLowerCase() === 'canceled' ||
-					slot.status?.toLowerCase() === 'cancelled' ||
-					Boolean(cancelled);
-
-			return {
-				canceledAt: cancelled?.cancelledAt ?? slot.canceledAt,
-				customReason: cancelled?.customReason,
-				date: sessionDate,
-				dateId: group._id,
-				endDateTime,
-				isPast: slotIsPast,
-					reasonCode: cancelled?.reasonCode,
-					slot,
-					status: isCancelled ? 'cancelled' : slotIsPast ? 'past' : 'booked',
-					therapistId: data?.patient?.therapistId ?? '',
-					triggeredBy: cancelled?.triggeredBy,
-				};
-			})
-		);
-
-		const standaloneCancelledRows = (data?.patient?.cancelledAppointments ?? [])
-			.filter((appointment) => !includedSlotIds.has(appointment.slotId))
-			.map((appointment) => {
-				const sessionDate = format(parseISO(appointment.date), 'yyyy-MM-dd');
-
-				return {
-					canceledAt: appointment.cancelledAt,
-					customReason: appointment.customReason,
-					date: sessionDate,
-					dateId: appointment.slotId,
-					endDateTime: parseISO(`${sessionDate}T${appointment.endTime}:00`),
-					isPast: true,
-					reasonCode: appointment.reasonCode,
-					slot: {
-						_id: appointment.slotId,
-						endTime: appointment.endTime,
-						startTime: appointment.startTime,
-						status: StatusEnum.CANCELED,
-					},
-					status: 'cancelled' as const,
-					therapistId: data?.patient?.therapistId ?? '',
-					triggeredBy: appointment.triggeredBy,
-				};
-			});
-
-		return [...sessionRows, ...standaloneCancelledRows];
-	}, [
-		data?.patient?.cancelledAppointments,
-		data?.patient?.sessionDates,
-		data?.patient?.therapistId,
-	]);
-
-	const appointmentsByDay = useMemo(() => {
-		const grouped = new Map<string, SessionRow[]>();
-
-		for (const session of sessions) {
-			const key = session.date;
-			grouped.set(key, [...(grouped.get(key) ?? []), session]);
-		}
-
-		return grouped;
-	}, [sessions]);
+	const appointmentsByDay = useMemo(() => groupSessionsByDay(sessions), [sessions]);
 
 	const appointmentDates = useMemo(
-		() =>
-			Array.from(appointmentsByDay.keys())
-				.map((day) => parseISO(day))
-				.sort((a, b) => a.getTime() - b.getTime()),
+		() => getAppointmentDates(appointmentsByDay),
 		[appointmentsByDay]
 	);
 	const firstAppointmentDate = appointmentDates[0] ?? null;
@@ -267,72 +186,38 @@ export const AppointmentsList = () => {
 		? (appointmentsByDay.get(selectedDayKey) ?? [])
 		: [];
 	const nextUpcomingAppointments = useMemo(
-		() =>
-			sessions
-				.filter(
-					(session) =>
-						session.status === 'booked' &&
-						startOfDay(parseISO(session.date)).getTime() >=
-							startOfDay(new Date()).getTime()
-				)
-				.sort(
-					(a, b) =>
-						new Date(`${a.date}T${a.slot.startTime}:00`).getTime() -
-						new Date(`${b.date}T${b.slot.startTime}:00`).getTime()
-					),
+		() => getNextUpcomingAppointments(sessions, new Date()),
 		[sessions]
 	);
 	const displayedNextUpcomingAppointments = useMemo(
 		() => nextUpcomingAppointments.slice(0, visibleNextAppointmentsCount),
 		[nextUpcomingAppointments, visibleNextAppointmentsCount]
 	);
-	const nextAppointmentsByMonth = useMemo(() => {
-		const groups = new Map<string, SessionRow[]>();
+	const nextAppointmentsByMonth = useMemo(
+		() =>
+			groupNextAppointmentsByMonth({
+				appointments: displayedNextUpcomingAppointments,
+				dateLocale,
+			}),
+		[dateLocale, displayedNextUpcomingAppointments]
+	);
 
-		for (const appointment of displayedNextUpcomingAppointments) {
-			const monthKey = format(parseISO(appointment.date), 'yyyy-MM');
-			groups.set(monthKey, [...(groups.get(monthKey) ?? []), appointment]);
-		}
+	const { upcomingCount, cancelledCount, pastCount } = useMemo(
+		() => getSessionCounts(sessions),
+		[sessions]
+	);
 
-		return Array.from(groups.entries()).map(([monthKey, appointments]) => ({
-			appointments,
-			monthKey,
-			title: capitalizeDateLabel(
-				format(parseISO(`${monthKey}-01`), 'MMMM yyyy', {
-					locale: dateLocale,
-				})
-			),
-		}));
-	}, [dateLocale, displayedNextUpcomingAppointments]);
-
-	const upcomingCount = sessions.filter((session) => session.status === 'booked').length;
-	const cancelledCount = sessions.filter(
-		(session) => session.status === 'cancelled'
-	).length;
-	const pastCount = sessions.filter((session) => session.status === 'past').length;
-
-	const rescheduleSlotsByDay = useMemo(() => {
-		if (!availability || !selectedAppointment) return new Map<string, IPublicSlot[]>();
-
-		const grouped = buildPublicSlotsByDay({
-			dates: availability.dates ?? [],
-			filters: {
-				dateFrom: format(startOfDay(new Date()), 'yyyy-MM-dd'),
-				dateTo: format(parseISO('2099-12-31'), 'yyyy-MM-dd'),
-				timeOfDay: 'all',
-			},
-			today: startOfDay(new Date()),
-		});
-
-		return new Map(
-			Array.from(grouped.entries())
-				.map(([day, slots]) => [
-					day,
-					slots.filter((slot) => slot.slotId !== selectedAppointment.slot._id),
-				] as const)
-				.filter(([, slots]) => slots.length > 0)
-		);
-	}, [availability, selectedAppointment]);
+	const rescheduleSlotsByDay = useMemo(
+		() =>
+			selectedAppointment
+				? getRescheduleSlotsByDay({
+						availabilityDates: availability?.dates,
+						selectedSlotId: selectedAppointment.slot._id,
+						today: new Date(),
+					})
+				: new Map<string, IPublicSlot[]>(),
+		[availability?.dates, selectedAppointment]
+	);
 
 	const closeDrawer = () => {
 		setSelectedAppointment(null);
@@ -460,12 +345,7 @@ export const AppointmentsList = () => {
 	}
 
 	const renderAppointmentCard = (appointment: SessionRow) => {
-		const tone =
-			appointment.status === 'cancelled'
-				? 'cancelled'
-				: appointment.status === 'past'
-					? 'past'
-					: 'confirmed';
+		const tone = getAppointmentCardTone(appointment.status);
 
 		return (
 			<AgendaAppointmentCard
@@ -484,10 +364,10 @@ export const AppointmentsList = () => {
 					</Typography>
 					<StatusBadge tone={tone}>
 						{appointment.status === 'cancelled'
-							? t('booking.patient-drawer.cancelled-badge')
+							? t(getAppointmentStatusLabelKey(appointment.status))
 							: appointment.status === 'past'
-								? t('booking.patient-drawer.completed-badge')
-								: t('booking.patient-drawer.confirmed-badge')}
+								? t(getAppointmentStatusLabelKey(appointment.status))
+								: t(getAppointmentStatusLabelKey(appointment.status))}
 					</StatusBadge>
 				</AgendaAppointmentHeader>
 				<Typography color='text.secondary' variant='body2'>
@@ -618,7 +498,6 @@ export const AppointmentsList = () => {
 					language={i18n.language}
 					mainSubtitle={t('booking.calendar.agenda-subtitle')}
 					mainTitle={t('booking.calendar.agenda-main-title')}
-					centerPrimaryActions
 					compactPrimaryActions
 					minNavigableDate={firstAppointmentDate}
 					monthLabel={t('booking.calendar.view-month')}
