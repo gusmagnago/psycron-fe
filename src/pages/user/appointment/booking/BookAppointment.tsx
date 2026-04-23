@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { type UIEvent, useEffect, useMemo, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
@@ -26,6 +26,7 @@ import type { PublicSchedulingViewMode } from '../shared/PublicSchedulingCalenda
 import { PublicBookingForm } from './components/PublicBookingForm';
 import { TherapistCard } from './components/TherapistCard';
 import {
+	AvailableSlotsScroll,
 	BookingMetaIcon,
 	BookingMetaList,
 	BookingMetaRow,
@@ -34,11 +35,12 @@ import {
 	BookingTitleBlock,
 	EmptyState,
 	FilterTimeRow,
+	NextAppointmentsMonth,
+	NextAppointmentsMonthTitle,
 	PageWrapper,
 	SkeletonCard,
 	SkeletonLayout,
 	SlotButton,
-	SlotList,
 	TimeFilterChip,
 } from './BookAppointment.styles';
 import type {
@@ -55,6 +57,7 @@ const TIME_OF_DAY_OPTIONS: { label: string; value: TimeOfDay }[] = [
 	{ label: 'booking.filter.time-afternoon', value: 'afternoon' },
 	{ label: 'booking.filter.time-evening', value: 'evening' },
 ];
+const AVAILABLE_DAYS_BATCH_SIZE = 5;
 
 const getDurationMinutes = (slot?: IPublicSlot | null): number | null => {
 	if (!slot) return null;
@@ -86,7 +89,12 @@ export const BookAppointment = () => {
 	const [calendarViewMode, setCalendarViewMode] =
 		useState<PublicSchedulingViewMode>('month');
 	const [selectedSlot, setSelectedSlot] = useState<IPublicSlot | null>(null);
+	const [visibleAvailableDaysCount, setVisibleAvailableDaysCount] = useState(
+		AVAILABLE_DAYS_BATCH_SIZE
+	);
 	const sharedSlotId = searchParams.get('slotId');
+	const availableSlotsScrollRef = useRef<HTMLDivElement | null>(null);
+	const pendingScrollDayKeyRef = useRef<string | null>(null);
 
 	const methods = useForm<IBookingFormValues>({
 		defaultValues: {
@@ -131,6 +139,23 @@ export const BookAppointment = () => {
 
 	const selectedDayKey = selectedDate ? format(selectedDate, 'yyyy-MM-dd') : null;
 	const selectedDaySlots = selectedDayKey ? (slotsByDay.get(selectedDayKey) ?? []) : [];
+	const availableDayGroups = useMemo(
+		() =>
+			Array.from(slotsByDay.entries()).map(([dayKey, daySlots]) => ({
+				dayKey,
+				slots: daySlots,
+				title: capitalizeDateLabel(
+					format(parseISO(dayKey), 'EEEE, MMMM d', {
+						locale: dateLocale,
+					})
+				),
+			})),
+		[dateLocale, slotsByDay]
+	);
+	const displayedAvailableDayGroups = useMemo(
+		() => availableDayGroups.slice(0, visibleAvailableDaysCount),
+		[availableDayGroups, visibleAvailableDaysCount]
+	);
 
 	const bookingMutation = useMutation({
 		mutationFn: (values: IBookingFormValues) => {
@@ -218,6 +243,25 @@ export const BookAppointment = () => {
 		}
 	}, [selectedDate, selectedSlot]);
 
+	useEffect(() => {
+		setVisibleAvailableDaysCount(AVAILABLE_DAYS_BATCH_SIZE);
+	}, [filters, calendarViewMode, therapistId]);
+
+	useEffect(() => {
+		const pendingDayKey = pendingScrollDayKeyRef.current;
+
+		if (!pendingDayKey) return;
+
+		const dayNode = availableSlotsScrollRef.current?.querySelector<HTMLElement>(
+			`[data-slot-day="${pendingDayKey}"]`
+		);
+
+		if (!dayNode) return;
+
+		dayNode.scrollIntoView({ behavior: 'smooth', block: 'start' });
+		pendingScrollDayKeyRef.current = null;
+	}, [displayedAvailableDayGroups]);
+
 	const handleClose = () => {
 		setSelectedSlot(null);
 		methods.reset();
@@ -233,6 +277,49 @@ export const BookAppointment = () => {
 	});
 
 	const selectedDuration = useMemo(() => getDurationMinutes(selectedSlot), [selectedSlot]);
+
+	const handleAvailableSlotsScroll = (event: UIEvent<HTMLElement>) => {
+		const container = event.currentTarget;
+		const daySections = Array.from(
+			container.querySelectorAll<HTMLElement>('[data-slot-day]')
+		);
+		const isNearBottom =
+			container.scrollTop + container.clientHeight >=
+			container.scrollHeight - container.clientHeight / 2;
+		const containerTop = container.getBoundingClientRect().top;
+		const firstVisibleDay =
+			daySections.find((section) => section.getBoundingClientRect().bottom > containerTop) ??
+			daySections[0];
+		const visibleDayKey = firstVisibleDay?.dataset.slotDay;
+
+		if (visibleDayKey && visibleDayKey !== selectedDayKey) {
+			const visibleDay = parseISO(visibleDayKey);
+			setSelectedDate(visibleDay);
+			setVisibleMonth(visibleDay);
+		}
+
+		if (isNearBottom) {
+			setVisibleAvailableDaysCount((current) =>
+				Math.min(current + AVAILABLE_DAYS_BATCH_SIZE, availableDayGroups.length)
+			);
+		}
+	};
+
+	const handleCalendarDateSelect = (date: Date) => {
+		const dayKey = format(date, 'yyyy-MM-dd');
+		const dayIndex = availableDayGroups.findIndex((group) => group.dayKey === dayKey);
+
+		setSelectedDate(date);
+		setVisibleMonth(date);
+		setSelectedSlot(null);
+
+		if (dayIndex >= 0) {
+			setVisibleAvailableDaysCount((current) =>
+				Math.max(current, dayIndex + 1, AVAILABLE_DAYS_BATCH_SIZE)
+			);
+			pendingScrollDayKeyRef.current = dayKey;
+		}
+	};
 
 	if (isLoading) {
 		return (
@@ -259,42 +346,44 @@ export const BookAppointment = () => {
 			<PageWrapper>
 				<PublicSchedulingCalendar
 					detailBody={
-						selectedDate ? (
-							selectedDaySlots.length > 0 ? (
-								<SlotList>
-									{selectedDaySlots.map((slot) => (
-										<SlotButton
-											isBooked={slot.isBooked}
-											isSelected={slot.slotId === selectedSlot?.slotId}
-											key={slot.slotId}
-											label={
-												slot.isBooked
-													? t('booking.slot.taken')
-													: `${slot.startTime} - ${slot.endTime}`
-											}
-											onClick={() => {
-												if (!slot.isBooked) setSelectedSlot(slot);
-											}}
-										/>
-									))}
-								</SlotList>
-							) : (
-								<EmptyState>
-									<Typography variant='subtitle1'>
-										{t('booking.calendar.no-times-title')}
-									</Typography>
-									<Typography color='text.secondary' variant='body2'>
-										{t('booking.calendar.no-times-body')}
-									</Typography>
-								</EmptyState>
-							)
+						displayedAvailableDayGroups.length > 0 ? (
+							<AvailableSlotsScroll
+								onScroll={handleAvailableSlotsScroll}
+								ref={availableSlotsScrollRef}
+							>
+								{displayedAvailableDayGroups.map(({ dayKey, slots, title }) => (
+									<NextAppointmentsMonth data-slot-day={dayKey} key={dayKey}>
+										<NextAppointmentsMonthTitle>
+											{title}
+										</NextAppointmentsMonthTitle>
+										{slots.map((slot) => (
+											<SlotButton
+												isBooked={slot.isBooked}
+												isSelected={slot.slotId === selectedSlot?.slotId}
+												key={slot.slotId}
+												label={
+													slot.isBooked
+														? t('booking.slot.taken')
+														: `${slot.startTime} - ${slot.endTime}`
+												}
+												onClick={() => {
+													if (!slot.isBooked) {
+														setSelectedDate(parseISO(slot.date));
+														setSelectedSlot(slot);
+													}
+												}}
+											/>
+										))}
+									</NextAppointmentsMonth>
+								))}
+							</AvailableSlotsScroll>
 						) : (
 							<EmptyState>
 								<Typography variant='subtitle1'>
-									{t('booking.calendar.no-date-title')}
+									{t('booking.calendar.no-times-title')}
 								</Typography>
 								<Typography color='text.secondary' variant='body2'>
-									{t('booking.calendar.no-date-body')}
+									{t('booking.calendar.no-times-body')}
 								</Typography>
 							</EmptyState>
 						)
@@ -342,11 +431,7 @@ export const BookAppointment = () => {
 					monthLabel={t('booking.calendar.view-month')}
 					month={visibleMonth}
 					onMonthChange={setVisibleMonth}
-					onSelectDate={(date) => {
-						setSelectedDate(date);
-						setVisibleMonth(date);
-						setSelectedSlot(null);
-					}}
+					onSelectDate={handleCalendarDateSelect}
 					onViewModeChange={setCalendarViewMode}
 					selectedDate={selectedDate}
 					sidebar={
@@ -444,6 +529,7 @@ export const BookAppointment = () => {
 							))}
 						</FilterTimeRow>
 					}
+					topActionsPosition='below'
 					viewMode={calendarViewMode}
 					weekLabel={t('booking.calendar.view-week')}
 				/>

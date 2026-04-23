@@ -18,6 +18,7 @@ import {
 	MainHeader,
 	MainPanel,
 	MainPrimaryActions,
+	MainSecondaryActions,
 	MonthGrid,
 	NavIconButton,
 	SchedulerHeader,
@@ -62,6 +63,7 @@ export const PublicSchedulingCalendar = ({
 	sidebar,
 	todayLabel,
 	topActions,
+	topActionsPosition = 'inline',
 	viewMode = 'month',
 	weekLabel,
 }: PublicSchedulingCalendarProps) => {
@@ -131,7 +133,11 @@ export const PublicSchedulingCalendar = ({
 								) : null}
 							</ViewToggle>
 						</MainPrimaryActions>
-						{topActions}
+						{topActions ? (
+							<MainSecondaryActions layoutMode={topActionsPosition}>
+								{topActions}
+							</MainSecondaryActions>
+						) : null}
 					</MainActions>
 
 					<CalendarHeader>

@@ -77,12 +77,19 @@ export const MainActions = styled(Box)`
 	justify-content: space-between;
 
 	${isSmallerThanMediumMedia} {
-		flex-wrap: nowrap;
+		flex-wrap: wrap;
 	}
 `;
 
 export const MainPrimaryActions = styled(Box)`
 	display: flex;
+`;
+
+export const MainSecondaryActions = styled(Box, {
+	shouldForwardProp: (prop) => prop !== 'layoutMode',
+})<{ layoutMode: 'below' | 'inline' }>`
+	display: flex;
+	width: ${({ layoutMode }) => (layoutMode === 'below' ? '100%' : 'auto')};
 `;
 
 export const CalendarHeader = styled(Box)`

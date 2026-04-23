@@ -5,10 +5,7 @@ import {
 	isSmallerThanTabletMedia,
 } from '@psycron/theme/media-queries/mediaQueries';
 import { hexToRgba, palette } from '@psycron/theme/palette/palette.theme';
-import {
-	shadowMedium,
-	shadowSmall,
-} from '@psycron/theme/shadow/shadow.theme';
+import { shadowMedium, shadowSmall } from '@psycron/theme/shadow/shadow.theme';
 import { spacing } from '@psycron/theme/spacing/spacing.theme';
 
 export const PageWrapper = styled(Box)`
@@ -48,15 +45,25 @@ export const BookingMetaIcon = styled(Box)`
 	border-radius: ${spacing.small};
 	box-shadow: ${shadowSmall};
 	display: inline-flex;
+	flex: 0 0 44px;
 	height: calc(${spacing.mediumLarge} + ${spacing.small});
 	justify-content: center;
-	width: calc(${spacing.mediumLarge} + ${spacing.small});
+	width: 100%;
+
+	svg {
+		height: 28px;
+		width: 28px;
+	}
 `;
 
 export const BookingMetaText = styled(Box)`
+	align-items: flex-start;
 	display: flex;
+	flex: 1;
 	flex-direction: column;
 	gap: ${spacing.xxs};
+	min-width: 0;
+	text-align: left;
 `;
 
 export const FilterTimeRow = styled(Box)`
@@ -72,7 +79,8 @@ export const TimeFilterChip = styled(Box, {
 		isActive ? palette.brand.dark : palette.white};
 	box-shadow: ${({ isActive }) => (isActive ? shadowMedium : shadowSmall)};
 	border-radius: ${spacing.mediumSmall};
-	color: ${({ isActive }) => (isActive ? palette.white : palette.text.secondary)};
+	color: ${({ isActive }) =>
+		isActive ? palette.white : palette.text.secondary};
 	cursor: pointer;
 	font-size: 0.8125rem;
 	font-weight: 700;
@@ -108,7 +116,8 @@ export const SlotList = styled(Box)`
 `;
 
 export const SlotButton = styled(Chip, {
-	shouldForwardProp: (prop) => !['isBooked', 'isSelected'].includes(String(prop)),
+	shouldForwardProp: (prop) =>
+		!['isBooked', 'isSelected'].includes(String(prop)),
 })<{ isBooked?: boolean; isSelected?: boolean }>`
 	background: ${({ isBooked, isSelected }) =>
 		isBooked
@@ -124,7 +133,7 @@ export const SlotButton = styled(Chip, {
 			? palette.text.disabled
 			: isSelected
 				? palette.white
-				: palette.info.main};
+				: palette.brand.purple};
 	cursor: ${({ isBooked }) => (isBooked ? 'not-allowed' : 'pointer')};
 	font-size: 1rem;
 	font-weight: 700;
@@ -142,7 +151,7 @@ export const SlotButton = styled(Chip, {
 				? palette.gray['01']
 				: isSelected
 					? palette.brand.dark
-					: palette.info.surface.light};
+					: palette.brand.light};
 		box-shadow: ${({ isBooked }) => (isBooked ? 'none' : shadowMedium)};
 		transform: ${({ isBooked }) => (isBooked ? 'none' : 'translateY(-1px)')};
 	}
@@ -231,6 +240,10 @@ export const NextAppointmentsScroll = styled(Box)`
 	min-height: 0;
 	overflow-y: auto;
 	padding: ${spacing.xxs} ${spacing.xs} ${spacing.xxs} 0;
+`;
+
+export const AvailableSlotsScroll = styled(NextAppointmentsScroll)`
+	max-height: 100vh;
 `;
 
 export const NextAppointmentsMonth = styled(Box)`

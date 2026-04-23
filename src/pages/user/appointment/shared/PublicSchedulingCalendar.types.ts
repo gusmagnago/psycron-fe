@@ -32,6 +32,7 @@ export interface PublicSchedulingCalendarProps {
 	sidebar: ReactNode;
 	todayLabel?: string;
 	topActions?: ReactNode;
+	topActionsPosition?: 'below' | 'inline';
 	viewMode?: PublicSchedulingViewMode;
 	weekLabel: string;
 }
