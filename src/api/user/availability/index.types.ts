@@ -224,6 +224,10 @@ export interface CancelAppointmentResponse {
 	slotId: string;
 }
 
+export interface NotifyPatientForSessionResponse {
+	message: string;
+}
+
 export interface CancelAppointmentFormData {
 	customReason?: string;
 	reasonCode: string;

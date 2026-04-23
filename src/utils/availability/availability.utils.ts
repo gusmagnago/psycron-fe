@@ -8,7 +8,15 @@ interface CancellableSlot {
 
 export const isCanceledSlotStatus = (
 	status: string | null | undefined
-): boolean => status === StatusEnum.CANCELED;
+): boolean => {
+	const normalizedStatus = status?.toLowerCase();
+
+	return (
+		status === StatusEnum.CANCELED ||
+		normalizedStatus === 'canceled' ||
+		normalizedStatus === 'cancelled'
+	);
+};
 
 export const isCanceledSlot = (
 	slot: CancellableSlot | null | undefined

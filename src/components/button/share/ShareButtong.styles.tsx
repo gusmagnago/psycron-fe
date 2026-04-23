@@ -8,15 +8,19 @@ export const ShareButtonRoot = styled(Box)`
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	width: ${spacing.small};
-	height: ${spacing.small};
 
 	& span {
-		width: ${spacing.small};
-		height: ${spacing.small};
+		width: 18px;
+		height: 18px;
 		display: flex;
 		justify-content: center;
 		align-items: center;
+		color: ${palette.brand.purple};
+	}
+	&:hover {
+		& span {
+			color: ${palette.white};
+		}
 	}
 `;
 
@@ -34,7 +38,7 @@ export const ShareButtonsWrapper = styled(Box)`
 	top: calc(100% + ${spacing.xs});
 	z-index: 10;
 
-	& > svg {
-		color: ${palette.black};
+	& svg {
+		color: ${palette.brand.purple};
 	}
 `;

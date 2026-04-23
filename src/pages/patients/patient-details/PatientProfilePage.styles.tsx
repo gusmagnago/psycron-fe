@@ -1,5 +1,5 @@
 import styled from '@emotion/styled';
-import { Box } from '@mui/material';
+import { Box, IconButton } from '@mui/material';
 import { Text } from '@psycron/components/text/Text';
 import {
 	isMobileMedia,
@@ -71,6 +71,23 @@ export const HeroActions = styled(Box)`
 	gap: ${spacing.xs};
 `;
 
+export const HeroIconButton = styled(IconButton)`
+	background: ${palette.background.paper};
+	box-shadow: ${shadowSmall};
+	border: 2px solid ${palette.brand.purple};
+
+	&:hover {
+		background: ${palette.brand.light};
+		color: ${palette.text.primary};
+	}
+
+	& svg {
+		height: 18px;
+		width: 18px;
+		color: ${palette.brand.purple};
+	}
+`;
+
 export const PatientName = styled(Text)`
 	font-size: 1.35rem;
 	font-weight: 800;
@@ -121,12 +138,21 @@ export const ShortcutRow = styled(Box)`
 	gap: ${spacing.xs};
 `;
 
-export const ShortcutLink = styled('a')`
+export const ShortcutLink = styled('a', {
+	shouldForwardProp: (prop) => prop !== 'tone',
+})<{ tone?: 'info' | 'secondary' | 'success' }>`
 	align-items: center;
 	background: ${palette.background.paper};
 	border: 1px solid ${hexToRgba(palette.brand.purple, 0.14)};
 	border-radius: ${spacing.small};
-	color: ${palette.text.primary};
+	color: ${({ tone }) =>
+		tone === 'info'
+			? palette.info.main
+			: tone === 'success'
+				? palette.success.main
+				: tone === 'secondary'
+					? palette.secondary.main
+					: palette.text.primary};
 	display: inline-flex;
 	font-size: 0.88rem;
 	font-weight: 700;
@@ -156,11 +182,37 @@ export const StatsGrid = styled(Box)`
 	grid-template-columns: repeat(2, minmax(0, 1fr));
 `;
 
-export const StatCard = styled(Box)`
-	background: ${hexToRgba(palette.background.paper, 0.76)};
+export const StatCard = styled('button', {
+	shouldForwardProp: (prop) => prop !== 'isActive',
+})<{ isActive: boolean }>`
+	background: ${({ isActive }) =>
+		isActive
+			? hexToRgba(palette.brand.purple, 0.12)
+			: hexToRgba(palette.background.paper, 0.76)};
+	border: 0;
 	border-radius: ${spacing.medium};
 	box-shadow: ${shadowSmall};
+	color: ${palette.text.primary};
+	cursor: pointer;
+	font: inherit;
 	padding: ${spacing.small};
+	text-align: left;
+	transition:
+		background 160ms ease,
+		box-shadow 160ms ease,
+		transform 160ms ease;
+
+	&:hover,
+	&:focus-visible {
+		background: ${hexToRgba(palette.brand.purple, 0.14)};
+		box-shadow: ${shadowMedium};
+		transform: translateY(-1px);
+	}
+
+	&:focus-visible {
+		outline: 2px solid ${hexToRgba(palette.brand.purple, 0.5)};
+		outline-offset: 3px;
+	}
 `;
 
 export const StatValue = styled(Text)`
@@ -246,9 +298,12 @@ export const SessionList = styled(Box)`
 	display: flex;
 	flex-direction: column;
 	gap: ${spacing.xs};
+	max-height: 28rem;
+	overflow-y: auto;
+	padding-right: ${spacing.xxs};
 `;
 
-export const SessionRow = styled(Box, {
+export const SessionRow = styled('button', {
 	shouldForwardProp: (prop) => prop !== 'isCancelled',
 })<{ isCancelled: boolean }>`
 	background: ${({ isCancelled }) =>
@@ -261,10 +316,29 @@ export const SessionRow = styled(Box, {
 				? hexToRgba(palette.error.main, 0.16)
 				: hexToRgba(palette.gray['04'], 0.1)};
 	border-radius: ${spacing.medium};
+	color: ${palette.text.primary};
+	cursor: pointer;
 	display: flex;
+	font: inherit;
 	gap: ${spacing.small};
 	justify-content: space-between;
 	padding: ${spacing.small};
+	text-align: left;
+	transition:
+		background 160ms ease,
+		box-shadow 160ms ease,
+		transform 160ms ease;
+
+	&:hover,
+	&:focus-visible {
+		box-shadow: ${shadowSmall};
+		transform: translateY(-1px);
+	}
+
+	&:focus-visible {
+		outline: 2px solid ${hexToRgba(palette.brand.purple, 0.5)};
+		outline-offset: 3px;
+	}
 
 	${isMobileMedia} {
 		flex-direction: column;
@@ -344,4 +418,37 @@ export const EmptyPanel = styled(Box)`
 	min-height: 8rem;
 	padding: ${spacing.medium};
 	text-align: center;
+`;
+
+export const DrawerDetailsList = styled(Box)`
+	display: flex;
+	flex-direction: column;
+	gap: ${spacing.xs};
+`;
+
+export const DrawerDetailItem = styled(Box)`
+	display: flex;
+	flex-direction: column;
+	gap: ${spacing.xxs};
+`;
+
+export const DrawerFormGrid = styled(Box)`
+	display: grid;
+	gap: ${spacing.small};
+	grid-template-columns: repeat(2, minmax(0, 1fr));
+
+	${isMobileMedia} {
+		grid-template-columns: 1fr;
+	}
+`;
+
+export const DrawerFullWidthField = styled(Box)`
+	grid-column: 1 / -1;
+`;
+
+export const DrawerShareAction = styled(Box)`
+	align-items: center;
+	display: flex;
+	justify-content: center;
+	padding-top: ${spacing.xs};
 `;

@@ -27,6 +27,7 @@ import type {
 	ISessionResponse,
 	IUnblockAllSlotsPayload,
 	IUpdateAvailabilitySession,
+	NotifyPatientForSessionResponse,
 } from './index.types';
 
 export const initiateAvailabilitySession = async (
@@ -194,6 +195,17 @@ export const cancelAppointmentByPatient = async (
 	const response = await apiClient.post(
 		`/users/${therapistId}/cancel/${slotId}`,
 		payload
+	);
+
+	return response.data;
+};
+
+export const notifyPatientForSession = async (
+	therapistId: string,
+	slotId: string
+): Promise<NotifyPatientForSessionResponse> => {
+	const response = await apiClient.post<NotifyPatientForSessionResponse>(
+		`/users/${therapistId}/notify-patient/${slotId}`
 	);
 
 	return response.data;

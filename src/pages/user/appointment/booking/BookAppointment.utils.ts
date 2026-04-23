@@ -53,8 +53,10 @@ export const buildPublicSlotsByDay = ({
 			)
 			.map(
 				(slot): IPublicSlot => ({
+					address: slot.address ?? null,
 					availabilityDayId: String(day.dateId),
 					date: day.date,
+					deliveryMode: slot.deliveryMode ?? null,
 					endTime: slot.endTime,
 					isBooked: slot.status === 'BOOKED',
 					letPatientChooseAddress: slot.letPatientChooseAddress ?? false,

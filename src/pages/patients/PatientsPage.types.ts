@@ -9,6 +9,8 @@ export type PatientStatus = NonNullable<IPatient['status']>;
 
 export type PatientListStatusFilter = 'active' | 'all' | 'inactive';
 
+export type SessionTimelineFilter = 'all' | 'cancelled' | 'completed' | 'upcoming';
+
 export type PatientListSortField =
 	| 'last-appointment'
 	| 'name'
@@ -23,6 +25,7 @@ export interface PatientListSortOption {
 }
 
 export interface PatientListItem extends IPatient {
+	cancelledSessions: number;
 	fullName: string;
 	isActive: boolean;
 	lastAppointmentDate: string | null;
@@ -32,11 +35,16 @@ export interface PatientListItem extends IPatient {
 }
 
 export interface PatientSessionRow {
+	availabilityDayId?: string;
+	canceledAt?: ISODateString | null;
+	customReason?: string | null;
 	date: ISODateString;
 	isCancelled: boolean;
 	isPast: boolean;
-	slot: ISlot;
+	reasonCode?: number | null;
+	slot: Partial<ISlot> & Pick<ISlot, '_id' | 'endTime' | 'startTime'>;
 	startsAt: Date;
+	triggeredBy?: 'PATIENT' | 'THERAPIST' | null;
 }
 
 export interface PatientStats {

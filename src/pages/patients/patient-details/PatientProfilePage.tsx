@@ -1,8 +1,10 @@
-import { useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
+import { Tooltip } from '@mui/material';
+import { capture } from '@psycron/analytics/posthog/events';
+import { PostHogEvent } from '@psycron/analytics/posthog/types';
 import { Avatar } from '@psycron/components/avatar/Avatar';
-import { Button } from '@psycron/components/button/Button';
 import { ShareButton } from '@psycron/components/button/share/ShareButton';
 import {
 	Calendar,
@@ -16,7 +18,6 @@ import { usePatient } from '@psycron/context/patient/PatientContext';
 import { useTherapistId } from '@psycron/hooks/useTherapistId';
 import { PageLayout } from '@psycron/layouts/app/pages-layout/PageLayout';
 import { DOMAIN, PATIENTS } from '@psycron/pages/urls';
-import { palette } from '@psycron/theme/palette/palette.theme';
 import {
 	formatDateTimeRange,
 	formatLocalizedDate,
@@ -28,16 +29,21 @@ import {
 	getPatientFullName,
 } from '@psycron/utils/patient/patient.utils';
 
+import type {
+	PatientSessionRow,
+	SessionTimelineFilter,
+} from '../PatientsPage.types';
 import {
 	getLastCompletedSession,
 	getNextSession,
 	getPatientSessions,
 	getPatientStats,
 	getPreferredContactLabelKey,
-	getRecentSessions,
+	getSessionsAscending,
 } from '../PatientsPage.utils';
 
 import { PatientEditForm } from './edit-patient-form/PatientEditForm';
+import { SessionDrawer } from './session-drawer/SessionDrawer';
 import {
 	ContentGrid,
 	DetailGrid,
@@ -48,6 +54,7 @@ import {
 	HeroActions,
 	HeroCard,
 	HeroHeaderRow,
+	HeroIconButton,
 	IdentityCluster,
 	IdentityText,
 	MutedValue,
@@ -75,6 +82,8 @@ export const PatientProfilePage = () => {
 	const { i18n, t } = useTranslation();
 	const { patientId } = useParams<{ patientId: string }>();
 	const [editFormOpen, setEditFormOpen] = useState(false);
+	const [selectedSession, setSelectedSession] =
+		useState<PatientSessionRow | null>(null);
 	const therapistId = useTherapistId();
 	const { isPatientDetailsLoading, patientDetails } = usePatient(
 		therapistId,
@@ -87,7 +96,29 @@ export const PatientProfilePage = () => {
 	const stats = getPatientStats(sessions);
 	const nextSession = getNextSession(sessions);
 	const lastSession = getLastCompletedSession(sessions);
-	const recentSessions = getRecentSessions(sessions);
+	const timelineSessions = useMemo(
+		() => getSessionsAscending(sessions),
+		[sessions]
+	);
+	const [timelineFilter, setTimelineFilter] =
+		useState<SessionTimelineFilter>('all');
+	const filteredTimelineSessions = useMemo(
+		() =>
+			timelineSessions.filter((session) => {
+				switch (timelineFilter) {
+					case 'upcoming':
+						return !session.isPast && !session.isCancelled;
+					case 'completed':
+						return session.isPast && !session.isCancelled;
+					case 'cancelled':
+						return session.isCancelled;
+					case 'all':
+					default:
+						return true;
+				}
+			}),
+		[timelineFilter, timelineSessions]
+	);
 	const status = patientDetails?.status ?? 'ACTIVE';
 	const title = patientName || t('globals.patient');
 	const sharePatientId = patientDetails
@@ -107,6 +138,14 @@ export const PatientProfilePage = () => {
 		t
 	);
 
+	useEffect(() => {
+		if (!patientDetails?._id) return;
+
+		capture(PostHogEvent.PatientCenterOpened, {
+			target_user_id: patientDetails._id,
+		});
+	}, [patientDetails?._id]);
+
 	const renderSessionStatus = (
 		isCancelled: boolean,
 		isPast: boolean
@@ -114,6 +153,29 @@ export const PatientProfilePage = () => {
 		if (isCancelled) return t('patients.profile.sessions.cancelled');
 		if (isPast) return t('patients.profile.sessions.completed');
 		return t('patients.profile.sessions.upcoming');
+	};
+
+	const openSessionDrawer = (session: PatientSessionRow) => {
+		capture(PostHogEvent.PatientCenterSessionDrawerOpened, {
+			source: 'timeline',
+			session_status: session.isCancelled
+				? 'cancelled'
+				: session.isPast
+					? 'past'
+					: 'upcoming',
+		});
+		setSelectedSession(session);
+	};
+
+	const handleTimelineFilterChange = (filter: SessionTimelineFilter) => {
+		setTimelineFilter(filter);
+
+		if (!patientDetails?._id) return;
+
+		capture(PostHogEvent.PatientCenterTimelineFilterChanged, {
+			filter,
+			target_user_id: patientDetails._id,
+		});
 	};
 
 	return (
@@ -149,15 +211,19 @@ export const PatientProfilePage = () => {
 											/>
 										) : null}
 										{status !== 'MERGED' ? (
-											<Button
-												onClick={() => setEditFormOpen(true)}
-												startIcon={<Edit />}
-												variant='outlined'
-												tertiary
-												small
+											<Tooltip
+												arrow
+												placement='top'
+												title={t('patients.profile.actions.edit')}
 											>
-												{t('patients.profile.actions.edit')}
-											</Button>
+												<HeroIconButton
+													aria-label={t('patients.profile.actions.edit')}
+													onClick={() => setEditFormOpen(true)}
+													size='small'
+												>
+													<Edit />
+												</HeroIconButton>
+											</Tooltip>
 										) : null}
 									</HeroActions>
 								</HeroHeaderRow>
@@ -173,8 +239,11 @@ export const PatientProfilePage = () => {
 								</PatientMeta>
 								<ShortcutRow>
 									{patientDetails.contacts?.phone ? (
-										<ShortcutLink href={`tel:${patientDetails.contacts.phone}`}>
-											<Phone color={palette.info.main} />
+										<ShortcutLink
+											href={`tel:${patientDetails.contacts.phone}`}
+											tone='info'
+										>
+											<Phone color='currentColor' />
 											{t('patients.profile.actions.call')}
 										</ShortcutLink>
 									) : null}
@@ -188,16 +257,18 @@ export const PatientProfilePage = () => {
 											).replace(/\D/g, '')}`}
 											rel='noopener noreferrer'
 											target='_blank'
+											tone='success'
 										>
-											<WhatsApp color={palette.success.main} />
+											<WhatsApp color='currentColor' />
 											{t('patients.profile.actions.whatsapp')}
 										</ShortcutLink>
 									) : null}
 									{patientDetails.contacts?.email ? (
 										<ShortcutLink
 											href={`mailto:${patientDetails.contacts.email}`}
+											tone='secondary'
 										>
-											<Mail color={palette.secondary.main} />
+											<Mail color='currentColor' />
 											{t('patients.profile.actions.email')}
 										</ShortcutLink>
 									) : null}
@@ -206,19 +277,39 @@ export const PatientProfilePage = () => {
 						</IdentityCluster>
 
 						<StatsGrid>
-							<StatCard>
+							<StatCard
+								aria-pressed={timelineFilter === 'all'}
+								isActive={timelineFilter === 'all'}
+								onClick={() => handleTimelineFilterChange('all')}
+								type='button'
+							>
 								<StatValue>{stats.totalSessions}</StatValue>
 								<StatLabel>{t('patients.profile.stats.total')}</StatLabel>
 							</StatCard>
-							<StatCard>
+							<StatCard
+								aria-pressed={timelineFilter === 'upcoming'}
+								isActive={timelineFilter === 'upcoming'}
+								onClick={() => handleTimelineFilterChange('upcoming')}
+								type='button'
+							>
 								<StatValue>{stats.upcomingSessions}</StatValue>
 								<StatLabel>{t('patients.profile.stats.upcoming')}</StatLabel>
 							</StatCard>
-							<StatCard>
+							<StatCard
+								aria-pressed={timelineFilter === 'completed'}
+								isActive={timelineFilter === 'completed'}
+								onClick={() => handleTimelineFilterChange('completed')}
+								type='button'
+							>
 								<StatValue>{stats.pastSessions}</StatValue>
 								<StatLabel>{t('patients.profile.stats.completed')}</StatLabel>
 							</StatCard>
-							<StatCard>
+							<StatCard
+								aria-pressed={timelineFilter === 'cancelled'}
+								isActive={timelineFilter === 'cancelled'}
+								onClick={() => handleTimelineFilterChange('cancelled')}
+								type='button'
+							>
 								<StatValue>{stats.cancelledSessions}</StatValue>
 								<StatLabel>{t('patients.profile.stats.cancelled')}</StatLabel>
 							</StatCard>
@@ -285,7 +376,9 @@ export const PatientProfilePage = () => {
 									</DetailValue>
 								</DetailItem>
 								<DetailItem>
-									<DetailLabel>{t('patients.profile.billing.model')}</DetailLabel>
+									<DetailLabel>
+										{t('patients.profile.billing.model')}
+									</DetailLabel>
 									<DetailValue>{billingViewModel.modelLabel}</DetailValue>
 								</DetailItem>
 								<DetailItem>
@@ -295,13 +388,17 @@ export const PatientProfilePage = () => {
 									<DetailValue>{billingViewModel.categoryLabel}</DetailValue>
 								</DetailItem>
 								<DetailItem>
-									<DetailLabel>{t('patients.profile.billing.amount')}</DetailLabel>
+									<DetailLabel>
+										{t('patients.profile.billing.amount')}
+									</DetailLabel>
 									<DetailValue>
 										{billingViewModel.amountLabel ?? fallback}
 									</DetailValue>
 								</DetailItem>
 								<DetailItem>
-									<DetailLabel>{t('patients.profile.share.link-label')}</DetailLabel>
+									<DetailLabel>
+										{t('patients.profile.share.link-label')}
+									</DetailLabel>
 									<ShortcutLink
 										href={publicSessionsLink}
 										rel='noopener noreferrer'
@@ -360,15 +457,28 @@ export const PatientProfilePage = () => {
 							</DetailGrid>
 
 							<SessionList>
-								{recentSessions.length ? (
-									recentSessions.map((session) => (
+								{filteredTimelineSessions.length ? (
+									filteredTimelineSessions.map((session) => (
 										<SessionRow
+											aria-label={t(
+												'patients.profile.session-drawer.open-label',
+												{
+													date: formatDateTimeRange(
+														session.startsAt,
+														session.slot.startTime,
+														session.slot.endTime,
+														i18n.language
+													),
+												}
+											)}
 											isCancelled={session.isCancelled}
 											key={`${session.date}-${session.slot._id}`}
+											onClick={() => openSessionDrawer(session)}
+											type='button'
 										>
 											<SessionMain>
 												<SessionDate>
-													<Calendar color={palette.gray['05']} />
+													<Calendar color='currentColor' />
 													{formatDateTimeRange(
 														session.startsAt,
 														session.slot.startTime,
@@ -385,7 +495,7 @@ export const PatientProfilePage = () => {
 													{session.slot.address ? (
 														<>
 															{' · '}
-															<MapPin color={palette.gray['05']} />
+															<MapPin color='currentColor' />
 															{formatPatientAddress(
 																session.slot.address,
 																fallback
@@ -419,6 +529,18 @@ export const PatientProfilePage = () => {
 						patient={patientDetails}
 						therapistId={therapistId}
 					/>
+					{selectedSession ? (
+						<SessionDrawer
+							notifications={patientDetails?.notifications}
+							onClose={() => setSelectedSession(null)}
+							onRescheduleSuccess={() => setSelectedSession(null)}
+							patientId={patientId ?? ''}
+							patientName={patientName}
+							publicSessionsLink={publicSessionsLink}
+							session={selectedSession}
+							therapistId={therapistId}
+						/>
+					) : null}
 				</ProfileLayout>
 			) : (
 				<EmptyPanel>

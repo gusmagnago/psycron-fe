@@ -39,6 +39,23 @@ export const enum PostHogEvent {
 
 	MarketingConsentToggleFailed = 'marketing consent toggle failed',
 	MarketingConsentToggleSaved = 'marketing consent toggle saved',
+	PatientCenterOpened = 'patient center opened',
+	PatientCenterSessionCancelled = 'patient center session cancelled',
+	PatientCenterSessionDrawerOpened = 'patient center session drawer opened',
+	PatientCenterSessionNotified = 'patient center session notified',
+	PatientCenterSessionRescheduled = 'patient center session rescheduled',
+	PatientCenterTimelineFilterChanged = 'patient center timeline filter changed',
+	PublicBookAppointmentDaySelected = 'public book appointment day selected',
+	PublicBookAppointmentOpened = 'public book appointment opened',
+	PublicBookAppointmentSlotSelected = 'public book appointment slot selected',
+	PublicBookAppointmentSubmitted = 'public book appointment submitted',
+	PublicBookAppointmentTimeFilterChanged = 'public book appointment time filter changed',
+	PublicBookAppointmentViewChanged = 'public book appointment view changed',
+	PublicPatientAgendaAppointmentOpened = 'public patient agenda appointment opened',
+	PublicPatientAgendaDaySelected = 'public patient agenda day selected',
+	PublicPatientAgendaOpened = 'public patient agenda opened',
+	PublicPatientAgendaViewChanged = 'public patient agenda view changed',
+
 	SettingsLegalLinkClicked = 'settings legal link clicked',
 
 	UserDetailsClosed = 'user details closed',
@@ -46,6 +63,7 @@ export const enum PostHogEvent {
 	UserDetailsDataExportFailed = 'user details data export failed',
 
 	UserDetailsDataExportSucceeded = 'user details data export succeeded',
+
 	UserDetailsDeleteConfirmed = 'user details delete confirmed',
 
 	UserDetailsDeleteDialogClosed = 'user details delete dialog closed',
@@ -55,16 +73,11 @@ export const enum PostHogEvent {
 	UserDetailsDeleteFailed = 'user details delete failed',
 
 	UserDetailsDeleteSucceeded = 'user details delete succeeded',
-
 	UserDetailsEditSessionClicked = 'user details edit session clicked',
-
 	UserDetailsEditUserClicked = 'user details edit user clicked',
-
 	UserDetailsOpened = 'user details opened',
-
 	UserDetailsPatientsCtaClicked = 'user details patients cta clicked',
-
-	UserDetailsPatientsNavigationClicked = 'user details patients navigation clicked',
+	UserDetailsPatientsNavigationClicked = 'user details patients navigation clicked'
 }
 
 export type ExceptionContext = {
@@ -232,11 +245,86 @@ export type PostHogEventProps = {
 
 	[PostHogEvent.AppointmentCancelled]: {
 		reason_code: string;
-		triggered_by: 'therapist';
+		source:
+			| 'availability_week_drawer'
+			| 'patient_center_drawer'
+			| 'public_patient_agenda';
+		triggered_by: 'patient' | 'therapist';
 	};
 
 	[PostHogEvent.AppointmentRescheduled]: {
 		new_slot_start_time: string;
+		reason_code?: string;
+		source:
+			| 'availability_week_drawer'
+			| 'patient_center_drawer'
+			| 'public_patient_agenda';
+		triggered_by: 'patient' | 'therapist';
+	};
+
+	[PostHogEvent.PatientCenterOpened]: {
+		target_user_id: string;
+	};
+	[PostHogEvent.PatientCenterTimelineFilterChanged]: {
+		filter: 'all' | 'cancelled' | 'completed' | 'upcoming';
+		target_user_id: string;
+	};
+	[PostHogEvent.PatientCenterSessionDrawerOpened]: {
+		session_status: 'cancelled' | 'past' | 'upcoming';
+		source: 'timeline';
+	};
+	[PostHogEvent.PatientCenterSessionRescheduled]: {
+		mode: 'cancelled' | 'upcoming';
+		session_date: string;
+	};
+	[PostHogEvent.PatientCenterSessionCancelled]: {
 		reason_code: string;
+		session_date: string;
+	};
+	[PostHogEvent.PatientCenterSessionNotified]: {
+		session_date: string;
+		session_status: 'cancelled' | 'upcoming';
+	};
+	[PostHogEvent.PublicPatientAgendaOpened]: {
+		patient_id: string;
+		total_sessions: number;
+	};
+	[PostHogEvent.PublicPatientAgendaDaySelected]: {
+		date: string;
+		has_appointments: boolean;
+		source: 'calendar' | 'next_appointments' | 'today';
+	};
+	[PostHogEvent.PublicPatientAgendaAppointmentOpened]: {
+		date: string;
+		session_status: 'booked' | 'cancelled' | 'past';
+		source: 'day_list' | 'next_appointments';
+	};
+	[PostHogEvent.PublicPatientAgendaViewChanged]: {
+		view: 'month' | 'week';
+	};
+	[PostHogEvent.PublicBookAppointmentOpened]: {
+		therapist_id: string;
+	};
+	[PostHogEvent.PublicBookAppointmentDaySelected]: {
+		date: string;
+		source: 'calendar';
+		view: 'month' | 'week';
+	};
+	[PostHogEvent.PublicBookAppointmentSubmitted]: {
+		date: string;
+		recurrence_pattern: string;
+		slot_id: string;
+		therapist_id: string;
+	};
+	[PostHogEvent.PublicBookAppointmentTimeFilterChanged]: {
+		time_of_day: 'all' | 'afternoon' | 'evening' | 'morning';
+	};
+	[PostHogEvent.PublicBookAppointmentViewChanged]: {
+		view: 'month' | 'week';
+	};
+	[PostHogEvent.PublicBookAppointmentSlotSelected]: {
+		date: string;
+		slot_id: string;
+		start_time: string;
 	};
 };

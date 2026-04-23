@@ -3,8 +3,10 @@ import type { ISlotAddress } from '@psycron/context/user/auth/UserAuthentication
 export type TimeOfDay = 'all' | 'morning' | 'afternoon' | 'evening';
 
 export interface IPublicSlot {
+	address?: ISlotAddress | null;
 	availabilityDayId: string;
 	date: string;
+	deliveryMode?: 'online' | 'in-person' | null;
 	endTime: string;
 	isBooked: boolean;
 	letPatientChooseAddress?: boolean;

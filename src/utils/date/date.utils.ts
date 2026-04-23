@@ -5,6 +5,9 @@ import { enUS, ptBR } from 'date-fns/locale';
 export const getDateLocale = (language: string): Locale =>
 	language.startsWith('pt') ? ptBR : enUS;
 
+export const capitalizeDateLabel = (value: string): string =>
+	value ? `${value.charAt(0).toUpperCase()}${value.slice(1)}` : value;
+
 export const formatLocalizedDate = (
 	value: Date | string | null | undefined,
 	fallback: string,
@@ -13,9 +16,11 @@ export const formatLocalizedDate = (
 ): string => {
 	if (!value) return fallback;
 
-	return format(new Date(value), pattern, {
-		locale: getDateLocale(language),
-	});
+	return capitalizeDateLabel(
+		format(new Date(value), pattern, {
+			locale: getDateLocale(language),
+		})
+	);
 };
 
 export const formatDateTimeRange = (

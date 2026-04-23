@@ -1,8 +1,9 @@
-import { type FC } from 'react';
+import { type FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Outlet } from 'react-router-dom';
 import { Box, Divider } from '@mui/material';
 import { AppAnalytics } from '@psycron/analytics/posthog/AppAnalytics';
+import { getPatientById } from '@psycron/api/patient';
 import { getConflictCount } from '@psycron/api/user/conflicts';
 import { EnvironmentBanner } from '@psycron/components/environment-banner/EnvironmentBanner';
 import { AvailabilityGate } from '@psycron/components/guards/AvailabilityGate';
@@ -13,6 +14,7 @@ import {
 	Help,
 	Language,
 	Logout,
+	Notifications,
 	PatientList,
 	Payment,
 	UserSettings,
@@ -25,6 +27,7 @@ import { useAuth } from '@psycron/context/user/auth/UserAuthenticationContext';
 import { useUserDetails } from '@psycron/context/user/details/UserDetailsContext';
 import { useAuthSession } from '@psycron/hooks/useAuthSession';
 import useViewport from '@psycron/hooks/useViewport';
+import { getPatientCancellationCount } from '@psycron/pages/patients/PatientsPage.utils';
 import {
 	AVAILABILITYPATH,
 	CONFLICTS,
@@ -33,7 +36,7 @@ import {
 	PATIENTS,
 	PAYMENTS,
 } from '@psycron/pages/urls';
-import { useQuery } from '@tanstack/react-query';
+import { useQueries, useQuery } from '@tanstack/react-query';
 
 import {
 	Content,
@@ -58,6 +61,22 @@ export const AppLayout: FC = () => {
 		queryFn: () => getConflictCount(userDetails?._id ?? ''),
 		enabled: Boolean(userDetails?._id),
 	});
+	const patientIds = useMemo(
+		() => [...new Set(userDetails?.patients ?? [])],
+		[userDetails?.patients]
+	);
+	const patientCancellationQueries = useQueries({
+		queries: patientIds.map((patientId) => ({
+			enabled: Boolean(userDetails?._id && patientId),
+			queryFn: () => getPatientById(userDetails?._id ?? '', patientId),
+			queryKey: ['patientListItem', userDetails?._id, patientId],
+			staleTime: 1000 * 60 * 5,
+		})),
+	});
+	const cancellationNotificationCount = patientCancellationQueries.reduce(
+		(total, query) => total + getPatientCancellationCount(query.data),
+		0
+	);
 
 	const menuItems = [
 		{
@@ -81,6 +100,12 @@ export const AppLayout: FC = () => {
 			icon: <Alert />,
 			path: CONFLICTS,
 			badgeCount: conflictCountData?.count ?? 0,
+		},
+		{
+			name: t('components.navbar.notifications'),
+			icon: <Notifications />,
+			path: PATIENTS,
+			badgeCount: cancellationNotificationCount,
 		},
 		{
 			name: t('globals.patients'),
