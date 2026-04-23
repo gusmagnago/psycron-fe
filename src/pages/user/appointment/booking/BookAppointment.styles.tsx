@@ -9,7 +9,7 @@ import { shadowMedium, shadowSmall } from '@psycron/theme/shadow/shadow.theme';
 import { spacing } from '@psycron/theme/spacing/spacing.theme';
 
 export const PageWrapper = styled(Box)`
-	max-width: 1320px;
+	max-width: 82.5rem;
 	margin: 0 auto;
 	padding: ${spacing.medium} ${spacing.small} ${spacing.large};
 `;
@@ -258,9 +258,9 @@ export const NextAppointmentsMonthTitle = styled(Box)`
 	font-size: 0.75rem;
 	font-weight: 700;
 	letter-spacing: 0.08em;
-	padding: ${spacing.xs} 0 0;
+	padding: ${spacing.xs};
 	position: sticky;
-	top: 0;
+	top: -10px;
 	text-transform: uppercase;
 	z-index: 1;
 `;

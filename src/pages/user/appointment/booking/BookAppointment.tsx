@@ -3,6 +3,8 @@ import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { Skeleton, Typography } from '@mui/material';
+import { capture } from '@psycron/analytics/posthog/events';
+import { PostHogEvent } from '@psycron/analytics/posthog/types';
 import { bookAppointmentFromLink } from '@psycron/api/patient';
 import { getAvailabilityCalendar, getUserById } from '@psycron/api/user';
 import { Button } from '@psycron/components/button/Button';
@@ -202,12 +204,28 @@ export const BookAppointment = () => {
 		onError: () => {
 			showAlert({ message: t('booking.error'), severity: 'error' });
 		},
-		onSuccess: (res) => {
+		onSuccess: (res, values) => {
+			if (selectedSlot && therapistId) {
+				capture(PostHogEvent.PublicBookAppointmentSubmitted, {
+					date: selectedSlot.date,
+					recurrence_pattern: values.recurrencePattern,
+					slot_id: selectedSlot.slotId,
+					therapist_id: therapistId,
+				});
+			}
 			navigate(`../${therapistId}/${res.patient._id}/appointment-confirmation`, {
 				replace: true,
 			});
 		},
 	});
+
+	useEffect(() => {
+		if (!therapistId) return;
+
+		capture(PostHogEvent.PublicBookAppointmentOpened, {
+			therapist_id: therapistId,
+		});
+	}, [therapistId]);
 
 	useEffect(() => {
 		if (selectedDate || availableDates.length === 0) return;
@@ -312,6 +330,11 @@ export const BookAppointment = () => {
 		setSelectedDate(date);
 		setVisibleMonth(date);
 		setSelectedSlot(null);
+		capture(PostHogEvent.PublicBookAppointmentDaySelected, {
+			date: dayKey,
+			source: 'calendar',
+			view: calendarViewMode,
+		});
 
 		if (dayIndex >= 0) {
 			setVisibleAvailableDaysCount((current) =>
@@ -356,7 +379,7 @@ export const BookAppointment = () => {
 										<NextAppointmentsMonthTitle>
 											{title}
 										</NextAppointmentsMonthTitle>
-										{slots.map((slot) => (
+								{slots.map((slot) => (
 											<SlotButton
 												isBooked={slot.isBooked}
 												isSelected={slot.slotId === selectedSlot?.slotId}
@@ -370,6 +393,14 @@ export const BookAppointment = () => {
 													if (!slot.isBooked) {
 														setSelectedDate(parseISO(slot.date));
 														setSelectedSlot(slot);
+														capture(
+															PostHogEvent.PublicBookAppointmentSlotSelected,
+															{
+																date: slot.date,
+																slot_id: slot.slotId,
+																start_time: slot.startTime,
+															}
+														);
 													}
 												}}
 											/>
@@ -432,7 +463,12 @@ export const BookAppointment = () => {
 					month={visibleMonth}
 					onMonthChange={setVisibleMonth}
 					onSelectDate={handleCalendarDateSelect}
-					onViewModeChange={setCalendarViewMode}
+					onViewModeChange={(view) => {
+						setCalendarViewMode(view);
+						capture(PostHogEvent.PublicBookAppointmentViewChanged, {
+							view,
+						});
+					}}
 					selectedDate={selectedDate}
 					sidebar={
 						<BookingSidebar>
@@ -522,7 +558,15 @@ export const BookAppointment = () => {
 								<TimeFilterChip
 									isActive={filters.timeOfDay === value}
 									key={value}
-									onClick={() => setFilters((current) => ({ ...current, timeOfDay: value }))}
+									onClick={() => {
+										setFilters((current) => ({ ...current, timeOfDay: value }));
+										capture(
+											PostHogEvent.PublicBookAppointmentTimeFilterChanged,
+											{
+												time_of_day: value,
+											}
+										);
+									}}
 								>
 									{t(label)}
 								</TimeFilterChip>

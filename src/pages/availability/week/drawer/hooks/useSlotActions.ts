@@ -142,6 +142,7 @@ export const useCancelSlot = (
 		onSuccess: () => {
 			capture(PostHogEvent.AppointmentCancelled, {
 				reason_code: String(reasonCode),
+				source: 'availability_week_drawer',
 				triggered_by: 'therapist',
 			});
 			showAlert({
@@ -218,6 +219,8 @@ export const useReschedule = (
 			capture(PostHogEvent.AppointmentRescheduled, {
 				new_slot_start_time: selectedSlot?.startTime ?? '',
 				reason_code: String(CancellationReasonEnum.SCHEDULE_CONFLICT),
+				source: 'availability_week_drawer',
+				triggered_by: 'therapist',
 			});
 			showAlert({
 				message: t('availability.week.drawer.reschedule-success'),

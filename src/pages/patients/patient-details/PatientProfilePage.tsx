@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
 import { Tooltip } from '@mui/material';
@@ -138,6 +138,14 @@ export const PatientProfilePage = () => {
 		t
 	);
 
+	useEffect(() => {
+		if (!patientDetails?._id) return;
+
+		capture(PostHogEvent.PatientCenterOpened, {
+			target_user_id: patientDetails._id,
+		});
+	}, [patientDetails?._id]);
+
 	const renderSessionStatus = (
 		isCancelled: boolean,
 		isPast: boolean
@@ -149,6 +157,7 @@ export const PatientProfilePage = () => {
 
 	const openSessionDrawer = (session: PatientSessionRow) => {
 		capture(PostHogEvent.PatientCenterSessionDrawerOpened, {
+			source: 'timeline',
 			session_status: session.isCancelled
 				? 'cancelled'
 				: session.isPast
@@ -156,6 +165,17 @@ export const PatientProfilePage = () => {
 					: 'upcoming',
 		});
 		setSelectedSession(session);
+	};
+
+	const handleTimelineFilterChange = (filter: SessionTimelineFilter) => {
+		setTimelineFilter(filter);
+
+		if (!patientDetails?._id) return;
+
+		capture(PostHogEvent.PatientCenterTimelineFilterChanged, {
+			filter,
+			target_user_id: patientDetails._id,
+		});
 	};
 
 	return (
@@ -260,7 +280,7 @@ export const PatientProfilePage = () => {
 							<StatCard
 								aria-pressed={timelineFilter === 'all'}
 								isActive={timelineFilter === 'all'}
-								onClick={() => setTimelineFilter('all')}
+								onClick={() => handleTimelineFilterChange('all')}
 								type='button'
 							>
 								<StatValue>{stats.totalSessions}</StatValue>
@@ -269,7 +289,7 @@ export const PatientProfilePage = () => {
 							<StatCard
 								aria-pressed={timelineFilter === 'upcoming'}
 								isActive={timelineFilter === 'upcoming'}
-								onClick={() => setTimelineFilter('upcoming')}
+								onClick={() => handleTimelineFilterChange('upcoming')}
 								type='button'
 							>
 								<StatValue>{stats.upcomingSessions}</StatValue>
@@ -278,7 +298,7 @@ export const PatientProfilePage = () => {
 							<StatCard
 								aria-pressed={timelineFilter === 'completed'}
 								isActive={timelineFilter === 'completed'}
-								onClick={() => setTimelineFilter('completed')}
+								onClick={() => handleTimelineFilterChange('completed')}
 								type='button'
 							>
 								<StatValue>{stats.pastSessions}</StatValue>
@@ -287,7 +307,7 @@ export const PatientProfilePage = () => {
 							<StatCard
 								aria-pressed={timelineFilter === 'cancelled'}
 								isActive={timelineFilter === 'cancelled'}
-								onClick={() => setTimelineFilter('cancelled')}
+								onClick={() => handleTimelineFilterChange('cancelled')}
 								type='button'
 							>
 								<StatValue>{stats.cancelledSessions}</StatValue>

@@ -205,7 +205,15 @@ export const SessionDrawer = ({
 			});
 			queryClient.invalidateQueries({ queryKey: ['patientDetails', patientId] });
 			queryClient.invalidateQueries({ queryKey: ['therapistAvailability'] });
+			capture(PostHogEvent.AppointmentRescheduled, {
+				new_slot_start_time: session.isCancelled
+					? selectedRescheduleSlot?.startTime ?? ''
+					: sessionStartTime,
+				source: 'patient_center_drawer',
+				triggered_by: 'therapist',
+			});
 			capture(PostHogEvent.PatientCenterSessionRescheduled, {
+				mode: session.isCancelled ? 'cancelled' : 'upcoming',
 				session_date: session.date,
 			});
 			onRescheduleSuccess();
@@ -235,7 +243,13 @@ export const SessionDrawer = ({
 			});
 			queryClient.invalidateQueries({ queryKey: ['patientDetails', patientId] });
 			queryClient.invalidateQueries({ queryKey: ['therapistAvailability'] });
+			capture(PostHogEvent.AppointmentCancelled, {
+				reason_code: String(reasonCode),
+				source: 'patient_center_drawer',
+				triggered_by: 'therapist',
+			});
 			capture(PostHogEvent.PatientCenterSessionCancelled, {
+				reason_code: String(reasonCode),
 				session_date: session.date,
 			});
 			onClose();
@@ -260,6 +274,7 @@ export const SessionDrawer = ({
 				queryKey: ['patientListItem', therapistId, patientId],
 			});
 			capture(PostHogEvent.PatientCenterSessionNotified, {
+				session_status: session.isCancelled ? 'cancelled' : 'upcoming',
 				session_date: session.date,
 			});
 		},

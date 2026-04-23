@@ -4,7 +4,7 @@ import { palette } from '@psycron/theme/palette/palette.theme';
 import { spacing } from '@psycron/theme/spacing/spacing.theme';
 
 export const PageWrapper = styled(Box)`
-	max-width: 840px;
+	max-width: 52.5rem;
 	margin: 0 auto;
 	padding: ${spacing.medium} ${spacing.small};
 `;

@@ -38,9 +38,11 @@ export const CalendarShell = styled(Box)`
 		);
 	min-height: calc(${spacing.xxl} * 11);
 	overflow: hidden;
+	height: 56.25rem;
 
 	${isSmallerThanTabletMedia} {
 		grid-template-columns: 1fr;
+		height: 100%;
 	}
 `;
 

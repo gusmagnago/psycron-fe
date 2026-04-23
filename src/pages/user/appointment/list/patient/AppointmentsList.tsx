@@ -2,6 +2,8 @@ import { type UIEvent, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams } from 'react-router-dom';
 import { TextField, Typography } from '@mui/material';
+import { capture } from '@psycron/analytics/posthog/events';
+import { PostHogEvent } from '@psycron/analytics/posthog/types';
 import { editAppointment } from '@psycron/api/appointment';
 import { getPublicPatientSessions } from '@psycron/api/patient';
 import type {
@@ -207,6 +209,15 @@ export const AppointmentsList = () => {
 		[sessions]
 	);
 
+	useEffect(() => {
+		if (!patientId) return;
+
+		capture(PostHogEvent.PublicPatientAgendaOpened, {
+			patient_id: patientId,
+			total_sessions: sessions.length,
+		});
+	}, [patientId, sessions.length]);
+
 	const rescheduleSlotsByDay = useMemo(
 		() =>
 			selectedAppointment
@@ -249,6 +260,11 @@ export const AppointmentsList = () => {
 		onSuccess: () => {
 			showAlert({ message: t('booking.cancel.success'), severity: 'success' });
 			queryClient.invalidateQueries({ queryKey: ['publicPatientSessions', patientId] });
+			capture(PostHogEvent.AppointmentCancelled, {
+				reason_code: String(reasonCode),
+				source: 'public_patient_agenda',
+				triggered_by: 'patient',
+			});
 			closeDrawer();
 		},
 	});
@@ -279,6 +295,11 @@ export const AppointmentsList = () => {
 				severity: 'success',
 			});
 			queryClient.invalidateQueries({ queryKey: ['publicPatientSessions', patientId] });
+			capture(PostHogEvent.AppointmentRescheduled, {
+				new_slot_start_time: selectedRescheduleSlot?.startTime ?? '',
+				source: 'public_patient_agenda',
+				triggered_by: 'patient',
+			});
 			closeDrawer();
 		},
 	});
@@ -302,8 +323,22 @@ export const AppointmentsList = () => {
 		setVisibleMonth(date);
 	};
 
+	const handleAgendaDaySelect = (
+		date: Date,
+		source: 'calendar' | 'next_appointments' | 'today'
+	) => {
+		const dateKey = format(date, 'yyyy-MM-dd');
+
+		focusCalendarDate(date);
+		capture(PostHogEvent.PublicPatientAgendaDaySelected, {
+			date: dateKey,
+			has_appointments: (appointmentsByDay.get(dateKey) ?? []).length > 0,
+			source,
+		});
+	};
+
 	const focusToday = () => {
-		focusCalendarDate(startOfDay(new Date()));
+		handleAgendaDaySelect(startOfDay(new Date()), 'today');
 	};
 
 	const handleNextAppointmentsScroll = (event: UIEvent<HTMLElement>) => {
@@ -344,18 +379,31 @@ export const AppointmentsList = () => {
 		);
 	}
 
-	const renderAppointmentCard = (appointment: SessionRow) => {
+	const openAppointmentDrawer = (
+		appointment: SessionRow,
+		source: 'day_list' | 'next_appointments'
+	) => {
+		focusCalendarDate(parseISO(appointment.date));
+		capture(PostHogEvent.PublicPatientAgendaAppointmentOpened, {
+			date: appointment.date,
+			session_status: appointment.status,
+			source,
+		});
+		setSelectedAppointment(appointment);
+		setDrawerMode('details');
+	};
+
+	const renderAppointmentCard = (
+		appointment: SessionRow,
+		source: 'day_list' | 'next_appointments' = 'day_list'
+	) => {
 		const tone = getAppointmentCardTone(appointment.status);
 
 		return (
 			<AgendaAppointmentCard
 				data-appointment-date={appointment.date}
 				key={appointment.slot._id}
-				onClick={() => {
-					focusCalendarDate(parseISO(appointment.date));
-					setSelectedAppointment(appointment);
-					setDrawerMode('details');
-				}}
+				onClick={() => openAppointmentDrawer(appointment, source)}
 				tone={tone}
 			>
 				<AgendaAppointmentHeader>
@@ -402,7 +450,9 @@ export const AppointmentsList = () => {
 								{selectedDate ? (
 									selectedDayAppointments.length > 0 ? (
 										<AgendaDayList>
-											{selectedDayAppointments.map(renderAppointmentCard)}
+											{selectedDayAppointments.map((appointment) =>
+												renderAppointmentCard(appointment, 'day_list')
+											)}
 										</AgendaDayList>
 									) : (
 										<EmptyState>
@@ -439,7 +489,12 @@ export const AppointmentsList = () => {
 														{title}
 													</NextAppointmentsMonthTitle>
 													<AgendaDayList>
-														{appointments.map(renderAppointmentCard)}
+														{appointments.map((appointment) =>
+															renderAppointmentCard(
+																appointment,
+																'next_appointments'
+															)
+														)}
 													</AgendaDayList>
 												</NextAppointmentsMonth>
 											)
@@ -503,9 +558,12 @@ export const AppointmentsList = () => {
 					monthLabel={t('booking.calendar.view-month')}
 					month={visibleMonth}
 					onMonthChange={setVisibleMonth}
-					onSelectDate={focusCalendarDate}
+					onSelectDate={(date) => handleAgendaDaySelect(date, 'calendar')}
 					onTodayClick={focusToday}
-					onViewModeChange={setCalendarViewMode}
+					onViewModeChange={(view) => {
+						setCalendarViewMode(view);
+						capture(PostHogEvent.PublicPatientAgendaViewChanged, { view });
+					}}
 					selectedDate={selectedDate}
 					sidebar={
 						<AgendaSidebar>
