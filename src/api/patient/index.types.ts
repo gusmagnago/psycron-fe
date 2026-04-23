@@ -91,9 +91,11 @@ export interface IPublicSessionSlot {
 	_id: string;
 	address?: ISlotAddress | null;
 	canceledAt?: string | null;
+	deliveryMode?: 'online' | 'in-person' | null;
 	endTime: string;
 	letPatientChooseAddress?: boolean;
 	patientId?: string;
+	preferredContact?: IPreferredContact | null;
 	startTime: string;
 	status: string;
 }

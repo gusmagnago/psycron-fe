@@ -1,32 +1,44 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
-import { Skeleton } from '@mui/material';
+import { Skeleton, Typography } from '@mui/material';
 import { bookAppointmentFromLink } from '@psycron/api/patient';
 import { getAvailabilityCalendar, getUserById } from '@psycron/api/user';
 import { Button } from '@psycron/components/button/Button';
-import { Drawer } from '@psycron/components/drawer/Drawer';
+import { Calendar, ClockIn, Globe, MapPin } from '@psycron/components/icons';
 import { Text } from '@psycron/components/text/Text';
 import { useAlert } from '@psycron/context/alert/AlertContext';
 import { PublicBookingShell } from '@psycron/layouts/public-booking/PublicBookingShell';
+import { palette } from '@psycron/theme/palette/palette.theme';
+import {
+	capitalizeDateLabel,
+	getDateLocale,
+} from '@psycron/utils/date/date.utils';
+import { formatPatientAddress } from '@psycron/utils/patient/patient.utils';
 import { useMutation, useQuery } from '@tanstack/react-query';
-import { addWeeks, format, parseISO, startOfDay } from 'date-fns';
+import { addWeeks, format, isSameMonth, parseISO, startOfDay } from 'date-fns';
+
+import { PatientDrawerShell } from '../shared/PatientDrawerShell';
+import { PublicSchedulingCalendar } from '../shared/PublicSchedulingCalendar';
+import type { PublicSchedulingViewMode } from '../shared/PublicSchedulingCalendar.types';
 
 import { PublicBookingForm } from './components/PublicBookingForm';
 import { TherapistCard } from './components/TherapistCard';
 import {
-	Datepiker,
-	DayLabel,
-	DaySection,
+	BookingMetaIcon,
+	BookingMetaList,
+	BookingMetaRow,
+	BookingMetaText,
+	BookingSidebar,
+	BookingTitleBlock,
 	EmptyState,
-	FiltersRow,
 	FilterTimeRow,
 	PageWrapper,
-	SkeletonDay,
-	SkeletonRow,
-	SlotChip,
-	SlotsRow,
+	SkeletonCard,
+	SkeletonLayout,
+	SlotButton,
+	SlotList,
 	TimeFilterChip,
 } from './BookAppointment.styles';
 import type {
@@ -44,15 +56,24 @@ const TIME_OF_DAY_OPTIONS: { label: string; value: TimeOfDay }[] = [
 	{ label: 'booking.filter.time-evening', value: 'evening' },
 ];
 
+const getDurationMinutes = (slot?: IPublicSlot | null): number | null => {
+	if (!slot) return null;
+	const [startHour, startMinute] = slot.startTime.split(':').map(Number);
+	const [endHour, endMinute] = slot.endTime.split(':').map(Number);
+
+	return endHour * 60 + endMinute - (startHour * 60 + startMinute);
+};
+
 export const BookAppointment = () => {
-	const { t } = useTranslation();
+	const { i18n, t } = useTranslation();
 	const { userId: therapistId } = useParams<{ userId: string }>();
 	const navigate = useNavigate();
 	const [searchParams, setSearchParams] = useSearchParams();
 	const { showAlert } = useAlert();
 
 	const today = startOfDay(new Date());
-	const defaultTo = format(addWeeks(today, 4), 'yyyy-MM-dd');
+	const dateLocale = getDateLocale(i18n.language);
+	const defaultTo = format(addWeeks(today, 12), 'yyyy-MM-dd');
 	const defaultFrom = format(today, 'yyyy-MM-dd');
 
 	const [filters, setFilters] = useState<IBookingFilters>({
@@ -60,6 +81,10 @@ export const BookAppointment = () => {
 		dateTo: defaultTo,
 		timeOfDay: 'all',
 	});
+	const [selectedDate, setSelectedDate] = useState<Date | null>(null);
+	const [visibleMonth, setVisibleMonth] = useState<Date>(today);
+	const [calendarViewMode, setCalendarViewMode] =
+		useState<PublicSchedulingViewMode>('month');
 	const [selectedSlot, setSelectedSlot] = useState<IPublicSlot | null>(null);
 	const sharedSlotId = searchParams.get('slotId');
 
@@ -98,6 +123,14 @@ export const BookAppointment = () => {
 			}),
 		[data?.dates, filters, today]
 	);
+
+	const availableDates = useMemo(
+		() => Array.from(slotsByDay.keys()).map((day) => parseISO(day)),
+		[slotsByDay]
+	);
+
+	const selectedDayKey = selectedDate ? format(selectedDate, 'yyyy-MM-dd') : null;
+	const selectedDaySlots = selectedDayKey ? (slotsByDay.get(selectedDayKey) ?? []) : [];
 
 	const bookingMutation = useMutation({
 		mutationFn: (values: IBookingFormValues) => {
@@ -145,34 +178,47 @@ export const BookAppointment = () => {
 			showAlert({ message: t('booking.error'), severity: 'error' });
 		},
 		onSuccess: (res) => {
-			const patientId = res.patient._id;
-			navigate(`../${therapistId}/${patientId}/appointment-confirmation`, {
+			navigate(`../${therapistId}/${res.patient._id}/appointment-confirmation`, {
 				replace: true,
 			});
 		},
 	});
 
 	useEffect(() => {
-		if (!sharedSlotId || selectedSlot) return;
+		if (selectedDate || availableDates.length === 0) return;
+		setSelectedDate(availableDates[0]);
+		if (availableDates[0] && !isSameMonth(availableDates[0], visibleMonth)) {
+			setVisibleMonth(availableDates[0]);
+		}
+	}, [availableDates, selectedDate, visibleMonth]);
 
-		for (const slots of slotsByDay.values()) {
+	useEffect(() => {
+		if (!sharedSlotId) return;
+
+		for (const [day, slots] of slotsByDay.entries()) {
 			const matchedSlot = slots.find(
 				(slot) => !slot.isBooked && slot.slotId === sharedSlotId
 			);
 
 			if (matchedSlot) {
+				const matchedDate = parseISO(day);
+				setSelectedDate(matchedDate);
+				setVisibleMonth(matchedDate);
 				setSelectedSlot(matchedSlot);
 				return;
 			}
 		}
-	}, [selectedSlot, sharedSlotId, slotsByDay]);
+	}, [sharedSlotId, slotsByDay]);
 
-	const handleSlotClick = useCallback((slot: IPublicSlot) => {
-		if (slot.isBooked) return;
-		setSelectedSlot(slot);
-	}, []);
+	useEffect(() => {
+		if (!selectedSlot || !selectedDate) return;
+		const slotDate = parseISO(selectedSlot.date);
+		if (format(slotDate, 'yyyy-MM-dd') !== format(selectedDate, 'yyyy-MM-dd')) {
+			setSelectedSlot(null);
+		}
+	}, [selectedDate, selectedSlot]);
 
-	const handleClose = useCallback(() => {
+	const handleClose = () => {
 		setSelectedSlot(null);
 		methods.reset();
 		if (searchParams.has('slotId')) {
@@ -180,49 +226,29 @@ export const BookAppointment = () => {
 			nextParams.delete('slotId');
 			setSearchParams(nextParams, { replace: true });
 		}
-	}, [methods, searchParams, setSearchParams]);
+	};
 
 	const handleSubmit = methods.handleSubmit((values) => {
 		bookingMutation.mutate(values);
 	});
 
+	const selectedDuration = useMemo(() => getDurationMinutes(selectedSlot), [selectedSlot]);
+
 	if (isLoading) {
 		return (
 			<PublicBookingShell>
 				<PageWrapper>
-				<Skeleton
-					height={80}
-					sx={{ borderRadius: '14px', mb: 3 }}
-					variant='rectangular'
-				/>
-				<SkeletonDay>
-					<Skeleton height={18} variant='text' width={140} />
-					<SkeletonRow>
-						{Array.from({ length: 6 }).map((_, i) => (
-							<Skeleton
-								height={36}
-								key={i}
-								sx={{ borderRadius: '20px' }}
-								variant='rectangular'
-								width={68}
-							/>
-						))}
-					</SkeletonRow>
-				</SkeletonDay>
-				<SkeletonDay>
-					<Skeleton height={18} variant='text' width={120} />
-					<SkeletonRow>
-						{Array.from({ length: 8 }).map((_, i) => (
-							<Skeleton
-								height={36}
-								key={i}
-								sx={{ borderRadius: '20px' }}
-								variant='rectangular'
-								width={68}
-							/>
-						))}
-					</SkeletonRow>
-				</SkeletonDay>
+					<SkeletonLayout>
+						<SkeletonCard>
+							<Skeleton height='100%' variant='rounded' />
+						</SkeletonCard>
+						<SkeletonCard>
+							<Skeleton height='100%' variant='rounded' />
+						</SkeletonCard>
+						<SkeletonCard>
+							<Skeleton height='100%' variant='rounded' />
+						</SkeletonCard>
+					</SkeletonLayout>
 				</PageWrapper>
 			</PublicBookingShell>
 		);
@@ -231,97 +257,250 @@ export const BookAppointment = () => {
 	return (
 		<PublicBookingShell>
 			<PageWrapper>
-			{therapist && <TherapistCard therapist={therapist} />}
-			<Text mb={3} variant='h4' fontWeight={600}>
-				{t('booking.page.title')}
-			</Text>
-			<FiltersRow>
-				<Datepiker
-					InputLabelProps={{ shrink: true }}
-					inputProps={{ min: defaultFrom }}
-					label={t('booking.filter.from')}
-					onChange={(e) =>
-						setFilters((f) => ({ ...f, dateFrom: e.target.value }))
+				<PublicSchedulingCalendar
+					detailBody={
+						selectedDate ? (
+							selectedDaySlots.length > 0 ? (
+								<SlotList>
+									{selectedDaySlots.map((slot) => (
+										<SlotButton
+											isBooked={slot.isBooked}
+											isSelected={slot.slotId === selectedSlot?.slotId}
+											key={slot.slotId}
+											label={
+												slot.isBooked
+													? t('booking.slot.taken')
+													: `${slot.startTime} - ${slot.endTime}`
+											}
+											onClick={() => {
+												if (!slot.isBooked) setSelectedSlot(slot);
+											}}
+										/>
+									))}
+								</SlotList>
+							) : (
+								<EmptyState>
+									<Typography variant='subtitle1'>
+										{t('booking.calendar.no-times-title')}
+									</Typography>
+									<Typography color='text.secondary' variant='body2'>
+										{t('booking.calendar.no-times-body')}
+									</Typography>
+								</EmptyState>
+							)
+						) : (
+							<EmptyState>
+								<Typography variant='subtitle1'>
+									{t('booking.calendar.no-date-title')}
+								</Typography>
+								<Typography color='text.secondary' variant='body2'>
+									{t('booking.calendar.no-date-body')}
+								</Typography>
+							</EmptyState>
+						)
 					}
-					size='small'
-					type='date'
-					value={filters.dateFrom}
-				/>
-				<Datepiker
-					InputLabelProps={{ shrink: true }}
-					inputProps={{ min: filters.dateFrom }}
-					label={t('booking.filter.to')}
-					onChange={(e) =>
-						setFilters((f) => ({ ...f, dateTo: e.target.value }))
+					detailSubtitle={
+						selectedDate
+							? `${selectedDaySlots.filter((slot) => !slot.isBooked).length} ${t('booking.calendar.available-count')}`
+							: t('booking.calendar.pick-a-day')
 					}
-					size='small'
-					type='date'
-					value={filters.dateTo}
-				/>
-			</FiltersRow>
+					detailTitle={
+						selectedDate
+							? capitalizeDateLabel(
+									format(selectedDate, 'EEEE, MMMM d', {
+										locale: dateLocale,
+									})
+								)
+							: t('booking.calendar.detail-title')
+					}
+					getDayMeta={(date) => {
+						const dateKey = format(date, 'yyyy-MM-dd');
+						const daySlots = slotsByDay.get(dateKey) ?? [];
+						const availableCount = daySlots.filter((slot) => !slot.isBooked).length;
+						const bookedCount = daySlots.filter((slot) => slot.isBooked).length;
 
-			<FilterTimeRow>
-				{TIME_OF_DAY_OPTIONS.map(({ label, value }) => (
-					<TimeFilterChip
-						isActive={filters.timeOfDay === value}
-						key={value}
-						onClick={() => setFilters((f) => ({ ...f, timeOfDay: value }))}
-					>
-						{t(label)}
-					</TimeFilterChip>
-				))}
-			</FilterTimeRow>
+						return {
+							countLabel:
+								daySlots.length > 0
+									? String(availableCount || bookedCount)
+									: undefined,
+							disabled: daySlots.length === 0,
+							highlighted: selectedDayKey === dateKey,
+							indicatorCount: daySlots.length === 0 ? 0 : Math.min(availableCount || bookedCount, 3),
+							tone:
+								availableCount > 0
+									? 'info'
+									: bookedCount > 0
+										? 'neutral'
+										: 'neutral',
+							};
+					}}
+					greetingTitle={t('booking.calendar.booking-greeting')}
+					language={i18n.language}
+					mainSubtitle={t('booking.calendar.subtitle')}
+					mainTitle={t('booking.calendar.title')}
+					monthLabel={t('booking.calendar.view-month')}
+					month={visibleMonth}
+					onMonthChange={setVisibleMonth}
+					onSelectDate={(date) => {
+						setSelectedDate(date);
+						setVisibleMonth(date);
+						setSelectedSlot(null);
+					}}
+					onViewModeChange={setCalendarViewMode}
+					selectedDate={selectedDate}
+					sidebar={
+						<BookingSidebar>
+							{therapist ? <TherapistCard therapist={therapist} /> : null}
+							<BookingTitleBlock>
+								<Text fontWeight={700} variant='h4'>
+									{t('booking.page.title')}
+								</Text>
+								<Typography color='text.secondary' variant='body2'>
+									{t('booking.calendar.sidebar-description')}
+								</Typography>
+							</BookingTitleBlock>
 
-			{slotsByDay.size === 0 ? (
-				<EmptyState>
-					<Text color='text.secondary' variant='body2'>
-						{t('booking.no-slots')}
-					</Text>
-				</EmptyState>
-			) : (
-				Array.from(slotsByDay.entries()).map(([day, daySlots]) => (
-					<DaySection key={day}>
-						<DayLabel>{format(parseISO(day), 'EEEE, MMMM d')}</DayLabel>
-						<SlotsRow>
-							{daySlots.map((slot) => (
-								<SlotChip
-									isBooked={slot.isBooked}
-									key={slot.slotId}
-									label={
-										slot.isBooked ? t('booking.slot.taken') : slot.startTime
-									}
-									onClick={() => handleSlotClick(slot)}
-								/>
+							<BookingMetaList>
+								<BookingMetaRow>
+									<BookingMetaIcon>
+										<ClockIn color={palette.brand.dark} />
+									</BookingMetaIcon>
+									<BookingMetaText>
+										<Typography variant='subtitle2'>
+											{t('booking.calendar.duration-heading')}
+										</Typography>
+										<Typography color='text.secondary' variant='body2'>
+											{selectedDuration
+												? t('booking.patient-drawer.duration', {
+														minutes: selectedDuration,
+													})
+												: t('booking.calendar.duration-pending')}
+										</Typography>
+									</BookingMetaText>
+								</BookingMetaRow>
+
+								<BookingMetaRow>
+									<BookingMetaIcon>
+										{selectedSlot?.deliveryMode === 'in-person' ||
+										selectedSlot?.address ||
+										selectedSlot?.letPatientChooseAddress ? (
+											<MapPin color={palette.info.main} />
+										) : (
+											<Globe color={palette.info.main} />
+										)}
+									</BookingMetaIcon>
+									<BookingMetaText>
+										<Typography variant='subtitle2'>
+											{t('booking.patient-drawer.location-label')}
+										</Typography>
+										<Typography color='text.secondary' variant='body2'>
+											{selectedSlot
+												? selectedSlot.deliveryMode === 'in-person' ||
+												  selectedSlot.address ||
+												  selectedSlot.letPatientChooseAddress
+													? formatPatientAddress(
+															selectedSlot.address,
+															t('booking.patient-drawer.location-in-person')
+														)
+													: t('booking.patient-drawer.location-online')
+												: t('booking.calendar.location-pending')}
+										</Typography>
+									</BookingMetaText>
+								</BookingMetaRow>
+
+								<BookingMetaRow>
+									<BookingMetaIcon>
+										<Calendar color={palette.secondary.main} />
+									</BookingMetaIcon>
+									<BookingMetaText>
+										<Typography variant='subtitle2'>
+											{t('booking.calendar.date-heading')}
+										</Typography>
+										<Typography color='text.secondary' variant='body2'>
+											{selectedDate
+												? capitalizeDateLabel(
+														format(selectedDate, 'EEEE, MMM d', {
+															locale: dateLocale,
+														})
+													)
+												: t('booking.calendar.date-pending')}
+										</Typography>
+									</BookingMetaText>
+								</BookingMetaRow>
+							</BookingMetaList>
+						</BookingSidebar>
+					}
+					topActions={
+						<FilterTimeRow>
+							{TIME_OF_DAY_OPTIONS.map(({ label, value }) => (
+								<TimeFilterChip
+									isActive={filters.timeOfDay === value}
+									key={value}
+									onClick={() => setFilters((current) => ({ ...current, timeOfDay: value }))}
+								>
+									{t(label)}
+								</TimeFilterChip>
 							))}
-						</SlotsRow>
-					</DaySection>
-				))
-			)}
-
-			{selectedSlot && (
-				<Drawer
-					actions={
-						<Button
-							disabled={bookingMutation.isPending}
-							onClick={handleSubmit}
-							variant='contained'
-						>
-							{t('booking.confirm')}
-						</Button>
+						</FilterTimeRow>
 					}
-					ariaLabel={t('booking.drawer.aria-label')}
-					onClose={handleClose}
-					title={`${selectedSlot.startTime} · ${format(parseISO(selectedSlot.date), 'MMM d')}`}
-				>
-					<PublicBookingForm
-						letPatientChooseAddress={
-							selectedSlot.letPatientChooseAddress ?? false
+					viewMode={calendarViewMode}
+					weekLabel={t('booking.calendar.view-week')}
+				/>
+
+				{selectedSlot ? (
+					<PatientDrawerShell
+						accentColor={palette.success.main}
+						actions={
+							<Button
+								disabled={bookingMutation.isPending}
+								onClick={handleSubmit}
+								variant='contained'
+							>
+								{t('booking.confirm')}
+							</Button>
 						}
-						methods={methods}
-					/>
-				</Drawer>
-			)}
-		</PageWrapper>
+						ariaLabel={t('booking.drawer.aria-label')}
+						closeLabel={t('common.close')}
+						onClose={handleClose}
+						roleLabel={t('booking.patient-drawer.role')}
+						statusLabel={t('booking.patient-drawer.available-badge')}
+						subtitle={t('booking.patient-drawer.available-subtitle')}
+						title={t('booking.patient-drawer.available-title')}
+					>
+						{therapist ? <TherapistCard therapist={therapist} /> : null}
+						<Typography variant='body2'>
+							{t('booking.patient-drawer.when', {
+								date: capitalizeDateLabel(
+									format(parseISO(selectedSlot.date), 'EEEE, MMM d', {
+										locale: dateLocale,
+									})
+								),
+								time: `${selectedSlot.startTime} - ${selectedSlot.endTime}`,
+							})}
+						</Typography>
+						{selectedDuration ? (
+							<Typography color='text.secondary' variant='body2'>
+								{t('booking.patient-drawer.duration', {
+									minutes: selectedDuration,
+								})}
+							</Typography>
+						) : null}
+						<Typography color='text.secondary' variant='body2'>
+							{selectedSlot.deliveryMode === 'in-person'
+								? formatPatientAddress(
+										selectedSlot.address,
+										t('booking.patient-drawer.location-in-person')
+									)
+								: t('booking.patient-drawer.location-online')}
+						</Typography>
+						<PublicBookingForm
+							letPatientChooseAddress={selectedSlot.letPatientChooseAddress ?? false}
+							methods={methods}
+						/>
+					</PatientDrawerShell>
+				) : null}
+			</PageWrapper>
 		</PublicBookingShell>
 	);
 };
