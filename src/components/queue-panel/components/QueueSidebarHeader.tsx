@@ -1,18 +1,11 @@
-import type { ReactNode } from 'react';
-
 import {
 	QueueSidebarCount,
 	QueueSidebarHeaderWrapper,
 	QueueSidebarSubtitle,
 	QueueSidebarTitle,
 	QueueSidebarTitleRow,
-} from './QueueDetail.styles';
-
-type QueueSidebarHeaderProps = {
-	count?: ReactNode;
-	subtitle?: ReactNode;
-	title: ReactNode;
-};
+} from '../styles/QueuePanel.styles';
+import type { QueueSidebarHeaderProps } from '../types/QueuePanel.types';
 
 export const QueueSidebarHeader = ({
 	count,

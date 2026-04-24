@@ -19,7 +19,7 @@ import {
 	QueueSidebarSubtitle,
 	QueueSidebarTitle,
 	QueueSidebarTitleRow,
-} from '@psycron/components/queue-detail';
+} from '@psycron/components/queue-panel';
 import { Text } from '@psycron/components/text/Text';
 import { isMobileMedia } from '@psycron/theme/media-queries/mediaQueries';
 import { hexToRgba, palette } from '@psycron/theme/palette/palette.theme';

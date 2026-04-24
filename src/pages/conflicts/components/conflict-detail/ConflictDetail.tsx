@@ -5,7 +5,7 @@ import type {
 	ISlotReplicationConflictMetadata,
 } from '@psycron/api/user/conflicts/index.types';
 import { Button } from '@psycron/components/button/Button';
-import { QueueEmptyState } from '@psycron/components/queue-detail';
+import { QueueEmptyState } from '@psycron/components/queue-panel';
 
 import {
 	ConflictDescription,

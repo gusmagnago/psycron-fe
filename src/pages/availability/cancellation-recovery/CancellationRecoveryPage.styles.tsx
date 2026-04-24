@@ -24,7 +24,7 @@ import {
 	QueueStatLabel,
 	QueueStatsGrid,
 	QueueStatValue,
-} from '@psycron/components/queue-detail';
+} from '@psycron/components/queue-panel';
 import { Text } from '@psycron/components/text/Text';
 import { isMobileMedia } from '@psycron/theme/media-queries/mediaQueries';
 import { hexToRgba, palette } from '@psycron/theme/palette/palette.theme';
@@ -63,7 +63,15 @@ export const RecoveryList = QueueList;
 
 export const RecoveryCard = styled(QueueSelectableCard, {
 	shouldForwardProp: (prop) => prop !== 'state',
-})<{ state: 'pending_follow_up' | 'reopened' }>``;
+})<{
+	state:
+		| 'pending_follow_up'
+		| 'overdue'
+		| 'followed_up'
+		| 'reopened'
+		| 'rebooked'
+		| 'archived';
+}>``;
 export const RecoveryCardMeta = QueueSelectableCardMetaRow;
 
 export const RecoveryCardTitle = styled(Text)`
@@ -79,20 +87,54 @@ export const RecoveryCardBody = styled(Text)`
 
 export const RecoveryStatePill = styled(Box, {
 	shouldForwardProp: (prop) => prop !== 'state',
-})<{ state: 'pending_follow_up' | 'reopened' }>`
+})<{
+	state:
+		| 'pending_follow_up'
+		| 'overdue'
+		| 'followed_up'
+		| 'reopened'
+		| 'rebooked'
+		| 'archived';
+}>`
 	align-items: center;
 	background: ${({ state }) =>
 		state === 'reopened'
 			? hexToRgba(palette.success.main, 0.12)
-			: hexToRgba(palette.error.main, 0.1)};
+			: state === 'followed_up'
+				? hexToRgba(palette.secondary.main, 0.12)
+			: state === 'rebooked'
+				? hexToRgba(palette.info.main, 0.1)
+				: state === 'archived'
+					? hexToRgba(palette.gray['04'], 0.12)
+					: state === 'overdue'
+						? hexToRgba(palette.warning.main, 0.12)
+						: hexToRgba(palette.error.main, 0.1)};
 	border: 1px solid
 		${({ state }) =>
 			state === 'reopened'
 				? hexToRgba(palette.success.main, 0.2)
-				: hexToRgba(palette.error.main, 0.18)};
+				: state === 'followed_up'
+					? hexToRgba(palette.secondary.main, 0.18)
+				: state === 'rebooked'
+					? hexToRgba(palette.info.main, 0.18)
+					: state === 'archived'
+						? hexToRgba(palette.gray['04'], 0.24)
+						: state === 'overdue'
+							? hexToRgba(palette.warning.main, 0.2)
+							: hexToRgba(palette.error.main, 0.18)};
 	border-radius: 999px;
 	color: ${({ state }) =>
-		state === 'reopened' ? palette.success.main : palette.error.main};
+		state === 'reopened'
+			? palette.success.main
+			: state === 'followed_up'
+				? palette.secondary.main
+			: state === 'rebooked'
+				? palette.info.main
+				: state === 'archived'
+					? palette.gray['06']
+					: state === 'overdue'
+						? palette.warning.main
+						: palette.error.main};
 	display: inline-flex;
 	font-size: 0.55rem;
 	font-weight: 700;

@@ -1188,7 +1188,11 @@
 			},
 			"state": {
 				"pending-follow-up": "Pending follow-up",
-				"reopened": "Reopened"
+				"followed-up": "Followed up",
+				"reopened": "Reopened",
+				"rebooked": "Rebooked",
+				"archived": "Archived",
+				"overdue": "Overdue"
 			},
 			"cancelled-by": {
 				"patient": "Cancelled by patient",
@@ -1206,7 +1210,9 @@
 				"cancelled-by": "Cancelled by",
 				"reason": "Reason",
 				"delivery": "Delivery mode",
+				"followed-up-at": "Followed up at",
 				"patient": "Patient",
+				"rebooked-appointment": "Rebooked appointment",
 				"recovery-state": "Recovery state",
 				"not-provided": "Not provided"
 			},

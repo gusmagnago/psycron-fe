@@ -1,14 +1,8 @@
-import type { ReactNode } from 'react';
-
 import {
 	QueueEmptyState as QueueEmptyStateContainer,
 	QueueEmptyStateText,
-} from './QueueDetail.styles';
-
-type QueueEmptyStateProps = {
-	children?: ReactNode;
-	message: ReactNode;
-};
+} from '../styles/QueuePanel.styles';
+import type { QueueEmptyStateProps } from '../types/QueuePanel.types';
 
 export const QueueEmptyState = ({
 	children,

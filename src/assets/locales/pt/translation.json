@@ -1187,7 +1187,11 @@
         }
       },
       "state": {
+        "archived": "Arquivado",
+        "followed-up": "Acompanhado",
+        "overdue": "Atrasado",
         "pending-follow-up": "Aguardando acompanhamento",
+        "rebooked": "Reagendado",
         "reopened": "Reaberto"
       },
       "cancelled-by": {
@@ -1206,7 +1210,9 @@
         "cancelled-by": "Cancelado por",
         "reason": "Motivo",
         "delivery": "Modalidade",
+        "followed-up-at": "Acompanhado em",
         "patient": "Paciente",
+        "rebooked-appointment": "Agendamento remarcado",
         "recovery-state": "Estado da recuperação",
         "not-provided": "Não informado"
       },

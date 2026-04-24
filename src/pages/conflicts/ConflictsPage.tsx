@@ -1,11 +1,11 @@
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Drawer } from '@psycron/components/drawer/Drawer';
-import { ChevronLeft, ChevronRight } from '@psycron/components/icons';
 import {
 	QueueEmptyState,
+	QueueFiltersDrawer,
+	QueueFiltersTrigger,
 	QueueSidebarHeader,
-} from '@psycron/components/queue-detail';
+} from '@psycron/components/queue-panel';
 import { PageLayout } from '@psycron/layouts/app/pages-layout/PageLayout';
 import { getDateLocale } from '@psycron/utils/date/date.utils';
 import { format } from 'date-fns';
@@ -27,10 +27,6 @@ import {
 	FiltersLabel,
 	FiltersRow,
 	FiltersSection,
-	FiltersToggleButton,
-	FiltersToggleContent,
-	FiltersToggleSubtitle,
-	FiltersToggleTitle,
 } from './ConflictsPage.styles';
 import {
 	getConflictDisplayCopy,
@@ -71,29 +67,17 @@ export const ConflictsPage = () => {
 						title={t('conflicts.queue.title')}
 					/>
 
-					<FiltersSection>
-						<FiltersToggleButton
-							aria-controls='conflicts-filters-drawer'
-							aria-expanded={isFiltersDrawerOpen}
-							aria-haspopup='dialog'
-							onClick={() => setIsFiltersDrawerOpen(true)}
-							type='button'
-						>
-							<FiltersToggleContent>
-								<FiltersToggleTitle>
-									{t('conflicts.filters.title')}
-								</FiltersToggleTitle>
-								<FiltersToggleSubtitle>
-									{activeFilterCount > 0
-										? t('conflicts.filters.summary-active', {
-												count: activeFilterCount,
-											})
-										: t('conflicts.filters.summary-default')}
-								</FiltersToggleSubtitle>
-							</FiltersToggleContent>
-							{isFiltersDrawerOpen ? <ChevronLeft /> : <ChevronRight />}
-						</FiltersToggleButton>
-					</FiltersSection>
+					<QueueFiltersTrigger
+						activeFilterCount={activeFilterCount}
+						controlsId='conflicts-filters-drawer'
+						isOpen={isFiltersDrawerOpen}
+						onOpen={() => setIsFiltersDrawerOpen(true)}
+						summaryActive={t('conflicts.filters.summary-active', {
+							count: activeFilterCount,
+						})}
+						summaryDefault={t('conflicts.filters.summary-default')}
+						title={t('conflicts.filters.title')}
+					/>
 
 					<ConflictList>
 						{conflicts.length ? conflicts.map((conflict) => {
@@ -136,21 +120,17 @@ export const ConflictsPage = () => {
 					onUpdateConflict={handleUpdateConflict}
 				/>
 			</ConflictsLayout>
-			{isFiltersDrawerOpen ? (
-				<Drawer
-					ariaLabel={t('conflicts.filters.title')}
-					headerExtra={
-						<FiltersToggleSubtitle>
-							{activeFilterCount > 0
-								? t('conflicts.filters.summary-active', {
-										count: activeFilterCount,
-									})
-								: t('conflicts.filters.summary-default')}
-						</FiltersToggleSubtitle>
-					}
-					onClose={() => setIsFiltersDrawerOpen(false)}
-					title={t('conflicts.filters.title')}
-				>
+			<QueueFiltersDrawer
+				activeFilterCount={activeFilterCount}
+				ariaLabel={t('conflicts.filters.title')}
+				isOpen={isFiltersDrawerOpen}
+				onClose={() => setIsFiltersDrawerOpen(false)}
+				summaryActive={t('conflicts.filters.summary-active', {
+					count: activeFilterCount,
+				})}
+				summaryDefault={t('conflicts.filters.summary-default')}
+				title={t('conflicts.filters.title')}
+			>
 					<FiltersSection id='conflicts-filters-drawer'>
 						<FiltersLabel>{t('conflicts.filters.status')}</FiltersLabel>
 						<FiltersRow>
@@ -197,8 +177,7 @@ export const ConflictsPage = () => {
 							</FilterChip>
 						</FiltersRow>
 					</FiltersSection>
-				</Drawer>
-			) : null}
+			</QueueFiltersDrawer>
 		</PageLayout>
 	);
 };
