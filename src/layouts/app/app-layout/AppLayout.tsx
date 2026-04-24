@@ -30,6 +30,7 @@ import useViewport from '@psycron/hooks/useViewport';
 import { getPatientCancellationCount } from '@psycron/pages/patients/PatientsPage.utils';
 import {
 	AVAILABILITYPATH,
+	AVAILABILITYRECOVERY,
 	CONFLICTS,
 	DASHBOARD,
 	LOGOUT,
@@ -73,7 +74,7 @@ export const AppLayout: FC = () => {
 			staleTime: 1000 * 60 * 5,
 		})),
 	});
-	const cancellationNotificationCount = patientCancellationQueries.reduce(
+	const cancellationRecoveryCount = patientCancellationQueries.reduce(
 		(total, query) => total + getPatientCancellationCount(query.data),
 		0
 	);
@@ -102,10 +103,10 @@ export const AppLayout: FC = () => {
 			badgeCount: conflictCountData?.count ?? 0,
 		},
 		{
-			name: t('components.navbar.notifications'),
+			name: t('availability.cancellation-recovery.title'),
 			icon: <Notifications />,
-			path: PATIENTS,
-			badgeCount: cancellationNotificationCount,
+			path: AVAILABILITYRECOVERY,
+			badgeCount: cancellationRecoveryCount,
 		},
 		{
 			name: t('globals.patients'),

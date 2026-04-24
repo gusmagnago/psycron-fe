@@ -1,4 +1,5 @@
 import { AvailabilitySettings } from '@psycron/pages/availability/availability-settings/AvailabilitySettings';
+import { CancellationRecoveryPage } from '@psycron/pages/availability/cancellation-recovery/CancellationRecoveryPage';
 import { GenerateAvailability } from '@psycron/pages/availability/GenerateAvailability';
 import { AvailabilityCalendarPage } from '@psycron/pages/availability/page-calendar/AvailabilityCalendarPage';
 import { AvailabilityWeekPage } from '@psycron/pages/availability/week/AvailabilityWeekPage';
@@ -9,6 +10,7 @@ import { PatientListPage } from '@psycron/pages/patients/PatientListPage';
 import {
 	AVAILABILITYGENERATE,
 	AVAILABILITYPATH,
+	AVAILABILITYRECOVERY,
 	AVAILABILITYSETTINGS,
 	AVAILABILITYWEEK,
 	CHANGEPASSWORD,
@@ -39,6 +41,7 @@ const privateRoutes = [
 	{ path: EDITUSERBYSESSION, element: <EditUser /> },
 	{ path: CHANGEPASSWORD, element: <EditPassword /> },
 	{ path: AVAILABILITYPATH, element: <AvailabilityCalendarPage /> },
+	{ path: AVAILABILITYRECOVERY, element: <CancellationRecoveryPage /> },
 	{ path: AVAILABILITYWEEK, element: <AvailabilityWeekPage /> },
 	{ path: AVAILABILITYGENERATE, element: <GenerateAvailability /> },
 	{ path: AVAILABILITYSETTINGS, element: <AvailabilitySettings /> },

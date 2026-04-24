@@ -71,6 +71,7 @@ import {
 } from './SessionDrawer.utils';
 
 export const SessionDrawer = ({
+	initialMode,
 	notifications,
 	onClose,
 	onRescheduleSuccess,
@@ -95,11 +96,11 @@ export const SessionDrawer = ({
 	useEffect(() => {
 		setSessionStartTime(session.slot.startTime);
 		setSessionEndTime(session.slot.endTime);
-		setDrawerMode('details');
+		setDrawerMode(initialMode ?? 'details');
 		setReasonCode('');
 		setCustomReason('');
 		setSelectedRescheduleSlot(null);
-	}, [session]);
+	}, [initialMode, session]);
 
 	const canTimeEdit = Boolean(
 		session.availabilityDayId && !session.isCancelled && !session.isPast

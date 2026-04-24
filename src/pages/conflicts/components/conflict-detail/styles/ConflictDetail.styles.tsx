@@ -429,26 +429,3 @@ export const ConflictDetailSkeletonBlock = styled(Skeleton)`
 	border-radius: ${spacing.medium};
 	transform: none;
 `;
-
-export const EmptyState = styled(Box)`
-	align-items: center;
-	background: linear-gradient(
-		180deg,
-		${hexToRgba(palette.background.paper, 0.94)} 0%,
-		${hexToRgba(palette.background.default, 0.9)} 100%
-	);
-	border: 1px dashed ${hexToRgba(palette.gray['04'], 0.25)};
-	border-radius: ${spacing.large};
-	display: flex;
-	flex: 1;
-	flex-direction: column;
-	gap: ${spacing.xs};
-	justify-content: center;
-	padding: ${spacing.large};
-	text-align: center;
-
-	${isMobileMedia} {
-		min-height: 16rem;
-		padding: ${spacing.medium};
-	}
-`;

@@ -1,5 +1,8 @@
 import { Box, styled } from '@mui/material';
-import { isBiggerThanMediumMedia } from '@psycron/theme/media-queries/mediaQueries';
+import {
+	isBiggerThanMediumMedia,
+	isMobileMedia,
+} from '@psycron/theme/media-queries/mediaQueries';
 import { spacing } from '@psycron/theme/spacing/spacing.theme';
 
 export const AppLayoutDividerMobilePadding = `${spacing.small}`;
@@ -39,12 +42,15 @@ export const LayoutWrapper = styled(Box)`
 	height: 100vh;
 	justify-content: flex-start;
 	padding: ${spacing.small};
-
 	overflow: hidden;
 
 	${isBiggerThanMediumMedia} {
 		flex-direction: row;
 		padding: ${spacing.medium} ${spacing.small};
+	}
+
+	${isMobileMedia} {
+		padding: ${spacing.xs};
 	}
 `;
 

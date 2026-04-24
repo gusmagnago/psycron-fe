@@ -1,10 +1,7 @@
 import styled from '@emotion/styled';
 import { Box, IconButton } from '@mui/material';
 import { Text } from '@psycron/components/text/Text';
-import {
-	isMobileMedia,
-	isSmallerThanMediumMedia,
-} from '@psycron/theme/media-queries/mediaQueries';
+import { isMobileMedia } from '@psycron/theme/media-queries/mediaQueries';
 import { hexToRgba, palette } from '@psycron/theme/palette/palette.theme';
 import { shadowMedium, shadowSmall } from '@psycron/theme/shadow/shadow.theme';
 import { spacing } from '@psycron/theme/spacing/spacing.theme';
@@ -13,15 +10,9 @@ export const ProfileLayout = styled(Box)`
 	display: flex;
 	flex-direction: column;
 	gap: ${spacing.medium};
-	padding: ${spacing.large} 0 calc(${spacing.large} * 2);
 
 	${isMobileMedia} {
 		gap: ${spacing.small};
-		padding-top: ${spacing.medium};
-	}
-
-	${isSmallerThanMediumMedia} {
-		margin-bottom: 60px;
 	}
 `;
 
@@ -266,7 +257,6 @@ export const DetailGrid = styled(Box)`
 `;
 
 export const DetailItem = styled(Box)`
-	background: ${hexToRgba(palette.background.default, 0.62)};
 	border-radius: ${spacing.medium};
 	display: flex;
 	flex-direction: column;
