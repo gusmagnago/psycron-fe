@@ -556,6 +556,7 @@
       }
     },
     "navbar": {
+      "action-center": "Central de ações",
       "dashboard": "Painel",
       "conflicts": "Conflitos",
       "notifications": "Notificações",
@@ -1641,6 +1642,91 @@
       "dismiss": "Dispensar",
       "mark-resolved": "Marcar como resolvido",
       "error": "Não foi possível atualizar este conflito. Tente novamente."
+    }
+  },
+  "action-center": {
+    "title": "Central de ações",
+    "subtitle": "Resolva os itens operacionais que precisam da sua atenção hoje.",
+    "tabs": {
+      "aria-label": "Seções da central de ações",
+      "conflicts": "Conflitos",
+      "recovery": "Recuperação"
+    }
+  },
+  "notifications": {
+    "title": "Notificações",
+    "subtitle": "Acompanhe comunicações enviadas aos pacientes por WhatsApp, email e SMS.",
+    "empty": "Nenhuma notificação corresponde aos filtros atuais.",
+    "load-more": "Carregar mais",
+    "queue": {
+      "title": "Feed de notificações",
+      "subtitle": "Uma linha do tempo de entrega para a comunicação com pacientes."
+    },
+    "stats": {
+      "total": "Total",
+      "failed": "Falhas",
+      "delivered": "Entregues"
+    },
+    "search": {
+      "placeholder": "Buscar paciente ou mensagem"
+    },
+    "filters": {
+      "title": "Filtros",
+      "summary-default": "Refine o feed por canal, status, tipo ou data.",
+      "summary-active": "{{count}} filtro ativo",
+      "summary-active_other": "{{count}} filtros ativos",
+      "channel": "Canal",
+      "status": "Status",
+      "message-type": "Tipo de mensagem",
+      "date-range": "Período",
+      "from": "De",
+      "to": "Até",
+      "all-channels": "Todos os canais",
+      "all-statuses": "Todos os status",
+      "all-types": "Todos os tipos"
+    },
+    "channels": {
+      "whatsapp": "WhatsApp",
+      "email": "Email",
+      "sms": "SMS"
+    },
+    "statuses": {
+      "pending": "Pendente",
+      "sent": "Enviada",
+      "delivered": "Entregue",
+      "failed": "Falhou"
+    },
+    "message-types": {
+      "appointment_confirmation": "Confirmação de consulta",
+      "reminder": "Lembrete",
+      "cancellation": "Cancelamento",
+      "reschedule": "Reagendamento"
+    },
+    "drawer": {
+      "aria-label": "Detalhes da notificação",
+      "title": "Detalhes da notificação",
+      "open": "Abrir detalhes"
+    },
+    "detail": {
+      "patient": "Paciente",
+      "unknown-patient": "Paciente desconhecido",
+      "message-type": "Tipo de mensagem",
+      "channel": "Canal",
+      "status": "Status",
+      "sent-at": "Enviada em",
+      "delivered-at": "Entregue em",
+      "appointment": "Consulta",
+      "ics": "Convite de calendário",
+      "ics-attached": "Anexado",
+      "ics-empty": "Não anexado",
+      "message": "Mensagem",
+      "error": "Erro de entrega",
+      "payload": "Payload"
+    },
+    "retry": {
+      "action": "Tentar novamente",
+      "success": "Nova tentativa iniciada.",
+      "error": "Não foi possível reenviar esta notificação. Tente novamente."
     }
   }
 }

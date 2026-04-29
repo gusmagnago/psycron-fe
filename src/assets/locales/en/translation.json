@@ -556,6 +556,7 @@
 			}
 		},
 		"navbar": {
+			"action-center": "Action center",
 			"dashboard": "Dashboard",
 			"conflicts": "Conflicts",
 			"notifications": "Notifications",
@@ -1641,6 +1642,91 @@
 			"dismiss": "Dismiss",
 			"mark-resolved": "Mark resolved",
 			"error": "We couldn't update this conflict. Please try again."
+		}
+	},
+	"action-center": {
+		"title": "Action center",
+		"subtitle": "Resolve the operational items that need your attention today.",
+		"tabs": {
+			"aria-label": "Action center sections",
+			"conflicts": "Conflicts",
+			"recovery": "Recovery"
+		}
+	},
+	"notifications": {
+		"title": "Notifications",
+		"subtitle": "Track outbound patient communication across WhatsApp, email, and SMS.",
+		"empty": "No notifications match your current filters.",
+		"load-more": "Load more",
+		"queue": {
+			"title": "Notification feed",
+			"subtitle": "A delivery timeline for patient communication."
+		},
+		"stats": {
+			"total": "Total",
+			"failed": "Failed",
+			"delivered": "Delivered"
+		},
+		"search": {
+			"placeholder": "Search patient or message"
+		},
+		"filters": {
+			"title": "Filters",
+			"summary-default": "Refine the feed by channel, status, type, or date.",
+			"summary-active": "{{count}} active filter",
+			"summary-active_other": "{{count}} active filters",
+			"channel": "Channel",
+			"status": "Status",
+			"message-type": "Message type",
+			"date-range": "Date range",
+			"from": "From",
+			"to": "To",
+			"all-channels": "All channels",
+			"all-statuses": "All statuses",
+			"all-types": "All types"
+		},
+		"channels": {
+			"whatsapp": "WhatsApp",
+			"email": "Email",
+			"sms": "SMS"
+		},
+		"statuses": {
+			"pending": "Pending",
+			"sent": "Sent",
+			"delivered": "Delivered",
+			"failed": "Failed"
+		},
+		"message-types": {
+			"appointment_confirmation": "Appointment confirmation",
+			"reminder": "Reminder",
+			"cancellation": "Cancellation",
+			"reschedule": "Reschedule"
+		},
+		"drawer": {
+			"aria-label": "Notification details",
+			"title": "Notification details",
+			"open": "Open details"
+		},
+		"detail": {
+			"patient": "Patient",
+			"unknown-patient": "Unknown patient",
+			"message-type": "Message type",
+			"channel": "Channel",
+			"status": "Status",
+			"sent-at": "Sent at",
+			"delivered-at": "Delivered at",
+			"appointment": "Appointment",
+			"ics": "Calendar invite",
+			"ics-attached": "Attached",
+			"ics-empty": "Not attached",
+			"message": "Message",
+			"error": "Delivery error",
+			"payload": "Payload"
+		},
+		"retry": {
+			"action": "Retry notification",
+			"success": "Retry started.",
+			"error": "We could not retry this notification. Please try again."
 		}
 	}
 }

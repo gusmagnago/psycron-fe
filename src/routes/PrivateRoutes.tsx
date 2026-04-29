@@ -1,13 +1,14 @@
+import { ActionCenterPage } from '@psycron/pages/action-center/ActionCenterPage';
 import { AvailabilitySettings } from '@psycron/pages/availability/availability-settings/AvailabilitySettings';
-import { CancellationRecoveryPage } from '@psycron/pages/availability/cancellation-recovery/CancellationRecoveryPage';
 import { GenerateAvailability } from '@psycron/pages/availability/GenerateAvailability';
 import { AvailabilityCalendarPage } from '@psycron/pages/availability/page-calendar/AvailabilityCalendarPage';
 import { AvailabilityWeekPage } from '@psycron/pages/availability/week/AvailabilityWeekPage';
-import { ConflictsPage } from '@psycron/pages/conflicts/ConflictsPage';
 import { Dashboard } from '@psycron/pages/dashboard/Dashboard';
+import { NotificationsPage } from '@psycron/pages/notifications/NotificationsPage';
 import { PatientProfilePage } from '@psycron/pages/patients/patient-details/PatientProfilePage';
 import { PatientListPage } from '@psycron/pages/patients/PatientListPage';
 import {
+	ACTIONCENTER,
 	AVAILABILITYGENERATE,
 	AVAILABILITYPATH,
 	AVAILABILITYRECOVERY,
@@ -18,6 +19,7 @@ import {
 	DASHBOARD,
 	EDITUSER,
 	EDITUSERBYSESSION,
+	NOTIFICATIONS,
 	PATIENTPROFILE,
 	PATIENTS,
 	USERDETAILS,
@@ -33,7 +35,9 @@ const privateRoutes = [
 		path: DASHBOARD,
 		element: <Dashboard />,
 	},
-	{ path: CONFLICTS, element: <ConflictsPage /> },
+	{ path: ACTIONCENTER, element: <ActionCenterPage /> },
+	{ path: CONFLICTS, element: <ActionCenterPage initialTab='conflicts' /> },
+	{ path: NOTIFICATIONS, element: <NotificationsPage /> },
 	{ path: PATIENTS, element: <PatientListPage /> },
 	{ path: PATIENTPROFILE, element: <PatientProfilePage /> },
 	{ path: USERDETAILS, element: <UserDetailsPage /> },
@@ -41,7 +45,7 @@ const privateRoutes = [
 	{ path: EDITUSERBYSESSION, element: <EditUser /> },
 	{ path: CHANGEPASSWORD, element: <EditPassword /> },
 	{ path: AVAILABILITYPATH, element: <AvailabilityCalendarPage /> },
-	{ path: AVAILABILITYRECOVERY, element: <CancellationRecoveryPage /> },
+	{ path: AVAILABILITYRECOVERY, element: <ActionCenterPage initialTab='recovery' /> },
 	{ path: AVAILABILITYWEEK, element: <AvailabilityWeekPage /> },
 	{ path: AVAILABILITYGENERATE, element: <GenerateAvailability /> },
 	{ path: AVAILABILITYSETTINGS, element: <AvailabilitySettings /> },

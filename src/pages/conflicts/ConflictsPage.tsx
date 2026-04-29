@@ -34,7 +34,7 @@ import {
 	getConflictTypeLabel,
 } from './ConflictsPage.utils';
 
-export const ConflictsPage = () => {
+export const ConflictsPanelContent = () => {
 	const { i18n, t } = useTranslation();
 	const [isFiltersDrawerOpen, setIsFiltersDrawerOpen] = useState(false);
 	const {
@@ -58,7 +58,7 @@ export const ConflictsPage = () => {
 	);
 
 	return (
-		<PageLayout title={t('conflicts.title')} subTitle={t('conflicts.subtitle')}>
+		<>
 			<ConflictsLayout>
 				<ConflictsSidebar>
 					<QueueSidebarHeader
@@ -178,6 +178,16 @@ export const ConflictsPage = () => {
 						</FiltersRow>
 					</FiltersSection>
 			</QueueFiltersDrawer>
+		</>
+	);
+};
+
+export const ConflictsPage = () => {
+	const { t } = useTranslation();
+
+	return (
+		<PageLayout title={t('conflicts.title')} subTitle={t('conflicts.subtitle')}>
+			<ConflictsPanelContent />
 		</PageLayout>
 	);
 };

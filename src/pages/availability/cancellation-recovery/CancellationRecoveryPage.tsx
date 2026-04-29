@@ -16,7 +16,7 @@ import { useCancellationRecoveryPageState } from './hooks/useCancellationRecover
 import { RecoveryLayout } from './CancellationRecoveryPage.styles';
 import type { CancellationRecoveryRow } from './CancellationRecoveryPage.types';
 
-export const CancellationRecoveryPage = () => {
+export const CancellationRecoveryPanelContent = () => {
 	const { t } = useTranslation();
 	const navigate = useNavigate();
 	const queryClient = useQueryClient();
@@ -34,7 +34,6 @@ export const CancellationRecoveryPage = () => {
 		isArchiving,
 		isArchivingAll,
 		isFiltersDrawerOpen,
-		isLoading,
 		isReopening,
 		archiveAllRows,
 		archiveRow,
@@ -86,11 +85,7 @@ export const CancellationRecoveryPage = () => {
 	};
 
 	return (
-		<PageLayout
-			isLoading={isLoading}
-			subTitle={t('availability.cancellation-recovery.subtitle')}
-			title={t('availability.cancellation-recovery.title')}
-		>
+		<>
 			<RecoveryLayout>
 				<CancellationRecoverySidebar
 					activeFilterCount={filters.activeFilterCount}
@@ -131,6 +126,19 @@ export const CancellationRecoveryPage = () => {
 					therapistId={therapistId}
 				/>
 			) : null}
+		</>
+	);
+};
+
+export const CancellationRecoveryPage = () => {
+	const { t } = useTranslation();
+
+	return (
+		<PageLayout
+			subTitle={t('availability.cancellation-recovery.subtitle')}
+			title={t('availability.cancellation-recovery.title')}
+		>
+			<CancellationRecoveryPanelContent />
 		</PageLayout>
 	);
 };
