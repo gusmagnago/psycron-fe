@@ -212,6 +212,7 @@
         "preferred-contact": "Contato preferido",
         "timezone": "Fuso horário",
         "billing": "Cobrança",
+        "recovery": "Recuperação",
         "last-appointment": "Último atendimento",
         "sessions": "Sessões",
         "status": "Status"
@@ -232,6 +233,10 @@
       "no-appointments": "Sem atendimentos ainda",
       "contact-method-not-set": "Não definido",
       "possible-duplicate": "Possível duplicata",
+      "cancellation-follow-up-needed": "{{count}} precisa de acompanhamento",
+      "cancellation-follow-up-needed_other": "{{count}} precisam de acompanhamento",
+      "cancellation-follow-up-none": "Sem cancelamentos",
+      "cancellation-follow-up-resolved": "Resolvido",
       "cancelled-sessions-notice": "{{count}} sessão cancelada",
       "cancelled-sessions-notice_other": "{{count}} sessões canceladas"
     },
@@ -1164,6 +1169,7 @@
         "patient": "Paciente",
         "patient-placeholder": "Busque pelo nome do paciente",
         "period": "Período",
+        "status": "Estado",
         "cancelled-by": "Cancelado por",
         "reason": "Motivo",
         "reason-all": "Todos os motivos",
@@ -1172,6 +1178,11 @@
           "all": "Todos",
           "past": "Passado",
           "upcoming": "Futuros"
+        },
+        "status-options": {
+          "all": "Todos",
+          "needs-action": "Precisa de ação",
+          "resolved": "Resolvidos"
         },
         "cancelled-by-options": {
           "all": "Todos",
@@ -1187,7 +1198,11 @@
         }
       },
       "state": {
+        "archived": "Arquivado",
+        "followed-up": "Acompanhado",
+        "overdue": "Atrasado",
         "pending-follow-up": "Aguardando acompanhamento",
+        "rebooked": "Reagendado",
         "reopened": "Reaberto"
       },
       "cancelled-by": {
@@ -1206,14 +1221,23 @@
         "cancelled-by": "Cancelado por",
         "reason": "Motivo",
         "delivery": "Modalidade",
+        "followed-up-at": "Acompanhado em",
         "patient": "Paciente",
+        "rebooked-appointment": "Agendamento remarcado",
         "recovery-state": "Estado da recuperação",
         "not-provided": "Não informado"
       },
       "actions": {
         "rebook": "Reagendar este paciente",
+        "archive": "Marcar como resolvido",
+        "archive-all": "Marcar todos como resolvidos ({{count}})",
+        "more": "Mais ações",
         "open-patient": "Abrir perfil do paciente",
         "reopen": "Tornar horário disponível novamente",
+        "archive-success": "Recuperação fechada sem nova ação.",
+        "archive-error": "Não foi possível fechar este item de recuperação. Tente novamente.",
+        "archive-all-success": "{{count}} itens de recuperação marcados como resolvidos.",
+        "archive-all-error": "Não foi possível resolver todos os itens de recuperação. Tente novamente.",
         "reopen-success": "Horário reaberto com sucesso.",
         "reopen-error": "Não foi possível reabrir o horário. Tente novamente."
       }

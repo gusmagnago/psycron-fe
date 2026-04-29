@@ -27,6 +27,8 @@ import type {
 	ISessionResponse,
 	IUnblockAllSlotsPayload,
 	IUpdateAvailabilitySession,
+	IUpdateCancellationRecoveryStatusPayload,
+	IUpdateCancellationRecoveryStatusResponse,
 	NotifyPatientForSessionResponse,
 } from './index.types';
 
@@ -207,6 +209,20 @@ export const notifyPatientForSession = async (
 	const response = await apiClient.post<NotifyPatientForSessionResponse>(
 		`/users/${therapistId}/notify-patient/${slotId}`
 	);
+
+	return response.data;
+};
+
+export const updateCancellationRecoveryStatus = async ({
+	recoveryStatus,
+	slotId,
+	therapistId,
+}: IUpdateCancellationRecoveryStatusPayload): Promise<IUpdateCancellationRecoveryStatusResponse> => {
+	const response =
+		await apiClient.patch<IUpdateCancellationRecoveryStatusResponse>(
+			`/users/${therapistId}/availability/slot/${slotId}/recovery`,
+			{ recoveryStatus }
+		);
 
 	return response.data;
 };

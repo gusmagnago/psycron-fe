@@ -120,7 +120,10 @@ export const PatientTableHeader = styled(Box)`
 	gap: ${spacing.small};
 	grid-template-columns:
 		minmax(12rem, 1.55fr) minmax(10rem, 1.05fr) minmax(5rem, 0.5fr)
-		minmax(9rem, 0.9fr) minmax(10rem, 1fr) minmax(9rem, 0.95fr) minmax(
+		minmax(9rem, 0.9fr) minmax(10rem, 1fr) minmax(8rem, 0.8fr) minmax(
+			9rem,
+			0.95fr
+		) minmax(
 			5rem,
 			0.4fr
 		);
@@ -177,7 +180,10 @@ export const PatientTableRow = styled('button')`
 	gap: ${spacing.small};
 	grid-template-columns:
 		minmax(12rem, 1.55fr) minmax(10rem, 1.05fr) minmax(5rem, 0.5fr)
-		minmax(9rem, 0.9fr) minmax(10rem, 1fr) minmax(9rem, 0.95fr) minmax(
+		minmax(9rem, 0.9fr) minmax(10rem, 1fr) minmax(8rem, 0.8fr) minmax(
+			9rem,
+			0.95fr
+		) minmax(
 			5rem,
 			0.4fr
 		);

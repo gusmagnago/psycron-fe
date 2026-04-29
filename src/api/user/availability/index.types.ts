@@ -105,18 +105,49 @@ export enum StatusEnum {
 	ONHOLD = 'ONHOLD',
 }
 
+export type CancellationRecoveryStatus =
+	| 'PENDING_FOLLOW_UP'
+	| 'FOLLOWED_UP'
+	| 'REOPENED'
+	| 'REBOOKED'
+	| 'ARCHIVED';
+
+export interface IUpdateCancellationRecoveryStatusPayload {
+	recoveryStatus: Extract<
+		CancellationRecoveryStatus,
+		'ARCHIVED' | 'FOLLOWED_UP'
+	>;
+	slotId: string;
+	therapistId: string;
+}
+
+export interface IUpdateCancellationRecoveryStatusResponse {
+	message: string;
+	slot: {
+		_id: string;
+		followedUpAt?: string | null;
+		followedUpBy?: string | null;
+		recoveryStatus?: CancellationRecoveryStatus | null;
+	};
+}
+
 export interface IAvailabilityDate {
 	date: string;
 	slots: Array<{
 		_id: string;
 		canceledAt?: string | null;
+		cancelledPatientId?: string | null;
 		cancelledPatientName?: string | null;
 		customReason?: string | null;
 		deliveryMode?: 'online' | 'in-person' | null;
 		endTime: string;
+		followedUpAt?: string | null;
+		followedUpBy?: string | null;
 		note?: string;
 		patientId?: string;
 		reasonCode?: CancellationReasonEnum | null;
+		rebookedAppointmentId?: string | null;
+		recoveryStatus?: CancellationRecoveryStatus | null;
 		reopenedAt?: string | null;
 		source?: 'jupiter' | 'google';
 		startTime: string;

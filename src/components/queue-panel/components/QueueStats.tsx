@@ -1,20 +1,10 @@
-import type { ReactNode } from 'react';
-
 import {
 	QueueStatCard,
 	QueueStatLabel,
 	QueueStatsGrid,
 	QueueStatValue,
-} from './QueueDetail.styles';
-
-type QueueStatItem = {
-	label: ReactNode;
-	value: ReactNode;
-};
-
-type QueueStatsProps = {
-	items: QueueStatItem[];
-};
+} from '../styles/QueuePanel.styles';
+import type { QueueStatsProps } from '../types/QueuePanel.types';
 
 export const QueueStats = ({ items }: QueueStatsProps) => (
 	<QueueStatsGrid>

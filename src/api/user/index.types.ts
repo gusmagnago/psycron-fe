@@ -2,7 +2,6 @@ import type {
 	ISlot,
 	ISODateString,
 	ITherapist,
-	MongoId,
 } from '@psycron/context/user/auth/UserAuthenticationContext.types';
 
 /**
@@ -25,7 +24,7 @@ export interface IUserByIdResponse {
  */
 export interface IEditUser {
 	data: Partial<ITherapist>;
-	userId: MongoId;
+	userId: string;
 }
 
 /**
@@ -42,7 +41,7 @@ export interface IPasswordChangePayload {
 
 export interface IChangePass {
 	data: IPasswordChangePayload;
-	userId: MongoId;
+	userId: string;
 }
 
 /**
@@ -58,18 +57,18 @@ export interface IChangePass {
  */
 export interface IDateInfo {
 	date: ISODateString;
-	dateId?: MongoId;
+	dateId?: string;
 }
 
 export interface IAvailabilityDate {
-	_id: MongoId;
+	_id: string;
 	date: ISODateString;
 	slots: ISlot[];
 }
 
 export interface IAvailabilityDateRef {
 	date: ISODateString;
-	dateId: MongoId;
+	dateId: string;
 	slots?: ISlot[];
 }
 
@@ -98,7 +97,7 @@ export interface IAvailabilityResponse {
  */
 export interface DateInfoParams {
 	cursor?: string;
-	dateId: MongoId;
+	dateId: string;
 }
 
 /**
@@ -120,7 +119,7 @@ export interface IPaginatedAvailability {
 	consultationDuration?: number;
 
 	pagination: IPagination;
-	therapistId: MongoId;
+	therapistId: string;
 
 	timezone?: string;
 }

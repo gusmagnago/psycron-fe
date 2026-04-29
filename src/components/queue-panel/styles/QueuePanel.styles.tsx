@@ -6,7 +6,7 @@ import { hexToRgba, palette } from '@psycron/theme/palette/palette.theme';
 import { shadowMedium, shadowSmall } from '@psycron/theme/shadow/shadow.theme';
 import { spacing } from '@psycron/theme/spacing/spacing.theme';
 
-type QueueCardTone = 'error' | 'info' | 'neutral' | 'success';
+import type { QueueCardTone } from '../types/QueuePanel.types';
 
 const getToneColor = (tone: QueueCardTone) => {
 	switch (tone) {
@@ -16,6 +16,8 @@ const getToneColor = (tone: QueueCardTone) => {
 			return palette.info.main;
 		case 'success':
 			return palette.success.main;
+		case 'warning':
+			return palette.warning.main;
 		case 'neutral':
 		default:
 			return palette.gray['04'];

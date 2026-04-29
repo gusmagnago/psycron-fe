@@ -45,6 +45,32 @@ export const getSessionDrawerStatusKey = (
 	return 'patients.profile.sessions.upcoming';
 };
 
+export const getSessionRecoveryStatusLabelKey = (
+	recoveryStatus?: PatientSessionRow['recoveryStatus']
+): string | null => {
+	if (recoveryStatus === 'ARCHIVED') {
+		return 'availability.cancellation-recovery.state.archived';
+	}
+
+	if (recoveryStatus === 'FOLLOWED_UP') {
+		return 'availability.cancellation-recovery.state.followed-up';
+	}
+
+	if (recoveryStatus === 'REBOOKED') {
+		return 'availability.cancellation-recovery.state.rebooked';
+	}
+
+	if (recoveryStatus === 'REOPENED') {
+		return 'availability.cancellation-recovery.state.reopened';
+	}
+
+	if (recoveryStatus === 'PENDING_FOLLOW_UP') {
+		return 'availability.cancellation-recovery.state.pending-follow-up';
+	}
+
+	return null;
+};
+
 export const getSessionDrawerRescheduleGroups = ({
 	availabilityDates,
 	language,

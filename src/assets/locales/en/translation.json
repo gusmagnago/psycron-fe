@@ -212,6 +212,7 @@
 				"preferred-contact": "Preferred contact",
 				"timezone": "Timezone",
 				"billing": "Billing",
+				"recovery": "Recovery",
 				"last-appointment": "Last appointment",
 				"sessions": "Sessions",
 				"status": "Status"
@@ -232,6 +233,10 @@
 			"no-appointments": "No appointments yet",
 			"contact-method-not-set": "Not set",
 			"possible-duplicate": "Possible duplicate",
+			"cancellation-follow-up-needed": "{{count}} needs follow-up",
+			"cancellation-follow-up-needed_other": "{{count}} need follow-up",
+			"cancellation-follow-up-none": "No cancellations",
+			"cancellation-follow-up-resolved": "Resolved",
 			"cancelled-sessions-notice": "{{count}} cancelled session",
 			"cancelled-sessions-notice_other": "{{count}} cancelled sessions"
 		},
@@ -1164,6 +1169,7 @@
 				"patient": "Patient",
 				"patient-placeholder": "Search by patient name",
 				"period": "Period",
+				"status": "Status",
 				"cancelled-by": "Cancelled by",
 				"reason": "Reason",
 				"reason-all": "All reasons",
@@ -1172,6 +1178,11 @@
 					"all": "All",
 					"past": "Past",
 					"upcoming": "Upcoming"
+				},
+				"status-options": {
+					"all": "All",
+					"needs-action": "Needs action",
+					"resolved": "Resolved"
 				},
 				"cancelled-by-options": {
 					"all": "All",
@@ -1188,7 +1199,11 @@
 			},
 			"state": {
 				"pending-follow-up": "Pending follow-up",
-				"reopened": "Reopened"
+				"followed-up": "Followed up",
+				"reopened": "Reopened",
+				"rebooked": "Rebooked",
+				"archived": "Archived",
+				"overdue": "Overdue"
 			},
 			"cancelled-by": {
 				"patient": "Cancelled by patient",
@@ -1206,14 +1221,23 @@
 				"cancelled-by": "Cancelled by",
 				"reason": "Reason",
 				"delivery": "Delivery mode",
+				"followed-up-at": "Followed up at",
 				"patient": "Patient",
+				"rebooked-appointment": "Rebooked appointment",
 				"recovery-state": "Recovery state",
 				"not-provided": "Not provided"
 			},
 			"actions": {
 				"rebook": "Rebook this patient",
+				"archive": "Mark as resolved",
+				"archive-all": "Mark all as resolved ({{count}})",
+				"more": "More actions",
 				"open-patient": "Open patient profile",
 				"reopen": "Set slot to available again",
+				"archive-success": "Recovery closed without further action.",
+				"archive-error": "Failed to close this recovery item. Please try again.",
+				"archive-all-success": "{{count}} recovery items marked as resolved.",
+				"archive-all-error": "Failed to resolve all recovery items. Please try again.",
 				"reopen-success": "Slot reopened successfully.",
 				"reopen-error": "Failed to reopen the slot. Please try again."
 			}

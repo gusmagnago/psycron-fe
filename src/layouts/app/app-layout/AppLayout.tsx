@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { Outlet } from 'react-router-dom';
 import { Box, Divider } from '@mui/material';
 import { AppAnalytics } from '@psycron/analytics/posthog/AppAnalytics';
-import { getPatientById } from '@psycron/api/patient';
+import { getAvailabilityCalendar } from '@psycron/api/user';
 import { getConflictCount } from '@psycron/api/user/conflicts';
 import { EnvironmentBanner } from '@psycron/components/environment-banner/EnvironmentBanner';
 import { AvailabilityGate } from '@psycron/components/guards/AvailabilityGate';
@@ -27,7 +27,11 @@ import { useAuth } from '@psycron/context/user/auth/UserAuthenticationContext';
 import { useUserDetails } from '@psycron/context/user/details/UserDetailsContext';
 import { useAuthSession } from '@psycron/hooks/useAuthSession';
 import useViewport from '@psycron/hooks/useViewport';
-import { getPatientCancellationCount } from '@psycron/pages/patients/PatientsPage.utils';
+import {
+	buildCancellationRecoveryRows,
+	formatRecoverySearchRange,
+	isRecoveryStateResolved,
+} from '@psycron/pages/availability/cancellation-recovery/CancellationRecoveryPage.utils';
 import {
 	AVAILABILITYPATH,
 	AVAILABILITYRECOVERY,
@@ -37,7 +41,7 @@ import {
 	PATIENTS,
 	PAYMENTS,
 } from '@psycron/pages/urls';
-import { useQueries, useQuery } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 
 import {
 	Content,
@@ -62,21 +66,33 @@ export const AppLayout: FC = () => {
 		queryFn: () => getConflictCount(userDetails?._id ?? ''),
 		enabled: Boolean(userDetails?._id),
 	});
-	const patientIds = useMemo(
-		() => [...new Set(userDetails?.patients ?? [])],
-		[userDetails?.patients]
+
+	const recoverySearchRange = useMemo(
+		() => formatRecoverySearchRange(new Date()),
+		[]
 	);
-	const patientCancellationQueries = useQueries({
-		queries: patientIds.map((patientId) => ({
-			enabled: Boolean(userDetails?._id && patientId),
-			queryFn: () => getPatientById(userDetails?._id ?? '', patientId),
-			queryKey: ['patientListItem', userDetails?._id, patientId],
-			staleTime: 1000 * 60 * 5,
-		})),
+	const { data: cancellationRecoveryData } = useQuery({
+		queryKey: [
+			'cancellationRecovery',
+			userDetails?._id,
+			recoverySearchRange.from,
+			recoverySearchRange.to,
+		],
+		queryFn: () =>
+			getAvailabilityCalendar(userDetails?._id ?? '', {
+				from: recoverySearchRange.from,
+				to: recoverySearchRange.to,
+			}),
+		enabled: Boolean(userDetails?._id),
+		gcTime: 1000 * 60 * 30,
+		staleTime: 1000 * 60 * 5,
 	});
-	const cancellationRecoveryCount = patientCancellationQueries.reduce(
-		(total, query) => total + getPatientCancellationCount(query.data),
-		0
+	const cancellationRecoveryCount = useMemo(
+		() =>
+			buildCancellationRecoveryRows({
+				dates: cancellationRecoveryData?.dates,
+			}).filter((row) => !isRecoveryStateResolved(row.recoveryState)).length,
+		[cancellationRecoveryData?.dates]
 	);
 
 	const menuItems = [
