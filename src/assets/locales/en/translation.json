@@ -282,6 +282,7 @@
 				"completed-title": "Session completed",
 				"notify": "Notify patient",
 				"notify-error": "We could not send the notification. Please try again.",
+				"notify-sending": "Sending notification…",
 				"notify-success": "Patient notified successfully.",
 				"read-only": "Cancelled sessions are available for review only.",
 				"reschedule": "Reschedule",
@@ -293,6 +294,7 @@
 				"role": "Patient session",
 				"upcoming-title": "Upcoming session",
 				"update-error": "We could not update this session. Please try again.",
+				"update-no-change": "No changes were made — the session time is the same.",
 				"update-success": "Session updated successfully."
 			},
 			"status": {

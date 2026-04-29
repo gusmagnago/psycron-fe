@@ -282,6 +282,7 @@
         "completed-title": "Sessão concluída",
         "notify": "Notificar paciente",
         "notify-error": "Não foi possível enviar a notificação. Tente novamente.",
+        "notify-sending": "A enviar notificação…",
         "notify-success": "Paciente notificado com sucesso.",
         "read-only": "Sessões canceladas estão disponíveis apenas para consulta.",
         "reschedule": "Reagendar",
@@ -293,6 +294,7 @@
         "role": "Sessão do paciente",
         "upcoming-title": "Sessão agendada",
         "update-error": "Não foi possível atualizar esta sessão. Tente novamente.",
+        "update-no-change": "Nenhuma alteração foi feita — o horário da sessão é o mesmo.",
         "update-success": "Sessão atualizada com sucesso."
       },
       "status": {
