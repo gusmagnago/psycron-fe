@@ -101,9 +101,14 @@ export const getPatientSessions = (
 					canceledAt: slot.canceledAt,
 					customReason: slot.customReason,
 					date: sessionDate.date,
+					followedUpAt: slot.followedUpAt,
+					followedUpBy: slot.followedUpBy,
 					isCancelled: isCanceledSlot(slot),
 					isPast: isPast(startsAt),
 					reasonCode: slot.reasonCode,
+					rebookedAppointmentId: slot.rebookedAppointmentId,
+					recoveryStatus: slot.recoveryStatus,
+					reopenedAt: slot.reopenedAt,
 					slot,
 					startsAt,
 					triggeredBy: slot.triggeredBy,
@@ -122,9 +127,14 @@ export const getPatientSessions = (
 				canceledAt: appointment.cancelledAt,
 				customReason: appointment.customReason,
 				date: appointment.date,
+				followedUpAt: appointment.followedUpAt,
+				followedUpBy: appointment.followedUpBy,
 				isCancelled: true,
 				isPast: isPast(startsAt),
 				reasonCode: appointment.reasonCode,
+				rebookedAppointmentId: appointment.rebookedAppointmentId,
+				recoveryStatus: appointment.recoveryStatus,
+				reopenedAt: appointment.reopenedAt,
 				slot: {
 					_id: appointment.slotId,
 					endTime: appointment.endTime,
@@ -161,6 +171,31 @@ export const getPatientStats = (
 
 export const getPatientCancellationCount = (patient?: IPatient): number =>
 	getPatientStats(getPatientSessions(patient)).cancelledSessions;
+
+export const isPatientCancelledSessionResolved = (
+	session: PatientSessionRow
+): boolean => {
+	if (!session.isCancelled) return true;
+	if (
+		session.recoveryStatus === 'ARCHIVED' ||
+		session.recoveryStatus === 'FOLLOWED_UP' ||
+		session.recoveryStatus === 'REBOOKED' ||
+		session.recoveryStatus === 'REOPENED'
+	) {
+		return true;
+	}
+
+	return Boolean(
+		session.followedUpAt || session.rebookedAppointmentId || session.reopenedAt
+	);
+};
+
+export const getPatientUnresolvedCancellationCount = (
+	patient?: IPatient
+): number =>
+	getPatientSessions(patient).filter(
+		(session) => session.isCancelled && !isPatientCancelledSessionResolved(session)
+	).length;
 
 export const getLastCompletedSession = (
 	sessions: PatientSessionRow[]
@@ -260,6 +295,7 @@ export const mapPatientToListItem = (patient: IPatient): PatientListItem => {
 		preferredContactType: patient.preferredContact?.type,
 		searchableText,
 		totalSessions: stats.totalSessions,
+		unresolvedCancelledSessions: getPatientUnresolvedCancellationCount(patient),
 	};
 };
 

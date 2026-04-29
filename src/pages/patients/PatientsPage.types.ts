@@ -32,6 +32,7 @@ export interface PatientListItem extends IPatient {
 	preferredContactType?: PreferredContactType;
 	searchableText: string;
 	totalSessions: number;
+	unresolvedCancelledSessions: number;
 }
 
 export interface PatientSessionRow {
@@ -39,9 +40,20 @@ export interface PatientSessionRow {
 	canceledAt?: ISODateString | null;
 	customReason?: string | null;
 	date: ISODateString;
+	followedUpAt?: ISODateString | null;
+	followedUpBy?: string | null;
 	isCancelled: boolean;
 	isPast: boolean;
 	reasonCode?: number | null;
+	rebookedAppointmentId?: string | null;
+	recoveryStatus?:
+		| 'PENDING_FOLLOW_UP'
+		| 'FOLLOWED_UP'
+		| 'REOPENED'
+		| 'REBOOKED'
+		| 'ARCHIVED'
+		| null;
+	reopenedAt?: ISODateString | null;
 	slot: Partial<ISlot> & Pick<ISlot, '_id' | 'endTime' | 'startTime'>;
 	startsAt: Date;
 	triggeredBy?: 'PATIENT' | 'THERAPIST' | null;

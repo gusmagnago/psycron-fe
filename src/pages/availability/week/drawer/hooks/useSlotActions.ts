@@ -11,7 +11,10 @@ import type {
 	AppointmentDetailsBySlotIdResponse,
 	CancellationReasonEnum as CancellationReasonType,
 } from '@psycron/api/user/availability/index.types';
-import { CancellationReasonEnum } from '@psycron/api/user/availability/index.types';
+import {
+	CancellationReasonEnum,
+	StatusEnum,
+} from '@psycron/api/user/availability/index.types';
 import { useAlert } from '@psycron/context/alert/AlertContext';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
@@ -81,7 +84,7 @@ export const useUnblockSlot = (
 		mutationFn: () =>
 			editSlotStatus({
 				availabilityDayId: slot.availabilityDayId ?? '',
-				data: { newStatus: 'AVAILABLE', startTime: slot.startTime },
+				data: { newStatus: StatusEnum.AVAILABLE, startTime: slot.startTime },
 				slotId: slot._id ?? slot.id,
 				therapistId: therapistId ?? '',
 			}),

@@ -163,13 +163,34 @@ export const PatientListPage = () => {
 	const renderCancellationNotice = (
 		patient: (typeof filteredPatients)[number]
 	) =>
-		patient.cancelledSessions > 0 ? (
+		patient.unresolvedCancelledSessions > 0 ? (
 			<CancellationNoticePill>
-				{t('patients.list.cancelled-sessions-notice', {
-					count: patient.cancelledSessions,
+				{t('patients.list.cancellation-follow-up-needed', {
+					count: patient.unresolvedCancelledSessions,
 				})}
 			</CancellationNoticePill>
 		) : null;
+	const renderCancellationStatus = (
+		patient: (typeof filteredPatients)[number]
+	) => {
+		if (patient.unresolvedCancelledSessions > 0) {
+			return renderCancellationNotice(patient);
+		}
+
+		if (patient.cancelledSessions > 0) {
+			return (
+				<SecondaryValue>
+					{t('patients.list.cancellation-follow-up-resolved')}
+				</SecondaryValue>
+			);
+		}
+
+		return (
+			<SecondaryValue>
+				{t('patients.list.cancellation-follow-up-none')}
+			</SecondaryValue>
+		);
+	};
 
 	return (
 		<PageLayout
@@ -271,6 +292,9 @@ export const PatientListPage = () => {
 									{t('patients.list.columns.billing')}
 								</PatientHeaderCell>
 								<PatientHeaderCell>
+									{t('patients.list.columns.recovery')}
+								</PatientHeaderCell>
+								<PatientHeaderCell>
 									{renderSortableHeader(
 										'last-appointment',
 										t('patients.list.columns.last-appointment')
@@ -305,7 +329,6 @@ export const PatientListPage = () => {
 												{t('patients.list.possible-duplicate')}
 											</DuplicateWarningPill>
 										) : null}
-										{renderCancellationNotice(patient)}
 									</PrimaryCell>
 									<PrimaryCell>
 										<SimpleValue>
@@ -328,6 +351,7 @@ export const PatientListPage = () => {
 										)}
 									</SimpleValue>
 									{renderBillingCell(patient)}
+									<PrimaryCell>{renderCancellationStatus(patient)}</PrimaryCell>
 									<SimpleValue>
 										{formatLocalizedDate(
 											patient.lastAppointmentDate,

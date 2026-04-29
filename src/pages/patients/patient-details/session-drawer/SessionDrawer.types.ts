@@ -19,6 +19,7 @@ export interface SessionDrawerRescheduleGroup {
 }
 
 export interface SessionDrawerProps {
+	initialMode?: DrawerMode;
 	notifications?: INotification[];
 	onClose: () => void;
 	onRescheduleSuccess: () => void;

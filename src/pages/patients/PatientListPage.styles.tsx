@@ -10,12 +10,9 @@ export const PatientListLayout = styled(Box)`
 	display: flex;
 	flex-direction: column;
 	gap: ${spacing.medium};
-	padding-top: ${spacing.large};
-	padding-bottom: calc(${spacing.large} * 2);
 
 	${isMobileMedia} {
 		gap: ${spacing.small};
-		padding-top: ${spacing.medium};
 	}
 `;
 
@@ -83,7 +80,6 @@ export const EmptyState = styled(Box)`
 		${hexToRgba(palette.background.paper, 0.96)} 0%,
 		${hexToRgba(palette.background.default, 0.92)} 100%
 	);
-	border: 1px dashed ${hexToRgba(palette.gray['04'], 0.24)};
 	border-radius: ${spacing.large};
 	display: flex;
 	flex-direction: column;
@@ -122,7 +118,15 @@ export const PatientTableSurface = styled(Box)`
 export const PatientTableHeader = styled(Box)`
 	display: grid;
 	gap: ${spacing.small};
-	grid-template-columns: minmax(12rem, 1.55fr) minmax(10rem, 1.05fr) minmax(5rem, 0.5fr) minmax(9rem, 0.9fr) minmax(10rem, 1fr) minmax(9rem, 0.95fr) minmax(5rem, 0.4fr);
+	grid-template-columns:
+		minmax(12rem, 1.55fr) minmax(10rem, 1.05fr) minmax(5rem, 0.5fr)
+		minmax(9rem, 0.9fr) minmax(10rem, 1fr) minmax(8rem, 0.8fr) minmax(
+			9rem,
+			0.95fr
+		) minmax(
+			5rem,
+			0.4fr
+		);
 	min-width: 100%;
 	padding: ${spacing.small} ${spacing.medium};
 	background: ${hexToRgba(palette.background.default, 0.7)};
@@ -174,7 +178,15 @@ export const PatientTableRow = styled('button')`
 	cursor: pointer;
 	display: grid;
 	gap: ${spacing.small};
-	grid-template-columns: minmax(12rem, 1.55fr) minmax(10rem, 1.05fr) minmax(5rem, 0.5fr) minmax(9rem, 0.9fr) minmax(10rem, 1fr) minmax(9rem, 0.95fr) minmax(5rem, 0.4fr);
+	grid-template-columns:
+		minmax(12rem, 1.55fr) minmax(10rem, 1.05fr) minmax(5rem, 0.5fr)
+		minmax(9rem, 0.9fr) minmax(10rem, 1fr) minmax(8rem, 0.8fr) minmax(
+			9rem,
+			0.95fr
+		) minmax(
+			5rem,
+			0.4fr
+		);
 	min-width: 100%;
 	padding: ${spacing.small} ${spacing.medium};
 	text-align: left;
@@ -317,7 +329,6 @@ export const MobileCards = styled(Box)`
 	display: flex;
 	flex-direction: column;
 	gap: ${spacing.small};
-	margin-bottom: 60px;
 `;
 
 export const MobileCard = styled('button')`

@@ -114,7 +114,18 @@ export interface IPublicPatientSessionsResponse {
 			customReason?: string;
 			date: string;
 			endTime: string;
+			followedUpAt?: string | null;
+			followedUpBy?: string | null;
 			reasonCode?: number;
+			rebookedAppointmentId?: string | null;
+			recoveryStatus?:
+				| 'PENDING_FOLLOW_UP'
+				| 'FOLLOWED_UP'
+				| 'REOPENED'
+				| 'REBOOKED'
+				| 'ARCHIVED'
+				| null;
+			reopenedAt?: string | null;
 			slotId: string;
 			startTime: string;
 			triggeredBy: 'PATIENT' | 'THERAPIST';

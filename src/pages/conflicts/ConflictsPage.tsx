@@ -1,4 +1,11 @@
+import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import {
+	QueueEmptyState,
+	QueueFiltersDrawer,
+	QueueFiltersTrigger,
+	QueueSidebarHeader,
+} from '@psycron/components/queue-panel';
 import { PageLayout } from '@psycron/layouts/app/pages-layout/PageLayout';
 import { getDateLocale } from '@psycron/utils/date/date.utils';
 import { format } from 'date-fns';
@@ -20,11 +27,6 @@ import {
 	FiltersLabel,
 	FiltersRow,
 	FiltersSection,
-	SidebarCount,
-	SidebarHeader,
-	SidebarSubtitle,
-	SidebarTitle,
-	SidebarTitleRow,
 } from './ConflictsPage.styles';
 import {
 	getConflictDisplayCopy,
@@ -34,6 +36,7 @@ import {
 
 export const ConflictsPage = () => {
 	const { i18n, t } = useTranslation();
+	const [isFiltersDrawerOpen, setIsFiltersDrawerOpen] = useState(false);
 	const {
 		conflicts,
 		handleUpdateConflict,
@@ -49,20 +52,86 @@ export const ConflictsPage = () => {
 	} = useConflictsPageState({ t });
 
 	const dateLocale = getDateLocale(i18n.language);
+	const activeFilterCount = useMemo(
+		() => [statusFilter ? 1 : 0, typeFilter ? 1 : 0].reduce((sum, count) => sum + count, 0),
+		[statusFilter, typeFilter]
+	);
 
 	return (
 		<PageLayout title={t('conflicts.title')} subTitle={t('conflicts.subtitle')}>
 			<ConflictsLayout>
 				<ConflictsSidebar>
-					<SidebarHeader>
-						<SidebarTitleRow>
-							<SidebarTitle>{t('conflicts.queue.title')}</SidebarTitle>
-							<SidebarCount>{conflicts.length}</SidebarCount>
-						</SidebarTitleRow>
-						<SidebarSubtitle>{t('conflicts.queue.subtitle')}</SidebarSubtitle>
-					</SidebarHeader>
+					<QueueSidebarHeader
+						count={conflicts.length}
+						subtitle={t('conflicts.queue.subtitle')}
+						title={t('conflicts.queue.title')}
+					/>
 
-					<FiltersSection>
+					<QueueFiltersTrigger
+						activeFilterCount={activeFilterCount}
+						controlsId='conflicts-filters-drawer'
+						isOpen={isFiltersDrawerOpen}
+						onOpen={() => setIsFiltersDrawerOpen(true)}
+						summaryActive={t('conflicts.filters.summary-active', {
+							count: activeFilterCount,
+						})}
+						summaryDefault={t('conflicts.filters.summary-default')}
+						title={t('conflicts.filters.title')}
+					/>
+
+					<ConflictList>
+						{conflicts.length ? conflicts.map((conflict) => {
+							const displayCopy = getConflictDisplayCopy(conflict, t);
+
+							return (
+								<ConflictCard
+									isSelected={conflict._id === selectedConflictId}
+									key={conflict._id}
+									onClick={() => setSelectedConflictId(conflict._id)}
+									tone='info'
+									type='button'
+								>
+									<ConflictCardMetaRow>
+										<ConflictTypeLabel>
+											{getConflictTypeLabel(conflict.type, t)}
+										</ConflictTypeLabel>
+										<ConflictStatusPill>
+											{getConflictStatusLabel(conflict.status, t)}
+										</ConflictStatusPill>
+									</ConflictCardMetaRow>
+									<ConflictTitle>{displayCopy.title}</ConflictTitle>
+									<ConflictDescription>
+										{displayCopy.description}
+									</ConflictDescription>
+									<ConflictCardDate>
+										{format(new Date(conflict.createdAt), 'PPP', {
+											locale: dateLocale,
+										})}
+									</ConflictCardDate>
+									</ConflictCard>
+								);
+						}) : <QueueEmptyState message={t('conflicts.empty')} />}
+					</ConflictList>
+				</ConflictsSidebar>
+
+				<ConflictDetail
+					conflict={selectedConflict}
+					isUpdating={isUpdating}
+					onUpdateConflict={handleUpdateConflict}
+				/>
+			</ConflictsLayout>
+			<QueueFiltersDrawer
+				activeFilterCount={activeFilterCount}
+				ariaLabel={t('conflicts.filters.title')}
+				isOpen={isFiltersDrawerOpen}
+				onClose={() => setIsFiltersDrawerOpen(false)}
+				summaryActive={t('conflicts.filters.summary-active', {
+					count: activeFilterCount,
+				})}
+				summaryDefault={t('conflicts.filters.summary-default')}
+				title={t('conflicts.filters.title')}
+			>
+					<FiltersSection id='conflicts-filters-drawer'>
 						<FiltersLabel>{t('conflicts.filters.status')}</FiltersLabel>
 						<FiltersRow>
 							<FilterChip
@@ -108,47 +177,7 @@ export const ConflictsPage = () => {
 							</FilterChip>
 						</FiltersRow>
 					</FiltersSection>
-
-					<ConflictList>
-						{conflicts.map((conflict) => {
-							const displayCopy = getConflictDisplayCopy(conflict, t);
-
-							return (
-								<ConflictCard
-									isSelected={conflict._id === selectedConflictId}
-									key={conflict._id}
-									onClick={() => setSelectedConflictId(conflict._id)}
-									type='button'
-								>
-									<ConflictCardMetaRow>
-										<ConflictTypeLabel>
-											{getConflictTypeLabel(conflict.type, t)}
-										</ConflictTypeLabel>
-										<ConflictStatusPill>
-											{getConflictStatusLabel(conflict.status, t)}
-										</ConflictStatusPill>
-									</ConflictCardMetaRow>
-									<ConflictTitle>{displayCopy.title}</ConflictTitle>
-									<ConflictDescription>
-										{displayCopy.description}
-									</ConflictDescription>
-									<ConflictCardDate>
-										{format(new Date(conflict.createdAt), 'PPP', {
-											locale: dateLocale,
-										})}
-									</ConflictCardDate>
-								</ConflictCard>
-							);
-						})}
-					</ConflictList>
-				</ConflictsSidebar>
-
-				<ConflictDetail
-					conflict={selectedConflict}
-					isUpdating={isUpdating}
-					onUpdateConflict={handleUpdateConflict}
-				/>
-			</ConflictsLayout>
+			</QueueFiltersDrawer>
 		</PageLayout>
 	);
 };

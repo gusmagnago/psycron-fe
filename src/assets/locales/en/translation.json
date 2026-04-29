@@ -212,6 +212,7 @@
 				"preferred-contact": "Preferred contact",
 				"timezone": "Timezone",
 				"billing": "Billing",
+				"recovery": "Recovery",
 				"last-appointment": "Last appointment",
 				"sessions": "Sessions",
 				"status": "Status"
@@ -232,6 +233,10 @@
 			"no-appointments": "No appointments yet",
 			"contact-method-not-set": "Not set",
 			"possible-duplicate": "Possible duplicate",
+			"cancellation-follow-up-needed": "{{count}} needs follow-up",
+			"cancellation-follow-up-needed_other": "{{count}} need follow-up",
+			"cancellation-follow-up-none": "No cancellations",
+			"cancellation-follow-up-resolved": "Resolved",
 			"cancelled-sessions-notice": "{{count}} cancelled session",
 			"cancelled-sessions-notice_other": "{{count}} cancelled sessions"
 		},
@@ -277,6 +282,7 @@
 				"completed-title": "Session completed",
 				"notify": "Notify patient",
 				"notify-error": "We could not send the notification. Please try again.",
+				"notify-sending": "Sending notification…",
 				"notify-success": "Patient notified successfully.",
 				"read-only": "Cancelled sessions are available for review only.",
 				"reschedule": "Reschedule",
@@ -288,6 +294,7 @@
 				"role": "Patient session",
 				"upcoming-title": "Upcoming session",
 				"update-error": "We could not update this session. Please try again.",
+				"update-no-change": "No changes were made — the session time is the same.",
 				"update-success": "Session updated successfully."
 			},
 			"status": {
@@ -1142,6 +1149,101 @@
 			"subtitle": "Your availability calendar",
 			"settings": "Availability settings"
 		},
+		"cancellation-recovery": {
+			"title": "Cancellation recovery",
+			"subtitle": "Review cancelled appointments, reopen slots, and jump into patient follow-up without cluttering the live calendar.",
+			"empty": "No cancelled appointments match your current filters.",
+			"empty-selection": "Choose a cancelled appointment to review its recovery details and next actions.",
+			"unknown-patient": "Unknown patient",
+			"queue": {
+				"title": "Recovery queue",
+				"subtitle": "Track cancelled appointments that still need therapist attention."
+			},
+			"stats": {
+				"total": "Total",
+				"pending-follow-up": "Pending",
+				"reopened": "Reopened"
+			},
+			"filters": {
+				"title": "Filters",
+				"summary-default": "Expand to refine the recovery queue.",
+				"summary-active": "{{count}} active filters",
+				"patient": "Patient",
+				"patient-placeholder": "Search by patient name",
+				"period": "Period",
+				"status": "Status",
+				"cancelled-by": "Cancelled by",
+				"reason": "Reason",
+				"reason-all": "All reasons",
+				"delivery": "Delivery",
+				"period-options": {
+					"all": "All",
+					"past": "Past",
+					"upcoming": "Upcoming"
+				},
+				"status-options": {
+					"all": "All",
+					"needs-action": "Needs action",
+					"resolved": "Resolved"
+				},
+				"cancelled-by-options": {
+					"all": "All",
+					"patient": "Patient",
+					"therapist": "Therapist",
+					"unknown": "Unknown"
+				},
+				"delivery-options": {
+					"all": "All",
+					"in-person": "In person",
+					"online": "Online",
+					"unknown": "Unknown"
+				}
+			},
+			"state": {
+				"pending-follow-up": "Pending follow-up",
+				"followed-up": "Followed up",
+				"reopened": "Reopened",
+				"rebooked": "Rebooked",
+				"archived": "Archived",
+				"overdue": "Overdue"
+			},
+			"cancelled-by": {
+				"patient": "Cancelled by patient",
+				"therapist": "Cancelled by therapist",
+				"unknown": "Cancelled by unknown source"
+			},
+			"delivery": {
+				"in-person": "In person",
+				"online": "Online",
+				"unknown": "Not provided"
+			},
+			"detail": {
+				"eyebrow": "Recovery detail",
+				"cancelled-at": "Cancelled at",
+				"cancelled-by": "Cancelled by",
+				"reason": "Reason",
+				"delivery": "Delivery mode",
+				"followed-up-at": "Followed up at",
+				"patient": "Patient",
+				"rebooked-appointment": "Rebooked appointment",
+				"recovery-state": "Recovery state",
+				"not-provided": "Not provided"
+			},
+			"actions": {
+				"rebook": "Rebook this patient",
+				"archive": "Mark as resolved",
+				"archive-all": "Mark all as resolved ({{count}})",
+				"more": "More actions",
+				"open-patient": "Open patient profile",
+				"reopen": "Set slot to available again",
+				"archive-success": "Recovery closed without further action.",
+				"archive-error": "Failed to close this recovery item. Please try again.",
+				"archive-all-success": "{{count}} recovery items marked as resolved.",
+				"archive-all-error": "Failed to resolve all recovery items. Please try again.",
+				"reopen-success": "Slot reopened successfully.",
+				"reopen-error": "Failed to reopen the slot. Please try again."
+			}
+		},
 		"week": {
 			"drawer": {
 				"address-override": "Session location",
@@ -1436,6 +1538,10 @@
 		"subtitle": "Review and resolve booking and patient conflicts.",
 		"empty": "No conflicts match your current filters.",
 		"filters": {
+			"title": "Filters",
+			"summary-default": "Refine the queue by status or conflict type.",
+			"summary-active": "{{count}} active filter",
+			"summary-active_other": "{{count}} active filters",
 			"status": "Status",
 			"type": "Type",
 			"open": "Open",

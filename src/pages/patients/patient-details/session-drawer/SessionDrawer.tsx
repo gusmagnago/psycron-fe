@@ -67,10 +67,12 @@ import {
 	getSessionDrawerRescheduleGroups,
 	getSessionDrawerStatusKey,
 	getSessionDrawerTitleKey,
+	getSessionRecoveryStatusLabelKey,
 	THERAPIST_CANCEL_REASONS,
 } from './SessionDrawer.utils';
 
 export const SessionDrawer = ({
+	initialMode,
 	notifications,
 	onClose,
 	onRescheduleSuccess,
@@ -87,7 +89,9 @@ export const SessionDrawer = ({
 	const [drawerMode, setDrawerMode] = useState<DrawerMode>('details');
 	const [reasonCode, setReasonCode] = useState<number | ''>('');
 	const [customReason, setCustomReason] = useState('');
-	const [sessionStartTime, setSessionStartTime] = useState(session.slot.startTime);
+	const [sessionStartTime, setSessionStartTime] = useState(
+		session.slot.startTime
+	);
 	const [sessionEndTime, setSessionEndTime] = useState(session.slot.endTime);
 	const [selectedRescheduleSlot, setSelectedRescheduleSlot] =
 		useState<SessionDrawerRescheduleSlot | null>(null);
@@ -95,11 +99,11 @@ export const SessionDrawer = ({
 	useEffect(() => {
 		setSessionStartTime(session.slot.startTime);
 		setSessionEndTime(session.slot.endTime);
-		setDrawerMode('details');
+		setDrawerMode(initialMode ?? 'details');
 		setReasonCode('');
 		setCustomReason('');
 		setSelectedRescheduleSlot(null);
-	}, [session]);
+	}, [initialMode, session]);
 
 	const canTimeEdit = Boolean(
 		session.availabilityDayId && !session.isCancelled && !session.isPast
@@ -109,6 +113,9 @@ export const SessionDrawer = ({
 		notifications
 	);
 	const fallback = t('patients.list.not-available');
+	const recoveryStatusLabelKey = getSessionRecoveryStatusLabelKey(
+		session.recoveryStatus
+	);
 	const rescheduleSearchStart = format(new Date(), 'yyyy-MM-dd');
 	const rescheduleSearchEnd = format(addMonths(new Date(), 3), 'yyyy-MM-dd');
 
@@ -151,7 +158,12 @@ export const SessionDrawer = ({
 		onClose();
 	};
 
-	const rescheduleM = useMutation({
+	const rescheduleM = useMutation<
+		| Awaited<ReturnType<typeof editAppointment>>
+		| Awaited<ReturnType<typeof editSlot>>,
+		unknown,
+		void
+	>({
 		mutationFn: () => {
 			if (session.isCancelled) {
 				if (!selectedRescheduleSlot) throw new Error('missing-slot');
@@ -203,11 +215,17 @@ export const SessionDrawer = ({
 				),
 				severity: 'success',
 			});
-			queryClient.invalidateQueries({ queryKey: ['patientDetails', patientId] });
+			queryClient.invalidateQueries({
+				queryKey: ['patientDetails', patientId],
+			});
+			queryClient.invalidateQueries({
+				queryKey: ['patientListItem', therapistId, patientId],
+			});
+			queryClient.invalidateQueries({ queryKey: ['cancellationRecovery'] });
 			queryClient.invalidateQueries({ queryKey: ['therapistAvailability'] });
 			capture(PostHogEvent.AppointmentRescheduled, {
 				new_slot_start_time: session.isCancelled
-					? selectedRescheduleSlot?.startTime ?? ''
+					? (selectedRescheduleSlot?.startTime ?? '')
 					: sessionStartTime,
 				source: 'patient_center_drawer',
 				triggered_by: 'therapist',
@@ -241,7 +259,13 @@ export const SessionDrawer = ({
 				message: t('patients.profile.session-drawer.cancel-success'),
 				severity: 'success',
 			});
-			queryClient.invalidateQueries({ queryKey: ['patientDetails', patientId] });
+			queryClient.invalidateQueries({
+				queryKey: ['patientDetails', patientId],
+			});
+			queryClient.invalidateQueries({
+				queryKey: ['patientListItem', therapistId, patientId],
+			});
+			queryClient.invalidateQueries({ queryKey: ['cancellationRecovery'] });
 			queryClient.invalidateQueries({ queryKey: ['therapistAvailability'] });
 			capture(PostHogEvent.AppointmentCancelled, {
 				reason_code: String(reasonCode),
@@ -257,7 +281,8 @@ export const SessionDrawer = ({
 	});
 
 	const notifyM = useMutation({
-		mutationFn: () => notifyPatientForSession(therapistId ?? '', session.slot._id),
+		mutationFn: () =>
+			notifyPatientForSession(therapistId ?? '', session.slot._id),
 		onError: () => {
 			showAlert({
 				message: t('patients.profile.session-drawer.notify-error'),
@@ -269,7 +294,9 @@ export const SessionDrawer = ({
 				message: t('patients.profile.session-drawer.notify-success'),
 				severity: 'success',
 			});
-			queryClient.invalidateQueries({ queryKey: ['patientDetails', patientId] });
+			queryClient.invalidateQueries({
+				queryKey: ['patientDetails', patientId],
+			});
 			queryClient.invalidateQueries({
 				queryKey: ['patientListItem', therapistId, patientId],
 			});
@@ -517,9 +544,7 @@ export const SessionDrawer = ({
 							<NotificationRow>
 								<DetailValue>
 									{notificationWasSent
-										? t(
-												'patients.profile.session-drawer.notification-sent'
-											)
+										? t('patients.profile.session-drawer.notification-sent')
 										: t(
 												'patients.profile.session-drawer.notification-not-sent'
 											)}
@@ -527,6 +552,39 @@ export const SessionDrawer = ({
 								{renderNotifyIconButton()}
 							</NotificationRow>
 						</DrawerDetailItem>
+						{recoveryStatusLabelKey ? (
+							<DrawerDetailItem>
+								<DetailLabel>
+									{t('availability.cancellation-recovery.detail.recovery-state')}
+								</DetailLabel>
+								<DetailValue>{t(recoveryStatusLabelKey)}</DetailValue>
+							</DrawerDetailItem>
+						) : null}
+						{session.followedUpAt ? (
+							<DrawerDetailItem>
+								<DetailLabel>
+									{t('availability.cancellation-recovery.detail.followed-up-at')}
+								</DetailLabel>
+								<DetailValue>
+									{formatLocalizedDate(
+										session.followedUpAt,
+										fallback,
+										i18n.language,
+										'PPP p'
+									)}
+								</DetailValue>
+							</DrawerDetailItem>
+						) : null}
+						{session.rebookedAppointmentId ? (
+							<DrawerDetailItem>
+								<DetailLabel>
+									{t(
+										'availability.cancellation-recovery.detail.rebooked-appointment'
+									)}
+								</DetailLabel>
+								<DetailValue>{session.rebookedAppointmentId}</DetailValue>
+							</DrawerDetailItem>
+						) : null}
 					</>
 				) : (
 					<>
@@ -536,9 +594,7 @@ export const SessionDrawer = ({
 							</DetailLabel>
 							<DetailValue>
 								{session.slot.deliveryMode
-									? t(
-											`patients.profile.delivery.${session.slot.deliveryMode}`
-										)
+									? t(`patients.profile.delivery.${session.slot.deliveryMode}`)
 									: t('patients.profile.delivery.not-set')}
 							</DetailValue>
 						</DrawerDetailItem>
@@ -549,9 +605,7 @@ export const SessionDrawer = ({
 							<NotificationRow>
 								<DetailValue>
 									{notificationWasSent
-										? t(
-												'patients.profile.session-drawer.notification-sent'
-											)
+										? t('patients.profile.session-drawer.notification-sent')
 										: t(
 												'patients.profile.session-drawer.notification-not-sent'
 											)}
@@ -642,9 +696,7 @@ export const SessionDrawer = ({
 					{reasonCode === 7 ? (
 						<TextField
 							fullWidth
-							label={t(
-								'patients.profile.session-drawer.cancel-custom-reason'
-							)}
+							label={t('patients.profile.session-drawer.cancel-custom-reason')}
 							multiline
 							onChange={(event) => setCustomReason(event.target.value)}
 							rows={3}

@@ -153,15 +153,26 @@ export interface ISlot {
 	blockReason?: string | null;
 	blockedAt?: ISODateString | null;
 	canceledAt?: ISODateString | null;
+	cancelledPatientId?: string | null;
 	cancelledPatientName?: string | null;
 	customReason?: string | null;
 	deliveryMode?: 'online' | 'in-person' | null;
 	endTime: string;
+	followedUpAt?: ISODateString | null;
+	followedUpBy?: string | null;
 	letPatientChooseAddress?: boolean;
 	note?: string;
 	patientId?: string;
 	patientSummary?: ISlotPatientSummary | null;
 	reasonCode?: number | null;
+	rebookedAppointmentId?: string | null;
+	recoveryStatus?:
+		| 'PENDING_FOLLOW_UP'
+		| 'FOLLOWED_UP'
+		| 'REOPENED'
+		| 'REBOOKED'
+		| 'ARCHIVED'
+		| null;
 	reopenedAt?: ISODateString | null;
 	startTime: string;
 	status: StatusEnum;
@@ -180,7 +191,11 @@ export interface ISessionDatesGroup {
 	slots: ISlot[];
 }
 
-export type PreferredContactType = 'google_meet' | 'phone' | 'whatsapp' | 'zoom';
+export type PreferredContactType =
+	| 'google_meet'
+	| 'phone'
+	| 'whatsapp'
+	| 'zoom';
 export type PatientBillingModel = 'monthly' | 'per_session';
 export type PatientBillingCategory = 'pro_bono' | 'social' | 'standard';
 
@@ -210,7 +225,6 @@ export interface IPatient extends IBaseUser {
 	mergedIntoPatientId?: string | null;
 	notifications?: INotification[];
 	preferredContact?: IPreferredContact | null;
-
 	role: 'PATIENT';
 	sessionDates: ISessionDatesGroup[];
 	status?: 'ACTIVE' | 'ARCHIVED' | 'MERGED';
@@ -235,7 +249,18 @@ export interface ICancelledAppointment {
 	customReason?: string;
 	date: ISODateString;
 	endTime: string;
+	followedUpAt?: ISODateString | null;
+	followedUpBy?: string | null;
 	reasonCode?: number;
+	rebookedAppointmentId?: string | null;
+	recoveryStatus?:
+		| 'PENDING_FOLLOW_UP'
+		| 'FOLLOWED_UP'
+		| 'REOPENED'
+		| 'REBOOKED'
+		| 'ARCHIVED'
+		| null;
+	reopenedAt?: ISODateString | null;
 	slotId: string;
 	startTime: string;
 	triggeredBy: 'PATIENT' | 'THERAPIST';

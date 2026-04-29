@@ -5,7 +5,7 @@ import type {
 	ISlotReplicationConflictMetadata,
 } from '@psycron/api/user/conflicts/index.types';
 import { Button } from '@psycron/components/button/Button';
-import { Text } from '@psycron/components/text/Text';
+import { QueueEmptyState } from '@psycron/components/queue-panel';
 
 import {
 	ConflictDescription,
@@ -33,7 +33,6 @@ import {
 	ConflictDetailSkeletonBlock,
 	ConflictDetailSkeletonRow,
 	ConflictMetaGrid,
-	EmptyState,
 } from './styles/ConflictDetail.styles';
 import type { ConflictDetailProps } from './types/ConflictDetail.types';
 import { ConflictResolutionSummary } from './ConflictResolutionSummary';
@@ -54,11 +53,7 @@ export const ConflictDetail = ({
 	}, [conflict?._id]);
 
 	if (!conflict) {
-		return (
-			<EmptyState>
-				<Text>{t('conflicts.empty')}</Text>
-			</EmptyState>
-		);
+		return <QueueEmptyState message={t('conflicts.empty')} />;
 	}
 
 	const duplicateMetadata =

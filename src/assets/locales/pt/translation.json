@@ -212,6 +212,7 @@
         "preferred-contact": "Contato preferido",
         "timezone": "Fuso horário",
         "billing": "Cobrança",
+        "recovery": "Recuperação",
         "last-appointment": "Último atendimento",
         "sessions": "Sessões",
         "status": "Status"
@@ -232,6 +233,10 @@
       "no-appointments": "Sem atendimentos ainda",
       "contact-method-not-set": "Não definido",
       "possible-duplicate": "Possível duplicata",
+      "cancellation-follow-up-needed": "{{count}} precisa de acompanhamento",
+      "cancellation-follow-up-needed_other": "{{count}} precisam de acompanhamento",
+      "cancellation-follow-up-none": "Sem cancelamentos",
+      "cancellation-follow-up-resolved": "Resolvido",
       "cancelled-sessions-notice": "{{count}} sessão cancelada",
       "cancelled-sessions-notice_other": "{{count}} sessões canceladas"
     },
@@ -277,6 +282,7 @@
         "completed-title": "Sessão concluída",
         "notify": "Notificar paciente",
         "notify-error": "Não foi possível enviar a notificação. Tente novamente.",
+        "notify-sending": "A enviar notificação…",
         "notify-success": "Paciente notificado com sucesso.",
         "read-only": "Sessões canceladas estão disponíveis apenas para consulta.",
         "reschedule": "Reagendar",
@@ -288,6 +294,7 @@
         "role": "Sessão do paciente",
         "upcoming-title": "Sessão agendada",
         "update-error": "Não foi possível atualizar esta sessão. Tente novamente.",
+        "update-no-change": "Nenhuma alteração foi feita — o horário da sessão é o mesmo.",
         "update-success": "Sessão atualizada com sucesso."
       },
       "status": {
@@ -1142,6 +1149,101 @@
       "subtitle": "Seu calendário de disponibilidade",
       "settings": "Definições de disponibilidade"
     },
+    "cancellation-recovery": {
+      "title": "Recuperação de cancelamentos",
+      "subtitle": "Revise consultas canceladas, reabra horários e avance no acompanhamento do paciente sem poluir o calendário ao vivo.",
+      "empty": "Nenhuma consulta cancelada corresponde aos filtros atuais.",
+      "empty-selection": "Escolha uma consulta cancelada para revisar os detalhes de recuperação e as próximas ações.",
+      "unknown-patient": "Paciente desconhecido",
+      "queue": {
+        "title": "Fila de recuperação",
+        "subtitle": "Acompanhe cancelamentos que ainda precisam de atenção do terapeuta."
+      },
+      "stats": {
+        "total": "Total",
+        "pending-follow-up": "Pendentes",
+        "reopened": "Reabertos"
+      },
+      "filters": {
+        "title": "Filtros",
+        "summary-default": "Expanda para refinar a fila de recuperação.",
+        "summary-active": "{{count}} filtros ativos",
+        "patient": "Paciente",
+        "patient-placeholder": "Busque pelo nome do paciente",
+        "period": "Período",
+        "status": "Estado",
+        "cancelled-by": "Cancelado por",
+        "reason": "Motivo",
+        "reason-all": "Todos os motivos",
+        "delivery": "Modalidade",
+        "period-options": {
+          "all": "Todos",
+          "past": "Passado",
+          "upcoming": "Futuros"
+        },
+        "status-options": {
+          "all": "Todos",
+          "needs-action": "Precisa de ação",
+          "resolved": "Resolvidos"
+        },
+        "cancelled-by-options": {
+          "all": "Todos",
+          "patient": "Paciente",
+          "therapist": "Terapeuta",
+          "unknown": "Desconhecido"
+        },
+        "delivery-options": {
+          "all": "Todas",
+          "in-person": "Presencial",
+          "online": "Online",
+          "unknown": "Desconhecida"
+        }
+      },
+      "state": {
+        "archived": "Arquivado",
+        "followed-up": "Acompanhado",
+        "overdue": "Atrasado",
+        "pending-follow-up": "Aguardando acompanhamento",
+        "rebooked": "Reagendado",
+        "reopened": "Reaberto"
+      },
+      "cancelled-by": {
+        "patient": "Cancelado pelo paciente",
+        "therapist": "Cancelado pelo terapeuta",
+        "unknown": "Cancelado por origem desconhecida"
+      },
+      "delivery": {
+        "in-person": "Presencial",
+        "online": "Online",
+        "unknown": "Não informado"
+      },
+      "detail": {
+        "eyebrow": "Detalhe da recuperação",
+        "cancelled-at": "Cancelado em",
+        "cancelled-by": "Cancelado por",
+        "reason": "Motivo",
+        "delivery": "Modalidade",
+        "followed-up-at": "Acompanhado em",
+        "patient": "Paciente",
+        "rebooked-appointment": "Agendamento remarcado",
+        "recovery-state": "Estado da recuperação",
+        "not-provided": "Não informado"
+      },
+      "actions": {
+        "rebook": "Reagendar este paciente",
+        "archive": "Marcar como resolvido",
+        "archive-all": "Marcar todos como resolvidos ({{count}})",
+        "more": "Mais ações",
+        "open-patient": "Abrir perfil do paciente",
+        "reopen": "Tornar horário disponível novamente",
+        "archive-success": "Recuperação fechada sem nova ação.",
+        "archive-error": "Não foi possível fechar este item de recuperação. Tente novamente.",
+        "archive-all-success": "{{count}} itens de recuperação marcados como resolvidos.",
+        "archive-all-error": "Não foi possível resolver todos os itens de recuperação. Tente novamente.",
+        "reopen-success": "Horário reaberto com sucesso.",
+        "reopen-error": "Não foi possível reabrir o horário. Tente novamente."
+      }
+    },
     "week": {
       "drawer": {
         "address-override": "Local da sessão",
@@ -1436,6 +1538,10 @@
     "subtitle": "Revise e resolva conflitos de agenda e de pacientes.",
     "empty": "Nenhum conflito corresponde aos filtros atuais.",
     "filters": {
+      "title": "Filtros",
+      "summary-default": "Refine a fila por status ou tipo de conflito.",
+      "summary-active": "{{count}} filtro ativo",
+      "summary-active_other": "{{count}} filtros ativos",
       "status": "Status",
       "type": "Tipo",
       "open": "Em aberto",

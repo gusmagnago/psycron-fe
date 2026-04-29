@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useParams } from 'react-router-dom';
+import { useParams, useSearchParams } from 'react-router-dom';
 import { Tooltip } from '@mui/material';
 import { capture } from '@psycron/analytics/posthog/events';
 import { PostHogEvent } from '@psycron/analytics/posthog/types';
@@ -81,6 +81,7 @@ import {
 export const PatientProfilePage = () => {
 	const { i18n, t } = useTranslation();
 	const { patientId } = useParams<{ patientId: string }>();
+	const [searchParams, setSearchParams] = useSearchParams();
 	const [editFormOpen, setEditFormOpen] = useState(false);
 	const [selectedSession, setSelectedSession] =
 		useState<PatientSessionRow | null>(null);
@@ -100,6 +101,8 @@ export const PatientProfilePage = () => {
 		() => getSessionsAscending(sessions),
 		[sessions]
 	);
+	const requestedSessionId = searchParams.get('session');
+	const requestedDrawerMode = searchParams.get('mode');
 	const [timelineFilter, setTimelineFilter] =
 		useState<SessionTimelineFilter>('all');
 	const filteredTimelineSessions = useMemo(
@@ -165,6 +168,29 @@ export const PatientProfilePage = () => {
 					: 'upcoming',
 		});
 		setSelectedSession(session);
+	};
+
+	useEffect(() => {
+		if (!requestedSessionId || selectedSession) return;
+
+		const requestedSession =
+			timelineSessions.find((session) => session.slot._id === requestedSessionId) ??
+			null;
+
+		if (requestedSession) {
+			setSelectedSession(requestedSession);
+		}
+	}, [requestedSessionId, selectedSession, timelineSessions]);
+
+	const handleSessionDrawerClose = () => {
+		setSelectedSession(null);
+
+		if (!requestedSessionId && !requestedDrawerMode) return;
+
+		const nextParams = new URLSearchParams(searchParams);
+		nextParams.delete('mode');
+		nextParams.delete('session');
+		setSearchParams(nextParams, { replace: true });
 	};
 
 	const handleTimelineFilterChange = (filter: SessionTimelineFilter) => {
@@ -531,9 +557,12 @@ export const PatientProfilePage = () => {
 					/>
 					{selectedSession ? (
 						<SessionDrawer
+							initialMode={
+								requestedDrawerMode === 'reschedule' ? 'reschedule' : 'details'
+							}
 							notifications={patientDetails?.notifications}
-							onClose={() => setSelectedSession(null)}
-							onRescheduleSuccess={() => setSelectedSession(null)}
+							onClose={handleSessionDrawerClose}
+							onRescheduleSuccess={handleSessionDrawerClose}
 							patientId={patientId ?? ''}
 							patientName={patientName}
 							publicSessionsLink={publicSessionsLink}

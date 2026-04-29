@@ -2,13 +2,13 @@ import { Box } from '@mui/material';
 import { Link } from '@psycron/components/link/Link';
 import { NavigateLink } from '@psycron/components/link/navigate/NavigateLink';
 import { Loader } from '@psycron/components/loader/Loader';
-import { Text } from '@psycron/components/text/Text';
 import { spacing } from '@psycron/theme/spacing/spacing.theme';
 
 import {
 	PageChildrenWrapper,
 	PageLayoutWrapper,
 	PageLoaderWrapper,
+	PageSubTitle,
 	PageTitle,
 	PageTitleWrapper,
 } from './PageLayout.styles';
@@ -31,7 +31,7 @@ export const PageLayout = ({
 					<PageTitle>{title}</PageTitle>
 					{subTitle ? (
 						<Box pt={spacing.xs}>
-							<Text fontSize='0.9rem'>{subTitle}</Text>
+							<PageSubTitle>{subTitle}</PageSubTitle>
 						</Box>
 					) : null}
 					{backButton ? <NavigateLink isBack to={backTo} /> : null}

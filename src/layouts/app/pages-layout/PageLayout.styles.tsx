@@ -7,16 +7,30 @@ export const PageLayoutWrapper = styled(Box)`
 	height: 100vh;
 	display: flex;
 	flex-direction: column;
+	overflow-y: auto;
+	overflow-x: hidden;
 `;
 
 export const PageTitleWrapper = styled(Box)`
-	min-height: 60px;
+	height: auto;
 `;
 
 export const PageTitle = styled(Text)`
 	font-size: 1.4rem;
 	font-weight: 600;
 	text-align: left;
+`;
+
+export const PageSubTitle = styled(Text)`
+	font-size: 0.9rem;
+	font-weight: 400;
+	text-align: left;
+
+	padding: 0 ${spacing.xs};
+
+	${isMobileMedia} {
+		font-size: 0.8rem;
+	}
 `;
 
 export const PageLoaderWrapper = styled(Box)`
@@ -30,13 +44,11 @@ export const PageLoaderWrapper = styled(Box)`
 
 export const PageChildrenWrapper = styled(Box)`
 	flex: 1;
-	overflow-y: auto;
-	overflow-x: hidden;
 	display: flex;
 	flex-direction: column;
-	padding: 0 ${spacing.small};
+	padding: ${spacing.small};
 
 	${isMobileMedia} {
-		padding: 0 ${spacing.xs};
+		padding: ${spacing.xs};
 	}
 `;
