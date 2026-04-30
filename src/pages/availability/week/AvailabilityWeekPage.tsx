@@ -110,6 +110,7 @@ export const AvailabilityWeekPage = () => {
 	const [dayPopoverDate, setDayPopoverDate] = useState<string | null>(null);
 	const [shouldScrollToToday, setShouldScrollToToday] = useState(false);
 	const debugNowMinutes = parseDebugNowMinutes(searchParams.get('debugNow'));
+	const slotIdParam = searchParams.get('slotId');
 
 	const queryClient = useQueryClient();
 	const therapistId = useTherapistId();
@@ -226,6 +227,16 @@ export const AvailabilityWeekPage = () => {
 
 		return () => window.cancelAnimationFrame(frameId);
 	}, [isMobile, mobileDays, shouldScrollToToday]);
+
+	useEffect(() => {
+		if (!slotIdParam || selectedSlot?._id === slotIdParam) return;
+
+		const slot = Object.values(weekData)
+			.flat()
+			.find((weekSlot) => weekSlot._id === slotIdParam);
+
+		if (slot) setSelectedSlot(slot);
+	}, [selectedSlot?._id, slotIdParam, weekData]);
 
 	const todayButton = (
 		<AvailabilityTodayButton

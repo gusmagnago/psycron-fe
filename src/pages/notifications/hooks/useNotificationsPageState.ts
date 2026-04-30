@@ -121,6 +121,9 @@ export const useNotificationsPageState = ({
 				severity: 'error',
 			});
 		},
+		onSettled: () => {
+			queryClient.invalidateQueries({ queryKey: ['notifications'] });
+		},
 	});
 
 	const updateFilter = useCallback(

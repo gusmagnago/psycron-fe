@@ -1,12 +1,14 @@
-export type NotificationChannel = 'EMAIL' | 'SMS' | 'WHATSAPP';
+export type NotificationChannel = 'EMAIL' | 'ICALENDAR' | 'SMS' | 'WHATSAPP';
 
 export type NotificationStatus = 'DELIVERED' | 'FAILED' | 'PENDING' | 'SENT';
 
 export type NotificationMessageType =
 	| 'APPOINTMENT_CONFIRMATION'
-	| 'CANCELLATION'
+	| 'APPOINTMENT_UPDATED'
+	| 'ACCOUNT_SETUP'
+	| 'CONFLICT'
+	| 'DAILY_SCHEDULE_SUMMARY'
 	| 'REMINDER'
-	| 'RESCHEDULE'
 	| string;
 
 export interface INotificationPatient {
@@ -20,6 +22,7 @@ export interface INotificationAppointment {
 	_id?: string;
 	date?: string;
 	endTime?: string;
+	isUpcoming?: boolean;
 	startTime?: string;
 }
 

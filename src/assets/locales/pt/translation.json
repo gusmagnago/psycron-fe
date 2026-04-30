@@ -1662,13 +1662,26 @@
       "title": "Feed de notificações",
       "subtitle": "Uma linha do tempo de entrega para a comunicação com pacientes."
     },
+    "layout": {
+      "expand-feed": "Expandir feed",
+      "collapse-feed": "Recolher feed"
+    },
     "stats": {
       "total": "Total",
       "failed": "Falhas",
-      "delivered": "Entregues"
+      "delivered": "Entregues",
+      "sent": "Enviados"
     },
     "search": {
       "placeholder": "Buscar paciente ou mensagem"
+    },
+    "sort": {
+      "label": "Ordenar",
+      "options": {
+        "newest": "Mais recentes primeiro",
+        "oldest": "Mais antigas primeiro",
+        "status": "Status"
+      }
     },
     "filters": {
       "title": "Filtros",
@@ -1688,7 +1701,8 @@
     "channels": {
       "whatsapp": "WhatsApp",
       "email": "Email",
-      "sms": "SMS"
+      "sms": "SMS",
+      "icalendar": "Convite de calendário"
     },
     "statuses": {
       "pending": "Pendente",
@@ -1698,16 +1712,36 @@
     },
     "message-types": {
       "appointment_confirmation": "Confirmação de consulta",
+      "appointment_updated": "Consulta atualizada",
       "reminder": "Lembrete",
-      "cancellation": "Cancelamento",
-      "reschedule": "Reagendamento"
+      "conflict": "Conflito",
+      "account_setup": "Configuração da conta",
+      "daily_schedule_summary": "Resumo diário da agenda",
+      "unknown": "Notificação"
     },
-    "drawer": {
-      "aria-label": "Detalhes da notificação",
-      "title": "Detalhes da notificação",
-      "open": "Abrir detalhes"
+    "bulk": {
+      "resend-eligible": "Reenviar notificações visíveis com falha ou futuras",
+      "action": "Notificar novamente"
+    },
+    "card": {
+      "appointment": "Consulta: {{value}}",
+      "delivered-at": "Enviada em {{value}}",
+      "failed": "Falha na entrega"
+    },
+    "settings": {
+      "action": "Configurar notificações"
+    },
+    "context": {
+      "channel-status": "Notificação por {{channel}} está {{status}}.",
+      "sent-at": "Enviada em {{value}}.",
+      "delivered-at": "Entregue em {{value}}.",
+      "appointment": "Consulta: {{value}}.",
+      "session": "Sessão: {{value}}.",
+      "calendar-invite-attached": "Convite de calendário anexado.",
+      "error": "Erro de entrega: {{value}}"
     },
     "detail": {
+      "title": "Detalhes da comunicação",
       "patient": "Paciente",
       "unknown-patient": "Paciente desconhecido",
       "message-type": "Tipo de mensagem",
@@ -1720,13 +1754,19 @@
       "ics-attached": "Anexado",
       "ics-empty": "Não anexado",
       "message": "Mensagem",
+      "context": "Contexto",
       "error": "Erro de entrega",
       "payload": "Payload"
     },
     "retry": {
       "action": "Tentar novamente",
-      "success": "Nova tentativa iniciada.",
-      "error": "Não foi possível reenviar esta notificação. Tente novamente."
+      "action-short": "Tentar",
+      "success": "Notificação enviada novamente.",
+      "error": "Não foi possível enviar esta notificação novamente. Tente novamente."
+    },
+    "resend": {
+      "action": "Notificar novamente",
+      "action-short": "Notificar novamente"
     }
   }
 }

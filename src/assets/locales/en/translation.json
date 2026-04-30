@@ -1662,13 +1662,26 @@
 			"title": "Notification feed",
 			"subtitle": "A delivery timeline for patient communication."
 		},
+		"layout": {
+			"expand-feed": "Expand feed",
+			"collapse-feed": "Collapse feed"
+		},
 		"stats": {
 			"total": "Total",
 			"failed": "Failed",
-			"delivered": "Delivered"
+			"delivered": "Delivered",
+			"sent": "Sent"
 		},
 		"search": {
 			"placeholder": "Search patient or message"
+		},
+		"sort": {
+			"label": "Sort",
+			"options": {
+				"newest": "Newest first",
+				"oldest": "Oldest first",
+				"status": "Status"
+			}
 		},
 		"filters": {
 			"title": "Filters",
@@ -1688,7 +1701,8 @@
 		"channels": {
 			"whatsapp": "WhatsApp",
 			"email": "Email",
-			"sms": "SMS"
+			"sms": "SMS",
+			"icalendar": "Calendar invite"
 		},
 		"statuses": {
 			"pending": "Pending",
@@ -1698,16 +1712,36 @@
 		},
 		"message-types": {
 			"appointment_confirmation": "Appointment confirmation",
+			"appointment_updated": "Appointment updated",
 			"reminder": "Reminder",
-			"cancellation": "Cancellation",
-			"reschedule": "Reschedule"
+			"conflict": "Conflict",
+			"account_setup": "Account setup",
+			"daily_schedule_summary": "Daily schedule summary",
+			"unknown": "Notification"
 		},
-		"drawer": {
-			"aria-label": "Notification details",
-			"title": "Notification details",
-			"open": "Open details"
+		"bulk": {
+			"resend-eligible": "Re-notify failed or upcoming visible notifications",
+			"action": "Notify again"
+		},
+		"card": {
+			"appointment": "Appointment: {{value}}",
+			"delivered-at": "Sent at {{value}}",
+			"failed": "Failed delivery"
+		},
+		"settings": {
+			"action": "Setup notifications"
+		},
+		"context": {
+			"channel-status": "{{channel}} notification is {{status}}.",
+			"sent-at": "Sent at {{value}}.",
+			"delivered-at": "Delivered at {{value}}.",
+			"appointment": "Appointment: {{value}}.",
+			"session": "Session: {{value}}.",
+			"calendar-invite-attached": "Calendar invite attached.",
+			"error": "Delivery error: {{value}}"
 		},
 		"detail": {
+			"title": "Communication details",
 			"patient": "Patient",
 			"unknown-patient": "Unknown patient",
 			"message-type": "Message type",
@@ -1720,13 +1754,19 @@
 			"ics-attached": "Attached",
 			"ics-empty": "Not attached",
 			"message": "Message",
+			"context": "Context",
 			"error": "Delivery error",
 			"payload": "Payload"
 		},
 		"retry": {
 			"action": "Retry notification",
-			"success": "Retry started.",
-			"error": "We could not retry this notification. Please try again."
+			"action-short": "Retry",
+			"success": "Notification sent again.",
+			"error": "We could not send this notification again. Please try again."
+		},
+		"resend": {
+			"action": "Notify again",
+			"action-short": "Notify again"
 		}
 	}
 }

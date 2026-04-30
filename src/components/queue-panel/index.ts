@@ -4,8 +4,20 @@ export { QueueFiltersTrigger } from './components/QueueFiltersTrigger';
 export { QueueSidebarHeader } from './components/QueueSidebarHeader';
 export { QueueStats } from './components/QueueStats';
 export {
+	QueueActionsRow,
+	QueueDetailCard,
+	QueueDetailEyebrow,
+	QueueDetailGrid,
+	QueueDetailHeader,
+	QueueDetailLabel,
 	QueueDetailLayout,
+	QueueDetailMessage,
+	QueueDetailPanel,
 	QueueDetailSidebar,
+	QueueDetailSubtitle,
+	QueueDetailTitle,
+	QueueDetailTitleRow,
+	QueueDetailValue,
 	QueueEmptyStateText,
 	QueueFilterChip,
 	QueueFiltersLabel,
@@ -16,6 +28,7 @@ export {
 	QueueFiltersToggleSubtitle,
 	QueueFiltersToggleTitle,
 	QueueList,
+	QueueSearchField,
 	QueueSelectableCard,
 	QueueSelectableCardMetaRow,
 	QueueSidebarCount,

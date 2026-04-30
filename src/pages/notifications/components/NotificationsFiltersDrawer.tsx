@@ -1,9 +1,12 @@
 import { useTranslation } from 'react-i18next';
+import type { SelectChangeEvent } from '@mui/material';
 import type {
 	NotificationChannel,
+	NotificationMessageType,
 	NotificationStatus,
 } from '@psycron/api/notifications/index.types';
 import { QueueFiltersDrawer } from '@psycron/components/queue-panel';
+import { Select } from '@psycron/components/select/Select';
 
 import {
 	FilterChip,
@@ -12,8 +15,12 @@ import {
 	FiltersRow,
 	FiltersSection,
 	SearchField,
+	SortControlWrapper,
 } from '../NotificationsPage.styles';
-import type { NotificationFilters } from '../NotificationsPage.types';
+import type {
+	NotificationFilters,
+	NotificationSortOption,
+} from '../NotificationsPage.types';
 
 interface NotificationsFiltersDrawerProps {
 	activeFilterCount: number;
@@ -24,9 +31,16 @@ interface NotificationsFiltersDrawerProps {
 		key: Key,
 		value: NotificationFilters[Key]
 	) => void;
+	onUpdateSort: (value: NotificationSortOption) => void;
+	sortOption: NotificationSortOption;
 }
 
-const CHANNELS: NotificationChannel[] = ['WHATSAPP', 'EMAIL', 'SMS'];
+const CHANNELS: NotificationChannel[] = [
+	'WHATSAPP',
+	'EMAIL',
+	'SMS',
+	'ICALENDAR',
+];
 const STATUSES: NotificationStatus[] = [
 	'FAILED',
 	'PENDING',
@@ -35,19 +49,26 @@ const STATUSES: NotificationStatus[] = [
 ];
 const MESSAGE_TYPES = [
 	'APPOINTMENT_CONFIRMATION',
+	'APPOINTMENT_UPDATED',
 	'REMINDER',
-	'CANCELLATION',
-	'RESCHEDULE',
-] as const;
+	'CONFLICT',
+	'ACCOUNT_SETUP',
+	'DAILY_SCHEDULE_SUMMARY',
+] satisfies NotificationMessageType[];
 
 export const NotificationsFiltersDrawer = ({
 	activeFilterCount,
 	filters,
 	isOpen,
 	onClose,
+	onUpdateSort,
 	onUpdateFilter,
+	sortOption,
 }: NotificationsFiltersDrawerProps) => {
 	const { t } = useTranslation();
+	const updateSortOption = (event: SelectChangeEvent<string | number>): void => {
+		onUpdateSort(event.target.value as NotificationSortOption);
+	};
 
 	return (
 		<QueueFiltersDrawer
@@ -62,6 +83,32 @@ export const NotificationsFiltersDrawer = ({
 			title={t('notifications.filters.title')}
 		>
 			<FiltersContent>
+				<FiltersSection>
+					<FiltersLabel>{t('notifications.sort.label')}</FiltersLabel>
+					<SortControlWrapper>
+						<Select
+							items={[
+								{
+									name: t('notifications.sort.options.newest'),
+									value: 'newest',
+								},
+								{
+									name: t('notifications.sort.options.oldest'),
+									value: 'oldest',
+								},
+								{
+									name: t('notifications.sort.options.status'),
+									value: 'status',
+								},
+							]}
+							name='notifications-sort'
+							onChangeSelect={updateSortOption}
+							selectLabel={t('notifications.sort.label')}
+							value={sortOption}
+						/>
+					</SortControlWrapper>
+				</FiltersSection>
+
 				<FiltersSection id='notifications-filters-drawer'>
 					<FiltersLabel>{t('notifications.filters.channel')}</FiltersLabel>
 					<FiltersRow>

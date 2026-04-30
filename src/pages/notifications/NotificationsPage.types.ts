@@ -13,6 +13,8 @@ export interface NotificationFilters {
 	to?: string;
 }
 
+export type NotificationSortOption = 'newest' | 'oldest' | 'status';
+
 export interface UseNotificationsPageStateParams {
 	t: (key: string, options?: Record<string, unknown>) => string;
 }

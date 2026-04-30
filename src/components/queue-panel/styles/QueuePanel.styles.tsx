@@ -1,7 +1,10 @@
 import styled from '@emotion/styled';
-import { Box, ButtonBase } from '@mui/material';
+import { Box, ButtonBase, TextField } from '@mui/material';
 import { Text } from '@psycron/components/text/Text';
-import { isMobileMedia } from '@psycron/theme/media-queries/mediaQueries';
+import {
+	isMobileMedia,
+	isSmallerThanTabletMedia,
+} from '@psycron/theme/media-queries/mediaQueries';
 import { hexToRgba, palette } from '@psycron/theme/palette/palette.theme';
 import { shadowMedium, shadowSmall } from '@psycron/theme/shadow/shadow.theme';
 import { spacing } from '@psycron/theme/spacing/spacing.theme';
@@ -24,13 +27,16 @@ const getToneColor = (tone: QueueCardTone) => {
 	}
 };
 
-export const QueueDetailLayout = styled(Box)`
+export const QueueDetailLayout = styled(Box, {
+	shouldForwardProp: (prop) => prop !== 'isExpanded',
+})<{ isExpanded?: boolean }>`
 	align-items: start;
 	display: grid;
 	gap: ${spacing.medium};
-	grid-template-columns: minmax(21rem, 26rem) minmax(0, 1fr);
+	grid-template-columns: ${({ isExpanded }) =>
+		isExpanded ? 'minmax(0, 1fr)' : 'minmax(20rem, 24rem) minmax(0, 1.35fr)'};
 
-	${isMobileMedia} {
+	${isSmallerThanTabletMedia} {
 		grid-template-columns: 1fr;
 	}
 `;
@@ -52,7 +58,7 @@ export const QueueDetailSidebar = styled(Box)`
 	position: sticky;
 	top: ${spacing.medium};
 
-	${isMobileMedia} {
+	${isSmallerThanTabletMedia} {
 		height: auto;
 		position: static;
 	}
@@ -196,7 +202,7 @@ export const QueueList = styled(Box)`
 export const QueueStatsGrid = styled(Box)`
 	display: grid;
 	gap: ${spacing.xs};
-	grid-template-columns: repeat(3, minmax(0, 1fr));
+	grid-template-columns: repeat(auto-fit, minmax(4.5rem, 1fr));
 `;
 
 export const QueueStatCard = styled(Box)`
@@ -299,4 +305,110 @@ export const QueueSelectableCardMetaRow = styled(Box)`
 		align-items: flex-start;
 		flex-direction: column;
 	}
+`;
+
+export const QueueSearchField = styled(TextField)`
+	.MuiInputBase-root {
+		background: ${palette.background.default};
+		border-radius: ${spacing.medium};
+		font-size: 0.9rem;
+	}
+`;
+
+export const QueueDetailPanel = styled(Box)`
+	background: ${palette.background.paper};
+	border: 1px solid ${hexToRgba(palette.gray['04'], 0.1)};
+	border-radius: ${spacing.large};
+	box-shadow: ${shadowMedium};
+	display: flex;
+	flex-direction: column;
+	gap: ${spacing.mediumSmall};
+	min-height: 32rem;
+	padding: ${spacing.large};
+
+	${isMobileMedia} {
+		padding: ${spacing.medium};
+	}
+`;
+
+export const QueueDetailHeader = styled(Box)`
+	display: flex;
+	flex-direction: column;
+	gap: ${spacing.xs};
+`;
+
+export const QueueDetailEyebrow = styled(Text)`
+	color: ${palette.secondary.main};
+	font-size: 0.75rem;
+	font-weight: 700;
+	text-transform: uppercase;
+`;
+
+export const QueueDetailTitleRow = styled(Box)`
+	align-items: center;
+	display: flex;
+	flex-wrap: wrap;
+	gap: ${spacing.xs};
+	justify-content: space-between;
+`;
+
+export const QueueDetailTitle = styled(Text)`
+	font-size: 1.4rem;
+	font-weight: 700;
+`;
+
+export const QueueDetailSubtitle = styled(Text)`
+	color: ${palette.gray['05']};
+	font-size: 0.92rem;
+	line-height: 1.5;
+`;
+
+export const QueueDetailGrid = styled(Box)`
+	display: grid;
+	gap: ${spacing.xs};
+	grid-template-columns: repeat(2, minmax(0, 1fr));
+
+	${isMobileMedia} {
+		grid-template-columns: 1fr;
+	}
+`;
+
+export const QueueDetailCard = styled(Box)`
+	display: flex;
+	flex-direction: column;
+	gap: ${spacing.xxs};
+	padding: ${spacing.small};
+`;
+
+export const QueueDetailLabel = styled(Text)`
+	color: ${palette.gray['05']};
+	font-size: 0.75rem;
+	font-weight: 700;
+	text-transform: uppercase;
+`;
+
+export const QueueDetailValue = styled(Text)`
+	font-size: 0.95rem;
+	font-weight: 600;
+	line-height: 1.5;
+	overflow-wrap: anywhere;
+`;
+
+export const QueueDetailMessage = styled(Text)`
+	background: ${palette.background.default};
+	border: 1px solid ${hexToRgba(palette.gray['04'], 0.16)};
+	border-radius: ${spacing.medium};
+	color: ${palette.text.primary};
+	font-size: 0.92rem;
+	line-height: 1.6;
+	padding: ${spacing.medium};
+	white-space: pre-wrap;
+`;
+
+export const QueueActionsRow = styled(Box)`
+	align-items: center;
+	display: flex;
+	flex-wrap: wrap;
+	gap: ${spacing.small};
+	margin-top: auto;
 `;
