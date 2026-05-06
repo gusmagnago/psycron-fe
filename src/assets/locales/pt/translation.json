@@ -183,6 +183,10 @@
     "back": "Voltar",
     "cancel": "Cancelar",
     "close": "Fechar",
+    "layout": {
+      "collapse-queue": "Recolher",
+      "expand-queue": "Expandir"
+    },
     "loading": "Carregando...",
     "required": "Obrigatório",
     "save": "Salvar",
@@ -1153,6 +1157,10 @@
     "cancellation-recovery": {
       "title": "Recuperação de cancelamentos",
       "subtitle": "Revise consultas canceladas, reabra horários e avance no acompanhamento do paciente sem poluir o calendário ao vivo.",
+      "accessibility": {
+        "detail": "Detalhe de recuperação",
+        "queue": "Fila de recuperação"
+      },
       "empty": "Nenhuma consulta cancelada corresponde aos filtros atuais.",
       "empty-selection": "Escolha uma consulta cancelada para revisar os detalhes de recuperação e as próximas ações.",
       "unknown-patient": "Paciente desconhecido",
@@ -1554,6 +1562,14 @@
       "title": "Fila de conflitos",
       "subtitle": "Revise os itens que ainda precisam da sua decisão."
     },
+    "layout": {
+      "expand-queue": "Expandir fila",
+      "collapse-queue": "Recolher fila"
+    },
+    "accessibility": {
+      "queue": "Fila de conflitos",
+      "detail": "Detalhe do conflito"
+    },
     "status": {
       "open": "Em aberto",
       "resolved": "Resolvido",
@@ -1666,6 +1682,11 @@
       "expand-feed": "Expandir feed",
       "collapse-feed": "Recolher feed"
     },
+    "accessibility": {
+      "page": "Área de notificações",
+      "queue": "Feed de notificações",
+      "detail": "Detalhe da notificação"
+    },
     "stats": {
       "total": "Total",
       "failed": "Falhas",
@@ -1720,7 +1741,7 @@
       "unknown": "Notificação"
     },
     "bulk": {
-      "resend-eligible": "Reenviar notificações visíveis com falha ou futuras",
+      "resend-eligible": "Renotificar elegíveis",
       "action": "Notificar novamente"
     },
     "card": {

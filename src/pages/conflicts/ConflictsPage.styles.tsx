@@ -1,50 +1,9 @@
 import styled from '@emotion/styled';
-import { Box, Skeleton } from '@mui/material';
-import {
-	QueueDetailLayout,
-	QueueDetailSidebar,
-	QueueFilterChip,
-	QueueFiltersLabel,
-	QueueFiltersRow,
-	QueueFiltersSection,
-	QueueFiltersToggleButton,
-	QueueFiltersToggleContent,
-	QueueFiltersToggleSubtitle,
-	QueueFiltersToggleTitle,
-	QueueList,
-	QueueSelectableCard,
-	QueueSelectableCardMetaRow,
-	QueueSidebarCount,
-	QueueSidebarHeaderWrapper,
-	QueueSidebarSubtitle,
-	QueueSidebarTitle,
-	QueueSidebarTitleRow,
-} from '@psycron/components/queue-panel';
+import { Box } from '@mui/material';
 import { Text } from '@psycron/components/text/Text';
 import { isMobileMedia } from '@psycron/theme/media-queries/mediaQueries';
 import { hexToRgba, palette } from '@psycron/theme/palette/palette.theme';
 import { spacing } from '@psycron/theme/spacing/spacing.theme';
-
-export const ConflictsLayout = QueueDetailLayout;
-export const ConflictsSidebar = QueueDetailSidebar;
-export const SidebarHeader = QueueSidebarHeaderWrapper;
-export const SidebarTitleRow = QueueSidebarTitleRow;
-export const SidebarTitle = QueueSidebarTitle;
-export const SidebarCount = QueueSidebarCount;
-export const SidebarSubtitle = QueueSidebarSubtitle;
-export const FiltersSection = QueueFiltersSection;
-export const FiltersLabel = QueueFiltersLabel;
-export const FiltersRow = QueueFiltersRow;
-export const FilterChip = QueueFilterChip;
-export const ConflictList = QueueList;
-export const FiltersToggleButton = QueueFiltersToggleButton;
-export const FiltersToggleContent = QueueFiltersToggleContent;
-export const FiltersToggleTitle = QueueFiltersToggleTitle;
-export const FiltersToggleSubtitle = QueueFiltersToggleSubtitle;
-
-export const ConflictCard = QueueSelectableCard;
-
-export const ConflictCardMetaRow = QueueSelectableCardMetaRow;
 
 export const ConflictStatusPill = styled(Box)`
 	align-items: center;
@@ -69,7 +28,7 @@ export const ConflictCardDate = styled(Text)`
 `;
 
 export const ConflictTypeLabel = styled(Text)`
-	color: ${palette.secondary.main};
+	color: var(--feature-page-accent, ${palette.secondary.main});
 	font-size: 0.75rem;
 	font-weight: 700;
 	text-transform: uppercase;
@@ -93,25 +52,4 @@ export const ConflictDescription = styled(Text)`
 	${isMobileMedia} {
 		font-size: 0.84rem;
 	}
-`;
-
-export const ConflictsSidebarSkeleton = styled(ConflictsSidebar)`
-	pointer-events: none;
-`;
-
-export const SidebarSkeletonGroup = styled(Box)`
-	display: flex;
-	flex-direction: column;
-	gap: ${spacing.xs};
-`;
-
-export const SidebarSkeletonRow = styled(Box)`
-	display: flex;
-	flex-wrap: wrap;
-	gap: ${spacing.xs};
-`;
-
-export const SidebarSkeletonBlock = styled(Skeleton)`
-	border-radius: ${spacing.medium};
-	transform: none;
 `;

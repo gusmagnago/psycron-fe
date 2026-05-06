@@ -1,7 +1,9 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { SectionTabs } from '@psycron/components/section-tabs';
-import { PageLayout } from '@psycron/layouts/app/pages-layout/PageLayout';
+import {
+	FEATURE_PAGE_COLORS,
+	FeaturePageLayout,
+} from '@psycron/components/feature-page-layout';
 import { CancellationRecoveryPanelContent } from '@psycron/pages/availability/cancellation-recovery/CancellationRecoveryPage';
 import { ConflictsPanelContent } from '@psycron/pages/conflicts/ConflictsPage';
 
@@ -19,24 +21,25 @@ export const ActionCenterPage = ({
 	const [activeTab, setActiveTab] = useState<ActionCenterTab>(initialTab);
 
 	return (
-		<PageLayout
+		<FeaturePageLayout
+			colors={FEATURE_PAGE_COLORS.action}
 			subTitle={t('action-center.subtitle')}
-			title={t('action-center.title')}
-		>
-			<SectionTabs
-				ariaLabel={t('action-center.tabs.aria-label')}
-				items={ACTION_CENTER_TABS.map((tab) => ({
+			tabs={{
+				ariaLabel: t('action-center.tabs.aria-label'),
+				items: ACTION_CENTER_TABS.map((tab) => ({
 					label: t(`action-center.tabs.${tab}`),
 					value: tab,
-				}))}
-				onChange={(value) => setActiveTab(value as ActionCenterTab)}
-				value={activeTab}
-			/>
+				})),
+				onChange: (value) => setActiveTab(value as ActionCenterTab),
+				value: activeTab,
+			}}
+			title={t('action-center.title')}
+		>
 			{activeTab === 'conflicts' ? (
 				<ConflictsPanelContent />
 			) : (
 				<CancellationRecoveryPanelContent />
 			)}
-		</PageLayout>
+		</FeaturePageLayout>
 	);
 };

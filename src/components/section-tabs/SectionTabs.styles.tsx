@@ -4,14 +4,14 @@ import { hexToRgba, palette } from '@psycron/theme/palette/palette.theme';
 import { spacing } from '@psycron/theme/spacing/spacing.theme';
 
 export const SectionTabsWrapper = styled(Box)`
-	margin-bottom: ${spacing.small};
+	flex-shrink: 0;
 `;
 
 export const StyledSectionTabs = styled(Tabs)`
 	min-height: 3rem;
 
 	.MuiTabs-indicator {
-		background-color: ${palette.secondary.main};
+		background-color: var(--feature-page-accent, ${palette.secondary.main});
 		height: 3px;
 	}
 `;
@@ -26,7 +26,10 @@ export const SectionTabButton = styled(Tab)`
 	text-transform: none;
 
 	&.Mui-selected {
-		background: ${hexToRgba(palette.secondary.main, 0.12)};
+		background: var(
+			--feature-page-accent-soft,
+			${hexToRgba(palette.secondary.main, 0.12)}
+		);
 		border-bottom-left-radius: 0;
 		border-bottom-right-radius: 0;
 		color: ${palette.text.primary};

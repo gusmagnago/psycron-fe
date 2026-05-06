@@ -35,8 +35,9 @@ export const enum PostHogEvent {
 	BackofficeWorkerSessionFailed = 'backoffice worker session failed',
 
 	EditUserSubmitted = 'edit user submitted',
-	MarketingConsentToggleChanged = 'marketing consent toggle changed',
+	FeaturePageQueueExpansionChanged = 'feature page queue expansion changed',
 
+	MarketingConsentToggleChanged = 'marketing consent toggle changed',
 	MarketingConsentToggleFailed = 'marketing consent toggle failed',
 	MarketingConsentToggleSaved = 'marketing consent toggle saved',
 	PatientCenterOpened = 'patient center opened',
@@ -77,7 +78,7 @@ export const enum PostHogEvent {
 	UserDetailsEditUserClicked = 'user details edit user clicked',
 	UserDetailsOpened = 'user details opened',
 	UserDetailsPatientsCtaClicked = 'user details patients cta clicked',
-	UserDetailsPatientsNavigationClicked = 'user details patients navigation clicked'
+	UserDetailsPatientsNavigationClicked = 'user details patients navigation clicked',
 }
 
 export type ExceptionContext = {
@@ -326,5 +327,9 @@ export type PostHogEventProps = {
 		date: string;
 		slot_id: string;
 		start_time: string;
+	};
+	[PostHogEvent.FeaturePageQueueExpansionChanged]: {
+		is_expanded: boolean;
+		surface: string;
 	};
 };

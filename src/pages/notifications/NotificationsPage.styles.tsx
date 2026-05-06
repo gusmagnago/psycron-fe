@@ -1,99 +1,10 @@
 import styled from '@emotion/styled';
 import { Box } from '@mui/material';
 import { Link } from '@psycron/components/link/Link';
-import {
-	QueueActionsRow,
-	QueueDetailCard,
-	QueueDetailEyebrow,
-	QueueDetailGrid,
-	QueueDetailHeader,
-	QueueDetailLabel,
-	QueueDetailLayout,
-	QueueDetailMessage,
-	QueueDetailPanel,
-	QueueDetailSidebar,
-	QueueDetailSubtitle,
-	QueueDetailTitle,
-	QueueDetailTitleRow,
-	QueueDetailValue,
-	QueueFilterChip,
-	QueueFiltersLabel,
-	QueueFiltersRow,
-	QueueFiltersSection,
-	QueueList,
-	QueueSearchField,
-	QueueSelectableCard,
-	QueueSelectableCardMetaRow,
-	QueueSidebarCount,
-	QueueSidebarHeaderWrapper,
-	QueueSidebarSubtitle,
-	QueueSidebarTitle,
-	QueueSidebarTitleRow,
-	QueueStatCard,
-	QueueStatLabel,
-	QueueStatsGrid,
-	QueueStatValue,
-} from '@psycron/components/queue-panel';
 import { Text } from '@psycron/components/text/Text';
-import {
-	isMobileMedia,
-	isSmallerThanTabletMedia,
-} from '@psycron/theme/media-queries/mediaQueries';
+import { isMobileMedia } from '@psycron/theme/media-queries/mediaQueries';
 import { hexToRgba, palette } from '@psycron/theme/palette/palette.theme';
 import { spacing } from '@psycron/theme/spacing/spacing.theme';
-
-export const NotificationsLayout = QueueDetailLayout;
-export const NotificationsSidebar = QueueDetailSidebar;
-export const SidebarHeader = QueueSidebarHeaderWrapper;
-export const SidebarTitleRow = QueueSidebarTitleRow;
-export const SidebarTitle = QueueSidebarTitle;
-export const SidebarCount = QueueSidebarCount;
-export const SidebarSubtitle = QueueSidebarSubtitle;
-export const NotificationsStatsGrid = QueueStatsGrid;
-export const NotificationsStatCard = QueueStatCard;
-export const NotificationsStatLabel = QueueStatLabel;
-export const NotificationsStatValue = QueueStatValue;
-export const FiltersSection = QueueFiltersSection;
-export const FiltersLabel = QueueFiltersLabel;
-export const FiltersRow = QueueFiltersRow;
-export const FilterChip = QueueFilterChip;
-export const NotificationsList = QueueList;
-export const NotificationCard = QueueSelectableCard;
-export const NotificationCardMetaRow = QueueSelectableCardMetaRow;
-export const SearchField = QueueSearchField;
-
-export const FeedToggleWrapper = styled(Box)`
-	display: none;
-	justify-content: flex-end;
-
-	${isSmallerThanTabletMedia} {
-		display: flex;
-	}
-`;
-
-export const DetailPanelWrapper = styled(Box, {
-	shouldForwardProp: (prop) => prop !== 'isHidden',
-})<{ isHidden?: boolean }>`
-	display: block;
-	min-width: 0;
-
-	${isSmallerThanTabletMedia} {
-		display: ${({ isHidden }) => (isHidden ? 'none' : 'block')};
-	}
-`;
-
-export const ExpandableFeedContent = styled(Box, {
-	shouldForwardProp: (prop) => prop !== 'isExpanded',
-})<{ isExpanded?: boolean }>`
-	display: flex;
-	flex-direction: column;
-	gap: ${spacing.small};
-	min-height: 0;
-
-	${isSmallerThanTabletMedia} {
-		display: ${({ isExpanded }) => (isExpanded ? 'flex' : 'none')};
-	}
-`;
 
 export const NotificationStatusPill = styled(Box, {
 	shouldForwardProp: (prop) => prop !== 'statusColor',
@@ -112,7 +23,7 @@ export const NotificationStatusPill = styled(Box, {
 `;
 
 export const NotificationChannelLabel = styled(Text)`
-	color: ${palette.secondary.main};
+	color: var(--feature-page-accent, ${palette.secondary.main});
 	font-size: 0.75rem;
 	font-weight: 700;
 	text-transform: uppercase;
@@ -152,8 +63,8 @@ export const NotificationCardInfo = styled(Text)`
 export const NotificationCardActions = styled(Box)`
 	align-items: center;
 	display: flex;
-	gap: ${spacing.xs};
 	flex-wrap: wrap;
+	gap: ${spacing.xs};
 	justify-content: space-between;
 	width: 100%;
 
@@ -162,19 +73,6 @@ export const NotificationCardActions = styled(Box)`
 		flex-direction: column;
 	}
 `;
-
-export const DetailPanel = QueueDetailPanel;
-export const DetailHeader = QueueDetailHeader;
-export const DetailEyebrow = QueueDetailEyebrow;
-export const DetailTitleRow = QueueDetailTitleRow;
-export const DetailTitle = QueueDetailTitle;
-export const DetailSubtitle = QueueDetailSubtitle;
-export const DetailGrid = QueueDetailGrid;
-export const DetailCard = QueueDetailCard;
-export const DetailLabel = QueueDetailLabel;
-export const DetailValue = QueueDetailValue;
-export const MessagePreview = QueueDetailMessage;
-export const ActionsRow = QueueActionsRow;
 
 export const NotificationSettingsLink = styled(Link)`
 	align-items: center;
@@ -198,10 +96,8 @@ export const ContextList = styled(Box)`
 export const BulkActionsRow = styled(Box)`
 	align-items: center;
 	display: flex;
-	flex-direction: column;
 	gap: ${spacing.xs};
 	justify-content: space-between;
-	align-items: flex-start;
 `;
 
 export const SortControlWrapper = styled(Box)`

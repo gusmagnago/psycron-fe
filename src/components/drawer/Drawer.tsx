@@ -25,14 +25,14 @@ export const Drawer = ({
 	<>
 		<DrawerBackdrop aria-hidden='true' onClick={onClose} role='presentation' />
 		<DrawerPanel aria-label={ariaLabel} aria-modal='true' role='dialog'>
+			<DrawerHeader>
+				<Box textAlign='left'>
+					<DrawerTitle>{title}</DrawerTitle>
+					{headerExtra}
+				</Box>
+				<CloseButton onClick={onClose} />
+			</DrawerHeader>
 			<DrawerContent>
-				<DrawerHeader>
-					<Box textAlign='left'>
-						<DrawerTitle>{title}</DrawerTitle>
-						{headerExtra}
-					</Box>
-					<CloseButton onClick={onClose} />
-				</DrawerHeader>
 				{children}
 				{actions && (
 					<DrawerActionsSection>

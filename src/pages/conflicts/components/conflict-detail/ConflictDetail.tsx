@@ -5,7 +5,7 @@ import type {
 	ISlotReplicationConflictMetadata,
 } from '@psycron/api/user/conflicts/index.types';
 import { Button } from '@psycron/components/button/Button';
-import { QueueEmptyState } from '@psycron/components/queue-panel';
+import { QueueDetailPanel, QueueEmptyState } from '@psycron/components/queue-panel';
 
 import {
 	ConflictDescription,
@@ -28,7 +28,6 @@ import {
 	ConflictActionSection,
 	ConflictDetailHeader,
 	ConflictDetailMetaRow,
-	ConflictDetailPanel,
 	ConflictDetailSkeleton,
 	ConflictDetailSkeletonBlock,
 	ConflictDetailSkeletonRow,
@@ -210,7 +209,7 @@ export const ConflictDetail = ({
 	const displayCopy = getConflictDisplayCopy(conflict, t);
 
 	return (
-		<ConflictDetailPanel>
+		<QueueDetailPanel>
 			<ConflictDetailHeader>
 				<ConflictDetailMetaRow>
 					<ConflictTypeLabel>
@@ -245,6 +244,6 @@ export const ConflictDetail = ({
 					{actions}
 				</>
 			)}
-		</ConflictDetailPanel>
+		</QueueDetailPanel>
 	);
 };

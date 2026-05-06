@@ -21,11 +21,14 @@ export const ConflictDetailPanel = styled(Box)`
 	display: flex;
 	flex-direction: column;
 	gap: ${spacing.medium};
-	min-height: 32rem;
+	height: 100%;
+	min-height: 0;
+	overflow: auto;
 	padding: ${spacing.large};
 
 	${isMobileMedia} {
 		gap: ${spacing.small};
+		height: auto;
 		min-height: auto;
 		padding: ${spacing.small};
 	}
@@ -251,8 +254,15 @@ export const ConflictActionFooter = styled(Box)`
 `;
 
 export const ResolutionPanel = styled(Box)`
-	background: ${hexToRgba(palette.tertiary.main, 0.08)};
-	border: 1px solid ${hexToRgba(palette.tertiary.main, 0.18)};
+	background: var(
+		--feature-page-accent-softer,
+		${hexToRgba(palette.tertiary.main, 0.08)}
+	);
+	border: 1px solid
+		var(
+			--feature-page-accent-border,
+			${hexToRgba(palette.tertiary.main, 0.18)}
+		);
 	border-radius: ${spacing.medium};
 	display: flex;
 	flex-direction: column;
@@ -371,9 +381,19 @@ export const MergeReviewOption = styled.button`
 		box-shadow 160ms ease;
 
 	&[aria-checked='true'] {
-		background: ${hexToRgba(palette.tertiary.main, 0.1)};
-		border-color: ${hexToRgba(palette.tertiary.main, 0.42)};
-		box-shadow: 0 0 0 2px ${hexToRgba(palette.tertiary.main, 0.1)};
+		background: var(
+			--feature-page-accent-soft,
+			${hexToRgba(palette.tertiary.main, 0.1)}
+		);
+		border-color: var(
+			--feature-page-accent-selected-border,
+			${hexToRgba(palette.tertiary.main, 0.42)}
+		);
+		box-shadow: 0 0 0 2px
+			var(
+				--feature-page-accent-soft,
+				${hexToRgba(palette.tertiary.main, 0.1)}
+			);
 	}
 
 	&:disabled {

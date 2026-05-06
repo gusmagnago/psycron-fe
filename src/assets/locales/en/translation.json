@@ -181,8 +181,12 @@
 	},
 	"common": {
 		"back": "Back",
-		"close": "Close",
 		"cancel": "Cancel",
+		"close": "Close",
+		"layout": {
+			"collapse-queue": "Collapse",
+			"expand-queue": "Expand"
+		},
 		"loading": "Loading...",
 		"required": "Required",
 		"save": "Save",
@@ -1153,6 +1157,10 @@
 		"cancellation-recovery": {
 			"title": "Cancellation recovery",
 			"subtitle": "Review cancelled appointments, reopen slots, and jump into patient follow-up without cluttering the live calendar.",
+			"accessibility": {
+				"detail": "Recovery detail",
+				"queue": "Recovery queue"
+			},
 			"empty": "No cancelled appointments match your current filters.",
 			"empty-selection": "Choose a cancelled appointment to review its recovery details and next actions.",
 			"unknown-patient": "Unknown patient",
@@ -1554,6 +1562,14 @@
 			"title": "Conflict queue",
 			"subtitle": "Review the items that still need your decision."
 		},
+		"layout": {
+			"expand-queue": "Expand queue",
+			"collapse-queue": "Collapse queue"
+		},
+		"accessibility": {
+			"queue": "Conflict queue",
+			"detail": "Conflict detail"
+		},
 		"status": {
 			"open": "Open",
 			"resolved": "Resolved",
@@ -1666,6 +1682,11 @@
 			"expand-feed": "Expand feed",
 			"collapse-feed": "Collapse feed"
 		},
+		"accessibility": {
+			"page": "Notifications workspace",
+			"queue": "Notification feed",
+			"detail": "Notification detail"
+		},
 		"stats": {
 			"total": "Total",
 			"failed": "Failed",
@@ -1720,7 +1741,7 @@
 			"unknown": "Notification"
 		},
 		"bulk": {
-			"resend-eligible": "Re-notify failed or upcoming visible notifications",
+			"resend-eligible": "Re-notify eligible",
 			"action": "Notify again"
 		},
 		"card": {

@@ -4,27 +4,28 @@ import { useTranslation } from 'react-i18next';
 import { Menu, Tooltip } from '@mui/material';
 import { Button } from '@psycron/components/button/Button';
 import { Dots } from '@psycron/components/icons';
-import { QueueEmptyState } from '@psycron/components/queue-panel';
+import {
+	QueueActionsRow,
+	QueueDetailCard,
+	QueueDetailEyebrow,
+	QueueDetailGrid,
+	QueueDetailHeader,
+	QueueDetailLabel,
+	QueueDetailPanel,
+	QueueDetailSubtitle,
+	QueueDetailTitle,
+	QueueDetailTitleRow,
+	QueueDetailValue,
+	QueueEmptyState,
+} from '@psycron/components/queue-panel';
 import { formatLocalizedDate } from '@psycron/utils/date/date.utils';
 
 import {
 	ActionMenuButton,
 	ActionMenuItem,
-	ActionsRow,
-	DetailCard,
-	DetailEyebrow,
-	DetailGrid,
-	DetailHeader,
-	DetailLabel,
-	DetailPanel,
-	DetailSubtitle,
-	DetailTitle,
-	DetailTitleRow,
-	DetailValue,
 	RecoveryStatePill,
 } from '../CancellationRecoveryPage.styles';
-import type { CancellationRecoveryRow } from '../CancellationRecoveryPage.types';
-import type { CancellationRecoveryDetailPanelProps } from '../CancellationRecoveryPage.types';
+import type { CancellationRecoveryDetailPanelProps, CancellationRecoveryRow } from '../CancellationRecoveryPage.types';
 import {
 	formatRecoveryDateTime,
 	getCancelledByLabelKey,
@@ -36,10 +37,10 @@ import {
 } from '../CancellationRecoveryPage.utils';
 
 const DetailField = ({ label, value }: { label: string; value: string }) => (
-	<DetailCard>
-		<DetailLabel>{label}</DetailLabel>
-		<DetailValue>{value}</DetailValue>
-	</DetailCard>
+	<QueueDetailCard>
+		<QueueDetailLabel>{label}</QueueDetailLabel>
+		<QueueDetailValue>{value}</QueueDetailValue>
+	</QueueDetailCard>
 );
 
 type RecoveryPrimaryAction =
@@ -81,11 +82,11 @@ export const CancellationRecoveryDetailPanel = ({
 
 	if (!row) {
 		return (
-			<DetailPanel>
+			<QueueDetailPanel>
 				<QueueEmptyState
 					message={t('availability.cancellation-recovery.empty-selection')}
 				/>
-			</DetailPanel>
+			</QueueDetailPanel>
 		);
 	}
 
@@ -120,26 +121,26 @@ export const CancellationRecoveryDetailPanel = ({
 	};
 
 	return (
-		<DetailPanel>
-			<DetailHeader>
-				<DetailEyebrow>
+		<QueueDetailPanel>
+			<QueueDetailHeader>
+				<QueueDetailEyebrow>
 					{t('availability.cancellation-recovery.detail.eyebrow')}
-				</DetailEyebrow>
-				<DetailTitleRow>
-					<DetailTitle>
+				</QueueDetailEyebrow>
+				<QueueDetailTitleRow>
+					<QueueDetailTitle>
 						{getRecoveryRowTitle(row) ||
 							t('availability.cancellation-recovery.unknown-patient')}
-					</DetailTitle>
+					</QueueDetailTitle>
 					<RecoveryStatePill state={row.recoveryState}>
 						{t(getRecoveryStateLabelKey(row.recoveryState))}
 					</RecoveryStatePill>
-				</DetailTitleRow>
-				<DetailSubtitle>
+				</QueueDetailTitleRow>
+				<QueueDetailSubtitle>
 					{formatRecoveryDateTime(row, i18n.language)}
-				</DetailSubtitle>
-			</DetailHeader>
+				</QueueDetailSubtitle>
+			</QueueDetailHeader>
 
-			<DetailGrid>
+			<QueueDetailGrid>
 				<DetailField
 					label={t('availability.cancellation-recovery.detail.cancelled-at')}
 					value={formatLocalizedDate(
@@ -204,9 +205,9 @@ export const CancellationRecoveryDetailPanel = ({
 						value={row.rebookedAppointmentId}
 					/>
 				) : null}
-			</DetailGrid>
+			</QueueDetailGrid>
 
-			<ActionsRow>
+			<QueueActionsRow>
 				{primaryAction?.kind === 'rebook' ? (
 					<Button disabled={!row.patientId} onClick={handleRebook}>
 						{t(primaryAction.labelKey)}
@@ -272,7 +273,7 @@ export const CancellationRecoveryDetailPanel = ({
 						</Menu>
 					</>
 				) : null}
-			</ActionsRow>
-		</DetailPanel>
+			</QueueActionsRow>
+		</QueueDetailPanel>
 	);
 };

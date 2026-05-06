@@ -2,13 +2,15 @@ import type { KeyboardEvent, MouseEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { INotificationRecord } from '@psycron/api/notifications/index.types';
 import { Button } from '@psycron/components/button/Button';
+import {
+	QueueSelectableCard,
+	QueueSelectableCardMetaRow,
+} from '@psycron/components/queue-panel';
 
 import {
-	NotificationCard,
 	NotificationCardActions,
 	NotificationCardDate,
 	NotificationCardInfo,
-	NotificationCardMetaRow,
 	NotificationChannelLabel,
 	NotificationPreview,
 	NotificationStatusPill,
@@ -60,16 +62,14 @@ export const NotificationFeedCard = ({
 	};
 
 	return (
-		<NotificationCard
-			component='article'
+		<QueueSelectableCard
 			isSelected={isSelected}
 			onKeyDown={handleKeyDown}
 			onClick={() => onSelect(notification._id)}
-			role='button'
 			tabIndex={0}
 			tone={getNotificationCardTone(notification.status)}
 		>
-			<NotificationCardMetaRow>
+			<QueueSelectableCardMetaRow>
 				<NotificationChannelLabel>
 					{t(getChannelLabelKey(notification.channel))}
 				</NotificationChannelLabel>
@@ -79,7 +79,7 @@ export const NotificationFeedCard = ({
 				>
 					{t(getStatusLabelKey(notification.status))}
 				</NotificationStatusPill>
-			</NotificationCardMetaRow>
+			</QueueSelectableCardMetaRow>
 			<NotificationTitle>
 				{patientName || t('notifications.detail.unknown-patient')}
 			</NotificationTitle>
@@ -119,6 +119,6 @@ export const NotificationFeedCard = ({
 					</Button>
 				) : null}
 			</NotificationCardActions>
-		</NotificationCard>
+		</QueueSelectableCard>
 	);
 };

@@ -291,6 +291,7 @@ export const useCancellationRecoveryPageState = ({
 		reopenRow: (row: CancellationRecoveryRow) => reopenMutation.mutate(row),
 		selectedRow,
 		selectedSlotId,
+		clearSelection: () => setSelectedSlotId(null),
 		selectRow: (slotId: string) => setSelectedSlotId(slotId),
 		stats,
 	};

@@ -32,12 +32,18 @@ export const QueueDetailLayout = styled(Box, {
 })<{ isExpanded?: boolean }>`
 	align-items: start;
 	display: grid;
+	flex: 1;
 	gap: ${spacing.medium};
 	grid-template-columns: ${({ isExpanded }) =>
-		isExpanded ? 'minmax(0, 1fr)' : 'minmax(20rem, 24rem) minmax(0, 1.35fr)'};
+		isExpanded ? 'minmax(0, 1fr)' : 'minmax(22rem, 2fr) minmax(0, 3fr)'};
+	height: 100%;
+	min-height: 0;
+	overflow: hidden;
 
 	${isSmallerThanTabletMedia} {
 		grid-template-columns: 1fr;
+		height: auto;
+		overflow: visible;
 	}
 `;
 
@@ -52,15 +58,13 @@ export const QueueDetailSidebar = styled(Box)`
 	display: flex;
 	flex-direction: column;
 	gap: ${spacing.small};
-	height: calc(100vh - 8.3rem);
+	height: 100%;
+	min-height: 0;
 	overflow: hidden;
 	padding: ${spacing.medium};
-	position: sticky;
-	top: ${spacing.medium};
 
 	${isSmallerThanTabletMedia} {
 		height: auto;
-		position: static;
 	}
 `;
 
@@ -84,7 +88,7 @@ export const QueueSidebarTitle = styled(Text)`
 
 export const QueueSidebarCount = styled(Box)`
 	align-items: center;
-	color: ${palette.secondary.main};
+	color: var(--feature-page-accent, ${palette.secondary.main});
 	display: inline-flex;
 	font-size: 0.8rem;
 	font-weight: 700;
@@ -158,15 +162,21 @@ export const QueueFilterChip = styled(ButtonBase, {
 })<{ isActive: boolean }>`
 	background: ${({ isActive }) =>
 		isActive
-			? `linear-gradient(135deg, ${hexToRgba(
+			? `linear-gradient(135deg, var(--feature-page-accent-soft, ${hexToRgba(
 					palette.secondary.main,
 					0.14
-				)} 0%, ${hexToRgba(palette.secondary.main, 0.22)} 100%)`
+				)}) 0%, var(--feature-page-accent-strong-soft, ${hexToRgba(
+					palette.secondary.main,
+					0.22
+				)}) 100%)`
 			: palette.background.default};
 	border: 1px solid
 		${({ isActive }) =>
 			isActive
-				? hexToRgba(palette.secondary.main, 0.28)
+				? `var(--feature-page-accent-selected-border, ${hexToRgba(
+						palette.secondary.main,
+						0.28
+					)})`
 				: hexToRgba(palette.gray['04'], 0.18)};
 	border-radius: 999px;
 	box-shadow: ${({ isActive }) => (isActive ? shadowSmall : 'none')};
@@ -183,7 +193,10 @@ export const QueueFilterChip = styled(ButtonBase, {
 		transform 160ms ease;
 
 	&:hover {
-		border-color: ${hexToRgba(palette.secondary.main, 0.24)};
+		border-color: var(
+			--feature-page-accent-hover-border,
+			${hexToRgba(palette.secondary.main, 0.24)}
+		);
 		transform: translateY(-1px);
 	}
 `;
@@ -197,12 +210,18 @@ export const QueueList = styled(Box)`
 	overflow: auto;
 	padding: ${spacing.xs};
 	padding-top: 0;
+
+	${isMobileMedia} {
+		flex: none;
+		height: auto;
+		overflow: visible;
+	}
 `;
 
 export const QueueStatsGrid = styled(Box)`
 	display: grid;
 	gap: ${spacing.xs};
-	grid-template-columns: repeat(auto-fit, minmax(4.5rem, 1fr));
+	grid-template-columns: repeat(auto-fit, minmax(3.5rem, 1fr));
 `;
 
 export const QueueStatCard = styled(Box)`
@@ -261,15 +280,21 @@ export const QueueSelectableCard = styled(ButtonBase, {
 	align-items: flex-start;
 	background: ${({ isSelected }) =>
 		isSelected
-			? `linear-gradient(180deg, ${hexToRgba(
+			? `linear-gradient(180deg, var(--feature-page-accent-soft, ${hexToRgba(
 					palette.secondary.main,
 					0.14
-				)} 0%, ${hexToRgba(palette.secondary.main, 0.04)} 100%)`
+				)}) 0%, var(--feature-page-accent-softer, ${hexToRgba(
+					palette.secondary.main,
+					0.04
+				)}) 100%)`
 			: palette.background.paper};
 	border: 1px solid
 		${({ isSelected, tone = 'neutral' }) =>
 			isSelected
-				? hexToRgba(palette.secondary.main, 0.3)
+				? `var(--feature-page-accent-selected-border, ${hexToRgba(
+						palette.secondary.main,
+						0.3
+					)})`
 				: hexToRgba(getToneColor(tone), tone === 'neutral' ? 0.18 : 0.16)};
 	border-radius: ${spacing.large};
 	box-shadow: ${({ isSelected }) => (isSelected ? shadowMedium : shadowSmall)};
@@ -285,7 +310,10 @@ export const QueueSelectableCard = styled(ButtonBase, {
 		transform 180ms ease;
 
 	&:hover {
-		border-color: ${hexToRgba(palette.secondary.main, 0.22)};
+		border-color: var(
+			--feature-page-accent-hover-border,
+			${hexToRgba(palette.secondary.main, 0.22)}
+		);
 		transform: translateY(-1px);
 	}
 
@@ -316,19 +344,11 @@ export const QueueSearchField = styled(TextField)`
 `;
 
 export const QueueDetailPanel = styled(Box)`
-	background: ${palette.background.paper};
-	border: 1px solid ${hexToRgba(palette.gray['04'], 0.1)};
-	border-radius: ${spacing.large};
-	box-shadow: ${shadowMedium};
 	display: flex;
+	flex: 1;
 	flex-direction: column;
 	gap: ${spacing.mediumSmall};
-	min-height: 32rem;
-	padding: ${spacing.large};
-
-	${isMobileMedia} {
-		padding: ${spacing.medium};
-	}
+	min-height: 0;
 `;
 
 export const QueueDetailHeader = styled(Box)`
@@ -338,7 +358,7 @@ export const QueueDetailHeader = styled(Box)`
 `;
 
 export const QueueDetailEyebrow = styled(Text)`
-	color: ${palette.secondary.main};
+	color: var(--feature-page-accent, ${palette.secondary.main});
 	font-size: 0.75rem;
 	font-weight: 700;
 	text-transform: uppercase;
@@ -378,6 +398,10 @@ export const QueueDetailCard = styled(Box)`
 	flex-direction: column;
 	gap: ${spacing.xxs};
 	padding: ${spacing.small};
+
+	${isMobileMedia} {
+		padding: 0;
+	}
 `;
 
 export const QueueDetailLabel = styled(Text)`

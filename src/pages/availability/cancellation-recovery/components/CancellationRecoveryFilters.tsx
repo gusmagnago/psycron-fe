@@ -1,13 +1,13 @@
 import { useTranslation } from 'react-i18next';
 import { TextField } from '@mui/material';
-
 import {
-	FilterChip,
-	FiltersContent,
-	FiltersLabel,
-	FiltersRow,
-	FiltersSection,
-} from '../CancellationRecoveryPage.styles';
+	QueueFilterChip,
+	QueueFiltersLabel,
+	QueueFiltersRow,
+	QueueFiltersSection,
+} from '@psycron/components/queue-panel';
+
+import { FiltersContent } from '../CancellationRecoveryPage.styles';
 import type {
 	CancellationRecoveryDeliveryModeFilter,
 	CancellationRecoveryFiltersProps,
@@ -30,18 +30,18 @@ const FilterChipGroup = <T extends string>({
 	options: FilterChipOption<T>[];
 	value: T;
 }) => (
-	<FiltersRow>
+	<QueueFiltersRow>
 		{options.map((option) => (
-			<FilterChip
+			<QueueFilterChip
 				isActive={value === option.value}
 				key={option.value}
 				onClick={() => onChange(option.value)}
 				type='button'
 			>
 				{option.label}
-			</FilterChip>
+			</QueueFilterChip>
 		))}
-	</FiltersRow>
+	</QueueFiltersRow>
 );
 
 export const CancellationRecoveryFilters = ({
@@ -52,10 +52,10 @@ export const CancellationRecoveryFilters = ({
 
 	return (
 		<FiltersContent>
-			<FiltersSection>
-				<FiltersLabel>
+			<QueueFiltersSection>
+				<QueueFiltersLabel>
 					{t('availability.cancellation-recovery.filters.patient')}
-				</FiltersLabel>
+				</QueueFiltersLabel>
 				<TextField
 					fullWidth
 					onChange={(event) => controls.setPatientQuery(event.target.value)}
@@ -65,12 +65,12 @@ export const CancellationRecoveryFilters = ({
 					size='small'
 					value={filters.patientQuery}
 				/>
-			</FiltersSection>
+			</QueueFiltersSection>
 
-			<FiltersSection>
-				<FiltersLabel>
+			<QueueFiltersSection>
+				<QueueFiltersLabel>
 					{t('availability.cancellation-recovery.filters.period')}
-				</FiltersLabel>
+				</QueueFiltersLabel>
 				<FilterChipGroup<CancellationRecoveryPeriodFilter>
 					onChange={controls.setPeriod}
 					options={[
@@ -95,12 +95,12 @@ export const CancellationRecoveryFilters = ({
 					]}
 					value={filters.period}
 				/>
-			</FiltersSection>
+			</QueueFiltersSection>
 
-			<FiltersSection>
-				<FiltersLabel>
+			<QueueFiltersSection>
+				<QueueFiltersLabel>
 					{t('availability.cancellation-recovery.filters.status')}
-				</FiltersLabel>
+				</QueueFiltersLabel>
 				<FilterChipGroup<CancellationRecoveryStatusFilter>
 					onChange={controls.setStatus}
 					options={[
@@ -125,12 +125,12 @@ export const CancellationRecoveryFilters = ({
 					]}
 					value={filters.status}
 				/>
-			</FiltersSection>
+			</QueueFiltersSection>
 
-			<FiltersSection>
-				<FiltersLabel>
+			<QueueFiltersSection>
+				<QueueFiltersLabel>
 					{t('availability.cancellation-recovery.filters.cancelled-by')}
-				</FiltersLabel>
+				</QueueFiltersLabel>
 				<FilterChipGroup<CancellationRecoveryWhoCancelledFilter>
 					onChange={controls.setCancelledBy}
 					options={[
@@ -161,37 +161,37 @@ export const CancellationRecoveryFilters = ({
 					]}
 					value={filters.cancelledBy}
 				/>
-			</FiltersSection>
+			</QueueFiltersSection>
 
-			<FiltersSection>
-				<FiltersLabel>
+			<QueueFiltersSection>
+				<QueueFiltersLabel>
 					{t('availability.cancellation-recovery.filters.reason')}
-				</FiltersLabel>
-				<FiltersRow>
-					<FilterChip
+				</QueueFiltersLabel>
+				<QueueFiltersRow>
+					<QueueFilterChip
 						isActive={filters.reasonCode === 'all'}
 						onClick={() => controls.setReasonCode('all')}
 						type='button'
 					>
 						{t('availability.cancellation-recovery.filters.reason-all')}
-					</FilterChip>
+					</QueueFilterChip>
 					{reasonOptions.map((reason) => (
-						<FilterChip
+						<QueueFilterChip
 							isActive={filters.reasonCode === reason.value}
 							key={reason.value}
 							onClick={() => controls.setReasonCode(reason.value)}
 							type='button'
 						>
 							{t(reason.labelKey)}
-						</FilterChip>
+						</QueueFilterChip>
 					))}
-				</FiltersRow>
-			</FiltersSection>
+				</QueueFiltersRow>
+			</QueueFiltersSection>
 
-			<FiltersSection>
-				<FiltersLabel>
+			<QueueFiltersSection>
+				<QueueFiltersLabel>
 					{t('availability.cancellation-recovery.filters.delivery')}
-				</FiltersLabel>
+				</QueueFiltersLabel>
 				<FilterChipGroup<CancellationRecoveryDeliveryModeFilter>
 					onChange={controls.setDeliveryMode}
 					options={[
@@ -222,7 +222,7 @@ export const CancellationRecoveryFilters = ({
 					]}
 					value={filters.deliveryMode}
 				/>
-			</FiltersSection>
+			</QueueFiltersSection>
 		</FiltersContent>
 	);
 };

@@ -1,24 +1,26 @@
 import { useTranslation } from 'react-i18next';
 import type { INotificationRecord } from '@psycron/api/notifications/index.types';
 import { Button } from '@psycron/components/button/Button';
+import { UserSettings } from '@psycron/components/icons';
 import { Link } from '@psycron/components/link/Link';
-import { QueueEmptyState } from '@psycron/components/queue-panel';
-import { SlidersHorizontal } from 'lucide-react';
+import {
+	QueueActionsRow,
+	QueueDetailCard,
+	QueueDetailEyebrow,
+	QueueDetailGrid,
+	QueueDetailHeader,
+	QueueDetailLabel,
+	QueueDetailMessage,
+	QueueDetailPanel,
+	QueueDetailSubtitle,
+	QueueDetailTitle,
+	QueueDetailTitleRow,
+	QueueDetailValue,
+	QueueEmptyState,
+} from '@psycron/components/queue-panel';
 
 import {
-	ActionsRow,
 	ContextList,
-	DetailCard,
-	DetailEyebrow,
-	DetailGrid,
-	DetailHeader,
-	DetailLabel,
-	DetailPanel,
-	DetailSubtitle,
-	DetailTitle,
-	DetailTitleRow,
-	DetailValue,
-	MessagePreview,
 	NotificationSettingsLink,
 	NotificationStatusPill,
 } from '../NotificationsPage.styles';
@@ -53,9 +55,9 @@ export const NotificationDetailPanel = ({
 
 	if (!notification) {
 		return (
-			<DetailPanel>
+			<QueueDetailPanel>
 				<QueueEmptyState message={t('notifications.empty')} />
-			</DetailPanel>
+			</QueueDetailPanel>
 		);
 	}
 
@@ -68,37 +70,39 @@ export const NotificationDetailPanel = ({
 	const canResend = isNotificationResendable(notification);
 
 	return (
-		<DetailPanel>
-			<DetailHeader>
-				<DetailEyebrow>{t(getChannelLabelKey(notification.channel))}</DetailEyebrow>
-				<DetailTitleRow>
-					<DetailTitle>{t('notifications.detail.title')}</DetailTitle>
+		<QueueDetailPanel>
+			<QueueDetailHeader>
+				<QueueDetailEyebrow>
+					{t(getChannelLabelKey(notification.channel))}
+				</QueueDetailEyebrow>
+				<QueueDetailTitleRow>
+					<QueueDetailTitle>{t('notifications.detail.title')}</QueueDetailTitle>
 					<NotificationStatusPill
 						statusColor={getStatusColor(notification.status)}
 						title={notification.error ?? undefined}
 					>
 						{t(getStatusLabelKey(notification.status))}
 					</NotificationStatusPill>
-				</DetailTitleRow>
-				<DetailSubtitle>
+				</QueueDetailTitleRow>
+				<QueueDetailSubtitle>
 					{t(getMessageTypeLabelKey(notification.messageType), {
 						defaultValue: notification.messageType,
 					})}
 					{' · '}
 					{formatNotificationDateTime(notification.sentAt, i18n.language)}
-				</DetailSubtitle>
-			</DetailHeader>
+				</QueueDetailSubtitle>
+			</QueueDetailHeader>
 
-			<DetailGrid>
-				<DetailCard>
-					<DetailLabel>{t('notifications.detail.patient')}</DetailLabel>
-					<DetailValue>
+			<QueueDetailGrid>
+				<QueueDetailCard>
+					<QueueDetailLabel>{t('notifications.detail.patient')}</QueueDetailLabel>
+					<QueueDetailValue>
 						{patientPath ? <Link to={patientPath}>{patientName}</Link> : patientName}
-					</DetailValue>
-				</DetailCard>
-				<DetailCard>
-					<DetailLabel>{t('notifications.detail.appointment')}</DetailLabel>
-					<DetailValue>
+					</QueueDetailValue>
+				</QueueDetailCard>
+				<QueueDetailCard>
+					<QueueDetailLabel>{t('notifications.detail.appointment')}</QueueDetailLabel>
+					<QueueDetailValue>
 						{appointmentPath ? (
 							<Link to={appointmentPath}>
 								{formatNotificationAppointment(notification, i18n.language)}
@@ -106,39 +110,39 @@ export const NotificationDetailPanel = ({
 						) : (
 							formatNotificationAppointment(notification, i18n.language)
 						)}
-					</DetailValue>
-				</DetailCard>
-				<DetailCard>
-					<DetailLabel>{t('notifications.detail.sent-at')}</DetailLabel>
-					<DetailValue>
+					</QueueDetailValue>
+				</QueueDetailCard>
+				<QueueDetailCard>
+					<QueueDetailLabel>{t('notifications.detail.sent-at')}</QueueDetailLabel>
+					<QueueDetailValue>
 						{formatNotificationDateTime(notification.sentAt, i18n.language)}
-					</DetailValue>
-				</DetailCard>
-				<DetailCard>
-					<DetailLabel>{t('notifications.detail.delivered-at')}</DetailLabel>
-					<DetailValue>
+					</QueueDetailValue>
+				</QueueDetailCard>
+				<QueueDetailCard>
+					<QueueDetailLabel>{t('notifications.detail.delivered-at')}</QueueDetailLabel>
+					<QueueDetailValue>
 						{notification.status === 'FAILED'
 							? t('notifications.card.failed')
 							: formatNotificationDeliveryDate(notification, i18n.language)}
-					</DetailValue>
-				</DetailCard>
-			</DetailGrid>
+					</QueueDetailValue>
+				</QueueDetailCard>
+			</QueueDetailGrid>
 
-			<DetailCard>
-				<DetailLabel>{t('notifications.detail.context')}</DetailLabel>
+			<QueueDetailCard>
+				<QueueDetailLabel>{t('notifications.detail.context')}</QueueDetailLabel>
 				<ContextList>
 					{contextLines.map((line) => (
-						<DetailValue key={line}>{line}</DetailValue>
+						<QueueDetailValue key={line}>{line}</QueueDetailValue>
 					))}
 				</ContextList>
-			</DetailCard>
+			</QueueDetailCard>
 
-			<DetailCard>
-				<DetailLabel>{t('notifications.detail.message')}</DetailLabel>
-				<MessagePreview>{notification.content}</MessagePreview>
-			</DetailCard>
+			<QueueDetailCard>
+				<QueueDetailLabel>{t('notifications.detail.message')}</QueueDetailLabel>
+				<QueueDetailMessage>{notification.content}</QueueDetailMessage>
+			</QueueDetailCard>
 
-			<ActionsRow>
+			<QueueActionsRow>
 				{canResend ? (
 					<Button
 						loading={isRetrying}
@@ -153,10 +157,10 @@ export const NotificationDetailPanel = ({
 					title={t('notifications.settings.action')}
 					to={getNotificationSettingsPath()}
 				>
-					<SlidersHorizontal aria-hidden='true' />
+					<UserSettings aria-hidden='true' />
 					{t('notifications.settings.action')}
 				</NotificationSettingsLink>
-			</ActionsRow>
-		</DetailPanel>
+			</QueueActionsRow>
+		</QueueDetailPanel>
 	);
 };
