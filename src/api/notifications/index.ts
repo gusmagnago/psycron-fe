@@ -1,6 +1,7 @@
 import apiClient from '@psycron/api/axios-instance';
 
 import type {
+	IArchiveNotificationResponse,
 	IGetNotificationsParams,
 	IGetNotificationsResponse,
 	IRetryNotificationResponse,
@@ -12,6 +13,16 @@ export const getNotifications = async (
 	const response = await apiClient.get<IGetNotificationsResponse>(
 		'/notifications',
 		{ params }
+	);
+
+	return response.data;
+};
+
+export const archiveNotification = async (
+	notificationId: string
+): Promise<IArchiveNotificationResponse> => {
+	const response = await apiClient.patch<IArchiveNotificationResponse>(
+		`/notifications/${notificationId}/archive`
 	);
 
 	return response.data;

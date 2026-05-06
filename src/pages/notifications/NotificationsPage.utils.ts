@@ -2,6 +2,7 @@ import type {
 	INotificationPatient,
 	INotificationRecord,
 	NotificationChannel,
+	NotificationMessageType,
 	NotificationStatus,
 } from '@psycron/api/notifications/index.types';
 import {
@@ -16,6 +17,29 @@ import {
 } from '@psycron/utils/date/date.utils';
 import { format } from 'date-fns';
 import type { TFunction } from 'i18next';
+
+export const NOTIFICATION_CHANNELS: NotificationChannel[] = [
+	'WHATSAPP',
+	'EMAIL',
+	'SMS',
+	'ICALENDAR',
+];
+
+export const NOTIFICATION_STATUSES: NotificationStatus[] = [
+	'FAILED',
+	'PENDING',
+	'SENT',
+	'DELIVERED',
+];
+
+export const NOTIFICATION_MESSAGE_TYPES = [
+	'APPOINTMENT_CONFIRMATION',
+	'APPOINTMENT_UPDATED',
+	'REMINDER',
+	'CONFLICT',
+	'ACCOUNT_SETUP',
+	'DAILY_SCHEDULE_SUMMARY',
+] satisfies NotificationMessageType[];
 
 export const DEFAULT_NOTIFICATION_LIMIT = 20;
 

@@ -77,14 +77,31 @@ export const NotificationCardActions = styled(Box)`
 export const NotificationSettingsLink = styled(Link)`
 	align-items: center;
 	border-radius: ${spacing.xs};
+	color: ${palette.gray['06']};
 	display: inline-flex;
+	font-size: 0.85rem;
+	font-weight: 500;
 	gap: ${spacing.xs};
 	padding: ${spacing.xs};
+	text-decoration: none;
+	transition: color 140ms ease;
+
+	&:hover {
+		color: ${palette.text.primary};
+	}
 
 	svg {
+		flex-shrink: 0;
 		height: ${spacing.small};
 		width: ${spacing.small};
 	}
+`;
+
+export const NotificationUtilityRow = styled(Box)`
+	align-items: center;
+	display: flex;
+	gap: ${spacing.xs};
+	margin-left: auto;
 `;
 
 export const ContextList = styled(Box)`

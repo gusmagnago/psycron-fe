@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { capture } from '@psycron/analytics/posthog/events';
 import { PostHogEvent } from '@psycron/analytics/posthog/types';
@@ -23,95 +23,43 @@ import { NotificationFeedCard } from './components/NotificationFeedCard';
 import { NotificationsFiltersDrawer } from './components/NotificationsFiltersDrawer';
 import { useNotificationsPageState } from './hooks/useNotificationsPageState';
 import { BulkActionsRow } from './NotificationsPage.styles';
-import type { NotificationSortOption } from './NotificationsPage.types';
-import {
-	getMessageTypeLabelKey,
-	isNotificationResendable,
-} from './NotificationsPage.utils';
+import { getMessageTypeLabelKey } from './NotificationsPage.utils';
 
 export const NotificationsPage = () => {
 	const { t } = useTranslation();
 	const [isBulkRetrySelected, setIsBulkRetrySelected] = useState(false);
 	const [isFeedExpanded, setIsFeedExpanded] = useState(false);
 	const [isMobileDetailOpen, setIsMobileDetailOpen] = useState(false);
-	const [sortOption, setSortOption] =
-		useState<NotificationSortOption>('newest');
 	const {
 		activeFilterCount,
+		archiveNotification,
 		closeFiltersDrawer,
 		fetchNextPage,
 		filters,
 		hasNextPage,
+		isArchiving,
 		isFetchingNextPage,
 		isFiltersDrawerOpen,
 		isLoading,
 		isRetrying,
-		notifications,
 		openFiltersDrawer,
+		resendableNotificationIds,
+		resendVisibleNotifications,
 		retrySelectedNotification,
 		selectedNotification,
 		selectedNotificationId,
 		setSelectedNotificationId,
+		setSortOption,
+		sortedNotifications,
+		sortOption,
+		stats,
 		updateFilter,
 	} = useNotificationsPageState({ t });
-
-	const resendableNotificationIds = useMemo(
-		() =>
-			notifications
-				.filter(isNotificationResendable)
-				.map((notification) => notification._id),
-		[notifications]
-	);
-
-	const sortedNotifications = useMemo(() => {
-		const sorted = [...notifications];
-
-		switch (sortOption) {
-			case 'oldest':
-				return sorted.sort(
-					(first, second) =>
-						new Date(first.sentAt).getTime() - new Date(second.sentAt).getTime()
-				);
-			case 'status':
-				return sorted.sort((first, second) =>
-					first.status.localeCompare(second.status)
-				);
-			case 'newest':
-			default:
-				return sorted.sort(
-					(first, second) =>
-						new Date(second.sentAt).getTime() - new Date(first.sentAt).getTime()
-				);
-		}
-	}, [notifications, sortOption]);
-
-	const stats = useMemo(() => {
-		const sent = notifications.filter(
-			(notification) => notification.status === 'SENT'
-		).length;
-		const failed = notifications.filter(
-			(notification) => notification.status === 'FAILED'
-		).length;
-		const delivered = notifications.filter(
-			(notification) => notification.status === 'DELIVERED'
-		).length;
-
-		return [
-			{ label: t('notifications.stats.total'), value: notifications.length },
-			{ label: t('notifications.stats.sent'), value: sent },
-			{ label: t('notifications.stats.failed'), value: failed },
-			{ label: t('notifications.stats.delivered'), value: delivered },
-		];
-	}, [notifications, t]);
-
-	const resendVisibleNotifications = (): void => {
-		resendableNotificationIds.forEach(retrySelectedNotification);
-	};
 
 	const queueSummary = (
 		<>
 			<QueueSidebarHeader
-				count={notifications.length}
+				count={sortedNotifications.length}
 				subtitle={t('notifications.queue.subtitle')}
 				title={t('notifications.queue.title')}
 			/>
@@ -127,7 +75,6 @@ export const NotificationsPage = () => {
 				size='small'
 				value={filters.q}
 			/>
-
 			<QueueFiltersTrigger
 				activeFilterCount={activeFilterCount}
 				controlsId='notifications-filters-drawer'
@@ -139,7 +86,6 @@ export const NotificationsPage = () => {
 				summaryDefault={t('notifications.filters.summary-default')}
 				title={t('notifications.filters.title')}
 			/>
-
 			<BulkActionsRow>
 				<Checkbox
 					checked={isBulkRetrySelected}
@@ -147,9 +93,7 @@ export const NotificationsPage = () => {
 					onChange={(_, checked) => setIsBulkRetrySelected(checked)}
 				/>
 				<Button
-					disabled={
-						!isBulkRetrySelected || resendableNotificationIds.length === 0
-					}
+					disabled={!isBulkRetrySelected || resendableNotificationIds.length === 0}
 					loading={isRetrying}
 					onClick={resendVisibleNotifications}
 					small
@@ -223,6 +167,8 @@ export const NotificationsPage = () => {
 				queueSummary={queueSummary}
 			>
 				<NotificationDetailPanel
+					archiveNotification={archiveNotification}
+					isArchiving={isArchiving}
 					isRetrying={isRetrying}
 					notification={selectedNotification}
 					onRetry={retrySelectedNotification}

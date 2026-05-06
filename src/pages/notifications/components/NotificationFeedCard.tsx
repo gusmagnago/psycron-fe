@@ -1,6 +1,5 @@
 import type { KeyboardEvent, MouseEvent } from 'react';
 import { useTranslation } from 'react-i18next';
-import type { INotificationRecord } from '@psycron/api/notifications/index.types';
 import { Button } from '@psycron/components/button/Button';
 import {
 	QueueSelectableCard,
@@ -30,13 +29,7 @@ import {
 	isNotificationResendable,
 } from '../NotificationsPage.utils';
 
-interface NotificationFeedCardProps {
-	isRetrying: boolean;
-	isSelected: boolean;
-	notification: INotificationRecord;
-	onRetry: (notificationId: string) => void;
-	onSelect: (notificationId: string) => void;
-}
+import type { NotificationFeedCardProps } from './NotificationFeedCard.types';
 
 export const NotificationFeedCard = ({
 	isRetrying,

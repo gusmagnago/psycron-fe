@@ -36,10 +36,11 @@ export const enum PostHogEvent {
 
 	EditUserSubmitted = 'edit user submitted',
 	FeaturePageQueueExpansionChanged = 'feature page queue expansion changed',
-
 	MarketingConsentToggleChanged = 'marketing consent toggle changed',
+
 	MarketingConsentToggleFailed = 'marketing consent toggle failed',
 	MarketingConsentToggleSaved = 'marketing consent toggle saved',
+	NotificationArchived = 'notification archived',
 	PatientCenterOpened = 'patient center opened',
 	PatientCenterSessionCancelled = 'patient center session cancelled',
 	PatientCenterSessionDrawerOpened = 'patient center session drawer opened',
@@ -331,5 +332,10 @@ export type PostHogEventProps = {
 	[PostHogEvent.FeaturePageQueueExpansionChanged]: {
 		is_expanded: boolean;
 		surface: string;
+	};
+	[PostHogEvent.NotificationArchived]: {
+		channel: string;
+		message_type: string;
+		notification_id: string;
 	};
 };

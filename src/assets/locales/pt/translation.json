@@ -1717,7 +1717,9 @@
       "to": "Até",
       "all-channels": "Todos os canais",
       "all-statuses": "Todos os status",
-      "all-types": "Todos os tipos"
+      "all-types": "Todos os tipos",
+      "active": "Ativo",
+      "archived": "Arquivado"
     },
     "channels": {
       "whatsapp": "WhatsApp",
@@ -1788,6 +1790,11 @@
     "resend": {
       "action": "Notificar novamente",
       "action-short": "Notificar novamente"
+    },
+    "archive": {
+      "action": "Arquivar",
+      "success": "Notificação arquivada.",
+      "error": "Não foi possível arquivar esta notificação."
     }
   }
 }

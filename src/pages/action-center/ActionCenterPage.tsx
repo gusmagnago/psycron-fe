@@ -4,9 +4,9 @@ import {
 	FEATURE_PAGE_COLORS,
 	FeaturePageLayout,
 } from '@psycron/components/feature-page-layout';
-import { CancellationRecoveryPanelContent } from '@psycron/pages/availability/cancellation-recovery/CancellationRecoveryPage';
-import { ConflictsPanelContent } from '@psycron/pages/conflicts/ConflictsPage';
 
+import { CancellationRecoveryPanelContent } from './cancellation-recovery/CancellationRecoveryPanelContent';
+import { ConflictsPanelContent } from './conflicts/ConflictsPanelContent';
 import type {
 	ActionCenterPageProps,
 	ActionCenterTab,

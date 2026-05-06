@@ -1,10 +1,5 @@
 import { useTranslation } from 'react-i18next';
 import type { SelectChangeEvent } from '@mui/material';
-import type {
-	NotificationChannel,
-	NotificationMessageType,
-	NotificationStatus,
-} from '@psycron/api/notifications/index.types';
 import {
 	QueueFilterChip,
 	QueueFiltersDrawer,
@@ -19,60 +14,36 @@ import {
 	FiltersContent,
 	SortControlWrapper,
 } from '../NotificationsPage.styles';
-import type {
-	NotificationFilters,
-	NotificationSortOption,
-} from '../NotificationsPage.types';
+import type { NotificationSortOption } from '../NotificationsPage.types';
+import {
+	NOTIFICATION_CHANNELS,
+	NOTIFICATION_MESSAGE_TYPES,
+	NOTIFICATION_STATUSES,
+} from '../NotificationsPage.utils';
 
-interface NotificationsFiltersDrawerProps {
-	activeFilterCount: number;
-	filters: NotificationFilters;
-	isOpen: boolean;
-	onClose: () => void;
-	onUpdateFilter: <Key extends keyof NotificationFilters>(
-		key: Key,
-		value: NotificationFilters[Key]
-	) => void;
-	onUpdateSort: (value: NotificationSortOption) => void;
-	sortOption: NotificationSortOption;
-}
-
-const CHANNELS: NotificationChannel[] = [
-	'WHATSAPP',
-	'EMAIL',
-	'SMS',
-	'ICALENDAR',
-];
-const STATUSES: NotificationStatus[] = [
-	'FAILED',
-	'PENDING',
-	'SENT',
-	'DELIVERED',
-];
-const MESSAGE_TYPES = [
-	'APPOINTMENT_CONFIRMATION',
-	'APPOINTMENT_UPDATED',
-	'REMINDER',
-	'CONFLICT',
-	'ACCOUNT_SETUP',
-	'DAILY_SCHEDULE_SUMMARY',
-] satisfies NotificationMessageType[];
+import { NotificationFilterChipGroup } from './NotificationFilterChipGroup';
+import type { NotificationsFiltersDrawerProps } from './NotificationsFiltersDrawer.types';
 
 export const NotificationsFiltersDrawer = ({
 	activeFilterCount,
 	filters,
 	isOpen,
 	onClose,
-	onUpdateSort,
 	onUpdateFilter,
+	onUpdateSort,
 	sortOption,
 }: NotificationsFiltersDrawerProps) => {
 	const { t } = useTranslation();
-	const updateSortOption = (
-		event: SelectChangeEvent<string | number>
-	): void => {
+
+	const updateSortOption = (event: SelectChangeEvent): void => {
 		onUpdateSort(event.target.value as NotificationSortOption);
 	};
+
+	const sortingItems = [
+		{ name: t('notifications.sort.options.newest'), value: 'newest' },
+		{ name: t('notifications.sort.options.oldest'), value: 'oldest' },
+		{ name: t('notifications.sort.options.status'), value: 'status' },
+	];
 
 	return (
 		<QueueFiltersDrawer
@@ -88,23 +59,33 @@ export const NotificationsFiltersDrawer = ({
 		>
 			<FiltersContent>
 				<QueueFiltersSection>
+					<QueueFiltersLabel>
+						{t('notifications.filters.archived')}
+					</QueueFiltersLabel>
+					<QueueFiltersRow>
+						<QueueFilterChip
+							isActive={!filters.archived}
+							onClick={() => onUpdateFilter('archived', undefined)}
+							type='button'
+						>
+							{t('notifications.filters.active')}
+						</QueueFilterChip>
+						<QueueFilterChip
+							isActive={Boolean(filters.archived)}
+							onClick={() => onUpdateFilter('archived', true)}
+							type='button'
+						>
+							{t('notifications.filters.archived')}
+						</QueueFilterChip>
+					</QueueFiltersRow>
+				</QueueFiltersSection>
+
+				<QueueFiltersSection>
 					<QueueFiltersLabel>{t('notifications.sort.label')}</QueueFiltersLabel>
 					<SortControlWrapper>
 						<Select
-							items={[
-								{
-									name: t('notifications.sort.options.newest'),
-									value: 'newest',
-								},
-								{
-									name: t('notifications.sort.options.oldest'),
-									value: 'oldest',
-								},
-								{
-									name: t('notifications.sort.options.status'),
-									value: 'status',
-								},
-							]}
+							hiddenLabel
+							items={sortingItems}
 							name='notifications-sort'
 							onChangeSelect={updateSortOption}
 							selectLabel={t('notifications.sort.label')}
@@ -113,87 +94,53 @@ export const NotificationsFiltersDrawer = ({
 					</SortControlWrapper>
 				</QueueFiltersSection>
 
-				<QueueFiltersSection id='notifications-filters-drawer'>
-					<QueueFiltersLabel>
-						{t('notifications.filters.channel')}
-					</QueueFiltersLabel>
-					<QueueFiltersRow>
-						<QueueFilterChip
-							isActive={!filters.channel}
-							onClick={() => onUpdateFilter('channel', undefined)}
-							type='button'
-						>
-							{t('notifications.filters.all-channels')}
-						</QueueFilterChip>
-						{CHANNELS.map((channel) => (
-							<QueueFilterChip
-								isActive={filters.channel === channel}
-								key={channel}
-								onClick={() => onUpdateFilter('channel', channel)}
-								type='button'
-							>
-								{t(`notifications.channels.${channel.toLowerCase()}`)}
-							</QueueFilterChip>
-						))}
-					</QueueFiltersRow>
-				</QueueFiltersSection>
+				<NotificationFilterChipGroup
+					activeValue={filters.channel}
+					allLabel={t('notifications.filters.all-channels')}
+					id='notifications-filters-drawer'
+					items={NOTIFICATION_CHANNELS}
+					label={t('notifications.filters.channel')}
+					onClear={() => onUpdateFilter('channel', undefined)}
+					onSelect={(value) =>
+						onUpdateFilter('channel', value as typeof filters.channel)
+					}
+					renderLabel={(value) =>
+						t(`notifications.channels.${value.toLowerCase()}`)
+					}
+				/>
 
-				<QueueFiltersSection>
-					<QueueFiltersLabel>
-						{t('notifications.filters.status')}
-					</QueueFiltersLabel>
-					<QueueFiltersRow>
-						<QueueFilterChip
-							isActive={!filters.status}
-							onClick={() => onUpdateFilter('status', undefined)}
-							type='button'
-						>
-							{t('notifications.filters.all-statuses')}
-						</QueueFilterChip>
-						{STATUSES.map((status) => (
-							<QueueFilterChip
-								isActive={filters.status === status}
-								key={status}
-								onClick={() => onUpdateFilter('status', status)}
-								type='button'
-							>
-								{t(`notifications.statuses.${status.toLowerCase()}`)}
-							</QueueFilterChip>
-						))}
-					</QueueFiltersRow>
-				</QueueFiltersSection>
+				<NotificationFilterChipGroup
+					activeValue={filters.status}
+					allLabel={t('notifications.filters.all-statuses')}
+					items={NOTIFICATION_STATUSES}
+					label={t('notifications.filters.status')}
+					onClear={() => onUpdateFilter('status', undefined)}
+					onSelect={(value) =>
+						onUpdateFilter('status', value as typeof filters.status)
+					}
+					renderLabel={(value) =>
+						t(`notifications.statuses.${value.toLowerCase()}`)
+					}
+				/>
 
-				<QueueFiltersSection>
-					<QueueFiltersLabel>
-						{t('notifications.filters.message-type')}
-					</QueueFiltersLabel>
-					<QueueFiltersRow>
-						<QueueFilterChip
-							isActive={!filters.messageType}
-							onClick={() => onUpdateFilter('messageType', undefined)}
-							type='button'
-						>
-							{t('notifications.filters.all-types')}
-						</QueueFilterChip>
-						{MESSAGE_TYPES.map((messageType) => (
-							<QueueFilterChip
-								isActive={filters.messageType === messageType}
-								key={messageType}
-								onClick={() => onUpdateFilter('messageType', messageType)}
-								type='button'
-							>
-								{t(`notifications.message-types.${messageType.toLowerCase()}`)}
-							</QueueFilterChip>
-						))}
-					</QueueFiltersRow>
-				</QueueFiltersSection>
+				<NotificationFilterChipGroup
+					activeValue={filters.messageType}
+					allLabel={t('notifications.filters.all-types')}
+					items={NOTIFICATION_MESSAGE_TYPES}
+					label={t('notifications.filters.message-type')}
+					onClear={() => onUpdateFilter('messageType', undefined)}
+					onSelect={(value) => onUpdateFilter('messageType', value)}
+					renderLabel={(value) =>
+						t(`notifications.message-types.${value.toLowerCase()}`)
+					}
+				/>
 
 				<QueueFiltersSection>
 					<QueueFiltersLabel>
 						{t('notifications.filters.date-range')}
 					</QueueFiltersLabel>
 					<QueueSearchField
-						InputLabelProps={{ shrink: true }}
+						slotProps={{ inputLabel: { shrink: true } }}
 						label={t('notifications.filters.from')}
 						onChange={(event) => onUpdateFilter('from', event.target.value)}
 						size='small'
@@ -201,7 +148,7 @@ export const NotificationsFiltersDrawer = ({
 						value={filters.from ?? ''}
 					/>
 					<QueueSearchField
-						InputLabelProps={{ shrink: true }}
+						slotProps={{ inputLabel: { shrink: true } }}
 						label={t('notifications.filters.to')}
 						onChange={(event) => onUpdateFilter('to', event.target.value)}
 						size='small'

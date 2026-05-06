@@ -1,10 +1,7 @@
-import type {
-	INotificationRecord,
-	NotificationChannel,
-	NotificationStatus,
-} from '@psycron/api/notifications/index.types';
+import type { INotificationRecord, NotificationChannel, NotificationStatus } from '@psycron/api/notifications/index.types';
 
 export interface NotificationFilters {
+	archived?: boolean;
 	channel?: NotificationChannel;
 	from?: string;
 	messageType?: string;
@@ -21,21 +18,29 @@ export interface UseNotificationsPageStateParams {
 
 export interface UseNotificationsPageStateResult {
 	activeFilterCount: number;
+	archiveNotification: (notificationId: string) => void;
 	closeFiltersDrawer: () => void;
 	fetchNextPage: () => void;
 	filters: NotificationFilters;
 	hasNextPage: boolean;
+	isArchiving: boolean;
 	isFetchingNextPage: boolean;
 	isFiltersDrawerOpen: boolean;
 	isLoading: boolean;
 	isRetrying: boolean;
 	notifications: INotificationRecord[];
 	openFiltersDrawer: () => void;
+	resendVisibleNotifications: () => void;
+	resendableNotificationIds: string[];
 	retrySelectedNotification: (notificationId: string) => void;
 	selectedNotification: INotificationRecord | null;
 	selectedNotificationId: string | null;
 	setFilters: (filters: NotificationFilters) => void;
 	setSelectedNotificationId: (notificationId: string | null) => void;
+	setSortOption: (option: NotificationSortOption) => void;
+	sortOption: NotificationSortOption;
+	sortedNotifications: INotificationRecord[];
+	stats: Array<{ label: string; value: number }>;
 	updateFilter: <Key extends keyof NotificationFilters>(
 		key: Key,
 		value: NotificationFilters[Key]

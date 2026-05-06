@@ -1,7 +1,6 @@
 import { useTranslation } from 'react-i18next';
-import type { INotificationRecord } from '@psycron/api/notifications/index.types';
 import { Button } from '@psycron/components/button/Button';
-import { UserSettings } from '@psycron/components/icons';
+import { Archive, Bell } from '@psycron/components/icons';
 import { Link } from '@psycron/components/link/Link';
 import {
 	QueueActionsRow,
@@ -23,6 +22,7 @@ import {
 	ContextList,
 	NotificationSettingsLink,
 	NotificationStatusPill,
+	NotificationUtilityRow,
 } from '../NotificationsPage.styles';
 import {
 	formatNotificationAppointment,
@@ -40,13 +40,11 @@ import {
 	isNotificationResendable,
 } from '../NotificationsPage.utils';
 
-interface NotificationDetailPanelProps {
-	isRetrying: boolean;
-	notification: INotificationRecord | null;
-	onRetry: (notificationId: string) => void;
-}
+import type { NotificationDetailPanelProps } from './NotificationDetailPanel.types';
 
 export const NotificationDetailPanel = ({
+	archiveNotification,
+	isArchiving,
 	isRetrying,
 	notification,
 	onRetry,
@@ -66,7 +64,11 @@ export const NotificationDetailPanel = ({
 		t('notifications.detail.unknown-patient');
 	const patientPath = getPatientProfilePath(notification);
 	const appointmentPath = getAppointmentCalendarPath(notification);
-	const contextLines = getNotificationContextLines(notification, t, i18n.language);
+	const contextLines = getNotificationContextLines(
+		notification,
+		t,
+		i18n.language
+	);
 	const canResend = isNotificationResendable(notification);
 
 	return (
@@ -95,13 +97,21 @@ export const NotificationDetailPanel = ({
 
 			<QueueDetailGrid>
 				<QueueDetailCard>
-					<QueueDetailLabel>{t('notifications.detail.patient')}</QueueDetailLabel>
+					<QueueDetailLabel>
+						{t('notifications.detail.patient')}
+					</QueueDetailLabel>
 					<QueueDetailValue>
-						{patientPath ? <Link to={patientPath}>{patientName}</Link> : patientName}
+						{patientPath ? (
+							<Link to={patientPath}>{patientName}</Link>
+						) : (
+							patientName
+						)}
 					</QueueDetailValue>
 				</QueueDetailCard>
 				<QueueDetailCard>
-					<QueueDetailLabel>{t('notifications.detail.appointment')}</QueueDetailLabel>
+					<QueueDetailLabel>
+						{t('notifications.detail.appointment')}
+					</QueueDetailLabel>
 					<QueueDetailValue>
 						{appointmentPath ? (
 							<Link to={appointmentPath}>
@@ -113,13 +123,17 @@ export const NotificationDetailPanel = ({
 					</QueueDetailValue>
 				</QueueDetailCard>
 				<QueueDetailCard>
-					<QueueDetailLabel>{t('notifications.detail.sent-at')}</QueueDetailLabel>
+					<QueueDetailLabel>
+						{t('notifications.detail.sent-at')}
+					</QueueDetailLabel>
 					<QueueDetailValue>
 						{formatNotificationDateTime(notification.sentAt, i18n.language)}
 					</QueueDetailValue>
 				</QueueDetailCard>
 				<QueueDetailCard>
-					<QueueDetailLabel>{t('notifications.detail.delivered-at')}</QueueDetailLabel>
+					<QueueDetailLabel>
+						{t('notifications.detail.delivered-at')}
+					</QueueDetailLabel>
 					<QueueDetailValue>
 						{notification.status === 'FAILED'
 							? t('notifications.card.failed')
@@ -147,19 +161,34 @@ export const NotificationDetailPanel = ({
 					<Button
 						loading={isRetrying}
 						onClick={() => onRetry(notification._id)}
+						small
 						severity={notification.status === 'FAILED' ? 'error' : undefined}
 					>
 						{t('notifications.resend.action')}
 					</Button>
 				) : null}
-				<NotificationSettingsLink
-					aria-label={t('notifications.settings.action')}
-					title={t('notifications.settings.action')}
-					to={getNotificationSettingsPath()}
-				>
-					<UserSettings aria-hidden='true' />
-					{t('notifications.settings.action')}
-				</NotificationSettingsLink>
+				<NotificationUtilityRow>
+					{!notification.isArchived ? (
+						<Button
+							disabled={isArchiving}
+							loading={isArchiving}
+							onClick={() => archiveNotification(notification._id)}
+							tertiary
+							small
+						>
+							<Archive aria-hidden='true' />
+							{t('notifications.archive.action')}
+						</Button>
+					) : null}
+					<NotificationSettingsLink
+						aria-label={t('notifications.settings.action')}
+						title={t('notifications.settings.action')}
+						to={getNotificationSettingsPath()}
+					>
+						<Bell aria-hidden='true' />
+						{t('notifications.settings.action')}
+					</NotificationSettingsLink>
+				</NotificationUtilityRow>
 			</QueueActionsRow>
 		</QueueDetailPanel>
 	);

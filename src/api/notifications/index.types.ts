@@ -41,6 +41,7 @@ export interface INotificationRecord {
 	deliveredAt?: string | null;
 	error?: string | null;
 	icsContent?: string | null;
+	isArchived?: boolean;
 	messageType: NotificationMessageType;
 	patient?: INotificationPatient | null;
 	patientId?: string | null;
@@ -50,6 +51,7 @@ export interface INotificationRecord {
 }
 
 export interface IGetNotificationsParams {
+	archived?: boolean;
 	channel?: NotificationChannel;
 	cursor?: string;
 	from?: string;
@@ -69,4 +71,9 @@ export interface IGetNotificationsResponse {
 
 export interface IRetryNotificationResponse {
 	notification: INotificationRecord;
+}
+
+export interface IArchiveNotificationResponse {
+	_id: string;
+	isArchived: boolean;
 }

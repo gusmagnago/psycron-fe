@@ -4,11 +4,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { capture } from '@psycron/analytics/posthog/events';
 import { PostHogEvent } from '@psycron/analytics/posthog/types';
 import { Button } from '@psycron/components/button/Button';
-import {
-	FEATURE_PAGE_COLORS,
-	FeaturePageLayout,
-	FeaturePageQueue,
-} from '@psycron/components/feature-page-layout';
+import { FeaturePageQueue } from '@psycron/components/feature-page-layout';
 import {
 	QueueDetailEyebrow,
 	QueueEmptyState,
@@ -49,12 +45,13 @@ import {
 
 const getCardTone = (
 	state: CancellationRecoveryState
-): 'success' | 'info' | 'neutral' | 'warning' | 'error' => {
+): 'error' | 'info' | 'neutral' | 'success' | 'warning' => {
 	if (state === 'reopened') return 'success';
 	if (state === 'followed_up') return 'info';
 	if (state === 'rebooked') return 'info';
 	if (state === 'archived') return 'neutral';
 	if (state === 'overdue') return 'warning';
+
 	return 'error';
 };
 
@@ -66,9 +63,7 @@ export const CancellationRecoveryPanelContent = () => {
 	const { locale } = useParams<{ locale: string }>();
 	const [isMobileDetailOpen, setIsMobileDetailOpen] = useState(false);
 	const [isQueueExpanded, setIsQueueExpanded] = useState(false);
-	const [rebookRow, setRebookRow] = useState<CancellationRecoveryRow | null>(
-		null
-	);
+	const [rebookRow, setRebookRow] = useState<CancellationRecoveryRow | null>(null);
 
 	const openPatientProfile = (patientId: string): void => {
 		navigate(`/${locale}/${PATIENTS}/${patientId}`);
@@ -290,26 +285,14 @@ export const CancellationRecoveryPanelContent = () => {
 					onClose={closeRebookDrawer}
 					onRescheduleSuccess={handleRebookSuccess}
 					patientId={rebookRow.patientId}
-					patientName={rebookRow.patientName || rebookRow.cancelledPatientName || ''}
+					patientName={
+						rebookRow.patientName || rebookRow.cancelledPatientName || ''
+					}
 					publicSessionsLink={`${DOMAIN}/${locale}/${rebookRow.patientId}/appointments`}
 					session={rebookSession}
 					therapistId={therapistId}
 				/>
 			) : null}
 		</>
-	);
-};
-
-export const CancellationRecoveryPage = () => {
-	const { t } = useTranslation();
-
-	return (
-		<FeaturePageLayout
-			colors={FEATURE_PAGE_COLORS.action}
-			subTitle={t('availability.cancellation-recovery.subtitle')}
-			title={t('availability.cancellation-recovery.title')}
-		>
-			<CancellationRecoveryPanelContent />
-		</FeaturePageLayout>
 	);
 };

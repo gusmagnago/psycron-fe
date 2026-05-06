@@ -1,5 +1,8 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
+import { capture } from '@psycron/analytics/posthog/events';
+import { PostHogEvent } from '@psycron/analytics/posthog/types';
 import {
+	archiveNotification,
 	getNotifications,
 	retryNotification,
 } from '@psycron/api/notifications';
@@ -9,10 +12,14 @@ import { useInfiniteQuery, useMutation, useQueryClient } from '@tanstack/react-q
 
 import type {
 	NotificationFilters,
+	NotificationSortOption,
 	UseNotificationsPageStateParams,
 	UseNotificationsPageStateResult,
 } from '../NotificationsPage.types';
-import { DEFAULT_NOTIFICATION_LIMIT } from '../NotificationsPage.utils';
+import {
+	DEFAULT_NOTIFICATION_LIMIT,
+	isNotificationResendable,
+} from '../NotificationsPage.utils';
 
 const DEFAULT_FILTERS: NotificationFilters = {
 	q: '',
@@ -20,6 +27,7 @@ const DEFAULT_FILTERS: NotificationFilters = {
 
 const getActiveFilterCount = (filters: NotificationFilters): number =>
 	[
+		filters.archived,
 		filters.channel,
 		filters.from,
 		filters.messageType,
@@ -28,17 +36,36 @@ const getActiveFilterCount = (filters: NotificationFilters): number =>
 		filters.to,
 	].filter(Boolean).length;
 
+const sortNotifications = (
+	notifications: INotificationRecord[],
+	option: NotificationSortOption
+): INotificationRecord[] => {
+	const sorted = [...notifications];
+
+	switch (option) {
+		case 'oldest':
+			return sorted.sort(
+				(a, b) => new Date(a.sentAt).getTime() - new Date(b.sentAt).getTime()
+			);
+		case 'status':
+			return sorted.sort((a, b) => a.status.localeCompare(b.status));
+		case 'newest':
+		default:
+			return sorted.sort(
+				(a, b) => new Date(b.sentAt).getTime() - new Date(a.sentAt).getTime()
+			);
+	}
+};
+
 export const useNotificationsPageState = ({
 	t,
 }: UseNotificationsPageStateParams): UseNotificationsPageStateResult => {
 	const queryClient = useQueryClient();
 	const { showAlert } = useAlert();
-	const [filters, setFilters] =
-		useState<NotificationFilters>(DEFAULT_FILTERS);
-	const [selectedNotificationId, setSelectedNotificationId] = useState<
-		string | null
-	>(null);
+	const [filters, setFilters] = useState<NotificationFilters>(DEFAULT_FILTERS);
+	const [selectedNotificationId, setSelectedNotificationId] = useState<string | null>(null);
 	const [isFiltersDrawerOpen, setIsFiltersDrawerOpen] = useState(false);
+	const [sortOption, setSortOption] = useState<NotificationSortOption>('newest');
 
 	const activeFilterCount = useMemo(
 		() => getActiveFilterCount(filters),
@@ -49,6 +76,7 @@ export const useNotificationsPageState = ({
 		queryKey: ['notifications', filters],
 		queryFn: ({ pageParam }) =>
 			getNotifications({
+				archived: filters.archived,
 				channel: filters.channel,
 				cursor: pageParam,
 				from: filters.from || undefined,
@@ -76,18 +104,40 @@ export const useNotificationsPageState = ({
 
 		if (
 			!selectedNotificationId ||
-			!notifications.some((notification) => notification._id === selectedNotificationId)
+			!notifications.some((n) => n._id === selectedNotificationId)
 		) {
 			setSelectedNotificationId(notifications[0]._id);
 		}
 	}, [notifications, selectedNotificationId]);
 
 	const selectedNotification = useMemo(
-		() =>
-			notifications.find(
-				(notification) => notification._id === selectedNotificationId
-			) ?? null,
+		() => notifications.find((n) => n._id === selectedNotificationId) ?? null,
 		[notifications, selectedNotificationId]
+	);
+
+	const sortedNotifications = useMemo(
+		() => sortNotifications(notifications, sortOption),
+		[notifications, sortOption]
+	);
+
+	const resendableNotificationIds = useMemo(
+		() => notifications.filter(isNotificationResendable).map((n) => n._id),
+		[notifications]
+	);
+
+	const stats = useMemo(
+		() => [
+			{ label: t('notifications.stats.total'), value: notifications.length },
+			{
+				label: t('notifications.stats.sent'),
+				value: notifications.filter((n) => n.status === 'SENT').length,
+			},
+			{
+				label: t('notifications.stats.failed'),
+				value: notifications.filter((n) => n.status === 'FAILED').length,
+			},
+		],
+		[notifications, t]
 	);
 
 	const retryMutation = useMutation({
@@ -126,6 +176,42 @@ export const useNotificationsPageState = ({
 		},
 	});
 
+	const archiveMutation = useMutation({
+		mutationFn: archiveNotification,
+		onSuccess: (_, notificationId) => {
+			const notification = notifications.find((n) => n._id === notificationId);
+			if (notification) {
+				capture(PostHogEvent.NotificationArchived, {
+					channel: notification.channel,
+					message_type: notification.messageType,
+					notification_id: notificationId,
+				});
+			}
+			queryClient.invalidateQueries({ queryKey: ['notifications'] });
+			showAlert({
+				message: t('notifications.archive.success'),
+				severity: 'success',
+			});
+		},
+		onError: () => {
+			showAlert({
+				message: t('notifications.archive.error'),
+				severity: 'error',
+			});
+		},
+	});
+
+	const retrySelectedNotification = useCallback(
+		(notificationId: string): void => {
+			retryMutation.mutate(notificationId);
+		},
+		[retryMutation]
+	);
+
+	const resendVisibleNotifications = useCallback((): void => {
+		resendableNotificationIds.forEach(retrySelectedNotification);
+	}, [resendableNotificationIds, retrySelectedNotification]);
+
 	const updateFilter = useCallback(
 		<Key extends keyof NotificationFilters>(
 			key: Key,
@@ -138,25 +224,31 @@ export const useNotificationsPageState = ({
 
 	return {
 		activeFilterCount,
+		archiveNotification: (id) => archiveMutation.mutate(id),
 		closeFiltersDrawer: () => setIsFiltersDrawerOpen(false),
 		fetchNextPage: () => {
 			void notificationsQuery.fetchNextPage();
 		},
 		filters,
 		hasNextPage: Boolean(notificationsQuery.hasNextPage),
+		isArchiving: archiveMutation.isPending,
 		isFetchingNextPage: notificationsQuery.isFetchingNextPage,
 		isFiltersDrawerOpen,
 		isLoading: notificationsQuery.isLoading,
 		isRetrying: retryMutation.isPending,
 		notifications,
 		openFiltersDrawer: () => setIsFiltersDrawerOpen(true),
-		retrySelectedNotification: (notificationId: string) => {
-			retryMutation.mutate(notificationId);
-		},
+		resendableNotificationIds,
+		resendVisibleNotifications,
+		retrySelectedNotification,
 		selectedNotification,
 		selectedNotificationId,
 		setFilters,
 		setSelectedNotificationId,
+		setSortOption,
+		sortedNotifications,
+		sortOption,
+		stats,
 		updateFilter,
 	};
 };
