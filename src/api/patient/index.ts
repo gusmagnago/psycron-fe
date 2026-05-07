@@ -11,6 +11,8 @@ import type {
 	IEditPatientDetailsByIdResponse,
 	IPatientByIdResponse,
 	IPublicPatientSessionsResponse,
+	IUpdatePatientNotificationPreferencesPayload,
+	IUpdatePatientNotificationPreferencesResponse,
 } from './index.types';
 
 export const bookAppointmentFromLink = async ({
@@ -54,6 +56,19 @@ export const getPublicPatientSessions = async (
 	const response = await apiClient.get<IPublicPatientSessionsResponse>(
 		`/patient/${patientId}/sessions`
 	);
+	return response.data;
+};
+
+export const updatePatientNotificationPreferences = async (
+	patientId: string,
+	payload: IUpdatePatientNotificationPreferencesPayload
+): Promise<IUpdatePatientNotificationPreferencesResponse> => {
+	const response =
+		await apiClient.patch<IUpdatePatientNotificationPreferencesResponse>(
+			`/patient/${patientId}/notification-preferences`,
+			payload
+		);
+
 	return response.data;
 };
 

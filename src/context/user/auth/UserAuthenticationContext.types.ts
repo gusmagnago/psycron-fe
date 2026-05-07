@@ -83,6 +83,35 @@ export interface IBaseUser {
 	updatedAt?: ISODateString;
 }
 
+export interface IPatientNotificationChannelPreference {
+	email: boolean;
+	whatsapp: boolean;
+}
+
+export interface IPatientNotificationPreferences {
+	appointmentConfirmation: IPatientNotificationChannelPreference;
+	appointmentUpdated: IPatientNotificationChannelPreference;
+	calendarInvite: { enabled: boolean };
+	reminder: IPatientNotificationChannelPreference & { enabled: boolean };
+}
+
+export interface INotificationChannelPreference {
+	email: boolean;
+	whatsapp: boolean;
+}
+
+export interface IReminderPreference extends INotificationChannelPreference {
+	enabled: boolean;
+	leadTimeMinutes: number;
+}
+
+export interface INotificationPreferences {
+	appointmentConfirmation: INotificationChannelPreference;
+	appointmentUpdated: INotificationChannelPreference;
+	calendarInvite: { enabled: boolean };
+	reminder: IReminderPreference;
+}
+
 export interface ITherapist extends IBaseUser {
 	anonymizedAt?: ISODateString | null;
 	// Google fields (from BE payload)
@@ -98,6 +127,7 @@ export interface ITherapist extends IBaseUser {
 	google: IGoogleUser;
 	googleCalendar?: IGoogleCalendar;
 	googleId?: string;
+	notificationPreferences?: INotificationPreferences;
 	notifications: string[];
 	// local-only
 	password?: string;
@@ -223,6 +253,7 @@ export interface IPatient extends IBaseUser {
 	createdBy?: ITherapist | string;
 	mergedAt?: ISODateString | null;
 	mergedIntoPatientId?: string | null;
+	notificationPreferences?: IPatientNotificationPreferences;
 	notifications?: INotification[];
 	preferredContact?: IPreferredContact | null;
 	role: 'PATIENT';

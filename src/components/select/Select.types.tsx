@@ -3,9 +3,10 @@ import type { SelectChangeEvent } from '@mui/material';
 
 export interface SelectComponentProps {
 	customRenderItem?: (item: ISelectItem) => ReactNode;
+	hiddenLabel?: boolean;
 	hidePrimaryValue?: boolean;
 	items: ISelectItem[];
-	onChangeSelect: (e: SelectChangeEvent<string | number>) => void;
+	onChangeSelect: (e: SelectChangeEvent) => void;
 	required?: boolean;
 	selectLabel?: string;
 	subtitle?: boolean;

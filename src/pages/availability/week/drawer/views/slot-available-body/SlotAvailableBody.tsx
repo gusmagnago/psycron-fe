@@ -141,7 +141,7 @@ export const SlotAvailableBody = ({
 								? lastNameError.message
 								: undefined
 						}
-						InputLabelProps={{ shrink: !!lastNameValue }}
+						slotProps={{ inputLabel: { shrink: !!lastNameValue } }}
 						required
 					/>
 					{sessionType === 'BOTH' && <SlotSessionDeliverySection />}

@@ -12,11 +12,13 @@ import {
 	Mail,
 	MapPin,
 	Phone,
+	Settings,
 	WhatsApp,
 } from '@psycron/components/icons';
 import { usePatient } from '@psycron/context/patient/PatientContext';
 import { useTherapistId } from '@psycron/hooks/useTherapistId';
 import { PageLayout } from '@psycron/layouts/app/pages-layout/PageLayout';
+import { PatientNotificationSettingsDrawer } from '@psycron/pages/notifications/settings/PatientNotificationSettingsDrawer';
 import { DOMAIN, PATIENTS } from '@psycron/pages/urls';
 import {
 	formatDateTimeRange,
@@ -58,6 +60,9 @@ import {
 	IdentityCluster,
 	IdentityText,
 	MutedValue,
+	NotificationChannelsRow,
+	NotificationChannelTag,
+	NotificationDetailItem,
 	PatientMeta,
 	PatientName,
 	ProfileLayout,
@@ -83,6 +88,7 @@ export const PatientProfilePage = () => {
 	const { patientId } = useParams<{ patientId: string }>();
 	const [searchParams, setSearchParams] = useSearchParams();
 	const [editFormOpen, setEditFormOpen] = useState(false);
+	const [notificationSettingsOpen, setNotificationSettingsOpen] = useState(false);
 	const [selectedSession, setSelectedSession] =
 		useState<PatientSessionRow | null>(null);
 	const therapistId = useTherapistId();
@@ -140,6 +146,41 @@ export const PatientProfilePage = () => {
 		i18n.language,
 		t
 	);
+
+	const remindersDisabled =
+		patientDetails?.notificationPreferences?.reminder.enabled === false;
+
+	const activeNotificationChannels = useMemo((): string[] => {
+		if (!patientDetails) return [];
+
+		const prefs = patientDetails.notificationPreferences;
+		const contacts = patientDetails.contacts;
+		const preferred = patientDetails.preferredContact?.type;
+		const hasEmail = Boolean(contacts?.email);
+		const hasWhatsApp = Boolean(contacts?.whatsapp ?? contacts?.phone);
+
+		if (prefs && !remindersDisabled) {
+			const channels: string[] = [];
+			if (prefs.reminder.email && hasEmail) channels.push('email');
+			if (prefs.reminder.whatsapp && hasWhatsApp) channels.push('whatsapp');
+			return channels;
+		}
+
+		if (remindersDisabled) return [];
+
+		// No prefs set — derive from contacts, preferred contact first
+		if (preferred === 'whatsapp') {
+			const channels: string[] = [];
+			if (hasWhatsApp) channels.push('whatsapp');
+			if (hasEmail) channels.push('email');
+			return channels;
+		}
+
+		const channels: string[] = [];
+		if (hasEmail) channels.push('email');
+		if (hasWhatsApp) channels.push('whatsapp');
+		return channels;
+	}, [patientDetails, remindersDisabled]);
 
 	useEffect(() => {
 		if (!patientDetails?._id) return;
@@ -421,6 +462,40 @@ export const PatientProfilePage = () => {
 										{billingViewModel.amountLabel ?? fallback}
 									</DetailValue>
 								</DetailItem>
+								<NotificationDetailItem>
+									<DetailLabel>
+										{t('patients.profile.notifications.label')}
+									</DetailLabel>
+									<NotificationChannelsRow>
+										{remindersDisabled ? (
+											<NotificationChannelTag isActive={false}>
+												{t('patients.profile.notifications.reminders-off')}
+											</NotificationChannelTag>
+										) : (
+											activeNotificationChannels.map((channel) => (
+												<NotificationChannelTag isActive key={channel}>
+													{t(`notifications.channels.${channel}`)}
+												</NotificationChannelTag>
+											))
+										)}
+										<Tooltip
+											arrow
+											placement='top'
+											title={t('notifications.patient-settings.action')}
+										>
+											<HeroIconButton
+												aria-label={t(
+													'notifications.patient-settings.action'
+												)}
+												onClick={() => setNotificationSettingsOpen(true)}
+												size='small'
+											>
+												<Settings />
+											</HeroIconButton>
+										</Tooltip>
+									</NotificationChannelsRow>
+								</NotificationDetailItem>
+
 								<DetailItem>
 									<DetailLabel>
 										{t('patients.profile.share.link-label')}
@@ -555,6 +630,14 @@ export const PatientProfilePage = () => {
 						patient={patientDetails}
 						therapistId={therapistId}
 					/>
+					{patientId && notificationSettingsOpen ? (
+						<PatientNotificationSettingsDrawer
+							isOpen={notificationSettingsOpen}
+							onClose={() => setNotificationSettingsOpen(false)}
+							patientId={patientId}
+							therapistId={therapistId ?? ''}
+						/>
+					) : null}
 					{selectedSession ? (
 						<SessionDrawer
 							initialMode={

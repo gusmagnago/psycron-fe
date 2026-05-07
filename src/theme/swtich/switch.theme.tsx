@@ -1,11 +1,10 @@
 import { switchClasses } from '@mui/material';
 import type { CSSObject, Theme } from '@mui/material/styles';
 
-import type { Palette } from '../palette/palette.types';
 import { shadowDisabled } from '../shadow/shadow.theme';
 
 const switchStyles = ({ palette }: Theme): Record<string, CSSObject> => {
-	const { error, success } = palette as unknown as Palette;
+	const { error, success } = palette as unknown as AppPalette;
 
 	return {
 		switchBase: {

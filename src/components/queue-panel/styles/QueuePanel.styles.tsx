@@ -1,7 +1,10 @@
 import styled from '@emotion/styled';
-import { Box, ButtonBase } from '@mui/material';
+import { Box, ButtonBase, TextField } from '@mui/material';
 import { Text } from '@psycron/components/text/Text';
-import { isMobileMedia } from '@psycron/theme/media-queries/mediaQueries';
+import {
+	isMobileMedia,
+	isSmallerThanTabletMedia,
+} from '@psycron/theme/media-queries/mediaQueries';
 import { hexToRgba, palette } from '@psycron/theme/palette/palette.theme';
 import { shadowMedium, shadowSmall } from '@psycron/theme/shadow/shadow.theme';
 import { spacing } from '@psycron/theme/spacing/spacing.theme';
@@ -24,14 +27,23 @@ const getToneColor = (tone: QueueCardTone) => {
 	}
 };
 
-export const QueueDetailLayout = styled(Box)`
+export const QueueDetailLayout = styled(Box, {
+	shouldForwardProp: (prop) => prop !== 'isExpanded',
+})<{ isExpanded?: boolean }>`
 	align-items: start;
 	display: grid;
+	flex: 1;
 	gap: ${spacing.medium};
-	grid-template-columns: minmax(21rem, 26rem) minmax(0, 1fr);
+	grid-template-columns: ${({ isExpanded }) =>
+		isExpanded ? 'minmax(0, 1fr)' : 'minmax(22rem, 2fr) minmax(0, 3fr)'};
+	height: 100%;
+	min-height: 0;
+	overflow: hidden;
 
-	${isMobileMedia} {
+	${isSmallerThanTabletMedia} {
 		grid-template-columns: 1fr;
+		height: auto;
+		overflow: visible;
 	}
 `;
 
@@ -46,15 +58,13 @@ export const QueueDetailSidebar = styled(Box)`
 	display: flex;
 	flex-direction: column;
 	gap: ${spacing.small};
-	height: calc(100vh - 8.3rem);
+	height: 100%;
+	min-height: 0;
 	overflow: hidden;
 	padding: ${spacing.medium};
-	position: sticky;
-	top: ${spacing.medium};
 
-	${isMobileMedia} {
+	${isSmallerThanTabletMedia} {
 		height: auto;
-		position: static;
 	}
 `;
 
@@ -78,7 +88,7 @@ export const QueueSidebarTitle = styled(Text)`
 
 export const QueueSidebarCount = styled(Box)`
 	align-items: center;
-	color: ${palette.secondary.main};
+	color: var(--feature-page-accent, ${palette.secondary.main});
 	display: inline-flex;
 	font-size: 0.8rem;
 	font-weight: 700;
@@ -152,15 +162,21 @@ export const QueueFilterChip = styled(ButtonBase, {
 })<{ isActive: boolean }>`
 	background: ${({ isActive }) =>
 		isActive
-			? `linear-gradient(135deg, ${hexToRgba(
+			? `linear-gradient(135deg, var(--feature-page-accent-soft, ${hexToRgba(
 					palette.secondary.main,
 					0.14
-				)} 0%, ${hexToRgba(palette.secondary.main, 0.22)} 100%)`
+				)}) 0%, var(--feature-page-accent-strong-soft, ${hexToRgba(
+					palette.secondary.main,
+					0.22
+				)}) 100%)`
 			: palette.background.default};
 	border: 1px solid
 		${({ isActive }) =>
 			isActive
-				? hexToRgba(palette.secondary.main, 0.28)
+				? `var(--feature-page-accent-selected-border, ${hexToRgba(
+						palette.secondary.main,
+						0.28
+					)})`
 				: hexToRgba(palette.gray['04'], 0.18)};
 	border-radius: 999px;
 	box-shadow: ${({ isActive }) => (isActive ? shadowSmall : 'none')};
@@ -177,7 +193,10 @@ export const QueueFilterChip = styled(ButtonBase, {
 		transform 160ms ease;
 
 	&:hover {
-		border-color: ${hexToRgba(palette.secondary.main, 0.24)};
+		border-color: var(
+			--feature-page-accent-hover-border,
+			${hexToRgba(palette.secondary.main, 0.24)}
+		);
 		transform: translateY(-1px);
 	}
 `;
@@ -191,12 +210,18 @@ export const QueueList = styled(Box)`
 	overflow: auto;
 	padding: ${spacing.xs};
 	padding-top: 0;
+
+	${isMobileMedia} {
+		flex: none;
+		height: auto;
+		overflow: visible;
+	}
 `;
 
 export const QueueStatsGrid = styled(Box)`
 	display: grid;
 	gap: ${spacing.xs};
-	grid-template-columns: repeat(3, minmax(0, 1fr));
+	grid-template-columns: repeat(auto-fit, minmax(3.5rem, 1fr));
 `;
 
 export const QueueStatCard = styled(Box)`
@@ -249,21 +274,27 @@ export const QueueEmptyStateText = styled(Text)`
 	max-width: 26rem;
 `;
 
-export const QueueSelectableCard = styled(ButtonBase, {
+export const QueueSelectableCard = styled(Box, {
 	shouldForwardProp: (prop) => prop !== 'isSelected' && prop !== 'tone',
 })<{ isSelected: boolean; tone?: QueueCardTone }>`
 	align-items: flex-start;
 	background: ${({ isSelected }) =>
 		isSelected
-			? `linear-gradient(180deg, ${hexToRgba(
+			? `linear-gradient(180deg, var(--feature-page-accent-soft, ${hexToRgba(
 					palette.secondary.main,
 					0.14
-				)} 0%, ${hexToRgba(palette.secondary.main, 0.04)} 100%)`
+				)}) 0%, var(--feature-page-accent-softer, ${hexToRgba(
+					palette.secondary.main,
+					0.04
+				)}) 100%)`
 			: palette.background.paper};
 	border: 1px solid
 		${({ isSelected, tone = 'neutral' }) =>
 			isSelected
-				? hexToRgba(palette.secondary.main, 0.3)
+				? `var(--feature-page-accent-selected-border, ${hexToRgba(
+						palette.secondary.main,
+						0.3
+					)})`
 				: hexToRgba(getToneColor(tone), tone === 'neutral' ? 0.18 : 0.16)};
 	border-radius: ${spacing.large};
 	box-shadow: ${({ isSelected }) => (isSelected ? shadowMedium : shadowSmall)};
@@ -279,8 +310,16 @@ export const QueueSelectableCard = styled(ButtonBase, {
 		transform 180ms ease;
 
 	&:hover {
-		border-color: ${hexToRgba(palette.secondary.main, 0.22)};
+		border-color: var(
+			--feature-page-accent-hover-border,
+			${hexToRgba(palette.secondary.main, 0.22)}
+		);
 		transform: translateY(-1px);
+	}
+
+	&:focus-visible {
+		outline: 2px solid var(--feature-page-accent, ${palette.secondary.main});
+		outline-offset: 2px;
 	}
 
 	${isMobileMedia} {
@@ -299,4 +338,106 @@ export const QueueSelectableCardMetaRow = styled(Box)`
 		align-items: flex-start;
 		flex-direction: column;
 	}
+`;
+
+export const QueueSearchField = styled(TextField)`
+	.MuiInputBase-root {
+		background: ${palette.background.default};
+		border-radius: ${spacing.medium};
+		font-size: 0.9rem;
+	}
+`;
+
+export const QueueDetailPanel = styled(Box)`
+	display: flex;
+	flex: 1;
+	flex-direction: column;
+	gap: ${spacing.mediumSmall};
+	min-height: 0;
+`;
+
+export const QueueDetailHeader = styled(Box)`
+	display: flex;
+	flex-direction: column;
+	gap: ${spacing.xs};
+`;
+
+export const QueueDetailEyebrow = styled(Text)`
+	color: var(--feature-page-accent, ${palette.secondary.main});
+	font-size: 0.75rem;
+	font-weight: 700;
+	text-transform: uppercase;
+`;
+
+export const QueueDetailTitleRow = styled(Box)`
+	align-items: center;
+	display: flex;
+	flex-wrap: wrap;
+	gap: ${spacing.xs};
+	justify-content: space-between;
+`;
+
+export const QueueDetailTitle = styled(Text)`
+	font-size: 1.4rem;
+	font-weight: 700;
+`;
+
+export const QueueDetailSubtitle = styled(Text)`
+	color: ${palette.gray['05']};
+	font-size: 0.92rem;
+	line-height: 1.5;
+`;
+
+export const QueueDetailGrid = styled(Box)`
+	display: grid;
+	gap: ${spacing.xs};
+	grid-template-columns: repeat(2, minmax(0, 1fr));
+
+	${isMobileMedia} {
+		grid-template-columns: 1fr;
+	}
+`;
+
+export const QueueDetailCard = styled(Box)`
+	display: flex;
+	flex-direction: column;
+	gap: ${spacing.xxs};
+	padding: ${spacing.small};
+
+	${isMobileMedia} {
+		padding: 0;
+	}
+`;
+
+export const QueueDetailLabel = styled(Text)`
+	color: ${palette.gray['05']};
+	font-size: 0.75rem;
+	font-weight: 700;
+	text-transform: uppercase;
+`;
+
+export const QueueDetailValue = styled(Text)`
+	font-size: 0.95rem;
+	font-weight: 600;
+	line-height: 1.5;
+	overflow-wrap: anywhere;
+`;
+
+export const QueueDetailMessage = styled(Text)`
+	background: ${palette.background.default};
+	border: 1px solid ${hexToRgba(palette.gray['04'], 0.16)};
+	border-radius: ${spacing.medium};
+	color: ${palette.text.primary};
+	font-size: 0.92rem;
+	line-height: 1.6;
+	padding: ${spacing.medium};
+	white-space: pre-wrap;
+`;
+
+export const QueueActionsRow = styled(Box)`
+	align-items: center;
+	display: flex;
+	flex-wrap: wrap;
+	gap: ${spacing.small};
+	margin-top: auto;
 `;

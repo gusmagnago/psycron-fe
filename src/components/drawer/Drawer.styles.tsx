@@ -1,7 +1,10 @@
 import styled from '@emotion/styled';
 import { Box } from '@mui/material';
 import { Text } from '@psycron/components/text/Text';
-import { isMobileMedia } from '@psycron/theme/media-queries/mediaQueries';
+import {
+	isMobileMedia,
+	isSmallerThanTabletMedia,
+} from '@psycron/theme/media-queries/mediaQueries';
 import { hexToRgba, palette } from '@psycron/theme/palette/palette.theme';
 import { spacing } from '@psycron/theme/spacing/spacing.theme';
 import { zIndexDrawer } from '@psycron/theme/zIndex';
@@ -22,18 +25,22 @@ export const DrawerPanel = styled(Box)`
 	background: ${palette.background.default};
 	box-shadow: -10px 0 30px 0 ${hexToRgba(palette.gray['03'], 0.3)};
 	z-index: ${zIndexDrawer};
-	overflow-y: auto;
+	display: flex;
+	flex-direction: column;
+	overflow: hidden;
 
-	${isMobileMedia} {
+	${isSmallerThanTabletMedia} {
 		width: 100%;
 	}
 `;
 
 export const DrawerContent = styled(Box)`
-	padding: ${spacing.mediumLarge};
+	flex: 1;
+	overflow-y: auto;
+	padding: 0 ${spacing.mediumLarge} ${spacing.mediumLarge};
 
 	${isMobileMedia} {
-		padding: ${spacing.medium};
+		padding: 0 ${spacing.medium} ${spacing.medium};
 	}
 `;
 
@@ -42,8 +49,13 @@ export const DrawerContent = styled(Box)`
 export const DrawerHeader = styled(Box)`
 	display: flex;
 	align-items: flex-start;
+	flex-shrink: 0;
 	justify-content: space-between;
-	margin-bottom: ${spacing.large};
+	padding: ${spacing.mediumLarge} ${spacing.mediumLarge} ${spacing.medium};
+
+	${isMobileMedia} {
+		padding: ${spacing.small} ${spacing.small} ${spacing.xs};
+	}
 `;
 
 export const DrawerTitle = styled((props) => <Text component='div' {...props} />)`

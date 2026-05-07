@@ -1,19 +1,20 @@
 import { selectClasses } from '@mui/material';
 import type { Theme } from '@mui/material/styles';
 import type { CSSObject } from '@mui/system';
-import type { Palette } from '@psycron/theme/palette/palette.types';
+import type { AppPalette } from '@psycron/theme/palette/palette.types';
 
 import { isMobileMedia } from '../media-queries/mediaQueries';
 import { shadowDisabled } from '../shadow/shadow.theme';
 import { spacing } from '../spacing/spacing.theme';
 
 const selectStyles = ({ palette }: Theme): Record<string, CSSObject> => {
-	const { secondary, primary } = palette as unknown as Palette;
+	const { primary } = palette as unknown as AppPalette;
 	return {
 		root: {
-			'.MuiSvgIcon-root': {
-				color: secondary.action.press,
-				filter: shadowDisabled,
+			height: 'auto',
+			fontSize: '0.95rem',
+			'& .MuiTypography-root': {
+				fontSize: '0.95rem',
 			},
 			[isMobileMedia]: {
 				marginBottom: spacing.space,
@@ -23,10 +24,9 @@ const selectStyles = ({ palette }: Theme): Record<string, CSSObject> => {
 			color: primary.main,
 			filter: shadowDisabled,
 			[`&.${selectClasses.iconOpen}`]: {
-				color: secondary.action.press,
+				color: primary.action.press,
 				filter: shadowDisabled,
 			},
-			marginRight: spacing.xs,
 		},
 	};
 };

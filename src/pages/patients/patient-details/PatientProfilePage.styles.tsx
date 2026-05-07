@@ -284,6 +284,44 @@ export const MutedValue = styled(Text)`
 	font-size: 0.9rem;
 `;
 
+export const NotificationDetailItem = styled(Box)`
+	border-radius: ${spacing.medium};
+	display: flex;
+	flex-direction: column;
+	gap: ${spacing.xs};
+	grid-column: 1 / -1;
+	min-width: 0;
+	padding: ${spacing.small};
+`;
+
+export const NotificationChannelsRow = styled(Box)`
+	align-items: center;
+	display: flex;
+	flex-wrap: wrap;
+	gap: ${spacing.xs};
+`;
+
+export const NotificationChannelTag = styled(Box, {
+	shouldForwardProp: (prop) => prop !== 'isActive',
+})<{ isActive: boolean }>`
+	align-items: center;
+	background: ${({ isActive }) =>
+		isActive
+			? hexToRgba(palette.success.main, 0.1)
+			: hexToRgba(palette.gray['05'], 0.08)};
+	border: 1px solid
+		${({ isActive }) =>
+			isActive
+				? hexToRgba(palette.success.main, 0.22)
+				: hexToRgba(palette.gray['05'], 0.15)};
+	border-radius: 99px;
+	color: ${({ isActive }) => (isActive ? palette.success.main : palette.gray['05'])};
+	display: inline-flex;
+	font-size: 0.75rem;
+	font-weight: 700;
+	padding: 2px ${spacing.xs};
+`;
+
 export const SessionList = styled(Box)`
 	display: flex;
 	flex-direction: column;

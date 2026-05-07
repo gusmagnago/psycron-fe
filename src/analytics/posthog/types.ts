@@ -35,16 +35,24 @@ export const enum PostHogEvent {
 	BackofficeWorkerSessionFailed = 'backoffice worker session failed',
 
 	EditUserSubmitted = 'edit user submitted',
+	FeaturePageQueueExpansionChanged = 'feature page queue expansion changed',
 	MarketingConsentToggleChanged = 'marketing consent toggle changed',
 
 	MarketingConsentToggleFailed = 'marketing consent toggle failed',
 	MarketingConsentToggleSaved = 'marketing consent toggle saved',
+	NotificationArchived = 'notification archived',
+	NotificationDeepLinkFollowed = 'notification deep link followed',
+	NotificationFiltersApplied = 'notification filters applied',
+	NotificationResent = 'notification resent',
+	NotificationSettingsFailed = 'notification settings failed',
+	NotificationSettingsSaved = 'notification settings saved',
 	PatientCenterOpened = 'patient center opened',
 	PatientCenterSessionCancelled = 'patient center session cancelled',
 	PatientCenterSessionDrawerOpened = 'patient center session drawer opened',
 	PatientCenterSessionNotified = 'patient center session notified',
 	PatientCenterSessionRescheduled = 'patient center session rescheduled',
 	PatientCenterTimelineFilterChanged = 'patient center timeline filter changed',
+	PatientNotificationSettingsSaved = 'patient notification settings saved',
 	PublicBookAppointmentDaySelected = 'public book appointment day selected',
 	PublicBookAppointmentOpened = 'public book appointment opened',
 	PublicBookAppointmentSlotSelected = 'public book appointment slot selected',
@@ -77,7 +85,7 @@ export const enum PostHogEvent {
 	UserDetailsEditUserClicked = 'user details edit user clicked',
 	UserDetailsOpened = 'user details opened',
 	UserDetailsPatientsCtaClicked = 'user details patients cta clicked',
-	UserDetailsPatientsNavigationClicked = 'user details patients navigation clicked'
+	UserDetailsPatientsNavigationClicked = 'user details patients navigation clicked',
 }
 
 export type ExceptionContext = {
@@ -326,5 +334,47 @@ export type PostHogEventProps = {
 		date: string;
 		slot_id: string;
 		start_time: string;
+	};
+	[PostHogEvent.FeaturePageQueueExpansionChanged]: {
+		is_expanded: boolean;
+		surface: string;
+	};
+	[PostHogEvent.NotificationArchived]: {
+		channel: string;
+		message_type: string;
+		notification_id: string;
+	};
+	[PostHogEvent.NotificationDeepLinkFollowed]: {
+		patient_id: string;
+		source: 'slot_drawer';
+	};
+	[PostHogEvent.NotificationFiltersApplied]: {
+		channel?: string;
+		has_date_range: boolean;
+		has_patient_filter: boolean;
+		has_search: boolean;
+		message_type?: string;
+		status?: string;
+	};
+	[PostHogEvent.NotificationResent]: {
+		channel: string;
+		message_type: string;
+		notification_id: string;
+		previous_status: string;
+	};
+	[PostHogEvent.NotificationSettingsSaved]: {
+		calendar_invite_enabled: boolean;
+		confirmation_email: boolean;
+		confirmation_whatsapp: boolean;
+		reminder_enabled: boolean;
+		reminder_lead_time_minutes: number;
+	};
+	[PostHogEvent.NotificationSettingsFailed]: {
+		error_code: string;
+	};
+	[PostHogEvent.PatientNotificationSettingsSaved]: {
+		confirmation_email: boolean;
+		confirmation_whatsapp: boolean;
+		reminder_enabled: boolean;
 	};
 };

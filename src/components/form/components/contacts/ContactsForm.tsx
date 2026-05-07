@@ -84,7 +84,7 @@ export const ContactsForm = <T extends FieldValues>({
 					helperText={emailError}
 					required={required}
 					disabled={disabled}
-					InputLabelProps={{ shrink: !!emailValue }}
+					slotProps={{ inputLabel: { shrink: !!emailValue } }}
 				/>
 
 			{!hidePhone && (

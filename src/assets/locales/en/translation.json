@@ -181,8 +181,12 @@
 	},
 	"common": {
 		"back": "Back",
-		"close": "Close",
 		"cancel": "Cancel",
+		"close": "Close",
+		"layout": {
+			"collapse-queue": "Collapse",
+			"expand-queue": "Expand"
+		},
 		"loading": "Loading...",
 		"required": "Required",
 		"save": "Save",
@@ -307,6 +311,10 @@
 				"upcoming": "Upcoming",
 				"completed": "Completed",
 				"cancelled": "Cancelled"
+			},
+			"notifications": {
+				"label": "Notifications",
+				"reminders-off": "Reminders off"
 			},
 			"sections": {
 				"billing": "Billing",
@@ -556,6 +564,7 @@
 			}
 		},
 		"navbar": {
+			"action-center": "Action center",
 			"dashboard": "Dashboard",
 			"conflicts": "Conflicts",
 			"notifications": "Notifications",
@@ -1152,6 +1161,10 @@
 		"cancellation-recovery": {
 			"title": "Cancellation recovery",
 			"subtitle": "Review cancelled appointments, reopen slots, and jump into patient follow-up without cluttering the live calendar.",
+			"accessibility": {
+				"detail": "Recovery detail",
+				"queue": "Recovery queue"
+			},
 			"empty": "No cancelled appointments match your current filters.",
 			"empty-selection": "Choose a cancelled appointment to review its recovery details and next actions.",
 			"unknown-patient": "Unknown patient",
@@ -1390,6 +1403,7 @@
 				"booked-no-phone": "No phone provided",
 				"booked-awaiting-address": "Awaiting patient address",
 				"booked-request-address": "Request address",
+				"booked-view-notifications": "View notifications",
 				"booked-past-disabled": "Past appointment — actions disabled",
 				"booked-copied": "Copied",
 				"booked-copy-aria": "Copy {{field}} to clipboard",
@@ -1553,6 +1567,14 @@
 			"title": "Conflict queue",
 			"subtitle": "Review the items that still need your decision."
 		},
+		"layout": {
+			"expand-queue": "Expand queue",
+			"collapse-queue": "Collapse queue"
+		},
+		"accessibility": {
+			"queue": "Conflict queue",
+			"detail": "Conflict detail"
+		},
 		"status": {
 			"open": "Open",
 			"resolved": "Resolved",
@@ -1641,6 +1663,181 @@
 			"dismiss": "Dismiss",
 			"mark-resolved": "Mark resolved",
 			"error": "We couldn't update this conflict. Please try again."
+		}
+	},
+	"action-center": {
+		"title": "Action center",
+		"subtitle": "Resolve the operational items that need your attention today.",
+		"tabs": {
+			"aria-label": "Action center sections",
+			"conflicts": "Conflicts",
+			"recovery": "Recovery"
+		}
+	},
+	"notifications": {
+		"title": "Notifications",
+		"subtitle": "Track outbound patient communication across WhatsApp, email, and SMS.",
+		"empty": "No notifications match your current filters.",
+		"load-more": "Load more",
+		"queue": {
+			"title": "Notification feed",
+			"subtitle": "A delivery timeline for patient communication."
+		},
+		"layout": {
+			"expand-feed": "Expand feed",
+			"collapse-feed": "Collapse feed"
+		},
+		"accessibility": {
+			"page": "Notifications workspace",
+			"queue": "Notification feed",
+			"detail": "Notification detail"
+		},
+		"stats": {
+			"total": "Total",
+			"failed": "Failed",
+			"delivered": "Delivered",
+			"sent": "Sent"
+		},
+		"search": {
+			"placeholder": "Search patient or message"
+		},
+		"sort": {
+			"label": "Sort",
+			"options": {
+				"newest": "Newest first",
+				"oldest": "Oldest first",
+				"status": "Status"
+			}
+		},
+		"filters": {
+			"title": "Filters",
+			"summary-default": "Refine the feed by channel, status, type, or date.",
+			"summary-active": "{{count}} active filter",
+			"summary-active_other": "{{count}} active filters",
+			"channel": "Channel",
+			"status": "Status",
+			"message-type": "Message type",
+			"date-range": "Date range",
+			"from": "From",
+			"to": "To",
+			"all-channels": "All channels",
+			"all-statuses": "All statuses",
+			"all-types": "All types",
+			"active": "Active",
+			"archived": "Archived"
+		},
+		"channels": {
+			"whatsapp": "WhatsApp",
+			"email": "Email",
+			"sms": "SMS",
+			"icalendar": "Calendar invite"
+		},
+		"statuses": {
+			"pending": "Pending",
+			"sent": "Sent",
+			"delivered": "Delivered",
+			"failed": "Failed"
+		},
+		"message-types": {
+			"appointment_confirmation": "Appointment confirmation",
+			"appointment_updated": "Appointment updated",
+			"reminder": "Reminder",
+			"conflict": "Conflict",
+			"account_setup": "Account setup",
+			"daily_schedule_summary": "Daily schedule summary",
+			"unknown": "Notification"
+		},
+		"bulk": {
+			"resend-eligible": "Re-notify eligible",
+			"action": "Notify again"
+		},
+		"card": {
+			"appointment": "Appointment: {{value}}",
+			"delivered-at": "Sent at {{value}}",
+			"failed": "Failed delivery"
+		},
+		"patient-settings": {
+			"action": "Patient notification settings",
+			"title": "Patient Notification Preferences",
+			"subtitle": "Configure which channels this patient receives notifications on.",
+			"subtitle-named": "Configure which channels {{name}} receives notifications on.",
+			"save-success": "Patient notification preferences saved.",
+			"save-error": "Could not save patient notification preferences."
+		},
+		"settings": {
+			"action": "Setup notifications",
+			"title": "Notification Preferences",
+			"subtitle": "Control which channels are used for each type of patient communication.",
+			"save-success": "Notification preferences saved.",
+			"save-error": "Could not save notification preferences. Please try again.",
+			"appointment-confirmation": {
+				"title": "Appointment Confirmation",
+				"description": "Sent to the patient when a new appointment is booked."
+			},
+			"reminder": {
+				"title": "Appointment Reminders",
+				"description": "Sent to the patient before the appointment.",
+				"toggle": "Enable reminders",
+				"lead-time": {
+					"label": "Send reminder",
+					"30m": "30 min before",
+					"1h": "1 hour before",
+					"2h": "2 hours before",
+					"24h": "24 hours before",
+					"48h": "48 hours before"
+				}
+			},
+			"appointment-updated": {
+				"title": "Appointment Updated",
+				"description": "Sent to the patient when an appointment is rescheduled or modified."
+			},
+			"calendar-invite": {
+				"title": "Calendar Invite",
+				"description": "Attach a .ics calendar file to email confirmations and reminders.",
+				"toggle": "Include calendar attachment"
+			}
+		},
+		"context": {
+			"channel-status": "{{channel}} notification is {{status}}.",
+			"sent-at": "Sent at {{value}}.",
+			"delivered-at": "Delivered at {{value}}.",
+			"appointment": "Appointment: {{value}}.",
+			"session": "Session: {{value}}.",
+			"calendar-invite-attached": "Calendar invite attached.",
+			"error": "Delivery error: {{value}}"
+		},
+		"detail": {
+			"title": "Communication details",
+			"patient": "Patient",
+			"unknown-patient": "Unknown patient",
+			"message-type": "Message type",
+			"channel": "Channel",
+			"status": "Status",
+			"sent-at": "Sent at",
+			"delivered-at": "Delivered at",
+			"appointment": "Appointment",
+			"ics": "Calendar invite",
+			"ics-attached": "Attached",
+			"ics-empty": "Not attached",
+			"message": "Message",
+			"context": "Context",
+			"error": "Delivery error",
+			"payload": "Payload"
+		},
+		"retry": {
+			"action": "Retry notification",
+			"action-short": "Retry",
+			"success": "Notification sent again.",
+			"error": "We could not send this notification again. Please try again."
+		},
+		"resend": {
+			"action": "Notify again",
+			"action-short": "Notify again"
+		},
+		"archive": {
+			"action": "Archive",
+			"success": "Notification archived.",
+			"error": "Could not archive this notification."
 		}
 	}
 }

@@ -26,7 +26,10 @@ export const UNSUBSCRIBE = ':token/unsubscribe';
 // PRIVATE
 export const DASHBOARD = 'dashboard';
 export const BACKOFFICE = 'backoffice';
+export const ACTIONCENTER = 'action-center';
 export const CONFLICTS = 'conflicts';
+export const NOTIFICATIONS = 'notifications';
+export const NOTIFICATIONSETTINGS = 'notifications/settings';
 // PRIVATE - USER
 export const USERDETAILS = USERID;
 export const EDITUSERPATH = 'edit';

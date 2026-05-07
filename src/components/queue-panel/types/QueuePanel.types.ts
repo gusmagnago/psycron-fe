@@ -29,6 +29,7 @@ export interface QueueFiltersTriggerProps {
 }
 
 export interface QueueSidebarHeaderProps {
+	action?: ReactNode;
 	count?: ReactNode;
 	subtitle?: ReactNode;
 	title: ReactNode;

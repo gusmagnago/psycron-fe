@@ -26,6 +26,7 @@ export const ShellContent = styled(DrawerContent)`
 	flex-direction: column;
 	height: 100%;
 	min-height: 0;
+	overflow: hidden;
 `;
 
 export const ShellHeader = styled(Box)`

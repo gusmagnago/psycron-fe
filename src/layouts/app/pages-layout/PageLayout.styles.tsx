@@ -1,17 +1,26 @@
 import { Box, styled } from '@mui/material';
 import { Text } from '@psycron/components/text/Text';
-import { isMobileMedia } from '@psycron/theme/media-queries/mediaQueries';
+import {
+	isMobileMedia,
+	isSmallerThanTabletMedia,
+} from '@psycron/theme/media-queries/mediaQueries';
 import { spacing } from '@psycron/theme/spacing/spacing.theme';
 
 export const PageLayoutWrapper = styled(Box)`
-	height: 100vh;
 	display: flex;
 	flex-direction: column;
-	overflow-y: auto;
+	height: 100vh;
+	min-height: 0;
 	overflow-x: hidden;
+	overflow-y: hidden;
+
+	${isSmallerThanTabletMedia} {
+		overflow-y: auto;
+	}
 `;
 
 export const PageTitleWrapper = styled(Box)`
+	flex-shrink: 0;
 	height: auto;
 `;
 
@@ -43,10 +52,19 @@ export const PageLoaderWrapper = styled(Box)`
 `;
 
 export const PageChildrenWrapper = styled(Box)`
-	flex: 1;
 	display: flex;
+	flex: 1;
 	flex-direction: column;
+	min-height: 0;
+	overflow: hidden;
 	padding: ${spacing.small};
+
+	padding-bottom: 0;
+	padding-right: 0;
+
+	${isSmallerThanTabletMedia} {
+		overflow: visible;
+	}
 
 	${isMobileMedia} {
 		padding: ${spacing.xs};

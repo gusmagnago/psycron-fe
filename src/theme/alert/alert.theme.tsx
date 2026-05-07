@@ -1,13 +1,12 @@
 import type { Theme } from '@mui/material/styles';
 import type { CSSObject } from '@mui/system';
 
-import type { Palette } from '../palette/palette.types';
 import { shadowSmall } from '../shadow/shadow.theme';
 import { spacing } from '../spacing/spacing.theme';
 import { zIndexAlert } from '../zIndex';
 
 export const alertStyles = ({ palette }: Theme): Record<string, CSSObject> => {
-	const { success, error, info, alert } = palette as unknown as Palette;
+	const { success, error, info, alert } = palette as unknown as AppPalette;
 
 	return {
 		root: {

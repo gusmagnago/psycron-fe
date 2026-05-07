@@ -3,6 +3,8 @@ import type {
 	IContactInfo,
 	IPatient,
 	IPatientBilling,
+	IPatientNotificationChannelPreference,
+	IPatientNotificationPreferences,
 	IPreferredContact,
 	ISlotAddress,
 } from '@psycron/context/user/auth/UserAuthenticationContext.types';
@@ -144,4 +146,15 @@ export enum RecurrencePattern {
 	SINGLE = 'single',
 	UNTIL_END_OF_MONTH = 'endMonth',
 	UNTIL_END_OF_YEAR = 'endYear',
+}
+
+export interface IUpdatePatientNotificationPreferencesPayload {
+	appointmentConfirmation?: IPatientNotificationChannelPreference;
+	appointmentUpdated?: IPatientNotificationChannelPreference;
+	calendarInvite?: { enabled: boolean };
+	reminder?: IPatientNotificationChannelPreference & { enabled: boolean };
+}
+
+export interface IUpdatePatientNotificationPreferencesResponse {
+	notificationPreferences: IPatientNotificationPreferences;
 }

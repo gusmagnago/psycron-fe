@@ -11,7 +11,7 @@ export const StyledFormControlLabel = styled(FormControlLabel, {
 	.MuiFormControlLabel-label {
 		font-weight: ${({ shouldBold }) => (shouldBold ? 500 : 'normal')};
 		display: flex;
-		font-size: 0.8rem;
+		font-size: 0.9rem;
 		align-items: flex-start;
 		padding-right: ${spacing.space};
 

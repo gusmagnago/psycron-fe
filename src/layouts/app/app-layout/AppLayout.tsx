@@ -14,9 +14,9 @@ import {
 	Help,
 	Language,
 	Logout,
-	Notifications,
 	PatientList,
 	Payment,
+	Send,
 	UserSettings,
 } from '@psycron/components/icons';
 import { Localization } from '@psycron/components/localization/Localization';
@@ -31,13 +31,13 @@ import {
 	buildCancellationRecoveryRows,
 	formatRecoverySearchRange,
 	isRecoveryStateResolved,
-} from '@psycron/pages/availability/cancellation-recovery/CancellationRecoveryPage.utils';
+} from '@psycron/pages/action-center/cancellation-recovery/CancellationRecoveryPage.utils';
 import {
+	ACTIONCENTER,
 	AVAILABILITYPATH,
-	AVAILABILITYRECOVERY,
-	CONFLICTS,
 	DASHBOARD,
 	LOGOUT,
+	NOTIFICATIONS,
 	PATIENTS,
 	PAYMENTS,
 } from '@psycron/pages/urls';
@@ -113,16 +113,15 @@ export const AppLayout: FC = () => {
 			path: AVAILABILITYPATH,
 		},
 		{
-			name: t('components.navbar.conflicts'),
+			name: t('components.navbar.action-center'),
 			icon: <Alert />,
-			path: CONFLICTS,
-			badgeCount: conflictCountData?.count ?? 0,
+			path: ACTIONCENTER,
+			badgeCount: (conflictCountData?.count ?? 0) + cancellationRecoveryCount,
 		},
 		{
-			name: t('availability.cancellation-recovery.title'),
-			icon: <Notifications />,
-			path: AVAILABILITYRECOVERY,
-			badgeCount: cancellationRecoveryCount,
+			name: t('components.navbar.notifications'),
+			icon: <Send />,
+			path: NOTIFICATIONS,
 		},
 		{
 			name: t('globals.patients'),
