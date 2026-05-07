@@ -31,7 +31,7 @@ import {
 	buildCancellationRecoveryRows,
 	formatRecoverySearchRange,
 	isRecoveryStateResolved,
-} from '@psycron/pages/availability/cancellation-recovery/CancellationRecoveryPage.utils';
+} from '@psycron/pages/action-center/cancellation-recovery/CancellationRecoveryPage.utils';
 import {
 	ACTIONCENTER,
 	AVAILABILITYPATH,

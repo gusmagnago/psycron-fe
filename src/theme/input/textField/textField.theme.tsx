@@ -7,9 +7,6 @@ const textFieldStyles = (): Record<string, CSSObject> => {
 			'& label': {
 				transition: 'all 0.2s ease-out',
 			},
-			'& label.MuiInputLabel-shrink': {
-				left: '-0.8rem',
-			},
 		},
 	};
 };

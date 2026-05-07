@@ -2,25 +2,19 @@ import { checkboxClasses } from '@mui/material';
 import type { Theme } from '@mui/material/styles';
 import type { CSSObject } from '@mui/system';
 
-import type { Palette } from '../palette/palette.types';
+import type { AppPalette } from '../palette/palette.types';
 
 const checkboxStyles = ({ palette }: Theme): Record<string, CSSObject> => {
-	const { primary } = palette as unknown as Palette;
+	const { brand, tertiary } = palette as unknown as AppPalette;
 
 	return {
-		'&.Mui-checked': {
-			color: primary.action.press,
-		},
 		root: {
-			color: primary.main,
-			'&  div': {
-				border: '1px solid red',
-			},
+			color: brand.purple,
 			[`&.${checkboxClasses.checked}`]: {
-				color: primary.action.press,
+				color: brand.purple,
 			},
 			[`&.${checkboxClasses.disabled}`]: {
-				color: primary.action.disabled,
+				color: tertiary.action.disabled,
 			},
 		},
 	};

@@ -1,3 +1,4 @@
+import type { KeyboardEvent } from 'react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { capture } from '@psycron/analytics/posthog/events';
@@ -87,8 +88,15 @@ export const ConflictsPanelContent = () => {
 								setSelectedConflictId(conflict._id);
 								setIsMobileDetailOpen(true);
 							}}
+							onKeyDown={(e: KeyboardEvent<HTMLElement>) => {
+								if (e.key !== 'Enter' && e.key !== ' ') return;
+								e.preventDefault();
+								setSelectedConflictId(conflict._id);
+								setIsMobileDetailOpen(true);
+							}}
+							role='button'
+							tabIndex={0}
 							tone='info'
-							type='button'
 						>
 							<QueueSelectableCardMetaRow>
 								<ConflictTypeLabel>

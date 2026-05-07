@@ -1,8 +1,8 @@
 import { forwardRef } from 'react';
 import type { SelectProps } from '@mui/material';
 import { MenuItem } from '@mui/material';
+import { ChevronDown } from '@psycron/components/icons';
 import { Text } from '@psycron/components/text/Text';
-import { ChevronDown } from 'lucide-react';
 
 import {
 	ControlledWrapper,
@@ -17,17 +17,18 @@ export const Select = forwardRef<
 >(
 	(
 		{
-			items,
-			onChangeSelect,
-			selectLabel,
-			value,
-			required,
-			disabled,
-			subtitle,
-			width,
-			name,
-			hidePrimaryValue,
 			customRenderItem,
+			disabled,
+			hiddenLabel,
+			hidePrimaryValue,
+			items,
+			name,
+			onChangeSelect,
+			required,
+			selectLabel,
+			subtitle,
+			value,
+			width,
 		},
 		ref
 	) => {
@@ -35,30 +36,32 @@ export const Select = forwardRef<
 
 		return (
 			<ControlledWrapper
-				required={required}
-				fullWidth={!width && true}
 				disabled={disabled}
+				fullWidth={!width && true}
+				required={required}
 				width={width}
 			>
-				<StyledInputLabel id={labelId}>{selectLabel}</StyledInputLabel>
+				{!hiddenLabel && (
+					<StyledInputLabel id={labelId}>{selectLabel}</StyledInputLabel>
+				)}
 				<StyledMUISelect
-					variant='standard'
-					name={name}
-					value={value}
-					labelId={labelId}
-					label={selectLabel}
-					aria-labelledby={labelId}
 					aria-label={selectLabel}
-					onChange={onChangeSelect}
-					IconComponent={ChevronDown}
+					aria-labelledby={labelId}
 					fullWidth
+					IconComponent={ChevronDown}
 					inputRef={ref}
+					label={hiddenLabel ? undefined : selectLabel}
+					labelId={hiddenLabel ? undefined : labelId}
+					name={name}
+					onChange={onChangeSelect}
+					value={value}
+					variant='standard'
 				>
 					{items?.map((item, index) => (
 						<MenuItem
-							value={item.value}
 							divider={index !== items.length - 1}
 							key={`item-${item.value}-${index}`}
+							value={item.value}
 						>
 							{customRenderItem ? (
 								customRenderItem(item)
@@ -67,9 +70,8 @@ export const Select = forwardRef<
 									{!hidePrimaryValue && (
 										<Text variant='caption'>{item.name}</Text>
 									)}
-
 									{subtitle && (
-										<Text variant='caption' fontSize='0.9rem' pl={2}>
+										<Text fontSize='0.9rem' pl={2} variant='caption'>
 											{item.value}
 										</Text>
 									)}

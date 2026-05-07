@@ -10,7 +10,6 @@ import {
 	Calendar,
 	ChevronLeft,
 	ChevronRight,
-	Edit,
 	Filter,
 	FilterFull,
 } from '@psycron/components/icons';
@@ -20,6 +19,7 @@ import useViewport from '@psycron/hooks/useViewport';
 import { PageLayout } from '@psycron/layouts/app/pages-layout/PageLayout';
 import { useQueryClient } from '@tanstack/react-query';
 import { format, isPast, isToday, parseISO } from 'date-fns';
+import { Settings } from 'lucide-react';
 
 import { DayHeaderPopover } from './day-header-popover/DayHeaderPopover';
 import { AvailabilityWeekDrawer } from './drawer/AvailabilityWeekDrawer';
@@ -186,7 +186,7 @@ export const AvailabilityWeekPage = () => {
 				aria-label={t('availability.week.settings')}
 				onClick={goToSettings}
 			>
-				<Edit />
+				<Settings />
 				{!isMobile ? t('availability.week.settings') : null}
 			</Button>
 		</>
@@ -317,26 +317,26 @@ export const AvailabilityWeekPage = () => {
 					const daySlots = getDaySlots(parseISO(dayPopoverDate));
 					const availabilityDayId = daySlots[0]?.availabilityDayId ?? '';
 					return (
-							<DayHeaderPopover
-								availabilityDayId={availabilityDayId}
-								dayDate={dayPopoverDate}
-								dayLabel={format(parseISO(dayPopoverDate), 'EEEE, MMMM d')}
-								isBlockDayPending={blockDay.isPending}
+						<DayHeaderPopover
+							availabilityDayId={availabilityDayId}
+							dayDate={dayPopoverDate}
+							dayLabel={format(parseISO(dayPopoverDate), 'EEEE, MMMM d')}
+							isBlockDayPending={blockDay.isPending}
 							isPastDay={
 								isPast(parseISO(dayPopoverDate)) &&
 								!isToday(parseISO(dayPopoverDate))
 							}
-								isUnblockDayPending={unblockDay.isPending}
-								open={Boolean(dayPopoverDate)}
-								onBlockAll={() =>
-									blockDay.mutate({
-										availabilityDayId,
-										dayDate: dayPopoverDate,
-									})
-								}
-								onClose={() => {
-									setDayPopoverDate(null);
-								}}
+							isUnblockDayPending={unblockDay.isPending}
+							open={Boolean(dayPopoverDate)}
+							onBlockAll={() =>
+								blockDay.mutate({
+									availabilityDayId,
+									dayDate: dayPopoverDate,
+								})
+							}
+							onClose={() => {
+								setDayPopoverDate(null);
+							}}
 							onUnblockAll={() =>
 								unblockDay.mutate({
 									availabilityDayId,

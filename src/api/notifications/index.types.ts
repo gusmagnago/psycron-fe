@@ -1,5 +1,31 @@
 export type NotificationChannel = 'EMAIL' | 'ICALENDAR' | 'SMS' | 'WHATSAPP';
 
+export interface INotificationChannelPref {
+	email: boolean;
+	whatsapp: boolean;
+}
+
+export interface IReminderPref extends INotificationChannelPref {
+	enabled: boolean;
+	leadTimeMinutes: number;
+}
+
+export interface INotificationPreferencesPayload {
+	appointmentConfirmation?: INotificationChannelPref;
+	appointmentUpdated?: INotificationChannelPref;
+	calendarInvite?: { enabled: boolean };
+	reminder?: IReminderPref;
+}
+
+export interface IUpdateNotificationPreferencesResponse {
+	notificationPreferences: {
+		appointmentConfirmation: INotificationChannelPref;
+		appointmentUpdated: INotificationChannelPref;
+		calendarInvite: { enabled: boolean };
+		reminder: IReminderPref;
+	};
+}
+
 export type NotificationStatus = 'DELIVERED' | 'FAILED' | 'PENDING' | 'SENT';
 
 export type NotificationMessageType =

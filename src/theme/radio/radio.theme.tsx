@@ -1,12 +1,11 @@
 import { radioClasses } from '@mui/material';
 import type { CSSObject, Theme } from '@mui/material/styles';
 
-import type { Palette } from '../palette/palette.types';
 import { shadowPress } from '../shadow/shadow.theme';
 import { spacing } from '../spacing/spacing.theme';
 
 const radioStyles = ({ palette }: Theme): Record<string, CSSObject> => {
-	const { secondary } = palette as unknown as Palette;
+	const { secondary } = palette as unknown as AppPalette;
 
 	return {
 		root: {

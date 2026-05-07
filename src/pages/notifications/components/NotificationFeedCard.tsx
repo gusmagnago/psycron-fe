@@ -1,12 +1,15 @@
 import type { KeyboardEvent, MouseEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@psycron/components/button/Button';
+import { Settings } from '@psycron/components/icons';
 import {
 	QueueSelectableCard,
 	QueueSelectableCardMetaRow,
 } from '@psycron/components/queue-panel';
 
 import {
+	CardSettingsTrigger,
+	CardSettingsTriggerWrapper,
 	NotificationCardActions,
 	NotificationCardDate,
 	NotificationCardInfo,
@@ -35,6 +38,7 @@ export const NotificationFeedCard = ({
 	isRetrying,
 	isSelected,
 	notification,
+	onOpenPatientSettings,
 	onRetry,
 	onSelect,
 }: NotificationFeedCardProps) => {
@@ -59,6 +63,7 @@ export const NotificationFeedCard = ({
 			isSelected={isSelected}
 			onKeyDown={handleKeyDown}
 			onClick={() => onSelect(notification._id)}
+			role='button'
 			tabIndex={0}
 			tone={getNotificationCardTone(notification.status)}
 		>
@@ -110,6 +115,27 @@ export const NotificationFeedCard = ({
 					>
 						{t('notifications.resend.action-short')}
 					</Button>
+				) : null}
+				{notification.patientId ? (
+					<CardSettingsTriggerWrapper
+						onClick={(e: MouseEvent<HTMLElement>) => e.stopPropagation()}
+					>
+						<CardSettingsTrigger
+							aria-label={t('notifications.patient-settings.action')}
+							onClick={() => onOpenPatientSettings(notification.patientId!)}
+							onKeyDown={(e: KeyboardEvent<HTMLElement>) => {
+								if (e.key === 'Enter' || e.key === ' ') {
+									e.preventDefault();
+									onOpenPatientSettings(notification.patientId!);
+								}
+							}}
+							role='button'
+							tabIndex={0}
+							title={t('notifications.patient-settings.action')}
+						>
+							<Settings aria-hidden='true' />
+						</CardSettingsTrigger>
+					</CardSettingsTriggerWrapper>
 				) : null}
 			</NotificationCardActions>
 		</QueueSelectableCard>

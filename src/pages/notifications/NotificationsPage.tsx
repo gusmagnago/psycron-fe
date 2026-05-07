@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { capture } from '@psycron/analytics/posthog/events';
 import { PostHogEvent } from '@psycron/analytics/posthog/types';
@@ -9,6 +9,7 @@ import {
 	FeaturePageLayout,
 	FeaturePageQueue,
 } from '@psycron/components/feature-page-layout';
+import { Settings } from '@psycron/components/icons';
 import {
 	QueueEmptyState,
 	QueueFiltersTrigger,
@@ -17,6 +18,10 @@ import {
 	QueueSidebarHeader,
 	QueueStats,
 } from '@psycron/components/queue-panel';
+import { Tooltip } from '@psycron/components/tooltip/Tooltip';
+import { useUserDetails } from '@psycron/context/user/details/UserDetailsContext';
+import { NotificationSettingsDrawer } from '@psycron/pages/notifications/settings/NotificationSettingsDrawer';
+import { PatientNotificationSettingsDrawer } from '@psycron/pages/notifications/settings/PatientNotificationSettingsDrawer';
 
 import { NotificationDetailPanel } from './components/NotificationDetailPanel';
 import { NotificationFeedCard } from './components/NotificationFeedCard';
@@ -30,6 +35,31 @@ export const NotificationsPage = () => {
 	const [isBulkRetrySelected, setIsBulkRetrySelected] = useState(false);
 	const [isFeedExpanded, setIsFeedExpanded] = useState(false);
 	const [isMobileDetailOpen, setIsMobileDetailOpen] = useState(false);
+	const [isSettingsDrawerOpen, setIsSettingsDrawerOpen] = useState(false);
+	const [patientSettingsState, setPatientSettingsState] = useState<{
+		isOpen: boolean;
+		patientId: string | null;
+	}>({ isOpen: false, patientId: null });
+
+	const openSettingsDrawer = useCallback(
+		() => setIsSettingsDrawerOpen(true),
+		[]
+	);
+	const closeSettingsDrawer = useCallback(
+		() => setIsSettingsDrawerOpen(false),
+		[]
+	);
+	const openPatientSettings = useCallback(
+		(patientId: string) => setPatientSettingsState({ isOpen: true, patientId }),
+		[]
+	);
+	const closePatientSettings = useCallback(
+		() => setPatientSettingsState({ isOpen: false, patientId: null }),
+		[]
+	);
+
+	const { therapistId } = useUserDetails();
+
 	const {
 		activeFilterCount,
 		archiveNotification,
@@ -59,6 +89,15 @@ export const NotificationsPage = () => {
 	const queueSummary = (
 		<>
 			<QueueSidebarHeader
+				action={
+					<Tooltip
+						onClick={openSettingsDrawer}
+						placement='top'
+						title={t('notifications.settings.action')}
+					>
+						<Settings aria-hidden='true' />
+					</Tooltip>
+				}
 				count={sortedNotifications.length}
 				subtitle={t('notifications.queue.subtitle')}
 				title={t('notifications.queue.title')}
@@ -93,7 +132,9 @@ export const NotificationsPage = () => {
 					onChange={(_, checked) => setIsBulkRetrySelected(checked)}
 				/>
 				<Button
-					disabled={!isBulkRetrySelected || resendableNotificationIds.length === 0}
+					disabled={
+						!isBulkRetrySelected || resendableNotificationIds.length === 0
+					}
 					loading={isRetrying}
 					onClick={resendVisibleNotifications}
 					small
@@ -113,6 +154,7 @@ export const NotificationsPage = () => {
 						isSelected={notification._id === selectedNotificationId}
 						key={notification._id}
 						notification={notification}
+						onOpenPatientSettings={openPatientSettings}
 						onRetry={retrySelectedNotification}
 						onSelect={(id) => {
 							setSelectedNotificationId(id);
@@ -183,6 +225,18 @@ export const NotificationsPage = () => {
 				onUpdateSort={setSortOption}
 				sortOption={sortOption}
 			/>
+			<NotificationSettingsDrawer
+				isOpen={isSettingsDrawerOpen}
+				onClose={closeSettingsDrawer}
+			/>
+			{patientSettingsState.patientId ? (
+				<PatientNotificationSettingsDrawer
+					isOpen={patientSettingsState.isOpen}
+					onClose={closePatientSettings}
+					patientId={patientSettingsState.patientId}
+					therapistId={therapistId}
+				/>
+			) : null}
 		</FeaturePageLayout>
 	);
 };

@@ -6,7 +6,6 @@ import type {
 	NotificationStatus,
 } from '@psycron/api/notifications/index.types';
 import {
-	AVAILABILITYSETTINGS,
 	AVAILABILITYWEEK_BASE,
 	PATIENTS,
 } from '@psycron/pages/urls';
@@ -132,6 +131,12 @@ export const formatNotificationAppointment = (
 		return formatNotificationDateTime(appointment.date, language, fallback);
 	}
 
+	// Appointment not hydrated — fall back to payload formattedEventDetails
+	const eventDetails = notification.payload?.formattedEventDetails;
+	if (typeof eventDetails === 'string' && eventDetails.trim()) {
+		return eventDetails;
+	}
+
 	return notification.appointmentId ?? fallback;
 };
 
@@ -151,10 +156,28 @@ export const formatNotificationDeliveryDate = (
 	);
 };
 
+const APPOINTMENT_MESSAGE_TYPES: NotificationMessageType[] = [
+	'APPOINTMENT_CONFIRMATION',
+	'APPOINTMENT_UPDATED',
+	'REMINDER',
+];
+
 export const isNotificationResendable = (
 	notification: INotificationRecord
-): boolean =>
-	notification.status === 'FAILED' || Boolean(notification.appointment?.isUpcoming);
+): boolean => {
+	if (notification.status === 'FAILED') return true;
+
+	// Appointment hydrated — trust its isUpcoming flag
+	if (notification.appointment) {
+		return Boolean(notification.appointment.isUpcoming);
+	}
+
+	// Appointment not hydrated — optimistically allow resend for appointment-related types;
+	// the backend validates the actual slot date on retry
+	return APPOINTMENT_MESSAGE_TYPES.includes(
+		notification.messageType as NotificationMessageType
+	);
+};
 
 export const getPatientProfilePath = (
 	notification: INotificationRecord
@@ -174,15 +197,7 @@ export const getAppointmentCalendarPath = (
 	return `${AVAILABILITYWEEK_BASE}/${date}${params}`;
 };
 
-export const getNotificationSettingsPath = (): string => AVAILABILITYSETTINGS;
 
-const getPayloadValue = (
-	payload: INotificationRecord['payload'],
-	key: string
-): string | null => {
-	const value = payload?.[key];
-	return typeof value === 'string' && value.trim() ? value : null;
-};
 
 export const getNotificationContextLines = (
 	notification: INotificationRecord,
@@ -207,21 +222,10 @@ export const getNotificationContextLines = (
 		);
 	}
 
-	if (notification.appointment?.date || notification.appointmentId) {
+	const appointmentLabel = formatNotificationAppointment(notification, language);
+	if (appointmentLabel !== '-') {
 		lines.push(
-			t('notifications.context.appointment', {
-				value: formatNotificationAppointment(notification, language),
-			})
-		);
-	}
-
-	const formattedEventDetails = getPayloadValue(
-		notification.payload,
-		'formattedEventDetails'
-	);
-	if (formattedEventDetails && !notification.appointment?.date) {
-		lines.push(
-			t('notifications.context.session', { value: formattedEventDetails })
+			t('notifications.context.appointment', { value: appointmentLabel })
 		);
 	}
 

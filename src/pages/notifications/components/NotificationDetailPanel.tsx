@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next';
 import { Button } from '@psycron/components/button/Button';
-import { Archive, Bell } from '@psycron/components/icons';
+import { Archive } from '@psycron/components/icons';
 import { Link } from '@psycron/components/link/Link';
 import {
 	QueueActionsRow,
@@ -20,7 +20,6 @@ import {
 
 import {
 	ContextList,
-	NotificationSettingsLink,
 	NotificationStatusPill,
 	NotificationUtilityRow,
 } from '../NotificationsPage.styles';
@@ -32,7 +31,6 @@ import {
 	getChannelLabelKey,
 	getMessageTypeLabelKey,
 	getNotificationContextLines,
-	getNotificationSettingsPath,
 	getPatientName,
 	getPatientProfilePath,
 	getStatusColor,
@@ -180,14 +178,6 @@ export const NotificationDetailPanel = ({
 							{t('notifications.archive.action')}
 						</Button>
 					) : null}
-					<NotificationSettingsLink
-						aria-label={t('notifications.settings.action')}
-						title={t('notifications.settings.action')}
-						to={getNotificationSettingsPath()}
-					>
-						<Bell aria-hidden='true' />
-						{t('notifications.settings.action')}
-					</NotificationSettingsLink>
 				</NotificationUtilityRow>
 			</QueueActionsRow>
 		</QueueDetailPanel>

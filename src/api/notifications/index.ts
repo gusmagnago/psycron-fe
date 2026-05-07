@@ -4,7 +4,9 @@ import type {
 	IArchiveNotificationResponse,
 	IGetNotificationsParams,
 	IGetNotificationsResponse,
+	INotificationPreferencesPayload,
 	IRetryNotificationResponse,
+	IUpdateNotificationPreferencesResponse,
 } from './index.types';
 
 export const getNotifications = async (
@@ -34,6 +36,19 @@ export const retryNotification = async (
 	const response = await apiClient.post<IRetryNotificationResponse>(
 		`/notifications/${notificationId}/retry`
 	);
+
+	return response.data;
+};
+
+export const updateNotificationPreferences = async (
+	therapistId: string,
+	payload: INotificationPreferencesPayload
+): Promise<IUpdateNotificationPreferencesResponse> => {
+	const response =
+		await apiClient.patch<IUpdateNotificationPreferencesResponse>(
+			`/users/${therapistId}/notification-preferences`,
+			payload
+		);
 
 	return response.data;
 };

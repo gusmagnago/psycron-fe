@@ -274,7 +274,7 @@ export const QueueEmptyStateText = styled(Text)`
 	max-width: 26rem;
 `;
 
-export const QueueSelectableCard = styled(ButtonBase, {
+export const QueueSelectableCard = styled(Box, {
 	shouldForwardProp: (prop) => prop !== 'isSelected' && prop !== 'tone',
 })<{ isSelected: boolean; tone?: QueueCardTone }>`
 	align-items: flex-start;
@@ -315,6 +315,11 @@ export const QueueSelectableCard = styled(ButtonBase, {
 			${hexToRgba(palette.secondary.main, 0.22)}
 		);
 		transform: translateY(-1px);
+	}
+
+	&:focus-visible {
+		outline: 2px solid var(--feature-page-accent, ${palette.secondary.main});
+		outline-offset: 2px;
 	}
 
 	${isMobileMedia} {

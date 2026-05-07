@@ -1,11 +1,10 @@
 import { tooltipClasses } from '@mui/material';
 import type { CSSObject, Theme } from '@mui/material/styles';
 
-import type { Palette } from '../palette/palette.types';
 import { spacing } from '../spacing/spacing.theme';
 
 const tooltipStyles = ({ palette }: Theme): Record<string, CSSObject> => {
-	const { tertiary, text, background } = palette as unknown as Palette;
+	const { tertiary, text, background } = palette as unknown as AppPalette;
 
 	return {
 		tooltip: {

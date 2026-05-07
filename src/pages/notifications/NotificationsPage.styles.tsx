@@ -1,6 +1,5 @@
 import styled from '@emotion/styled';
 import { Box } from '@mui/material';
-import { Link } from '@psycron/components/link/Link';
 import { Text } from '@psycron/components/text/Text';
 import { isMobileMedia } from '@psycron/theme/media-queries/mediaQueries';
 import { hexToRgba, palette } from '@psycron/theme/palette/palette.theme';
@@ -74,28 +73,6 @@ export const NotificationCardActions = styled(Box)`
 	}
 `;
 
-export const NotificationSettingsLink = styled(Link)`
-	align-items: center;
-	border-radius: ${spacing.xs};
-	color: ${palette.gray['06']};
-	display: inline-flex;
-	font-size: 0.85rem;
-	font-weight: 500;
-	gap: ${spacing.xs};
-	padding: ${spacing.xs};
-	text-decoration: none;
-	transition: color 140ms ease;
-
-	&:hover {
-		color: ${palette.text.primary};
-	}
-
-	svg {
-		flex-shrink: 0;
-		height: ${spacing.small};
-		width: ${spacing.small};
-	}
-`;
 
 export const NotificationUtilityRow = styled(Box)`
 	align-items: center;
@@ -108,6 +85,39 @@ export const ContextList = styled(Box)`
 	display: flex;
 	flex-direction: column;
 	gap: ${spacing.xs};
+`;
+
+
+export const CardSettingsTriggerWrapper = styled(Box)`
+	display: inline-flex;
+	margin-left: auto;
+`;
+
+export const CardSettingsTrigger = styled('span')`
+	align-items: center;
+	border-radius: ${spacing.xxs};
+	color: ${palette.gray['05']};
+	cursor: pointer;
+	display: inline-flex;
+	height: 1.75rem;
+	justify-content: center;
+	transition: color 140ms ease;
+	width: 1.75rem;
+
+	svg {
+		height: 14px;
+		width: 14px;
+	}
+
+	&:hover {
+		color: ${palette.text.primary};
+	}
+
+	&:focus-visible {
+		color: ${palette.text.primary};
+		outline: 2px solid ${palette.brand.purple};
+		outline-offset: 2px;
+	}
 `;
 
 export const BulkActionsRow = styled(Box)`

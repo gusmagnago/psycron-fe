@@ -1,11 +1,10 @@
 import type { CSSObject, Theme } from '@mui/material/styles';
 
-import type { Palette } from '../palette/palette.types';
 import { shadowMedium } from '../shadow/shadow.theme';
 import { spacing } from '../spacing/spacing.theme';
 
 const dividerStyles = ({ palette }: Theme): Record<string, CSSObject> => {
-	const { gray } = palette as unknown as Palette;
+	const { gray } = palette as unknown as AppPalette;
 
 	return {
 		root: {

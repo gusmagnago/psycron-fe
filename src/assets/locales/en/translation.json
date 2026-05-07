@@ -312,6 +312,10 @@
 				"completed": "Completed",
 				"cancelled": "Cancelled"
 			},
+			"notifications": {
+				"label": "Notifications",
+				"reminders-off": "Reminders off"
+			},
 			"sections": {
 				"billing": "Billing",
 				"details": "Patient details",
@@ -1751,8 +1755,46 @@
 			"delivered-at": "Sent at {{value}}",
 			"failed": "Failed delivery"
 		},
+		"patient-settings": {
+			"action": "Patient notification settings",
+			"title": "Patient Notification Preferences",
+			"subtitle": "Configure which channels this patient receives notifications on.",
+			"subtitle-named": "Configure which channels {{name}} receives notifications on.",
+			"save-success": "Patient notification preferences saved.",
+			"save-error": "Could not save patient notification preferences."
+		},
 		"settings": {
-			"action": "Setup notifications"
+			"action": "Setup notifications",
+			"title": "Notification Preferences",
+			"subtitle": "Control which channels are used for each type of patient communication.",
+			"save-success": "Notification preferences saved.",
+			"save-error": "Could not save notification preferences. Please try again.",
+			"appointment-confirmation": {
+				"title": "Appointment Confirmation",
+				"description": "Sent to the patient when a new appointment is booked."
+			},
+			"reminder": {
+				"title": "Appointment Reminders",
+				"description": "Sent to the patient before the appointment.",
+				"toggle": "Enable reminders",
+				"lead-time": {
+					"label": "Send reminder",
+					"30m": "30 min before",
+					"1h": "1 hour before",
+					"2h": "2 hours before",
+					"24h": "24 hours before",
+					"48h": "48 hours before"
+				}
+			},
+			"appointment-updated": {
+				"title": "Appointment Updated",
+				"description": "Sent to the patient when an appointment is rescheduled or modified."
+			},
+			"calendar-invite": {
+				"title": "Calendar Invite",
+				"description": "Attach a .ics calendar file to email confirmations and reminders.",
+				"toggle": "Include calendar attachment"
+			}
 		},
 		"context": {
 			"channel-status": "{{channel}} notification is {{status}}.",

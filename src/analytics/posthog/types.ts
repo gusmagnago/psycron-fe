@@ -41,6 +41,8 @@ export const enum PostHogEvent {
 	MarketingConsentToggleFailed = 'marketing consent toggle failed',
 	MarketingConsentToggleSaved = 'marketing consent toggle saved',
 	NotificationArchived = 'notification archived',
+	NotificationSettingsFailed = 'notification settings failed',
+	NotificationSettingsSaved = 'notification settings saved',
 	PatientCenterOpened = 'patient center opened',
 	PatientCenterSessionCancelled = 'patient center session cancelled',
 	PatientCenterSessionDrawerOpened = 'patient center session drawer opened',
@@ -337,5 +339,15 @@ export type PostHogEventProps = {
 		channel: string;
 		message_type: string;
 		notification_id: string;
+	};
+	[PostHogEvent.NotificationSettingsSaved]: {
+		calendar_invite_enabled: boolean;
+		confirmation_email: boolean;
+		confirmation_whatsapp: boolean;
+		reminder_enabled: boolean;
+		reminder_lead_time_minutes: number;
+	};
+	[PostHogEvent.NotificationSettingsFailed]: {
+		error_code: string;
 	};
 };

@@ -8,7 +8,6 @@ const labelStyles = ({ palette }: Theme): Record<string, CSSObject> => {
 
 	return {
 		root: {
-			marginLeft: '15px',
 			color: brand.purple,
 			[`&.${inputLabelClasses.focused}`]: {
 				marginTop: 0,

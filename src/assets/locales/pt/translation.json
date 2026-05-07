@@ -312,6 +312,10 @@
         "completed": "Concluídas",
         "cancelled": "Canceladas"
       },
+      "notifications": {
+        "label": "Notificações",
+        "reminders-off": "Lembretes desativados"
+      },
       "sections": {
         "billing": "Cobrança",
         "details": "Dados do paciente",
@@ -1751,8 +1755,46 @@
       "delivered-at": "Enviada em {{value}}",
       "failed": "Falha na entrega"
     },
+    "patient-settings": {
+      "action": "Preferências de notificação do paciente",
+      "title": "Preferências de Notificação do Paciente",
+      "subtitle": "Configure quais canais este paciente recebe notificações.",
+      "subtitle-named": "Configure quais canais {{name}} recebe notificações.",
+      "save-success": "Preferências de notificação do paciente salvas.",
+      "save-error": "Não foi possível salvar as preferências do paciente."
+    },
     "settings": {
-      "action": "Configurar notificações"
+      "action": "Configurar notificações",
+      "title": "Preferências de Notificações",
+      "subtitle": "Controle quais canais são usados para cada tipo de comunicação com o paciente.",
+      "save-success": "Preferências de notificação salvas.",
+      "save-error": "Não foi possível salvar as preferências. Tente novamente.",
+      "appointment-confirmation": {
+        "title": "Confirmação de Consulta",
+        "description": "Enviada ao paciente quando uma nova consulta é agendada."
+      },
+      "reminder": {
+        "title": "Lembretes de Consulta",
+        "description": "Enviado ao paciente antes da consulta.",
+        "toggle": "Ativar lembretes",
+        "lead-time": {
+          "label": "Enviar lembrete",
+          "30m": "30 min antes",
+          "1h": "1 hora antes",
+          "2h": "2 horas antes",
+          "24h": "24 horas antes",
+          "48h": "48 horas antes"
+        }
+      },
+      "appointment-updated": {
+        "title": "Consulta Atualizada",
+        "description": "Enviada ao paciente quando uma consulta é remarcada ou alterada."
+      },
+      "calendar-invite": {
+        "title": "Convite de Calendário",
+        "description": "Anexa um arquivo .ics às confirmações e lembretes por e-mail.",
+        "toggle": "Incluir anexo de calendário"
+      }
     },
     "context": {
       "channel-status": "Notificação por {{channel}} está {{status}}.",

@@ -8,7 +8,6 @@ import {
 	NavButtons,
 } from '@psycron/components/availability/AvailabilityNavButton';
 import { AvailabilityTodayButton } from '@psycron/components/availability/AvailabilityTodayButton';
-import { Edit } from '@psycron/components/icons';
 import { useAvailability } from '@psycron/context/appointment/availability/AvailabilityContext';
 import { useJupiterAvailability } from '@psycron/hooks/useJupiterAvailability';
 import i18n from '@psycron/i18n';
@@ -28,7 +27,7 @@ import {
 	startOfMonth,
 	startOfWeek,
 } from 'date-fns';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Settings } from 'lucide-react';
 
 import type { OccupancyLevel } from './AvailabilityCalendarPage.styles';
 import {
@@ -158,7 +157,7 @@ export const AvailabilityCalendarPage = () => {
 								navigate(`/${i18n.language}/${AVAILABILITYSETTINGS}`)
 							}
 						>
-							<Edit />
+							<Settings />
 						</NavButton>
 					</NavButtons>
 				</CalendarHeader>
