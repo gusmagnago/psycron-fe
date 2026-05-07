@@ -1,6 +1,8 @@
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { Skeleton } from '@mui/material';
+import { capture } from '@psycron/analytics/posthog/events';
+import { PostHogEvent } from '@psycron/analytics/posthog/types';
 import { Avatar } from '@psycron/components/avatar/Avatar';
 import { ShareButton } from '@psycron/components/button/share/ShareButton';
 import { Divider } from '@psycron/components/divider/Divider';
@@ -188,11 +190,15 @@ export const SlotBookedBody = ({
 								aria-label={t('availability.week.drawer.booked-view-notifications')}
 								title={t('availability.week.drawer.booked-view-notifications')}
 								type='button'
-								onClick={() =>
+								onClick={() => {
+									capture(PostHogEvent.NotificationDeepLinkFollowed, {
+										patient_id: patientId,
+										source: 'slot_drawer',
+									});
 									navigate(`/${i18n.language}/${NOTIFICATIONS}`, {
 										state: { patientId },
-									})
-								}
+									});
+								}}
 							>
 								<Bell color={palette.brand.purple} />
 							</NavShortcutButton>

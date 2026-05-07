@@ -41,6 +41,9 @@ export const enum PostHogEvent {
 	MarketingConsentToggleFailed = 'marketing consent toggle failed',
 	MarketingConsentToggleSaved = 'marketing consent toggle saved',
 	NotificationArchived = 'notification archived',
+	NotificationDeepLinkFollowed = 'notification deep link followed',
+	NotificationFiltersApplied = 'notification filters applied',
+	NotificationResent = 'notification resent',
 	NotificationSettingsFailed = 'notification settings failed',
 	NotificationSettingsSaved = 'notification settings saved',
 	PatientCenterOpened = 'patient center opened',
@@ -49,6 +52,7 @@ export const enum PostHogEvent {
 	PatientCenterSessionNotified = 'patient center session notified',
 	PatientCenterSessionRescheduled = 'patient center session rescheduled',
 	PatientCenterTimelineFilterChanged = 'patient center timeline filter changed',
+	PatientNotificationSettingsSaved = 'patient notification settings saved',
 	PublicBookAppointmentDaySelected = 'public book appointment day selected',
 	PublicBookAppointmentOpened = 'public book appointment opened',
 	PublicBookAppointmentSlotSelected = 'public book appointment slot selected',
@@ -340,6 +344,24 @@ export type PostHogEventProps = {
 		message_type: string;
 		notification_id: string;
 	};
+	[PostHogEvent.NotificationDeepLinkFollowed]: {
+		patient_id: string;
+		source: 'slot_drawer';
+	};
+	[PostHogEvent.NotificationFiltersApplied]: {
+		channel?: string;
+		has_date_range: boolean;
+		has_patient_filter: boolean;
+		has_search: boolean;
+		message_type?: string;
+		status?: string;
+	};
+	[PostHogEvent.NotificationResent]: {
+		channel: string;
+		message_type: string;
+		notification_id: string;
+		previous_status: string;
+	};
 	[PostHogEvent.NotificationSettingsSaved]: {
 		calendar_invite_enabled: boolean;
 		confirmation_email: boolean;
@@ -349,5 +371,10 @@ export type PostHogEventProps = {
 	};
 	[PostHogEvent.NotificationSettingsFailed]: {
 		error_code: string;
+	};
+	[PostHogEvent.PatientNotificationSettingsSaved]: {
+		confirmation_email: boolean;
+		confirmation_whatsapp: boolean;
+		reminder_enabled: boolean;
 	};
 };

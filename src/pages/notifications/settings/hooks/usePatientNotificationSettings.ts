@@ -86,7 +86,12 @@ export const usePatientNotificationSettings = ({
 				severity: 'error',
 			});
 		},
-		onSuccess: () => {
+		onSuccess: (_, data) => {
+			capture(PostHogEvent.PatientNotificationSettingsSaved, {
+				confirmation_email: data.appointmentConfirmation.email,
+				confirmation_whatsapp: data.appointmentConfirmation.whatsapp,
+				reminder_enabled: data.reminder.enabled,
+			});
 			showAlert({
 				message: t('notifications.patient-settings.save-success'),
 				severity: 'success',

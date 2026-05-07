@@ -150,7 +150,14 @@ export const useNotificationsPageState = ({
 
 	const retryMutation = useMutation({
 		mutationFn: retryNotification,
-		onSuccess: ({ notification }) => {
+		onSuccess: ({ notification }, notificationId) => {
+			const original = notifications.find((n) => n._id === notificationId);
+			capture(PostHogEvent.NotificationResent, {
+				channel: notification.channel,
+				message_type: notification.messageType,
+				notification_id: notification._id,
+				previous_status: original?.status ?? 'UNKNOWN',
+			});
 			queryClient.setQueriesData<{
 				pageParams: unknown[];
 				pages: Array<{ notifications: INotificationRecord[] }>;
@@ -233,7 +240,19 @@ export const useNotificationsPageState = ({
 	return {
 		activeFilterCount,
 		archiveNotification: (id) => archiveMutation.mutate(id),
-		closeFiltersDrawer: () => setIsFiltersDrawerOpen(false),
+		closeFiltersDrawer: () => {
+			if (getActiveFilterCount(filters) > 0) {
+				capture(PostHogEvent.NotificationFiltersApplied, {
+					channel: filters.channel,
+					has_date_range: Boolean(filters.from || filters.to),
+					has_patient_filter: Boolean(filters.patientId),
+					has_search: Boolean(filters.q.trim()),
+					message_type: filters.messageType,
+					status: filters.status,
+				});
+			}
+			setIsFiltersDrawerOpen(false);
+		},
 		fetchNextPage: () => {
 			void notificationsQuery.fetchNextPage();
 		},
