@@ -79,6 +79,33 @@ export const ContactShortcutButton = styled('a')`
 	}
 `;
 
+export const NavShortcutButton = styled('button')`
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 32px;
+	height: 32px;
+	border-radius: ${spacing.xs};
+	background: ${hexToRgba(palette.brand.purple, 0.08)};
+	border: 1px solid ${hexToRgba(palette.brand.purple, 0.15)};
+	cursor: pointer;
+	transition:
+		background 0.15s ease,
+		border-color 0.15s ease;
+	flex-shrink: 0;
+	padding: 0;
+
+	& svg {
+		width: 16px;
+		height: 16px;
+	}
+
+	&:hover {
+		background: ${hexToRgba(palette.brand.purple, 0.14)};
+		border-color: ${hexToRgba(palette.brand.purple, 0.3)};
+	}
+`;
+
 export const ProfileLinkAnchor = styled('a')`
 	display: inline-flex;
 	align-items: center;

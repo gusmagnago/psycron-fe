@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useLocation } from 'react-router-dom';
 import { capture } from '@psycron/analytics/posthog/events';
 import { PostHogEvent } from '@psycron/analytics/posthog/types';
 import {
@@ -31,6 +32,7 @@ const getActiveFilterCount = (filters: NotificationFilters): number =>
 		filters.channel,
 		filters.from,
 		filters.messageType,
+		filters.patientId,
 		filters.q.trim(),
 		filters.status,
 		filters.to,
@@ -62,7 +64,12 @@ export const useNotificationsPageState = ({
 }: UseNotificationsPageStateParams): UseNotificationsPageStateResult => {
 	const queryClient = useQueryClient();
 	const { showAlert } = useAlert();
-	const [filters, setFilters] = useState<NotificationFilters>(DEFAULT_FILTERS);
+	const location = useLocation();
+	const locationState = location.state as { patientId?: string } | null;
+	const [filters, setFilters] = useState<NotificationFilters>({
+		...DEFAULT_FILTERS,
+		patientId: locationState?.patientId,
+	});
 	const [selectedNotificationId, setSelectedNotificationId] = useState<string | null>(null);
 	const [isFiltersDrawerOpen, setIsFiltersDrawerOpen] = useState(false);
 	const [sortOption, setSortOption] = useState<NotificationSortOption>('newest');
@@ -82,6 +89,7 @@ export const useNotificationsPageState = ({
 				from: filters.from || undefined,
 				limit: DEFAULT_NOTIFICATION_LIMIT,
 				messageType: filters.messageType || undefined,
+				patientId: filters.patientId || undefined,
 				q: filters.q.trim() || undefined,
 				status: filters.status,
 				to: filters.to || undefined,

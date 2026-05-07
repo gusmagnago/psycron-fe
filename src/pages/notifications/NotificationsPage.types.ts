@@ -5,6 +5,7 @@ export interface NotificationFilters {
 	channel?: NotificationChannel;
 	from?: string;
 	messageType?: string;
+	patientId?: string;
 	q: string;
 	status?: NotificationStatus;
 	to?: string;

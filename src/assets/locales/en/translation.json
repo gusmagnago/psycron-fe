@@ -1403,6 +1403,7 @@
 				"booked-no-phone": "No phone provided",
 				"booked-awaiting-address": "Awaiting patient address",
 				"booked-request-address": "Request address",
+				"booked-view-notifications": "View notifications",
 				"booked-past-disabled": "Past appointment — actions disabled",
 				"booked-copied": "Copied",
 				"booked-copy-aria": "Copy {{field}} to clipboard",

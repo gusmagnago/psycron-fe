@@ -1,4 +1,5 @@
 import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
 import { Skeleton } from '@mui/material';
 import { Avatar } from '@psycron/components/avatar/Avatar';
 import { ShareButton } from '@psycron/components/button/share/ShareButton';
@@ -6,6 +7,7 @@ import { Divider } from '@psycron/components/divider/Divider';
 import {
 	Account,
 	Appointment,
+	Bell,
 	CheckSuccess,
 	Copy,
 	Globe,
@@ -15,6 +17,8 @@ import {
 	Phone,
 	WhatsApp,
 } from '@psycron/components/icons';
+import i18n from '@psycron/i18n';
+import { NOTIFICATIONS } from '@psycron/pages/urls';
 import { palette } from '@psycron/theme/palette/palette.theme';
 
 import { SlotSessionSection } from '../slot-session-section/SlotSessionSection';
@@ -36,6 +40,7 @@ import {
 	IdentityInfo,
 	IdentityName,
 	MissingFieldText,
+	NavShortcutButton,
 	NotesText,
 	OnlineSessionLabel,
 	OnlineSessionRow,
@@ -62,10 +67,12 @@ export const SlotBookedBody = ({
 	bookingLink,
 }: ISlotBookedBodyProps) => {
 	const { t } = useTranslation();
+	const navigate = useNavigate();
 	const { copy, copiedKey } = useCopyToClipboard();
 
 	const patient = appointmentDetails?.appointment?.patient;
 	const appt = appointmentDetails?.appointment;
+	const patientId = appt?.patientId ?? (patient?._id as string | undefined);
 
 	const email = patient?.contacts?.email;
 	const phone = patient?.contacts?.phone;
@@ -176,6 +183,20 @@ export const SlotBookedBody = ({
 							textKey={shareText}
 							titleKey={shareTitle}
 						/>
+						{patientId && (
+							<NavShortcutButton
+								aria-label={t('availability.week.drawer.booked-view-notifications')}
+								title={t('availability.week.drawer.booked-view-notifications')}
+								type='button'
+								onClick={() =>
+									navigate(`/${i18n.language}/${NOTIFICATIONS}`, {
+										state: { patientId },
+									})
+								}
+							>
+								<Bell color={palette.brand.purple} />
+							</NavShortcutButton>
+						)}
 					</ContactShortcutsRow>
 				</IdentityInfo>
 			</IdentityBlock>
