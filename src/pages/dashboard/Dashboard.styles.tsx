@@ -1,25 +1,39 @@
-import { Paper, styled } from '@mui/material';
-import { isMobileMedia } from '@psycron/theme/media-queries/mediaQueries';
-import { palette } from '@psycron/theme/palette/palette.theme';
+import styled from '@emotion/styled';
+import { Box } from '@mui/material';
+import {
+	isBiggerThanMediumMedia,
+	isBiggerThanTabletMedia,
+} from '@psycron/theme/media-queries/mediaQueries';
 import { spacing } from '@psycron/theme/spacing/spacing.theme';
-import { zIndexHover } from '@psycron/theme/zIndex';
 
-export const StyledPaperModal = styled(Paper)`
-	position: absolute;
-	top: 50%;
-	left: 50%;
-	transform: translate(-50%, -50%);
-	width: 80%;
-	height: 0;
-	z-index: ${zIndexHover};
+export const DashboardRoot = styled(Box)`
+	display: flex;
+	flex-direction: column;
+	gap: ${spacing.small};
+	max-width: 1600px;
+	margin: 0 auto;
+	width: 100%;
+`;
 
-	padding: ${spacing.small};
-	background-color: ${palette.background.default};
+export const DashboardTopBar = styled(Box)`
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	flex-wrap: wrap;
+	gap: ${spacing.small};
+`;
 
-	${isMobileMedia} {
-		width: 100%;
-		padding: ${spacing.xs};
-		border-radius: 0;
-		height: 100%;
+export const BentoGrid = styled(Box)`
+	display: grid;
+	grid-template-columns: 1fr;
+	gap: ${spacing.small};
+	grid-auto-rows: auto;
+	${isBiggerThanTabletMedia} {
+		grid-template-columns: repeat(6, 1fr);
+		gap: ${spacing.mediumSmall};
+	}
+
+	${isBiggerThanMediumMedia} {
+		grid-template-columns: repeat(12, 1fr);
 	}
 `;

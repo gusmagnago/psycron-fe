@@ -34,8 +34,17 @@ export const enum PostHogEvent {
 	AvailabilitySlotUnblocked = 'availability slot unblocked',
 	BackofficeWorkerSessionFailed = 'backoffice worker session failed',
 
+	DashboardCustomizeOpened = 'dashboard customize opened',
+	DashboardTileHidden = 'dashboard tile hidden',
+	DashboardTileReordered = 'dashboard tile reordered',
+	DashboardTileRestored = 'dashboard tile restored',
+
 	EditUserSubmitted = 'edit user submitted',
 	FeaturePageQueueExpansionChanged = 'feature page queue expansion changed',
+
+	JupiterInsightActionClicked = 'jupiter insight action clicked',
+	JupiterInsightDismissed = 'jupiter insight dismissed',
+
 	MarketingConsentToggleChanged = 'marketing consent toggle changed',
 
 	MarketingConsentToggleFailed = 'marketing consent toggle failed',
@@ -377,4 +386,16 @@ export type PostHogEventProps = {
 		confirmation_whatsapp: boolean;
 		reminder_enabled: boolean;
 	};
+
+	[PostHogEvent.DashboardCustomizeOpened]: never;
+	[PostHogEvent.DashboardTileHidden]: { tile_id: string };
+	[PostHogEvent.DashboardTileReordered]: {
+		from_index: number;
+		tile_id: string;
+		to_index: number;
+	};
+	[PostHogEvent.DashboardTileRestored]: { tile_id: string };
+
+	[PostHogEvent.JupiterInsightActionClicked]: { insight_index: number };
+	[PostHogEvent.JupiterInsightDismissed]: { insight_index: number };
 };

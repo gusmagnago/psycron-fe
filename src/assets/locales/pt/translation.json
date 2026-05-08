@@ -478,7 +478,9 @@
     "auth-method": "Método de autenticação",
     "privacy-policy": "Política de Privacidade",
     "terms-of-service": "Termos de Uso",
-    "privacy": "Privacidade"
+    "privacy": "Privacidade",
+    "previous": "Anterior",
+    "next": "Próximo"
   },
   "components": {
     "form": {
@@ -924,6 +926,116 @@
     "add-patient": {
       "title": "Adicione um Novo Paciente",
       "sub-title": "Preencha o formulário abaixo com os detalhes da pessoa"
+    },
+    "dashboard": {
+      "title": "Dashboard",
+      "greeting": {
+        "headline": "Olá, {{name}}!",
+        "band": {
+          "morning": "Bom dia",
+          "afternoon": "Boa tarde",
+          "evening": "Boa noite"
+        }
+      },
+      "tiles": {
+        "schedule": "Agenda de hoje",
+        "jupiter-insights": "Insights da Júpiter",
+        "quick-actions": "Ações rápidas",
+        "active-patients": "Pacientes ativos",
+        "revenue-mtd": "Receita do mês",
+        "weekly-chart": "Sessões semanais",
+        "this-week": "Esta semana",
+        "pending-tasks": "Tarefas pendentes",
+        "recent-patients": "Pacientes recentes"
+      },
+      "customize": {
+        "open": "Personalizar",
+        "done": "Concluído",
+        "hint": "Arraste os blocos para reordenar · clique no ícone de olho para ocultar",
+        "reset": "Redefinir layout"
+      },
+      "widgets": {
+        "schedule": {
+          "title": "Agenda de Hoje",
+          "count": "{{count}} sessões",
+          "empty": "Nenhuma sessão agendada para hoje",
+          "unknown-patient": "Paciente desconhecido",
+          "sessions-today": "sessões hoje",
+          "view-week": "Ver semana",
+          "online": "Online",
+          "in-person": "Presencial",
+          "min": "min",
+          "status": {
+            "done": "Concluído",
+            "confirmed": "Confirmado",
+            "pending": "Pendente"
+          }
+        },
+        "jupiter-insights": {
+          "aria-label": "Carrossel de insights da Júpiter",
+          "dismiss": "Dispensar insight",
+          "empty": "Nenhum insight disponível no momento",
+          "action-availability": "Ver disponibilidade",
+          "title-schedule": "Sessões de hoje",
+          "text-schedule": "Você tem {{count}} sessão(ões) agendada(s) hoje. Continue assim!",
+          "title-patients": "Pacientes ativos",
+          "text-patients": "Você tem atualmente {{count}} paciente(s) ativo(s) na sua lista.",
+          "subtitle": "Co-piloto de IA · aprendendo seus padrões",
+          "default-category": "Cuidado ao Paciente",
+          "category-patient-care": "Cuidado ao Paciente",
+          "category-insights": "Insights",
+          "action-send-message": "Enviar mensagem",
+          "action-view-profile": "Ver perfil",
+          "mic": "Entrada de voz"
+        },
+        "quick-actions": {
+          "title": "Ações Rápidas",
+          "actions": {
+            "new-session": "Nova sessão",
+            "new-session-aria": "Abrir disponibilidade para nova sessão",
+            "patients": "Meus pacientes",
+            "patients-aria": "Ir para lista de pacientes",
+            "add-patient": "Adicionar paciente",
+            "add-patient-aria": "Adicionar novo paciente",
+            "notifications": "Notificações",
+            "notifications-aria": "Ver notificações"
+          }
+        },
+        "active-patients": {
+          "label": "Pacientes ativos"
+        },
+        "revenue-mtd": {
+          "label": "Receita do mês"
+        },
+        "weekly-chart": {
+          "title": "Sessões Semanais",
+          "aria-label": "Gráfico de barras com sessões por dia da semana",
+          "sessions": "sessões",
+          "legend": {
+            "confirmed": "Confirmadas",
+            "completed": "Concluídas",
+            "cancelled": "Canceladas"
+          }
+        },
+        "this-week": {
+          "title": "Esta Semana",
+          "completed": "Concluídas",
+          "upcoming": "Próximas",
+          "cancelled": "Canceladas"
+        },
+        "pending-tasks": {
+          "title": "Tarefas Pendentes",
+          "session-notes": "Notas de sessão",
+          "invoices": "Faturas",
+          "messages": "Mensagens"
+        },
+        "recent-patients": {
+          "title": "Pacientes Recentes",
+          "view-all": "Todos",
+          "last-note": "última nota",
+          "message-aria": "Enviar mensagem para {{name}}"
+        }
+      }
     }
   },
   "chat": {
