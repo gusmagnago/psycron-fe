@@ -101,6 +101,7 @@ export const BentoTileMotionBox = styled(motion.div, {
 
 export const BentoTileInner = styled(Box)`
 	height: 100%;
+	min-height: 0;
 	padding: ${spacing.medium};
 	display: flex;
 	flex-direction: column;

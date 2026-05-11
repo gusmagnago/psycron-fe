@@ -957,15 +957,18 @@
       "widgets": {
         "schedule": {
           "title": "Today's Schedule",
+          "title-week": "This Week",
           "count": "{{count}} sessions",
           "empty": "No sessions scheduled for today",
           "unknown-patient": "Unknown patient",
           "sessions-today": "sessions today",
+          "sessions-week": "sessions this week",
           "view-week": "View week",
           "online": "Online",
           "in-person": "In-person",
           "min": "min",
           "status": {
+            "live": "LIVE",
             "done": "Done",
             "confirmed": "Confirmed",
             "pending": "Pending"

@@ -99,7 +99,7 @@ export const Dashboard = () => {
 	const { userDetails } = useUserDetails();
 	const band = useTimeOfDay();
 	const { isMobile, isBiggerThanTablet } = useViewport();
-	const { isLoading, todaySlots, weekSlotsByDay } = useDashboardSlots();
+	const { isLoading, todaySlots, weekEnd, weekSlotsByDay, weekStart } = useDashboardSlots();
 	const {
 		isCustomizing,
 		layout,
@@ -300,7 +300,6 @@ export const Dashboard = () => {
 			isHidden: !(tile?.visible ?? true),
 			onToggleVisibility: toggleVisibility,
 			rowSpan: row,
-			style: { minHeight: TILE_MIN_HEIGHT[tileId] },
 		};
 
 		switch (tileId) {
@@ -309,8 +308,11 @@ export const Dashboard = () => {
 					<BentoTile {...commonProps} key={tileId}>
 						<ScheduleWidget
 							isLoading={isLoading}
-							onViewWeek={() => navigate(`../${AVAILABILITYWEEK_BASE}`)}
 							slots={todaySlots}
+							weekEnd={weekEnd}
+							weekHref={`${AVAILABILITYWEEK_BASE}/${weekStart}`}
+							weekSlotsByDay={weekSlotsByDay}
+							weekStart={weekStart}
 						/>
 					</BentoTile>
 				);

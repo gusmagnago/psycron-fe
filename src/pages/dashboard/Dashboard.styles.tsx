@@ -47,10 +47,12 @@ export const BentoGrid = styled(Box)`
 
 	${isBiggerThanTabletMedia} {
 		grid-template-columns: repeat(6, 1fr);
+		grid-auto-rows: 280px;
 		gap: ${spacing.mediumSmall};
 	}
 
 	${isBiggerThanMediumMedia} {
 		grid-template-columns: repeat(12, 1fr);
+		grid-auto-rows: 300px;
 	}
 `;

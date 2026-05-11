@@ -1,9 +1,31 @@
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
-import { Box, Chip } from '@mui/material';
+import { Box, Skeleton } from '@mui/material';
 import { palette } from '@psycron/theme/palette/palette.theme';
+import {
+	shadowInnerPress,
+	shadowSmall,
+} from '@psycron/theme/shadow/shadow.theme';
 import { spacing } from '@psycron/theme/spacing/spacing.theme';
 import { motion } from 'framer-motion';
+
+export const ScheduleRoot = styled(Box)`
+	display: flex;
+	flex-direction: column;
+	height: 100%;
+	min-height: 0;
+	gap: ${spacing.xs};
+`;
+
+export const SkeletonList = styled(Box)`
+	display: flex;
+	flex-direction: column;
+	gap: ${spacing.xs};
+`;
+
+export const SlotSkeleton = styled(Skeleton)`
+	border-radius: ${spacing.extraSmall};
+`;
 
 export const ScheduleScrollBox = styled(Box)`
 	overflow-y: auto;
@@ -16,16 +38,30 @@ export const ScheduleScrollBox = styled(Box)`
 	scrollbar-color: ${palette.gray['02']} transparent;
 `;
 
+export const EmptyState = styled(Box)`
+	flex: 1;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	opacity: 0.5;
+	font-size: 0.875rem;
+	text-align: center;
+	padding: ${spacing.large} ${spacing.small};
+	color: ${palette.text.secondary};
+`;
+
 export const SlotRow = styled(motion.div, {
 	shouldForwardProp: (prop) => prop !== 'isLive',
 })<{ isLive: boolean }>`
 	display: flex;
 	align-items: center;
 	gap: ${spacing.small};
-	padding: 10px ${spacing.extraSmall};
-	border-radius: 10px;
+	padding: ${spacing.xs} ${spacing.extraSmall};
+	border-radius: ${spacing.xs};
 	background: ${({ isLive }) =>
-		isLive ? 'rgba(0, 199, 119, 0.06)' : 'transparent'};
+		isLive
+			? `color-mix(in oklab, ${palette.success.main} 6%, transparent)`
+			: 'transparent'};
 	border: 1px solid
 		${({ isLive }) => (isLive ? palette.success.main : 'transparent')};
 	transition: background 0.2s ease;
@@ -36,7 +72,7 @@ export const SlotRow = styled(motion.div, {
 `;
 
 export const SlotTime = styled.span`
-	font-size: 13px;
+	font-size: 0.8125rem;
 	font-weight: 600;
 	color: ${palette.text.secondary};
 	min-width: 44px;
@@ -53,7 +89,7 @@ export const SlotBody = styled(Box)`
 `;
 
 export const SlotPatientName = styled.span`
-	font-size: 14px;
+	font-size: 0.875rem;
 	font-weight: 600;
 	color: ${palette.text.primary};
 	white-space: nowrap;
@@ -64,26 +100,34 @@ export const SlotPatientName = styled.span`
 export const SlotMeta = styled.span`
 	display: flex;
 	align-items: center;
-	gap: 4px;
-	font-size: 12px;
+	gap: ${spacing.space};
+	font-size: 0.75rem;
 	color: ${palette.text.secondary};
 `;
 
-export const StatusChip = styled.span<{ status: 'confirmed' | 'done' | 'live' | 'pending' }>`
-	font-size: 11px;
+export const StatusChip = styled.span<{
+	status: 'confirmed' | 'done' | 'live' | 'pending';
+}>`
+	font-size: 0.6875rem;
 	font-weight: 700;
-	padding: 2px 8px;
+	padding: ${spacing.space} ${spacing.xs};
 	border-radius: 99px;
 	flex-shrink: 0;
+
 	${({ status }) => {
 		if (status === 'live')
 			return css`
 				background: ${palette.success.main};
-				color: #fff;
+				color: ${palette.white};
 				animation: livePulse 2s ease-in-out infinite;
 				@keyframes livePulse {
-					0%, 100% { opacity: 1; }
-					50% { opacity: 0.7; }
+					0%,
+					100% {
+						opacity: 1;
+					}
+					50% {
+						opacity: 0.7;
+					}
 				}
 			`;
 		if (status === 'confirmed')
@@ -107,13 +151,17 @@ export const ProgressBarWrapper = styled(Box)`
 	margin-top: ${spacing.xs};
 	border-radius: 99px;
 	background: ${palette.gray['01']};
-	height: 4px;
+	height: ${spacing.space};
 	overflow: hidden;
 `;
 
 export const ProgressBarFill = styled(motion.div)`
 	height: 100%;
-	background: linear-gradient(90deg, ${palette.success.main}, ${palette.primary.main});
+	background: linear-gradient(
+		90deg,
+		${palette.success.main},
+		${palette.primary.main}
+	);
 	border-radius: 99px;
 `;
 
@@ -127,44 +175,73 @@ export const WidgetHeader = styled(Box)`
 
 export const WidgetTitle = styled.h2`
 	margin: 0;
-	font-size: 15px;
+	font-size: 0.9375rem;
 	font-weight: 700;
 	color: ${palette.text.primary};
 `;
 
 export const CountBadge = styled.div`
-	font-size: 13px;
+	font-size: 0.8125rem;
 	color: ${palette.text.secondary};
 `;
 
 export const CountHighlight = styled.span`
-	font-size: 28px;
+	font-size: 1.75rem;
 	font-weight: 800;
 	color: ${palette.text.primary};
 	line-height: 1;
 `;
 
-export const ViewWeekLink = styled.a`
-	font-size: 13px;
+export const SlotDateLabel = styled.span`
+	font-size: 0.6875rem;
 	font-weight: 600;
-	color: ${palette.primary.dark};
-	text-decoration: none;
-	cursor: pointer;
+	color: ${palette.text.disabled};
+	text-transform: uppercase;
+	letter-spacing: 0.05em;
+`;
+
+export const ScheduleSwitcher = styled(Box)`
 	display: flex;
 	align-items: center;
-	gap: 3px;
+	gap: ${spacing.space};
+	background: ${palette.gray['01']};
+	border-radius: ${spacing.small};
+	padding: ${spacing.space};
+	box-shadow: ${shadowInnerPress};
+`;
+
+export const SwitcherOption = styled('button', {
+	shouldForwardProp: (prop) => prop !== 'isActive',
+})<{ isActive: boolean }>`
+	all: unset;
+	position: relative;
+	display: flex;
+	align-items: center;
+	gap: ${spacing.space};
+	padding: ${spacing.space} ${spacing.xs};
+	border-radius: ${spacing.small};
+	font-size: 0.75rem;
+	font-weight: 600;
+	cursor: pointer;
+	overflow: hidden;
+	white-space: nowrap;
+	transition:
+		background 0.2s ease,
+		color 0.2s ease;
+
+	background: ${({ isActive }) =>
+		isActive ? palette.primary.main : 'transparent'};
+	color: ${({ isActive }) =>
+		isActive ? palette.text.primary : palette.text.secondary};
+	box-shadow: ${({ isActive }) => (isActive ? shadowSmall : 'none')};
 
 	&:hover {
-		color: ${palette.tertiary.main};
+		color: ${palette.text.primary};
+	}
+
+	&:focus-visible {
+		outline: 2px solid ${palette.primary.main};
+		outline-offset: 2px;
 	}
 `;
 
-// suppress unused export warning — used for reuse in other widgets
-export const LiveChip = styled(Chip)`
-	height: 20px;
-	font-size: 10px;
-	font-weight: 700;
-	background: ${palette.success.main};
-	color: #fff;
-	letter-spacing: 0.05em;
-`;

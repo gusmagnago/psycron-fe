@@ -957,15 +957,18 @@
       "widgets": {
         "schedule": {
           "title": "Agenda de Hoje",
+          "title-week": "Esta Semana",
           "count": "{{count}} sessões",
           "empty": "Nenhuma sessão agendada para hoje",
           "unknown-patient": "Paciente desconhecido",
           "sessions-today": "sessões hoje",
+          "sessions-week": "sessões esta semana",
           "view-week": "Ver semana",
           "online": "Online",
           "in-person": "Presencial",
           "min": "min",
           "status": {
+            "live": "AO VIVO",
             "done": "Concluído",
             "confirmed": "Confirmado",
             "pending": "Pendente"
