@@ -35,18 +35,19 @@ export const enum PostHogEvent {
 	BackofficeWorkerSessionFailed = 'backoffice worker session failed',
 
 	DashboardCustomizeOpened = 'dashboard customize opened',
+	DashboardLayoutReset = 'dashboard layout reset button clicked',
 	DashboardTileHidden = 'dashboard tile hidden',
 	DashboardTileReordered = 'dashboard tile reordered',
+
 	DashboardTileRestored = 'dashboard tile restored',
-
 	EditUserSubmitted = 'edit user submitted',
-	FeaturePageQueueExpansionChanged = 'feature page queue expansion changed',
 
+	FeaturePageQueueExpansionChanged = 'feature page queue expansion changed',
 	JupiterInsightActionClicked = 'jupiter insight action clicked',
+
 	JupiterInsightDismissed = 'jupiter insight dismissed',
 
 	MarketingConsentToggleChanged = 'marketing consent toggle changed',
-
 	MarketingConsentToggleFailed = 'marketing consent toggle failed',
 	MarketingConsentToggleSaved = 'marketing consent toggle saved',
 	NotificationArchived = 'notification archived',
@@ -71,6 +72,7 @@ export const enum PostHogEvent {
 	PublicPatientAgendaAppointmentOpened = 'public patient agenda appointment opened',
 	PublicPatientAgendaDaySelected = 'public patient agenda day selected',
 	PublicPatientAgendaOpened = 'public patient agenda opened',
+
 	PublicPatientAgendaViewChanged = 'public patient agenda view changed',
 
 	SettingsLegalLinkClicked = 'settings legal link clicked',
@@ -88,7 +90,6 @@ export const enum PostHogEvent {
 	UserDetailsDeleteDialogOpened = 'user details delete dialog opened',
 
 	UserDetailsDeleteFailed = 'user details delete failed',
-
 	UserDetailsDeleteSucceeded = 'user details delete succeeded',
 	UserDetailsEditSessionClicked = 'user details edit session clicked',
 	UserDetailsEditUserClicked = 'user details edit user clicked',
@@ -239,7 +240,17 @@ export type PostHogEventProps = {
 
 	[PostHogEvent.AvailabilitySettingSaved]: {
 		new_value: string;
-		setting: 'working_hours' | 'session_type' | 'session_duration' | 'timezone' | 'buffer_time' | 'recurrence_pattern' | 'google_calendar' | 'session_address' | 'specialty' | 'specialty_detail';
+		setting:
+			| 'working_hours'
+			| 'session_type'
+			| 'session_duration'
+			| 'timezone'
+			| 'buffer_time'
+			| 'recurrence_pattern'
+			| 'google_calendar'
+			| 'session_address'
+			| 'specialty'
+			| 'specialty_detail';
 	};
 
 	[PostHogEvent.AvailabilityDayBlocked]: {
@@ -388,6 +399,7 @@ export type PostHogEventProps = {
 	};
 
 	[PostHogEvent.DashboardCustomizeOpened]: never;
+	[PostHogEvent.DashboardLayoutReset]: never;
 	[PostHogEvent.DashboardTileHidden]: { tile_id: string };
 	[PostHogEvent.DashboardTileReordered]: {
 		from_index: number;

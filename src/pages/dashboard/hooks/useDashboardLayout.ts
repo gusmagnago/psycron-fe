@@ -8,6 +8,8 @@ import type {
 	DashboardTileId,
 } from '../Dashboard.types';
 
+import type { UseDashboardLayoutReturn } from './useDashboardLayout.types';
+
 const STORAGE_KEY = '_psy_dashboard_layout';
 
 const DEFAULT_LAYOUT: DashboardLayoutState = [
@@ -48,18 +50,6 @@ const persist = (layout: DashboardLayoutState): void => {
 		// Storage unavailable — layout lives in memory only
 	}
 };
-
-export interface UseDashboardLayoutReturn {
-	dragState: DashboardDragState;
-	isCustomizing: boolean;
-	layout: DashboardLayoutState;
-	onDragEnd: () => void;
-	onDragOver: (overId: DashboardTileId) => void;
-	onDragStart: (id: DashboardTileId) => void;
-	resetLayout: () => void;
-	setCustomizing: (value: boolean) => void;
-	toggleVisibility: (id: DashboardTileId) => void;
-}
 
 export const useDashboardLayout = (): UseDashboardLayoutReturn => {
 	const [layout, setLayout] = useState<DashboardLayoutState>(loadLayout);
@@ -139,6 +129,8 @@ export const useDashboardLayout = (): UseDashboardLayoutReturn => {
 	const resetLayout = useCallback(() => {
 		setLayout(DEFAULT_LAYOUT);
 		persist(DEFAULT_LAYOUT);
+		setIsCustomizing(false);
+		capture(PostHogEvent.DashboardLayoutReset);
 	}, []);
 
 	return {
