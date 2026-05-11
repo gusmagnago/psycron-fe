@@ -80,8 +80,9 @@ export const SlotBookedBody = ({
 	const phone = patient?.contacts?.phone;
 	const whatsapp = patient?.contacts?.whatsapp;
 
-	const firstName = patient?.firstName ?? '';
-	const lastName = patient?.lastName ?? '';
+	const nameParts = (patientName ?? '').trim().split(/\s+/);
+	const firstName = patient?.firstName ?? nameParts[0] ?? '';
+	const lastName = patient?.lastName ?? nameParts.slice(1).join(' ') ?? '';
 
 	const sessionCount = appt?.sessionCount ?? 0;
 

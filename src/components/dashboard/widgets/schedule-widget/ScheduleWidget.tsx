@@ -3,65 +3,26 @@ import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { Calendar, CalendarRange } from '@psycron/components/icons';
 import { Tooltip } from '@psycron/components/tooltip/Tooltip';
-import { addMinutes, format, isAfter, isBefore, parseISO } from 'date-fns';
-import { MapPin, Monitor } from 'lucide-react';
+import { parseISO } from 'date-fns';
 
+import { ScheduleSlotRow } from './ScheduleSlotRow';
 import {
 	CountBadge,
 	CountHighlight,
 	EmptyState,
-	ProgressBarFill,
-	ProgressBarWrapper,
 	ScheduleRoot,
 	ScheduleScrollBox,
 	ScheduleSwitcher,
 	SkeletonList,
-	SlotBody,
-	SlotDateLabel,
-	SlotMeta,
-	SlotPatientName,
-	SlotRow,
 	SlotSkeleton,
-	SlotTime,
-	StatusChip,
 	SwitcherOption,
 	WidgetHeader,
 } from './ScheduleWidget.styles';
-import type {
-	ScheduleWidgetProps,
-	SlotStatusChip,
-	ViewMode,
-} from './ScheduleWidget.types';
-
-const rowVariants = {
-	hidden: { opacity: 0, x: -8 },
-	visible: (i: number) => ({
-		opacity: 1,
-		x: 0,
-		transition: { delay: i * 0.04, duration: 0.25, ease: 'easeOut' },
-	}),
-};
-
-const getSlotStatus = (
-	startTime: string,
-	date: string,
-	duration: number
-): { progress: number | null; status: SlotStatusChip } => {
-	const start = parseISO(`${date}T${startTime}`);
-	const end = addMinutes(start, duration);
-	const now = new Date();
-
-	if (isAfter(now, start) && isBefore(now, end)) {
-		const progress =
-			((now.getTime() - start.getTime()) / (duration * 60_000)) * 100;
-		return { progress, status: 'live' };
-	}
-	if (isAfter(now, end)) return { progress: null, status: 'done' };
-	return { progress: null, status: 'confirmed' };
-};
+import type { ScheduleWidgetProps, ViewMode } from './ScheduleWidget.types';
 
 export const ScheduleWidget = ({
 	isLoading,
+	onSlotClick,
 	slots,
 	weekEnd,
 	weekHref,
@@ -70,7 +31,7 @@ export const ScheduleWidget = ({
 }: ScheduleWidgetProps) => {
 	const { t } = useTranslation();
 	const navigate = useNavigate();
-	const todayStr = format(new Date(), 'yyyy-MM-dd');
+	const todayStr = new Date().toISOString().substring(0, 10);
 
 	const [viewMode, setViewMode] = useState<ViewMode>('today');
 	const autoSwitched = useRef(false);
@@ -126,8 +87,7 @@ export const ScheduleWidget = ({
 	}, [isLoading, bookedSlots.length, weekSlots.length]);
 
 	const displaySlots = viewMode === 'week' ? weekSlots : bookedSlots;
-	const sessionCount =
-		viewMode === 'week' ? weekSlots.length : slots.length;
+	const sessionCount = viewMode === 'week' ? weekSlots.length : slots.length;
 	const sessionLabel =
 		viewMode === 'week'
 			? t('page.dashboard.widgets.schedule.sessions-week')
@@ -187,63 +147,15 @@ export const ScheduleWidget = ({
 				<EmptyState>{t('page.dashboard.widgets.schedule.empty')}</EmptyState>
 			) : (
 				<ScheduleScrollBox>
-					{displaySlots.map((slot, i) => {
-						const { status, progress } = getSlotStatus(
-							slot.startTime,
-							slot.date,
-							slot.duration
-						);
-
-						return (
-							<SlotRow
-								animate='visible'
-								custom={i}
-								initial='hidden'
-								isLive={status === 'live'}
-								key={`${slot.date}-${slot.startTime}`}
-								variants={rowVariants}
-							>
-								<SlotTime>
-									{format(parseISO(`${slot.date}T${slot.startTime}`), 'HH:mm')}
-								</SlotTime>
-								<SlotBody>
-									<SlotPatientName>
-										{slot.patientName ??
-											t('page.dashboard.widgets.schedule.unknown-patient')}
-									</SlotPatientName>
-									<SlotMeta>
-										{viewMode === 'week' && slot.date !== todayStr && (
-											<SlotDateLabel>
-												{format(parseISO(slot.date), 'EEE d')}
-												{' · '}
-											</SlotDateLabel>
-										)}
-										{slot.deliveryMode === 'online' ? (
-											<Monitor size={11} />
-										) : (
-											<MapPin size={11} />
-										)}
-										{slot.deliveryMode === 'online'
-											? t('page.dashboard.widgets.schedule.online')
-											: t('page.dashboard.widgets.schedule.in-person')}
-										{' · '}
-										{slot.duration} {t('page.dashboard.widgets.schedule.min')}
-									</SlotMeta>
-									{status === 'live' && progress !== null && (
-										<ProgressBarWrapper>
-											<ProgressBarFill
-												animate={{ width: `${progress}%` }}
-												initial={{ width: 0 }}
-											/>
-										</ProgressBarWrapper>
-									)}
-								</SlotBody>
-								<StatusChip status={status}>
-									{t(`page.dashboard.widgets.schedule.status.${status}`)}
-								</StatusChip>
-							</SlotRow>
-						);
-					})}
+					{displaySlots.map((slot, i) => (
+						<ScheduleSlotRow
+							index={i}
+							key={`${slot.date}-${slot.startTime}`}
+							onClick={onSlotClick}
+							showDate={viewMode === 'week' && slot.date !== todayStr}
+							slot={slot}
+						/>
+					))}
 				</ScheduleScrollBox>
 			)}
 		</ScheduleRoot>

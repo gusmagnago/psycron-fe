@@ -60,6 +60,7 @@ export const BentoTileRoot = styled('div', {
 	grid-column: span ${({ colSpan }) => colSpan ?? 1};
 	grid-row: span ${({ rowSpan }) => rowSpan ?? 1};
 	min-height: 0;
+	min-width: 0;
 	${({ isHidden }) => isHidden && hiddenStyles}
 `;
 

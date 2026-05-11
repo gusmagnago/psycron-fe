@@ -9,9 +9,9 @@ import { endOfWeek, format, startOfWeek } from 'date-fns';
 
 export interface UseDashboardSlotsReturn {
 	isLoading: boolean;
-	todaySlots: Omit<IWeekSlot, 'id'>[];
+	todaySlots: IWeekSlot[];
 	weekEnd: string;
-	weekSlotsByDay: Record<string, Omit<IWeekSlot, 'id'>[]>;
+	weekSlotsByDay: Record<string, IWeekSlot[]>;
 	weekStart: string;
 }
 
@@ -50,9 +50,9 @@ export const useDashboardSlots = (): UseDashboardSlotsReturn => {
 		staleTime: 5 * 60 * 1000,
 	});
 
-	const weekSlotsByDay = useMemo<Record<string, Omit<IWeekSlot, 'id'>[]>>(() => {
+	const weekSlotsByDay = useMemo<Record<string, IWeekSlot[]>>(() => {
 		if (!data?.dates) return {};
-		return data.dates.reduce<Record<string, Omit<IWeekSlot, 'id'>[]>>(
+		return data.dates.reduce<Record<string, IWeekSlot[]>>(
 			(acc, day) => {
 				if (!day.slots?.length) return acc;
 				// BE may return full ISO datetime strings — normalize to YYYY-MM-DD
@@ -60,9 +60,12 @@ export const useDashboardSlots = (): UseDashboardSlotsReturn => {
 				acc[dateStr] = day.slots
 					.filter((slot) => slot.startTime && slot.endTime)
 					.map((slot) => ({
+						_id: String(slot._id),
+						availabilityDayId: String(day.dateId),
 						date: dateStr,
 						deliveryMode: slot.deliveryMode ?? undefined,
 						duration: computeDuration(slot.startTime, slot.endTime),
+						id: String(slot._id),
 						patientName: slot.patientSummary?.fullName,
 						startTime: slot.startTime,
 						status: toSlotStatus(slot.status),

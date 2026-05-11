@@ -350,7 +350,7 @@ export const AvailabilityWeekDrawer = ({
 			]
 				.filter(Boolean)
 				.join(' ') || undefined
-		: undefined;
+		: (slot.patientName || undefined);
 	const bookedShareWith = getBookedShareWith(t, patientName);
 	const cancelledSubtitle = getCancelledSubtitle(t, slot.triggeredBy);
 	const drawerTitle = getDrawerTitle({

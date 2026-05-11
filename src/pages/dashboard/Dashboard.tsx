@@ -38,6 +38,8 @@ import { useUserDetails } from '@psycron/context/user/details/UserDetailsContext
 import { useTimeOfDay } from '@psycron/hooks/useTimeOfDay';
 import useViewport from '@psycron/hooks/useViewport';
 import { PageLayout } from '@psycron/layouts/app/pages-layout/PageLayout';
+import type { IWeekSlot } from '@psycron/pages/availability/week/AvailabilityWeekPage.types';
+import { AvailabilityWeekDrawer } from '@psycron/pages/availability/week/drawer/AvailabilityWeekDrawer';
 import {
 	ADDPATIENT,
 	AVAILABILITYWEEK_BASE,
@@ -99,7 +101,8 @@ export const Dashboard = () => {
 	const { userDetails } = useUserDetails();
 	const band = useTimeOfDay();
 	const { isMobile, isBiggerThanTablet } = useViewport();
-	const { isLoading, todaySlots, weekEnd, weekSlotsByDay, weekStart } = useDashboardSlots();
+	const { isLoading, todaySlots, weekEnd, weekSlotsByDay, weekStart } =
+		useDashboardSlots();
 	const {
 		isCustomizing,
 		layout,
@@ -110,6 +113,7 @@ export const Dashboard = () => {
 	} = useDashboardLayout();
 
 	const [activeId, setActiveId] = useState<DashboardTileId | null>(null);
+	const [selectedSlot, setSelectedSlot] = useState<IWeekSlot | null>(null);
 
 	const sensors = useSensors(
 		useSensor(PointerSensor, { activationConstraint: { distance: 8 } }),
@@ -136,10 +140,7 @@ export const Dashboard = () => {
 		if (over && active.id !== over.id) {
 			const fromIdx = sortedIds.indexOf(active.id as DashboardTileId);
 			const toIdx = sortedIds.indexOf(over.id as DashboardTileId);
-			reorderLayout(
-				active.id as DashboardTileId,
-				over.id as DashboardTileId
-			);
+			reorderLayout(active.id as DashboardTileId, over.id as DashboardTileId);
 			capture(PostHogEvent.DashboardTileReordered, {
 				from_index: fromIdx,
 				tile_id: active.id as string,
@@ -194,8 +195,7 @@ export const Dashboard = () => {
 				),
 				text: t('page.dashboard.widgets.jupiter-insights.text-schedule', {
 					count: todaySlots.filter(
-						(s) =>
-							s.status === 'booked-jupiter' || s.status === 'booked-google'
+						(s) => s.status === 'booked-jupiter' || s.status === 'booked-google'
 					).length,
 				}),
 			},
@@ -247,9 +247,7 @@ export const Dashboard = () => {
 				),
 				icon: <Appointment />,
 				id: 'notifications',
-				label: t(
-					'page.dashboard.widgets.quick-actions.actions.notifications'
-				),
+				label: t('page.dashboard.widgets.quick-actions.actions.notifications'),
 				onClick: () => navigate(`../${NOTIFICATIONS}`),
 			},
 		],
@@ -308,6 +306,7 @@ export const Dashboard = () => {
 					<BentoTile {...commonProps} key={tileId}>
 						<ScheduleWidget
 							isLoading={isLoading}
+							onSlotClick={setSelectedSlot}
 							slots={todaySlots}
 							weekEnd={weekEnd}
 							weekHref={`${AVAILABILITYWEEK_BASE}/${weekStart}`}
@@ -416,14 +415,9 @@ export const Dashboard = () => {
 					onDragStart={handleDragStart}
 					sensors={sensors}
 				>
-					<SortableContext
-						items={sortedIds}
-						strategy={rectSortingStrategy}
-					>
+					<SortableContext items={sortedIds} strategy={rectSortingStrategy}>
 						<BentoGrid>
-							{sortedLayout.map((tile, index) =>
-								renderTile(tile.id, index)
-							)}
+							{sortedLayout.map((tile, index) => renderTile(tile.id, index))}
 						</BentoGrid>
 					</SortableContext>
 
@@ -439,6 +433,13 @@ export const Dashboard = () => {
 					</DragOverlay>
 				</DndContext>
 			</DashboardRoot>
+
+			{selectedSlot && (
+				<AvailabilityWeekDrawer
+					onClose={() => setSelectedSlot(null)}
+					slot={selectedSlot}
+				/>
+			)}
 		</PageLayout>
 	);
 };

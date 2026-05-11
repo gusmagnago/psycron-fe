@@ -2,10 +2,11 @@ import type { IWeekSlot } from '@psycron/pages/availability/week/AvailabilityWee
 
 export interface ScheduleWidgetProps {
 	isLoading: boolean;
-	slots: Omit<IWeekSlot, 'id'>[];
+	onSlotClick: (slot: IWeekSlot) => void;
+	slots: IWeekSlot[];
 	weekEnd?: string;
 	weekHref?: string;
-	weekSlotsByDay?: Record<string, Omit<IWeekSlot, 'id'>[]>;
+	weekSlotsByDay?: Record<string, IWeekSlot[]>;
 	weekStart?: string;
 }
 
