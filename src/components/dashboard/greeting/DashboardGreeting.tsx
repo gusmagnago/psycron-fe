@@ -24,15 +24,17 @@ export const DashboardGreeting = ({
 
 	return (
 		<GreetingRoot>
-			<LummiHero band={band} imageConfig={imageConfig} size={96} />
+			<LummiHero band={band} imageConfig={imageConfig} size={80} />
 			<GreetingTextBlock
 				animate='visible'
 				initial='hidden'
 				variants={textVariants}
 			>
-				<GreetingLabel>{t(`page.dashboard.greeting.band.${band}`)}</GreetingLabel>
-				<GreetingHeadline>
+				<GreetingLabel>
 					{t('page.dashboard.greeting.headline', { name })}
+				</GreetingLabel>
+				<GreetingHeadline>
+					{t(`page.dashboard.greeting.band.${band}`)}
 				</GreetingHeadline>
 			</GreetingTextBlock>
 		</GreetingRoot>

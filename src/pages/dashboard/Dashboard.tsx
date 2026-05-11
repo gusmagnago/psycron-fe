@@ -16,11 +16,7 @@ import { ScheduleWidget } from '@psycron/components/dashboard/widgets/schedule-w
 import { ThisWeekWidget } from '@psycron/components/dashboard/widgets/this-week-widget/ThisWeekWidget';
 import { WeeklyChartWidget } from '@psycron/components/dashboard/widgets/weekly-chart-widget/WeeklyChartWidget';
 import type { WeeklyBarData } from '@psycron/components/dashboard/widgets/weekly-chart-widget/WeeklyChartWidget.types';
-import {
-	AddPatient,
-	Appointment,
-	Patients,
-} from '@psycron/components/icons';
+import { AddPatient, Appointment, Patients } from '@psycron/components/icons';
 import { useUserDetails } from '@psycron/context/user/details/UserDetailsContext';
 import { useTimeOfDay } from '@psycron/hooks/useTimeOfDay';
 import useViewport from '@psycron/hooks/useViewport';
@@ -45,7 +41,7 @@ const TILE_DESKTOP: Record<DashboardTileId, { col: number; row: number }> = {
 	'quick-actions': { col: 4, row: 1 },
 	'recent-patients': { col: 12, row: 1 },
 	'revenue-mtd': { col: 6, row: 1 },
-	'schedule': { col: 5, row: 2 },
+	schedule: { col: 5, row: 2 },
 	'this-week': { col: 6, row: 1 },
 	'weekly-chart': { col: 8, row: 1 },
 };
@@ -57,7 +53,7 @@ const TILE_TABLET: Record<DashboardTileId, { col: number; row: number }> = {
 	'quick-actions': { col: 3, row: 1 },
 	'recent-patients': { col: 6, row: 1 },
 	'revenue-mtd': { col: 3, row: 1 },
-	'schedule': { col: 6, row: 1 },
+	schedule: { col: 6, row: 1 },
 	'this-week': { col: 3, row: 1 },
 	'weekly-chart': { col: 6, row: 1 },
 };
@@ -69,7 +65,7 @@ const TILE_MIN_HEIGHT: Record<DashboardTileId, number> = {
 	'quick-actions': 260,
 	'recent-patients': 280,
 	'revenue-mtd': 180,
-	'schedule': 400,
+	schedule: 400,
 	'this-week': 200,
 	'weekly-chart': 220,
 };
@@ -109,7 +105,12 @@ export const Dashboard = () => {
 	const sortedLayout = useMemo(
 		() =>
 			LAYOUT_ORDER.map(
-				(id) => layout.find((tile) => tile.id === id) ?? { id, order: 0, visible: true }
+				(id) =>
+					layout.find((tile) => tile.id === id) ?? {
+						id,
+						order: 0,
+						visible: true,
+					}
 			),
 		[layout]
 	);
@@ -145,12 +146,18 @@ export const Dashboard = () => {
 	const jupiterInsights = useMemo<JupiterInsight[]>(
 		() => [
 			{
-				actionLabel: t('page.dashboard.widgets.jupiter-insights.action-send-message'),
-				category: t('page.dashboard.widgets.jupiter-insights.category-patient-care'),
+				actionLabel: t(
+					'page.dashboard.widgets.jupiter-insights.action-send-message'
+				),
+				category: t(
+					'page.dashboard.widgets.jupiter-insights.category-patient-care'
+				),
 				id: 'insight-followup',
 				onAction: () => navigate(`../${PATIENTS}`),
 				onSecondaryAction: () => navigate(`../${PATIENTS}`),
-				secondaryActionLabel: t('page.dashboard.widgets.jupiter-insights.action-view-profile'),
+				secondaryActionLabel: t(
+					'page.dashboard.widgets.jupiter-insights.action-view-profile'
+				),
 				text: t('page.dashboard.widgets.jupiter-insights.text-schedule', {
 					count: todaySlots.filter(
 						(s) => s.status === 'booked-jupiter' || s.status === 'booked-google'
@@ -158,7 +165,9 @@ export const Dashboard = () => {
 				}),
 			},
 			{
-				category: t('page.dashboard.widgets.jupiter-insights.category-insights'),
+				category: t(
+					'page.dashboard.widgets.jupiter-insights.category-insights'
+				),
 				id: 'insight-patients',
 				text: t('page.dashboard.widgets.jupiter-insights.text-patients', {
 					count: patientCount,
@@ -171,28 +180,36 @@ export const Dashboard = () => {
 	const quickActions = useMemo(
 		() => [
 			{
-				ariaLabel: t('page.dashboard.widgets.quick-actions.actions.new-session-aria'),
+				ariaLabel: t(
+					'page.dashboard.widgets.quick-actions.actions.new-session-aria'
+				),
 				icon: <Appointment />,
 				id: 'new-session',
 				label: t('page.dashboard.widgets.quick-actions.actions.new-session'),
 				onClick: () => navigate(`../${AVAILABILITYWEEK_BASE}`),
 			},
 			{
-				ariaLabel: t('page.dashboard.widgets.quick-actions.actions.patients-aria'),
+				ariaLabel: t(
+					'page.dashboard.widgets.quick-actions.actions.patients-aria'
+				),
 				icon: <Patients />,
 				id: 'patients',
 				label: t('page.dashboard.widgets.quick-actions.actions.patients'),
 				onClick: () => navigate(`../${PATIENTS}`),
 			},
 			{
-				ariaLabel: t('page.dashboard.widgets.quick-actions.actions.add-patient-aria'),
+				ariaLabel: t(
+					'page.dashboard.widgets.quick-actions.actions.add-patient-aria'
+				),
 				icon: <AddPatient />,
 				id: 'add-patient',
 				label: t('page.dashboard.widgets.quick-actions.actions.add-patient'),
 				onClick: () => navigate(`../${ADDPATIENT}`),
 			},
 			{
-				ariaLabel: t('page.dashboard.widgets.quick-actions.actions.notifications-aria'),
+				ariaLabel: t(
+					'page.dashboard.widgets.quick-actions.actions.notifications-aria'
+				),
 				icon: <Appointment />,
 				id: 'notifications',
 				label: t('page.dashboard.widgets.quick-actions.actions.notifications'),
@@ -268,7 +285,10 @@ export const Dashboard = () => {
 			case 'jupiter-insights':
 				return (
 					<BentoTile {...commonProps} key={tileId} variant='jupiter'>
-						<JupiterInsightsWidget insights={jupiterInsights} isLoading={isLoading} />
+						<JupiterInsightsWidget
+							insights={jupiterInsights}
+							isLoading={isLoading}
+						/>
 					</BentoTile>
 				);
 

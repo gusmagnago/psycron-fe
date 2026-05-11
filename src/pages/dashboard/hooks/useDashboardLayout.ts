@@ -16,7 +16,10 @@ const DEFAULT_LAYOUT: DashboardLayoutState = [
 	{ id: 'quick-actions', order: 2, visible: true },
 	{ id: 'active-patients', order: 3, visible: true },
 	{ id: 'revenue-mtd', order: 4, visible: true },
-	{ id: 'weekly-chart', order: 5, visible: true },
+	{ id: 'this-week', order: 5, visible: true },
+	{ id: 'weekly-chart', order: 6, visible: true },
+	{ id: 'pending-tasks', order: 7, visible: true },
+	{ id: 'recent-patients', order: 8, visible: true },
 ];
 
 const loadLayout = (): DashboardLayoutState => {

@@ -9,10 +9,14 @@ import { spacing } from '@psycron/theme/spacing/spacing.theme';
 export const DashboardRoot = styled(Box)`
 	display: flex;
 	flex-direction: column;
+	flex: 1;
 	gap: ${spacing.small};
-	max-width: 1600px;
 	margin: 0 auto;
+	min-height: 0;
+	overflow-x: hidden;
+	overflow-y: auto;
 	width: 100%;
+	height: 100%;
 `;
 
 export const DashboardTopBar = styled(Box)`
@@ -28,6 +32,9 @@ export const BentoGrid = styled(Box)`
 	grid-template-columns: 1fr;
 	gap: ${spacing.small};
 	grid-auto-rows: auto;
+	padding-right: ${spacing.small};
+	padding-bottom: ${spacing.small};
+
 	${isBiggerThanTabletMedia} {
 		grid-template-columns: repeat(6, 1fr);
 		gap: ${spacing.mediumSmall};
