@@ -1,3 +1,5 @@
+import { useSortable } from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
 import { Eye, EyeOff } from 'lucide-react';
 
 import {
@@ -6,6 +8,7 @@ import {
 	BentoTileMotionBox,
 	BentoTileRoot,
 	DragHandle,
+	DropTargetOverlay,
 	VisibilityButton,
 } from './BentoTile.styles';
 import type { BentoTileProps } from './BentoTile.types';
@@ -25,44 +28,39 @@ export const BentoTile = ({
 	colSpan,
 	id,
 	index = 0,
-	isDragging,
 	isEditMode,
 	isHidden,
-	onDragEnd,
-	onDragOver,
-	onDragStart,
 	onToggleVisibility,
 	rowSpan,
 	style,
 	variant = 'default',
 }: BentoTileProps) => {
-	const handleDragStart = (e: React.DragEvent<HTMLDivElement>) => {
-		e.dataTransfer.effectAllowed = 'move';
-		onDragStart?.(id);
-	};
+	const {
+		attributes,
+		isDragging,
+		listeners,
+		setNodeRef,
+		transform,
+		transition,
+	} = useSortable({ id, disabled: !isEditMode });
 
-	const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
-		e.preventDefault();
-		e.dataTransfer.dropEffect = 'move';
-		onDragOver?.(id);
-	};
-
-	const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
-		e.preventDefault();
-		onDragEnd?.();
+	const sortableStyle = {
+		...style,
+		transform: CSS.Transform.toString(transform),
+		transition,
+		zIndex: isDragging ? 1 : undefined,
+		opacity: isDragging ? 0 : undefined,
 	};
 
 	return (
 		<BentoTileRoot
 			colSpan={colSpan}
-			draggable={isEditMode}
-			isDragging={isDragging}
+			isEditMode={isEditMode}
 			isHidden={isHidden}
-			onDragEnd={handleDrop}
-			onDragOver={handleDragOver}
-			onDragStart={handleDragStart}
+			ref={setNodeRef}
 			rowSpan={rowSpan}
-			style={style}
+			style={sortableStyle}
+			{...(isEditMode ? { ...attributes, ...listeners } : {})}
 		>
 			<BentoTileMotionBox
 				aria-label={ariaLabel}
@@ -74,6 +72,7 @@ export const BentoTile = ({
 				variants={tileVariants}
 				whileInView='visible'
 			>
+				{isDragging && <DropTargetOverlay />}
 				{isEditMode && (
 					<BentoTileControls>
 						<DragHandle aria-hidden='true' title='Drag to reorder'>
@@ -81,7 +80,10 @@ export const BentoTile = ({
 						</DragHandle>
 						<VisibilityButton
 							aria-label={isHidden ? 'Show tile' : 'Hide tile'}
-							onClick={() => onToggleVisibility?.(id)}
+							onClick={(e) => {
+								e.stopPropagation();
+								onToggleVisibility?.(id);
+							}}
 							role='button'
 							tabIndex={0}
 						>

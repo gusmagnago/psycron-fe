@@ -1,5 +1,6 @@
 import styled from '@emotion/styled';
 import { Box } from '@mui/material';
+import { glassTile } from '@psycron/components/dashboard/bento-tile/BentoTile.styles';
 import {
 	isBiggerThanMediumMedia,
 	isBiggerThanTabletMedia,
@@ -27,13 +28,22 @@ export const DashboardTopBar = styled(Box)`
 	gap: ${spacing.small};
 `;
 
+export const DragOverlayCard = styled(Box)`
+	${glassTile}
+	height: 100%;
+	width: 100%;
+	cursor: grabbing;
+	transform: scale(1.03) rotate(1deg);
+	opacity: 0.9;
+`;
+
 export const BentoGrid = styled(Box)`
 	display: grid;
 	grid-template-columns: 1fr;
 	gap: ${spacing.small};
 	grid-auto-rows: auto;
-	padding-right: ${spacing.small};
-	padding-bottom: ${spacing.small};
+	padding: ${spacing.xs};
+	padding-top: 0;
 
 	${isBiggerThanTabletMedia} {
 		grid-template-columns: repeat(6, 1fr);

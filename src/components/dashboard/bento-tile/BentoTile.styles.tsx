@@ -2,18 +2,19 @@ import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import { Box } from '@mui/material';
 import { palette } from '@psycron/theme/palette/palette.theme';
+import {
+	shadowGlassShimmer,
+	shadowMedium,
+	shadowSmallPurple,
+} from '@psycron/theme/shadow/shadow.theme';
 import { spacing } from '@psycron/theme/spacing/spacing.theme';
 import { motion } from 'framer-motion';
 
 export const glassTile = css`
-	background: rgba(255, 255, 255, 0.55);
+	background: ${palette.background.default};
 	backdrop-filter: blur(20px) saturate(140%);
-	-webkit-backdrop-filter: blur(20px) saturate(140%);
-	border: 1px solid color-mix(in oklab, white 40%, transparent);
 	border-radius: 24px;
-	box-shadow:
-		0 8px 32px rgba(6, 11, 14, 0.06),
-		0 1px 0 rgba(255, 255, 255, 0.6) inset;
+	box-shadow: ${shadowMedium}, ${shadowGlassShimmer};
 	overflow: hidden;
 	position: relative;
 	transition:
@@ -21,9 +22,7 @@ export const glassTile = css`
 		border-color 0.2s ease;
 
 	&:hover {
-		box-shadow:
-			0 12px 40px rgba(6, 11, 14, 0.1),
-			0 1px 0 rgba(255, 255, 255, 0.6) inset;
+		box-shadow: ${shadowSmallPurple}, ${shadowGlassShimmer};
 	}
 
 	@media (prefers-color-scheme: dark) {
@@ -41,11 +40,6 @@ export const editModeStyles = css`
 	}
 `;
 
-export const draggingStyles = css`
-	opacity: 0.5;
-	scale: 0.97;
-`;
-
 export const hiddenStyles = css`
 	opacity: 0.4;
 	pointer-events: none;
@@ -53,14 +47,12 @@ export const hiddenStyles = css`
 
 export const BentoTileRoot = styled('div', {
 	shouldForwardProp: (prop) =>
-		prop !== 'isDragging' &&
 		prop !== 'isEditMode' &&
 		prop !== 'isHidden' &&
 		prop !== 'colSpan' &&
 		prop !== 'rowSpan',
 })<{
 	colSpan?: number;
-	isDragging?: boolean;
 	isEditMode?: boolean;
 	isHidden?: boolean;
 	rowSpan?: number;
@@ -68,8 +60,21 @@ export const BentoTileRoot = styled('div', {
 	grid-column: span ${({ colSpan }) => colSpan ?? 1};
 	grid-row: span ${({ rowSpan }) => rowSpan ?? 1};
 	min-height: 0;
-	${({ isDragging }) => isDragging && draggingStyles}
 	${({ isHidden }) => isHidden && hiddenStyles}
+`;
+
+export const DropTargetOverlay = styled('div')`
+	position: absolute;
+	inset: 0;
+	border-radius: 22px;
+	border: 2px dashed ${palette.success.main};
+	background: color-mix(in oklab, ${palette.success.main} 10%, white 90%);
+	pointer-events: none;
+	z-index: 10;
+
+	@media (prefers-color-scheme: dark) {
+		background: color-mix(in oklab, ${palette.success.main} 10%, black 90%);
+	}
 `;
 
 export const jupiterTile = css`

@@ -9,12 +9,8 @@ export interface BentoTileProps {
 	colSpan?: number;
 	id: DashboardTileId;
 	index?: number;
-	isDragging?: boolean;
 	isEditMode?: boolean;
 	isHidden?: boolean;
-	onDragEnd?: () => void;
-	onDragOver?: (id: DashboardTileId) => void;
-	onDragStart?: (id: DashboardTileId) => void;
 	onToggleVisibility?: (id: DashboardTileId) => void;
 	rowSpan?: number;
 	style?: CSSProperties;

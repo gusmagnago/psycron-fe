@@ -1,6 +1,23 @@
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams } from 'react-router-dom';
+import type { DragEndEvent, DragStartEvent } from '@dnd-kit/core';
+import {
+	closestCenter,
+	DndContext,
+	DragOverlay,
+	KeyboardSensor,
+	PointerSensor,
+	useSensor,
+	useSensors,
+} from '@dnd-kit/core';
+import {
+	rectSortingStrategy,
+	SortableContext,
+	sortableKeyboardCoordinates,
+} from '@dnd-kit/sortable';
+import { capture } from '@psycron/analytics/posthog/events';
+import { PostHogEvent } from '@psycron/analytics/posthog/types';
 import { BentoTile } from '@psycron/components/dashboard/bento-tile/BentoTile';
 import { CustomizeControl } from '@psycron/components/dashboard/customize-control/CustomizeControl';
 import { DashboardGreeting } from '@psycron/components/dashboard/greeting/DashboardGreeting';
@@ -31,7 +48,12 @@ import { format, isSameDay, parseISO } from 'date-fns';
 
 import { useDashboardLayout } from './hooks/useDashboardLayout';
 import { useDashboardSlots } from './hooks/useDashboardSlots';
-import { BentoGrid, DashboardRoot, DashboardTopBar } from './Dashboard.styles';
+import {
+	BentoGrid,
+	DashboardRoot,
+	DashboardTopBar,
+	DragOverlayCard,
+} from './Dashboard.styles';
 import type { DashboardTileId } from './Dashboard.types';
 
 const TILE_DESKTOP: Record<DashboardTileId, { col: number; row: number }> = {
@@ -70,18 +92,6 @@ const TILE_MIN_HEIGHT: Record<DashboardTileId, number> = {
 	'weekly-chart': 220,
 };
 
-const LAYOUT_ORDER: DashboardTileId[] = [
-	'schedule',
-	'jupiter-insights',
-	'quick-actions',
-	'active-patients',
-	'revenue-mtd',
-	'this-week',
-	'weekly-chart',
-	'pending-tasks',
-	'recent-patients',
-];
-
 export const Dashboard = () => {
 	const { t } = useTranslation();
 	const navigate = useNavigate();
@@ -91,29 +101,53 @@ export const Dashboard = () => {
 	const { isMobile, isBiggerThanTablet } = useViewport();
 	const { isLoading, todaySlots, weekSlotsByDay } = useDashboardSlots();
 	const {
-		dragState,
 		isCustomizing,
 		layout,
-		onDragEnd,
-		onDragOver,
-		onDragStart,
+		reorderLayout,
 		resetLayout,
 		setCustomizing,
 		toggleVisibility,
 	} = useDashboardLayout();
 
+	const [activeId, setActiveId] = useState<DashboardTileId | null>(null);
+
+	const sensors = useSensors(
+		useSensor(PointerSensor, { activationConstraint: { distance: 8 } }),
+		useSensor(KeyboardSensor, {
+			coordinateGetter: sortableKeyboardCoordinates,
+		})
+	);
+
 	const sortedLayout = useMemo(
-		() =>
-			LAYOUT_ORDER.map(
-				(id) =>
-					layout.find((tile) => tile.id === id) ?? {
-						id,
-						order: 0,
-						visible: true,
-					}
-			),
+		() => [...layout].sort((a, b) => a.order - b.order),
 		[layout]
 	);
+
+	const sortedIds = useMemo(
+		() => sortedLayout.map((t) => t.id),
+		[sortedLayout]
+	);
+
+	const handleDragStart = ({ active }: DragStartEvent) => {
+		setActiveId(active.id as DashboardTileId);
+	};
+
+	const handleDragEnd = ({ active, over }: DragEndEvent) => {
+		if (over && active.id !== over.id) {
+			const fromIdx = sortedIds.indexOf(active.id as DashboardTileId);
+			const toIdx = sortedIds.indexOf(over.id as DashboardTileId);
+			reorderLayout(
+				active.id as DashboardTileId,
+				over.id as DashboardTileId
+			);
+			capture(PostHogEvent.DashboardTileReordered, {
+				from_index: fromIdx,
+				tile_id: active.id as string,
+				to_index: toIdx,
+			});
+		}
+		setActiveId(null);
+	};
 
 	const weeklyChartData = useMemo<WeeklyBarData[]>(() => {
 		const today = new Date();
@@ -160,7 +194,8 @@ export const Dashboard = () => {
 				),
 				text: t('page.dashboard.widgets.jupiter-insights.text-schedule', {
 					count: todaySlots.filter(
-						(s) => s.status === 'booked-jupiter' || s.status === 'booked-google'
+						(s) =>
+							s.status === 'booked-jupiter' || s.status === 'booked-google'
 					).length,
 				}),
 			},
@@ -212,7 +247,9 @@ export const Dashboard = () => {
 				),
 				icon: <Appointment />,
 				id: 'notifications',
-				label: t('page.dashboard.widgets.quick-actions.actions.notifications'),
+				label: t(
+					'page.dashboard.widgets.quick-actions.actions.notifications'
+				),
 				onClick: () => navigate(`../${NOTIFICATIONS}`),
 			},
 		],
@@ -259,12 +296,8 @@ export const Dashboard = () => {
 			colSpan: col,
 			id: tileId,
 			index,
-			isDragging: dragState.draggingId === tileId,
 			isEditMode: isCustomizing,
 			isHidden: !(tile?.visible ?? true),
-			onDragEnd,
-			onDragOver,
-			onDragStart,
 			onToggleVisibility: toggleVisibility,
 			rowSpan: row,
 			style: { minHeight: TILE_MIN_HEIGHT[tileId] },
@@ -361,6 +394,8 @@ export const Dashboard = () => {
 		}
 	};
 
+	const activeSpan = activeId ? getSpan(activeId) : null;
+
 	return (
 		<PageLayout isLoading={false} title={t('page.dashboard.title')}>
 			<DashboardRoot>
@@ -373,9 +408,34 @@ export const Dashboard = () => {
 					/>
 				</DashboardTopBar>
 
-				<BentoGrid>
-					{sortedLayout.map((tile, index) => renderTile(tile.id, index))}
-				</BentoGrid>
+				<DndContext
+					collisionDetection={closestCenter}
+					onDragEnd={handleDragEnd}
+					onDragStart={handleDragStart}
+					sensors={sensors}
+				>
+					<SortableContext
+						items={sortedIds}
+						strategy={rectSortingStrategy}
+					>
+						<BentoGrid>
+							{sortedLayout.map((tile, index) =>
+								renderTile(tile.id, index)
+							)}
+						</BentoGrid>
+					</SortableContext>
+
+					<DragOverlay dropAnimation={{ duration: 200, easing: 'ease' }}>
+						{activeId && activeSpan ? (
+							<DragOverlayCard
+								style={{
+									gridColumn: `span ${activeSpan.col}`,
+									minHeight: TILE_MIN_HEIGHT[activeId],
+								}}
+							/>
+						) : null}
+					</DragOverlay>
+				</DndContext>
 			</DashboardRoot>
 		</PageLayout>
 	);

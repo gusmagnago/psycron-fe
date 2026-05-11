@@ -17,7 +17,3 @@ export interface DashboardTile {
 
 export type DashboardLayoutState = DashboardTile[];
 
-export interface DashboardDragState {
-	draggingId: DashboardTileId | null;
-	overId: DashboardTileId | null;
-}
