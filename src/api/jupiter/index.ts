@@ -124,3 +124,30 @@ export const getBufferTimeAdvice = async (
 };
 
 export type RecurrencePattern = 'MONTHLY' | 'WEEKLY';
+
+export type InsightTier = 'active' | 'growing' | 'onboarding';
+
+export type BeInsightType = 'missed-rebooking' | 'no-patients-yet' | 'setup-availability';
+
+export interface BeInsightMeta {
+	count?: number;
+	patientFirstName?: string;
+	patientId?: string;
+	patientLastName?: string;
+}
+
+export interface BeInsightItem {
+	id: string;
+	insightType: BeInsightType;
+	meta?: BeInsightMeta;
+	tier: InsightTier;
+}
+
+export const getJupiterInsights = async (): Promise<BeInsightItem[]> => {
+	try {
+		const response = await apiClient.get<{ insights: BeInsightItem[] }>('/jupiter/insights');
+		return response.data.insights;
+	} catch {
+		return [];
+	}
+};

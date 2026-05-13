@@ -7,8 +7,18 @@ import type { IWeekSlot } from '@psycron/pages/availability/week/AvailabilityWee
 import { useQuery } from '@tanstack/react-query';
 import { endOfWeek, format, startOfWeek } from 'date-fns';
 
+export interface WeekMetrics {
+	todayBookedCount: number;
+	weekBookedCount: number;
+	weekBusiestDay: { count: number; date: string };
+	weekCancelledCount: number;
+	weekCompletedCount: number;
+	weekUpcomingCount: number;
+}
+
 export interface UseDashboardSlotsReturn {
 	isLoading: boolean;
+	metrics: WeekMetrics;
 	todaySlots: IWeekSlot[];
 	weekEnd: string;
 	weekSlotsByDay: Record<string, IWeekSlot[]>;
@@ -34,13 +44,16 @@ const toSlotStatus = (status: StatusEnum): SlotStatus => {
 	}
 };
 
+const isBooked = (s: IWeekSlot): boolean =>
+	s.status === 'booked-jupiter' || s.status === 'booked-google';
+
 export const useDashboardSlots = (): UseDashboardSlotsReturn => {
 	const { userDetails } = useUserDetails();
 	const therapistId = userDetails?._id ?? '';
 
 	const today = new Date();
-	const from = format(startOfWeek(today, { weekStartsOn: 0 }), 'yyyy-MM-dd');
-	const to = format(endOfWeek(today, { weekStartsOn: 0 }), 'yyyy-MM-dd');
+	const from = format(startOfWeek(today, { weekStartsOn: 1 }), 'yyyy-MM-dd');
+	const to = format(endOfWeek(today, { weekStartsOn: 1 }), 'yyyy-MM-dd');
 	const todayStr = format(today, 'yyyy-MM-dd');
 
 	const { data, isLoading } = useQuery({
@@ -57,6 +70,8 @@ export const useDashboardSlots = (): UseDashboardSlotsReturn => {
 				if (!day.slots?.length) return acc;
 				// BE may return full ISO datetime strings — normalize to YYYY-MM-DD
 				const dateStr = day.date.substring(0, 10);
+				// Only include dates within the queried window
+				if (dateStr < from || dateStr > to) return acc;
 				acc[dateStr] = day.slots
 					.filter((slot) => slot.startTime && slot.endTime)
 					.map((slot) => ({
@@ -74,12 +89,33 @@ export const useDashboardSlots = (): UseDashboardSlotsReturn => {
 			},
 			{}
 		);
-	}, [data]);
+	}, [data, from, to]);
 
 	const todaySlots = useMemo(
 		() => weekSlotsByDay[todayStr] ?? [],
 		[weekSlotsByDay, todayStr]
 	);
 
-	return { isLoading, todaySlots, weekEnd: to, weekSlotsByDay, weekStart: from };
+	const metrics = useMemo<WeekMetrics>(() => {
+		const allWeekSlots = Object.values(weekSlotsByDay).flat();
+		const weekBusiestDay = Object.entries(weekSlotsByDay).reduce(
+			(best, [date, slots]) => {
+				const count = slots.filter(isBooked).length;
+				return count > best.count ? { count, date } : best;
+			},
+			{ count: 0, date: '' }
+		);
+		const weekUpcomingCount = allWeekSlots.filter((s) => s.status === 'booked-jupiter').length;
+		const weekCompletedCount = allWeekSlots.filter((s) => s.status === 'booked-google').length;
+		return {
+			todayBookedCount: todaySlots.filter(isBooked).length,
+			weekBusiestDay,
+			weekBookedCount: weekUpcomingCount + weekCompletedCount,
+			weekCancelledCount: allWeekSlots.filter((s) => s.status === 'cancelled').length,
+			weekCompletedCount,
+			weekUpcomingCount,
+		};
+	}, [todaySlots, weekSlotsByDay]);
+
+	return { isLoading, metrics, todaySlots, weekEnd: to, weekSlotsByDay, weekStart: from };
 };

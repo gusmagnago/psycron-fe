@@ -22,7 +22,6 @@ import { BentoTile } from '@psycron/components/dashboard/bento-tile/BentoTile';
 import { CustomizeControl } from '@psycron/components/dashboard/customize-control/CustomizeControl';
 import { DashboardGreeting } from '@psycron/components/dashboard/greeting/DashboardGreeting';
 import { JupiterInsightsWidget } from '@psycron/components/dashboard/widgets/jupiter-insights-widget/JupiterInsightsWidget';
-import type { JupiterInsight } from '@psycron/components/dashboard/widgets/jupiter-insights-widget/JupiterInsightsWidget.types';
 import { MetricCardWidget } from '@psycron/components/dashboard/widgets/metric-card-widget/MetricCardWidget';
 import { PendingTasksWidget } from '@psycron/components/dashboard/widgets/pending-tasks-widget/PendingTasksWidget';
 import type { PendingTask } from '@psycron/components/dashboard/widgets/pending-tasks-widget/PendingTasksWidget.types';
@@ -50,6 +49,7 @@ import { format, isSameDay, parseISO } from 'date-fns';
 
 import { useDashboardLayout } from './hooks/useDashboardLayout';
 import { useDashboardSlots } from './hooks/useDashboardSlots';
+import { useJupiterInsights } from './hooks/useJupiterInsights';
 import {
 	BentoGrid,
 	DashboardRoot,
@@ -101,7 +101,7 @@ export const Dashboard = () => {
 	const { userDetails } = useUserDetails();
 	const band = useTimeOfDay();
 	const { isMobile, isBiggerThanTablet } = useViewport();
-	const { isLoading, todaySlots, weekEnd, weekSlotsByDay, weekStart } =
+	const { isLoading, metrics, todaySlots, weekEnd, weekSlotsByDay, weekStart } =
 		useDashboardSlots();
 	const {
 		isCustomizing,
@@ -167,50 +167,18 @@ export const Dashboard = () => {
 			});
 	}, [weekSlotsByDay]);
 
-	const thisWeekData = useMemo(() => {
-		const allSlots = Object.values(weekSlotsByDay).flat();
-		return {
-			cancelled: allSlots.filter((s) => s.status === 'cancelled').length,
-			completed: allSlots.filter((s) => s.status === 'booked-google').length,
-			upcoming: allSlots.filter((s) => s.status === 'booked-jupiter').length,
-		};
-	}, [weekSlotsByDay]);
-
 	const patientCount = userDetails?.patients?.length ?? 0;
+	const hasAvailability = (userDetails?.availability?.length ?? 0) > 0;
+	const whatsappRemindersEnabled =
+		userDetails?.notificationPreferences?.reminder?.whatsapp;
 
-	const jupiterInsights = useMemo<JupiterInsight[]>(
-		() => [
-			{
-				actionLabel: t(
-					'page.dashboard.widgets.jupiter-insights.action-send-message'
-				),
-				category: t(
-					'page.dashboard.widgets.jupiter-insights.category-patient-care'
-				),
-				id: 'insight-followup',
-				onAction: () => navigate(`../${PATIENTS}`),
-				onSecondaryAction: () => navigate(`../${PATIENTS}`),
-				secondaryActionLabel: t(
-					'page.dashboard.widgets.jupiter-insights.action-view-profile'
-				),
-				text: t('page.dashboard.widgets.jupiter-insights.text-schedule', {
-					count: todaySlots.filter(
-						(s) => s.status === 'booked-jupiter' || s.status === 'booked-google'
-					).length,
-				}),
-			},
-			{
-				category: t(
-					'page.dashboard.widgets.jupiter-insights.category-insights'
-				),
-				id: 'insight-patients',
-				text: t('page.dashboard.widgets.jupiter-insights.text-patients', {
-					count: patientCount,
-				}),
-			},
-		],
-		[t, todaySlots, patientCount, navigate]
-	);
+	const jupiterInsights = useJupiterInsights({
+		hasAvailability,
+		metrics,
+		patientCount,
+		weekStart,
+		whatsappRemindersEnabled,
+	});
 
 	const quickActions = useMemo(
 		() => [
@@ -361,7 +329,14 @@ export const Dashboard = () => {
 			case 'this-week':
 				return (
 					<BentoTile {...commonProps} key={tileId}>
-						<ThisWeekWidget data={thisWeekData} isLoading={isLoading} />
+						<ThisWeekWidget
+							data={{
+								cancelled: metrics.weekCancelledCount,
+								completed: metrics.weekCompletedCount,
+								upcoming: metrics.weekUpcomingCount,
+							}}
+							isLoading={isLoading}
+						/>
 					</BentoTile>
 				);
 

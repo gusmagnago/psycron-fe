@@ -85,7 +85,6 @@ export const jupiterTile = css`
 		rgba(191, 167, 255, 0.35) 40%,
 		rgba(255, 153, 200, 0.25) 100%
 	);
-	border: 1px solid rgba(191, 167, 255, 0.4);
 	backdrop-filter: blur(20px) saturate(140%);
 	-webkit-backdrop-filter: blur(20px) saturate(140%);
 `;

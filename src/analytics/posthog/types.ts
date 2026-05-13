@@ -408,6 +408,6 @@ export type PostHogEventProps = {
 	};
 	[PostHogEvent.DashboardTileRestored]: { tile_id: string };
 
-	[PostHogEvent.JupiterInsightActionClicked]: { insight_index: number };
-	[PostHogEvent.JupiterInsightDismissed]: { insight_index: number };
+	[PostHogEvent.JupiterInsightActionClicked]: { insight_index: number; insight_type?: string };
+	[PostHogEvent.JupiterInsightDismissed]: { insight_index: number; insight_type?: string };
 };

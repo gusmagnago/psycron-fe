@@ -1,8 +1,14 @@
+import { keyframes } from '@emotion/react';
 import styled from '@emotion/styled';
-import { Box } from '@mui/material';
-import { palette } from '@psycron/theme/palette/palette.theme';
+import { Box, Skeleton } from '@mui/material';
+import { Text } from '@psycron/components/text/Text';
+import { hexToRgba, palette } from '@psycron/theme/palette/palette.theme';
 import { spacing } from '@psycron/theme/spacing/spacing.theme';
-import { motion } from 'framer-motion';
+
+const pulse = keyframes`
+	0%, 100% { opacity: 1; transform: scale(1); }
+	50%       { opacity: 0.5; transform: scale(1.5); }
+`;
 
 export const CarouselRoot = styled(Box)`
 	display: flex;
@@ -12,207 +18,94 @@ export const CarouselRoot = styled(Box)`
 `;
 
 export const CarouselViewport = styled(Box)`
-	overflow: hidden;
 	flex: 1;
+	height: 5rem;
+	overflow: hidden;
 	position: relative;
-	min-height: 80px;
-`;
-
-export const CarouselSlide = styled(motion.div)`
-	position: absolute;
-	inset: 0;
-	display: flex;
-	flex-direction: column;
-	gap: ${spacing.xs};
 `;
 
 export const JupiterHeader = styled(Box)`
-	display: flex;
 	align-items: center;
-	gap: 8px;
+	display: flex;
 	flex-shrink: 0;
+	gap: ${spacing.xs};
+
+	svg {
+		color: ${palette.brand.purple};
+	}
 `;
 
 export const JupiterBadgeRow = styled(Box)`
 	display: flex;
 	flex-direction: column;
-	gap: 2px;
+	gap: ${spacing.xxs};
 `;
 
-export const JupiterCategory = styled.span`
-	display: flex;
+export const JupiterCategory = styled(Text)`
 	align-items: center;
-	gap: 6px;
-	font-size: 11px;
+	color: ${palette.tertiary.dark};
+	display: flex;
+	font-size: 0.6875rem;
 	font-weight: 700;
+	gap: ${spacing.xs};
 	letter-spacing: 0.1em;
 	text-transform: uppercase;
-	color: ${palette.tertiary.dark};
 `;
 
 export const JupiterDot = styled.span`
-	width: 6px;
-	height: 6px;
+	animation: ${pulse} 2s ease-in-out infinite;
+	background: ${palette.brand.purple};
 	border-radius: 50%;
-	background: ${palette.tertiary.main};
+	display: inline-block;
 	flex-shrink: 0;
+	height: 0.375rem;
+	width: 0.375rem;
 `;
 
-export const JupiterSubtitle = styled.span`
-	font-size: 12px;
+export const JupiterSubtitle = styled(Text)`
 	color: ${palette.text.secondary};
-`;
-
-export const InsightTitle = styled.h3`
-	margin: 0;
-	font-size: 15px;
-	font-weight: 700;
-	color: ${palette.text.primary};
-`;
-
-export const InsightText = styled.p`
-	margin: 0;
-	font-size: 14px;
-	line-height: 1.65;
-	color: ${palette.text.primary};
-	flex: 1;
-`;
-
-export const InsightActions = styled(Box)`
-	display: flex;
-	align-items: center;
-	gap: ${spacing.xs};
-	flex-wrap: wrap;
-	flex-shrink: 0;
+	font-size: 0.75rem;
 `;
 
 export const CarouselFooter = styled(Box)`
-	display: flex;
 	align-items: center;
-	justify-content: space-between;
-	gap: ${spacing.xs};
+	display: flex;
 	flex-shrink: 0;
 `;
 
 export const DotsRow = styled(Box)`
-	display: flex;
 	align-items: center;
-	gap: 6px;
+	display: flex;
+	gap: ${spacing.xs};
 `;
 
 export const Dot = styled(Box, {
 	shouldForwardProp: (prop) => prop !== 'isActive',
 })<{ isActive: boolean }>`
-	width: ${({ isActive }) => (isActive ? '20px' : '6px')};
-	height: 6px;
-	border-radius: 99px;
 	background: ${({ isActive }) =>
-		isActive ? palette.tertiary.main : 'rgba(106, 81, 180, 0.3)'};
+		isActive ? palette.brand.dark : hexToRgba(palette.tertiary.dark, 0.3)};
+	border-radius: 99px;
+	cursor: pointer;
+	height: 0.375rem;
 	transition:
 		width 0.25s ease,
 		background 0.25s ease;
-	cursor: pointer;
+	width: ${({ isActive }) => (isActive ? '1.25rem' : '0.375rem')};
 `;
 
-export const CarouselNav = styled(Box)`
+export const LoadingWrapper = styled(Box)`
 	display: flex;
-	gap: ${spacing.xxs};
+	flex-direction: column;
+	gap: ${spacing.small};
 `;
 
-export const NavButton = styled.button`
-	background: rgba(255, 255, 255, 0.5);
-	border: 1px solid rgba(191, 167, 255, 0.3);
-	border-radius: 8px;
-	width: 28px;
-	height: 28px;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	cursor: pointer;
-	color: ${palette.tertiary.dark};
-	transition:
-		background 0.15s ease,
-		color 0.15s ease;
-
-	&:hover {
-		background: rgba(255, 255, 255, 0.8);
-	}
-
-	&:focus-visible {
-		outline: 2px solid ${palette.tertiary.main};
-		outline-offset: 2px;
-	}
+export const RoundedSkeleton = styled(Skeleton)`
+	border-radius: ${spacing.xs};
 `;
 
-export const PrimaryAction = styled.button`
-	all: unset;
-	display: inline-flex;
-	align-items: center;
-	gap: 6px;
-	background: ${palette.tertiary.dark};
-	color: #fff;
-	font-size: 13px;
-	font-weight: 600;
-	padding: 8px 16px;
-	border-radius: 99px;
-	cursor: pointer;
-	transition: opacity 0.15s ease;
-
-	&:hover {
-		opacity: 0.85;
-	}
-
-	&:focus-visible {
-		outline: 2px solid ${palette.tertiary.dark};
-		outline-offset: 2px;
-	}
-`;
-
-export const SecondaryAction = styled.button`
-	all: unset;
-	display: inline-flex;
-	align-items: center;
-	gap: 6px;
-	background: rgba(255, 255, 255, 0.6);
-	color: ${palette.text.primary};
-	font-size: 13px;
-	font-weight: 500;
-	padding: 8px 16px;
-	border-radius: 99px;
-	cursor: pointer;
-	border: 1px solid rgba(255, 255, 255, 0.8);
-	transition: background 0.15s ease;
-
-	&:hover {
-		background: rgba(255, 255, 255, 0.85);
-	}
-
-	&:focus-visible {
-		outline: 2px solid ${palette.tertiary.main};
-		outline-offset: 2px;
-	}
-`;
-
-export const MicButton = styled.button`
-	all: unset;
-	width: 36px;
-	height: 36px;
-	border-radius: 50%;
-	background: rgba(255, 255, 255, 0.5);
-	border: 1px solid rgba(255, 255, 255, 0.8);
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	cursor: pointer;
-	color: ${palette.text.secondary};
-	transition: background 0.15s ease;
-
-	&:hover {
-		background: rgba(255, 255, 255, 0.85);
-	}
-
-	&:focus-visible {
-		outline: 2px solid ${palette.tertiary.main};
-		outline-offset: 2px;
-	}
+export const EmptyState = styled(Box)`
+	font-size: 0.875rem;
+	opacity: 0.6;
+	padding: ${spacing.medium} 0;
+	text-align: center;
 `;
