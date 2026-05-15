@@ -1,7 +1,7 @@
 import { Skeleton } from '@mui/material';
 import { Avatar as MUIAvatar } from '@mui/material';
+import { ChevronDown, ChevronUp } from '@psycron/components/icons';
 import { useCountUp } from '@psycron/hooks/useCountUp';
-import { TrendingDown, TrendingUp } from 'lucide-react';
 
 import {
 	AvatarStack,
@@ -16,7 +16,8 @@ import {
 	OverflowBadge,
 	SparklineWrapper,
 } from './MetricCardWidget.styles';
-import type { MetricCardWidgetProps, SparklinePoint } from './MetricCardWidget.types';
+import type { MetricCardWidgetProps } from './MetricCardWidget.types';
+import { MetricSparkline } from './MetricSparkline';
 
 const MAX_AVATARS = 5;
 
@@ -28,25 +29,6 @@ const stringToColor = (s: string): string => {
 	return color;
 };
 
-const Sparkline = ({ points }: { points: SparklinePoint[] }) => {
-	if (points.length < 2) return null;
-	const max = Math.max(...points.map((p) => p.value), 1);
-	const w = 80;
-	const h = 36;
-	const step = w / (points.length - 1);
-	const coords = points.map((p, i) => ({
-		x: i * step,
-		y: h - (p.value / max) * h,
-	}));
-	const d = coords.map((c, i) => `${i === 0 ? 'M' : 'L'}${c.x.toFixed(1)},${c.y.toFixed(1)}`).join(' ');
-
-	return (
-		<svg aria-hidden='true' fill='none' height={h} viewBox={`0 0 ${w} ${h}`} width={w}>
-			<path d={d} stroke='#00C777' strokeLinecap='round' strokeLinejoin='round' strokeWidth={2} />
-		</svg>
-	);
-};
-
 export const MetricCardWidget = ({
 	avatars,
 	delta,
@@ -54,6 +36,7 @@ export const MetricCardWidget = ({
 	icon,
 	isLoading,
 	label,
+	onClick,
 	prefix = '',
 	sparkline,
 	subLabel,
@@ -77,7 +60,19 @@ export const MetricCardWidget = ({
 	const overflow = (avatars?.length ?? 0) - MAX_AVATARS;
 
 	return (
-		<MetricRoot>
+		<MetricRoot
+			isInteractive={Boolean(onClick)}
+			onClick={onClick}
+			onKeyDown={(event) => {
+				if (!onClick) return;
+				if (event.key === 'Enter' || event.key === ' ') {
+					event.preventDefault();
+					onClick();
+				}
+			}}
+			role={onClick ? 'button' : undefined}
+			tabIndex={onClick ? 0 : undefined}
+		>
 			<MetricTopRow>
 				{icon ? <MetricIconBadge>{icon}</MetricIconBadge> : null}
 				{delta !== undefined ? (
@@ -85,7 +80,11 @@ export const MetricCardWidget = ({
 						aria-label={`${delta > 0 ? '+' : ''}${delta}% ${deltaLabel ?? ''}`}
 						isPositive={isDeltaPositive}
 					>
-						{isDeltaPositive ? <TrendingUp size={11} /> : <TrendingDown size={11} />}
+						{isDeltaPositive ? (
+							<ChevronUp height={11} width={11} />
+						) : (
+							<ChevronDown height={11} width={11} />
+						)}
 						{delta > 0 ? '+' : ''}
 						{delta}%
 					</DeltaChip>
@@ -136,7 +135,7 @@ export const MetricCardWidget = ({
 
 				{sparkline && sparkline.length > 1 && (
 					<SparklineWrapper>
-						<Sparkline points={sparkline} />
+						<MetricSparkline points={sparkline} />
 					</SparklineWrapper>
 				)}
 			</MetricBottomRow>

@@ -19,6 +19,7 @@ export interface MetricCardWidgetProps {
 	icon?: ReactNode;
 	isLoading?: boolean;
 	label: string;
+	onClick?: () => void;
 	prefix?: string;
 	sparkline?: SparklinePoint[];
 	subLabel?: string;

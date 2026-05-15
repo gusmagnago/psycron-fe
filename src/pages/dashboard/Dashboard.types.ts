@@ -4,7 +4,7 @@ export type DashboardTileId =
 	| 'pending-tasks'
 	| 'quick-actions'
 	| 'recent-patients'
-	| 'revenue-mtd'
+	| 'billing-readiness'
 	| 'schedule'
 	| 'this-week'
 	| 'weekly-chart';

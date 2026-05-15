@@ -1,4 +1,5 @@
 export interface ThisWeekData {
+	blocked: number;
 	cancelled: number;
 	completed: number;
 	delta?: number;

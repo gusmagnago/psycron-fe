@@ -9,6 +9,13 @@ export const PatientsList = styled(Box)`
 	flex-direction: column;
 `;
 
+export const EmptyPatientsState = styled(Box)`
+	color: ${palette.text.secondary};
+	font-size: 14px;
+	line-height: 1.4;
+	padding: ${spacing.small} 0;
+`;
+
 export const PatientRow = styled(motion.div)`
 	display: flex;
 	align-items: center;

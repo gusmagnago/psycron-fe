@@ -53,8 +53,12 @@ export const WidgetHeader = styled(Box)`
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
-	margin-bottom: ${spacing.xs};
+	padding-bottom: ${spacing.xs};
 	flex-shrink: 0;
+	position: sticky;
+	top: 0;
+	z-index: 1;
+	background: ${palette.background.default};
 `;
 
 export const WidgetTitle = styled.h2`

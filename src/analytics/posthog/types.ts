@@ -34,8 +34,13 @@ export const enum PostHogEvent {
 	AvailabilitySlotUnblocked = 'availability slot unblocked',
 	BackofficeWorkerSessionFailed = 'backoffice worker session failed',
 
+	DashboardBillingReadinessClicked = 'dashboard billing readiness clicked',
+	DashboardChartDayClicked = 'dashboard chart day clicked',
 	DashboardCustomizeOpened = 'dashboard customize opened',
 	DashboardLayoutReset = 'dashboard layout reset button clicked',
+	DashboardPendingTaskClicked = 'dashboard pending task clicked',
+	DashboardQuickActionClicked = 'dashboard quick action clicked',
+	DashboardRecentPatientOpened = 'dashboard recent patient opened',
 	DashboardTileHidden = 'dashboard tile hidden',
 	DashboardTileReordered = 'dashboard tile reordered',
 
@@ -399,7 +404,38 @@ export type PostHogEventProps = {
 	};
 
 	[PostHogEvent.DashboardCustomizeOpened]: never;
+	[PostHogEvent.DashboardBillingReadinessClicked]: {
+		percentage: number;
+		source: 'dashboard-summary';
+		tier: string;
+		tile_id: string;
+	};
+	[PostHogEvent.DashboardChartDayClicked]: {
+		date: string;
+		source: 'dashboard-summary';
+		tier: string;
+		tile_id: string;
+	};
 	[PostHogEvent.DashboardLayoutReset]: never;
+	[PostHogEvent.DashboardPendingTaskClicked]: {
+		count: number;
+		source: 'dashboard-summary';
+		task_type: string;
+		tier: string;
+		tile_id: string;
+	};
+	[PostHogEvent.DashboardQuickActionClicked]: {
+		action_id: string;
+		source: 'dashboard-summary';
+		tier: string;
+		tile_id: string;
+	};
+	[PostHogEvent.DashboardRecentPatientOpened]: {
+		patient_id: string;
+		source: 'dashboard-summary';
+		tier: string;
+		tile_id: string;
+	};
 	[PostHogEvent.DashboardTileHidden]: { tile_id: string };
 	[PostHogEvent.DashboardTileReordered]: {
 		from_index: number;

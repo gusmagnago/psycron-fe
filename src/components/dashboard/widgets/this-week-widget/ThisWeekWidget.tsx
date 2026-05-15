@@ -1,12 +1,12 @@
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Box, Skeleton } from '@mui/material';
-import { palette } from '@psycron/theme/palette/palette.theme';
-import { TrendingUp } from 'lucide-react';
+import { ChevronUp } from '@psycron/components/icons';
 
 import { DeltaChip } from '../metric-card-widget/MetricCardWidget.styles';
 import { WidgetHeader, WidgetTitle } from '../schedule-widget/ScheduleWidget.styles';
 
+import { THIS_WEEK_COLORS, ThisWeekDonutChart } from './ThisWeekDonutChart';
 import {
 	DonutCenter,
 	DonutRow,
@@ -21,78 +21,10 @@ import {
 } from './ThisWeekWidget.styles';
 import type { ThisWeekWidgetProps } from './ThisWeekWidget.types';
 
-const SIZE = 100;
-const STROKE = 14;
-const R = (SIZE - STROKE) / 2;
-const CIRC = 2 * Math.PI * R;
-
-const COLORS = {
-	cancelled: palette.error.main,
-	completed: palette.success.main,
-	upcoming: palette.primary.main,
-} as const;
-
-const DonutChart = ({
-	cancelled,
-	completed,
-	upcoming,
-}: {
-	cancelled: number;
-	completed: number;
-	upcoming: number;
-}) => {
-	const total = completed + upcoming + cancelled || 1;
-	const segments = [
-		{ key: 'completed', value: completed, color: COLORS.completed },
-		{ key: 'upcoming', value: upcoming, color: COLORS.upcoming },
-		{ key: 'cancelled', value: cancelled, color: COLORS.cancelled },
-	];
-
-	let offset = 0;
-	return (
-		<svg
-			aria-hidden='true'
-			height={SIZE}
-			viewBox={`0 0 ${SIZE} ${SIZE}`}
-			width={SIZE}
-		>
-			{/* track */}
-			<circle
-				cx={SIZE / 2}
-				cy={SIZE / 2}
-				fill='none'
-				r={R}
-				stroke={palette.gray['01']}
-				strokeWidth={STROKE}
-			/>
-			{segments.map(({ color, key, value }) => {
-				const dash = (value / total) * CIRC;
-				const gap = CIRC - dash;
-				const rotation = (offset / total) * 360 - 90;
-				offset += value;
-				return (
-					<circle
-						cx={SIZE / 2}
-						cy={SIZE / 2}
-						fill='none'
-						key={key}
-						r={R}
-						stroke={color}
-						strokeDasharray={`${dash} ${gap}`}
-						strokeLinecap='round'
-						strokeWidth={STROKE}
-						style={{ transform: `rotate(${rotation}deg)`, transformOrigin: '50% 50%', transition: 'stroke-dasharray 0.5s ease' }}
-					/>
-				);
-			})}
-		</svg>
-	);
-};
-
 export const ThisWeekWidget = ({ data, isLoading }: ThisWeekWidgetProps) => {
 	const { t } = useTranslation();
 	const total = useMemo(
-		() => data.completed + data.upcoming + data.cancelled,
+		() => data.completed + data.upcoming + data.cancelled + data.blocked,
 		[data]
 	);
 
@@ -117,14 +49,15 @@ export const ThisWeekWidget = ({ data, isLoading }: ThisWeekWidgetProps) => {
 				<WidgetTitle>{t('page.dashboard.widgets.this-week.title')}</WidgetTitle>
 				{data.delta !== undefined && (
 					<DeltaChip isPositive={isDeltaPositive}>
-						<TrendingUp size={11} />+{data.delta}
+						<ChevronUp height={11} width={11} />+{data.delta}
 					</DeltaChip>
 				)}
 			</WidgetHeader>
 
 			<DonutRow>
 				<DonutWrapper>
-					<DonutChart
+					<ThisWeekDonutChart
+						blocked={data.blocked}
 						cancelled={data.cancelled}
 						completed={data.completed}
 						upcoming={data.upcoming}
@@ -140,11 +73,12 @@ export const ThisWeekWidget = ({ data, isLoading }: ThisWeekWidgetProps) => {
 							['completed', data.completed, t('page.dashboard.widgets.this-week.completed')],
 							['upcoming', data.upcoming, t('page.dashboard.widgets.this-week.upcoming')],
 							['cancelled', data.cancelled, t('page.dashboard.widgets.this-week.cancelled')],
+							['blocked', data.blocked, t('page.dashboard.widgets.this-week.blocked')],
 						] as const
 					).map(([key, count, label]) => (
 						<LegendRow key={key}>
 							<LegendLabel>
-								<LegendDot color={COLORS[key]} />
+								<LegendDot color={THIS_WEEK_COLORS[key]} />
 								{label}
 							</LegendLabel>
 							<LegendCount>{count}</LegendCount>

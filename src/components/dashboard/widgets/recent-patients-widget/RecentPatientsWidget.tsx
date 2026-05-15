@@ -1,11 +1,13 @@
 import { useTranslation } from 'react-i18next';
 import { Box, Skeleton } from '@mui/material';
 import { Avatar as MUIAvatar } from '@mui/material';
-import { ArrowRight, MessageSquare } from 'lucide-react';
+import { ChevronRight, Messenger } from '@psycron/components/icons';
+import { formatDistanceToNow, parseISO } from 'date-fns';
 
 import { WidgetHeader, WidgetTitle } from '../schedule-widget/ScheduleWidget.styles';
 
 import {
+	EmptyPatientsState,
 	MessageButton,
 	PatientInfo,
 	PatientMeta,
@@ -31,6 +33,20 @@ const stringToColor = (s: string): string => {
 	let color = '#';
 	for (let i = 0; i < 3; i++) color += `00${((hash >> (i * 8)) & 0xff).toString(16)}`.slice(-2);
 	return color;
+};
+
+const getActivityLabel = (
+	patient: RecentPatientsWidgetProps['patients'][number],
+	t: ReturnType<typeof useTranslation>['t']
+): string => {
+	const activity = t(
+		`page.dashboard.widgets.recent-patients.activity.${patient.lastActivityType}`
+	);
+	if (!patient.lastActivityAt) return activity;
+
+	return `${activity} · ${formatDistanceToNow(parseISO(patient.lastActivityAt), {
+		addSuffix: true,
+	})}`;
 };
 
 export const RecentPatientsWidget = ({
@@ -63,57 +79,61 @@ export const RecentPatientsWidget = ({
 				{onViewAll && (
 					<ViewAllLink onClick={onViewAll} role='button'>
 						{t('page.dashboard.widgets.recent-patients.view-all')}
-						<ArrowRight size={13} />
+						<ChevronRight height={13} width={13} />
 					</ViewAllLink>
 				)}
 			</WidgetHeader>
 
-			<PatientsList>
-				{patients.map((patient, i) => {
-					const name = `${patient.firstName} ${patient.lastName}`;
-					return (
-						<PatientRow
-							animate='visible'
-							custom={i}
-							initial='hidden'
-							key={patient.id}
-							onClick={patient.onOpen}
-							variants={rowVariants}
-						>
-							<MUIAvatar
-								alt={name}
-								sx={{
-									bgcolor: stringToColor(name),
-									fontSize: 13,
-									fontWeight: 700,
-									height: 36,
-									width: 36,
-								}}
+			{patients.length === 0 ? (
+				<EmptyPatientsState>
+					{t('page.dashboard.widgets.recent-patients.empty')}
+				</EmptyPatientsState>
+			) : (
+				<PatientsList>
+					{patients.map((patient, i) => {
+						const name = `${patient.firstName} ${patient.lastName}`;
+						return (
+							<PatientRow
+								animate='visible'
+								custom={i}
+								initial='hidden'
+								key={patient.id}
+								onClick={patient.onOpen}
+								variants={rowVariants}
 							>
-								{patient.firstName[0]}
-								{patient.lastName[0]}
-							</MUIAvatar>
-							<PatientInfo>
-								<PatientName>{name}</PatientName>
-								<PatientMeta>
-									{t('page.dashboard.widgets.recent-patients.last-note')} · {patient.lastNoteLabel}
-								</PatientMeta>
-							</PatientInfo>
-							{patient.onMessage && (
-								<MessageButton
-									aria-label={t('page.dashboard.widgets.recent-patients.message-aria', { name })}
-									onClick={(e) => {
-										e.stopPropagation();
-										patient.onMessage?.();
+								<MUIAvatar
+									alt={name}
+									sx={{
+										bgcolor: stringToColor(name),
+										fontSize: 13,
+										fontWeight: 700,
+										height: 36,
+										width: 36,
 									}}
 								>
-									<MessageSquare size={16} />
-								</MessageButton>
-							)}
-						</PatientRow>
-					);
-				})}
-			</PatientsList>
+									{patient.firstName[0]}
+									{patient.lastName[0]}
+								</MUIAvatar>
+								<PatientInfo>
+									<PatientName>{name}</PatientName>
+									<PatientMeta>{getActivityLabel(patient, t)}</PatientMeta>
+								</PatientInfo>
+								{patient.onMessage && (
+									<MessageButton
+										aria-label={t('page.dashboard.widgets.recent-patients.message-aria', { name })}
+										onClick={(e) => {
+											e.stopPropagation();
+											patient.onMessage?.();
+										}}
+									>
+										<Messenger height={16} width={16} />
+									</MessageButton>
+								)}
+							</PatientRow>
+						);
+					})}
+				</PatientsList>
+			)}
 		</>
 	);
 };

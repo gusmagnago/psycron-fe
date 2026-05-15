@@ -18,19 +18,24 @@ import {
 import type { WeeklyChartWidgetProps } from './WeeklyChartWidget.types';
 
 const COLORS = {
+	blocked: palette.alert.main,
 	cancelled: palette.error.light,
 	completed: palette.success.main,
-	confirmed: palette.primary.main,
+	upcoming: palette.primary.main,
 } as const;
 
-export const WeeklyChartWidget = ({ data, isLoading }: WeeklyChartWidgetProps) => {
+export const WeeklyChartWidget = ({
+	data,
+	isLoading,
+	onDayClick,
+}: WeeklyChartWidgetProps) => {
 	const { t } = useTranslation();
 
 	const maxTotal = useMemo(
 		() =>
 			Math.max(
 				1,
-				...data.map((d) => d.confirmed + d.completed + d.cancelled)
+				...data.map((d) => d.upcoming + d.completed + d.cancelled + d.blocked)
 			),
 		[data]
 	);
@@ -40,7 +45,7 @@ export const WeeklyChartWidget = ({ data, isLoading }: WeeklyChartWidgetProps) =
 			<Box display='flex' gap={1} alignItems='flex-end' height={160}>
 				{[...Array(7)].map((_, i) => (
 					<Skeleton
-						height={`${20 + Math.random() * 80}%`}
+						height={`${30 + i * 8}%`}
 						key={`chart-skeleton-${i}`}
 						variant='rectangular'
 						sx={{ flex: 1, borderRadius: 1 }}
@@ -58,21 +63,34 @@ export const WeeklyChartWidget = ({ data, isLoading }: WeeklyChartWidgetProps) =
 
 			<ChartCanvas role='img' aria-label={t('page.dashboard.widgets.weekly-chart.aria-label')}>
 				{data.map((day) => {
-					const total = day.confirmed + day.completed + day.cancelled;
-					const confirmedPct = total > 0 ? (day.confirmed / maxTotal) * 100 : 0;
+					const total =
+						day.upcoming + day.completed + day.cancelled + day.blocked;
+					const upcomingPct = total > 0 ? (day.upcoming / maxTotal) * 100 : 0;
 					const completedPct = total > 0 ? (day.completed / maxTotal) * 100 : 0;
 					const cancelledPct = total > 0 ? (day.cancelled / maxTotal) * 100 : 0;
+					const blockedPct = total > 0 ? (day.blocked / maxTotal) * 100 : 0;
 
 					return (
 						<BarGroup
 							isToday={day.isToday}
 							key={day.date}
+							onClick={() => onDayClick?.(day)}
+							onKeyDown={(event) => {
+								if (!onDayClick) return;
+								if (event.key === 'Enter' || event.key === ' ') {
+									event.preventDefault();
+									onDayClick(day);
+								}
+							}}
+							role={onDayClick ? 'button' : undefined}
+							tabIndex={onDayClick ? 0 : undefined}
 							title={`${day.label}: ${total} ${t('page.dashboard.widgets.weekly-chart.sessions')}`}
 						>
 							<Box className='bar-stack' flex={1} width='100%'>
+								<BarSegment color={COLORS.blocked} heightPct={blockedPct} />
 								<BarSegment color={COLORS.cancelled} heightPct={cancelledPct} />
 								<BarSegment color={COLORS.completed} heightPct={completedPct} />
-								<BarSegment color={COLORS.confirmed} heightPct={confirmedPct} />
+								<BarSegment color={COLORS.upcoming} heightPct={upcomingPct} />
 							</Box>
 							<BarLabel isToday={day.isToday}>{day.label}</BarLabel>
 						</BarGroup>
@@ -83,9 +101,10 @@ export const WeeklyChartWidget = ({ data, isLoading }: WeeklyChartWidgetProps) =
 			<ChartLegend>
 				{(
 					[
-						['confirmed', t('page.dashboard.widgets.weekly-chart.legend.confirmed')],
+						['upcoming', t('page.dashboard.widgets.weekly-chart.legend.upcoming')],
 						['completed', t('page.dashboard.widgets.weekly-chart.legend.completed')],
 						['cancelled', t('page.dashboard.widgets.weekly-chart.legend.cancelled')],
+						['blocked', t('page.dashboard.widgets.weekly-chart.legend.blocked')],
 					] as const
 				).map(([key, label]) => (
 					<LegendItem key={key}>

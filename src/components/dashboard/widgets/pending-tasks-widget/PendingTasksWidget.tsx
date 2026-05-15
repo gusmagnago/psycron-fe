@@ -3,7 +3,13 @@ import { Box, Skeleton } from '@mui/material';
 
 import { WidgetHeader, WidgetTitle } from '../schedule-widget/ScheduleWidget.styles';
 
-import { TaskCount, TaskLabel, TaskRow, TasksList } from './PendingTasksWidget.styles';
+import {
+	EmptyTasksState,
+	TaskCount,
+	TaskLabel,
+	TaskRow,
+	TasksList,
+} from './PendingTasksWidget.styles';
 import type { PendingTasksWidgetProps } from './PendingTasksWidget.types';
 
 const rowVariants = {
@@ -38,23 +44,29 @@ export const PendingTasksWidget = ({ isLoading, tasks }: PendingTasksWidgetProps
 			<WidgetHeader>
 				<WidgetTitle>{t('page.dashboard.widgets.pending-tasks.title')}</WidgetTitle>
 			</WidgetHeader>
-			<TasksList>
-				{tasks.map((task, i) => (
-					<TaskRow
-						animate='visible'
-						aria-label={`${task.label}: ${task.count}`}
-						custom={i}
-						initial='hidden'
-						key={task.type}
-						onClick={task.onClick}
-						taskType={task.type}
-						variants={rowVariants}
-					>
-						<TaskLabel>{task.label}</TaskLabel>
-						<TaskCount>{task.count}</TaskCount>
-					</TaskRow>
-				))}
-			</TasksList>
+			{tasks.length === 0 ? (
+				<EmptyTasksState>
+					{t('page.dashboard.widgets.pending-tasks.empty')}
+				</EmptyTasksState>
+			) : (
+				<TasksList>
+					{tasks.map((task, i) => (
+						<TaskRow
+							animate='visible'
+							aria-label={`${task.label}: ${task.count}`}
+							custom={i}
+							initial='hidden'
+							key={task.type}
+							onClick={task.onClick}
+							taskType={task.type}
+							variants={rowVariants}
+						>
+							<TaskLabel>{task.label}</TaskLabel>
+							<TaskCount>{task.count}</TaskCount>
+						</TaskRow>
+					))}
+				</TasksList>
+			)}
 		</>
 	);
 };

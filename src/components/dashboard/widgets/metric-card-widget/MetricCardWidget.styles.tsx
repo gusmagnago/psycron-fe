@@ -4,11 +4,21 @@ import { palette } from '@psycron/theme/palette/palette.theme';
 import { spacing } from '@psycron/theme/spacing/spacing.theme';
 import { motion } from 'framer-motion';
 
-export const MetricRoot = styled(Box)`
+export const MetricRoot = styled(Box, {
+	shouldForwardProp: (prop) => prop !== 'isInteractive',
+})<{ isInteractive?: boolean }>`
 	display: flex;
 	flex-direction: column;
 	gap: ${spacing.xs};
 	height: 100%;
+	cursor: ${({ isInteractive }) => (isInteractive ? 'pointer' : 'default')};
+
+	&:focus-visible {
+		outline: ${({ isInteractive }) =>
+			isInteractive ? `2px solid ${palette.primary.main}` : 'none'};
+		outline-offset: 2px;
+		border-radius: 12px;
+	}
 `;
 
 export const MetricTopRow = styled(Box)`

@@ -1,5 +1,6 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useLocation } from 'react-router-dom';
 import { capture } from '@psycron/analytics/posthog/events';
 import { PostHogEvent } from '@psycron/analytics/posthog/types';
 import { Button } from '@psycron/components/button/Button';
@@ -41,6 +42,8 @@ export const NotificationsPage = () => {
 		patientId: string | null;
 	}>({ isOpen: false, patientId: null });
 
+	const location = useLocation();
+
 	const openSettingsDrawer = useCallback(
 		() => setIsSettingsDrawerOpen(true),
 		[]
@@ -49,6 +52,12 @@ export const NotificationsPage = () => {
 		() => setIsSettingsDrawerOpen(false),
 		[]
 	);
+
+	useEffect(() => {
+		if ((location.state as { openSettings?: boolean } | null)?.openSettings) {
+			openSettingsDrawer();
+		}
+	}, [location.state, openSettingsDrawer]);
 	const openPatientSettings = useCallback(
 		(patientId: string) => setPatientSettingsState({ isOpen: true, patientId }),
 		[]

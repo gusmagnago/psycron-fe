@@ -26,6 +26,16 @@ export const BarGroup = styled(Box, {
 	gap: 4px;
 	cursor: default;
 
+	&[role='button'] {
+		cursor: pointer;
+	}
+
+	&:focus-visible {
+		outline: 2px solid ${palette.primary.main};
+		outline-offset: 4px;
+		border-radius: 8px;
+	}
+
 	& > .bar-stack {
 		width: 100%;
 		border-radius: 6px 6px 0 0;

@@ -1,10 +1,14 @@
+import type { DashboardRecentPatientActivityType, DashboardTier } from '@psycron/api/dashboard/index.types';
+
 export interface RecentPatient {
 	firstName: string;
 	id: string;
+	lastActivityAt: string | null;
+	lastActivityType: DashboardRecentPatientActivityType;
 	lastName: string;
-	lastNoteLabel: string;
 	onMessage?: () => void;
 	onOpen?: () => void;
+	tier: DashboardTier;
 }
 
 export interface RecentPatientsWidgetProps {

@@ -19,20 +19,37 @@ const DEFAULT_LAYOUT: DashboardLayoutState = [
 	{ id: 'jupiter-insights', order: 1, visible: true },
 	{ id: 'quick-actions', order: 2, visible: true },
 	{ id: 'active-patients', order: 3, visible: true },
-	{ id: 'revenue-mtd', order: 4, visible: true },
+	{ id: 'billing-readiness', order: 4, visible: true },
 	{ id: 'this-week', order: 5, visible: true },
 	{ id: 'weekly-chart', order: 6, visible: true },
 	{ id: 'pending-tasks', order: 7, visible: true },
 	{ id: 'recent-patients', order: 8, visible: true },
 ];
 
+const LEGACY_TILE_IDS: Record<string, DashboardTileId> = {
+	'revenue-mtd': 'billing-readiness',
+};
+
+const normalizeTileId = (id: string): DashboardTileId | null => {
+	const nextId = LEGACY_TILE_IDS[id] ?? id;
+	return DEFAULT_LAYOUT.some((tile) => tile.id === nextId)
+		? (nextId as DashboardTileId)
+		: null;
+};
+
 const loadLayout = (): DashboardLayoutState => {
 	try {
 		const raw = localStorage.getItem(STORAGE_KEY);
 		if (!raw) return DEFAULT_LAYOUT;
 		const parsed = JSON.parse(raw) as DashboardLayoutState;
-		const existingIds = new Set(parsed.map((t) => t.id));
-		const merged = [...parsed];
+		const normalized = parsed.reduce<DashboardLayoutState>((acc, tile) => {
+			const id = normalizeTileId(tile.id);
+			if (!id || acc.some((item) => item.id === id)) return acc;
+			acc.push({ ...tile, id });
+			return acc;
+		}, []);
+		const existingIds = new Set(normalized.map((t) => t.id));
+		const merged = [...normalized];
 		DEFAULT_LAYOUT.forEach((def) => {
 			if (!existingIds.has(def.id)) {
 				merged.push({ ...def, order: merged.length });
