@@ -25,6 +25,7 @@ import type {
 import { BentoTile } from '@psycron/components/dashboard/bento-tile/BentoTile';
 import { CustomizeControl } from '@psycron/components/dashboard/customize-control/CustomizeControl';
 import { DashboardGreeting } from '@psycron/components/dashboard/greeting/DashboardGreeting';
+import { ActivePatientsWidget } from '@psycron/components/dashboard/widgets/active-patients-widget/ActivePatientsWidget';
 import { JupiterInsightsWidget } from '@psycron/components/dashboard/widgets/jupiter-insights-widget/JupiterInsightsWidget';
 import { MetricCardWidget } from '@psycron/components/dashboard/widgets/metric-card-widget/MetricCardWidget';
 import { PendingTasksWidget } from '@psycron/components/dashboard/widgets/pending-tasks-widget/PendingTasksWidget';
@@ -370,11 +371,12 @@ export const Dashboard = () => {
 			case 'active-patients':
 				return (
 					<BentoTile {...commonProps} key={tileId}>
-						<MetricCardWidget
-							icon={<Patients />}
+						<ActivePatientsWidget
 							isLoading={isSummaryLoading}
-							label={t('page.dashboard.widgets.active-patients.label')}
-							value={patientCount}
+							onPatientClick={(id) =>
+								navigate(`../${PATIENTPROFILE.replace(':patientId', id)}`)
+							}
+							patients={summary?.latestPatients ?? []}
 						/>
 					</BentoTile>
 				);

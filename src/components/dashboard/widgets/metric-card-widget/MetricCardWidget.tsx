@@ -1,7 +1,8 @@
+import { useCallback } from 'react';
 import { Skeleton } from '@mui/material';
-import { Avatar as MUIAvatar } from '@mui/material';
 import { ChevronDown, ChevronUp } from '@psycron/components/icons';
 import { useCountUp } from '@psycron/hooks/useCountUp';
+import { stringToColor } from '@psycron/utils/patient/patient.utils';
 
 import {
 	AvatarStack,
@@ -15,19 +16,13 @@ import {
 	MetricValue,
 	OverflowBadge,
 	SparklineWrapper,
+	StyledAvatar,
 } from './MetricCardWidget.styles';
 import type { MetricCardWidgetProps } from './MetricCardWidget.types';
 import { MetricSparkline } from './MetricSparkline';
 
 const MAX_AVATARS = 5;
 
-const stringToColor = (s: string): string => {
-	let hash = 0;
-	for (let i = 0; i < s.length; i++) hash = s.charCodeAt(i) + ((hash << 5) - hash);
-	let color = '#';
-	for (let i = 0; i < 3; i++) color += `00${((hash >> (i * 8)) & 0xff).toString(16)}`.slice(-2);
-	return color;
-};
 
 export const MetricCardWidget = ({
 	avatars,
@@ -45,10 +40,21 @@ export const MetricCardWidget = ({
 }: MetricCardWidgetProps) => {
 	const animatedValue = useCountUp({ end: value });
 
+	const handleKeyDown = useCallback(
+		(event: React.KeyboardEvent) => {
+			if (!onClick) return;
+			if (event.key === 'Enter' || event.key === ' ') {
+				event.preventDefault();
+				onClick();
+			}
+		},
+		[onClick]
+	);
+
 	if (isLoading) {
 		return (
 			<MetricRoot>
-				<Skeleton height={36} width={36} variant='rectangular' sx={{ borderRadius: 2 }} />
+				<Skeleton height={36} sx={{ borderRadius: 2 }} variant='rectangular' width={36} />
 				<Skeleton height={44} width='55%' />
 				<Skeleton height={16} width='40%' />
 			</MetricRoot>
@@ -63,13 +69,7 @@ export const MetricCardWidget = ({
 		<MetricRoot
 			isInteractive={Boolean(onClick)}
 			onClick={onClick}
-			onKeyDown={(event) => {
-				if (!onClick) return;
-				if (event.key === 'Enter' || event.key === ' ') {
-					event.preventDefault();
-					onClick();
-				}
-			}}
+			onKeyDown={handleKeyDown}
 			role={onClick ? 'button' : undefined}
 			tabIndex={onClick ? 0 : undefined}
 		>
@@ -80,22 +80,14 @@ export const MetricCardWidget = ({
 						aria-label={`${delta > 0 ? '+' : ''}${delta}% ${deltaLabel ?? ''}`}
 						isPositive={isDeltaPositive}
 					>
-						{isDeltaPositive ? (
-							<ChevronUp height={11} width={11} />
-						) : (
-							<ChevronDown height={11} width={11} />
-						)}
+						{isDeltaPositive ? <ChevronUp /> : <ChevronDown />}
 						{delta > 0 ? '+' : ''}
 						{delta}%
 					</DeltaChip>
 				) : null}
 			</MetricTopRow>
 
-			<MetricValue
-				animate={{ opacity: 1 }}
-				initial={{ opacity: 0 }}
-				transition={{ duration: 0.4 }}
-			>
+			<MetricValue animate={{ opacity: 1 }} initial={{ opacity: 0 }} transition={{ duration: 0.4 }}>
 				{prefix}
 				{animatedValue.toLocaleString()}
 				{suffix}
@@ -108,25 +100,13 @@ export const MetricCardWidget = ({
 			<MetricBottomRow>
 				{visibleAvatars.length > 0 && (
 					<AvatarStack>
-						{visibleAvatars.map((av, i) => {
+						{visibleAvatars.map((av) => {
 							const name = `${av.firstName} ${av.lastName}`;
 							return (
-								<MUIAvatar
-									alt={name}
-									key={av.id}
-									sx={{
-										bgcolor: stringToColor(name),
-										border: '2px solid #fff',
-										fontSize: 11,
-										fontWeight: 700,
-										height: 28,
-										marginLeft: i === 0 ? 0 : '-8px',
-										width: 28,
-									}}
-								>
+								<StyledAvatar alt={name} avatarColor={stringToColor(name)} key={av.id}>
 									{av.firstName[0]}
 									{av.lastName[0]}
-								</MUIAvatar>
+								</StyledAvatar>
 							);
 						})}
 						{overflow > 0 && <OverflowBadge>+{overflow}</OverflowBadge>}

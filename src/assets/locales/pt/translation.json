@@ -1041,7 +1041,9 @@
                     }
                 },
                 "active-patients": {
-                    "label": "Pacientes ativos"
+                    "label": "Pacientes ativos",
+                    "title": "Últimos pacientes",
+                    "empty": "Nenhum paciente adicionado ainda"
                 },
                 "billing-readiness": {
                     "label": "Cobrança configurada",

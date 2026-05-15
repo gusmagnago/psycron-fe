@@ -85,11 +85,19 @@ export interface DashboardWeekMetrics {
 	upcomingCount: number;
 }
 
+export interface DashboardLatestPatient {
+	createdAt: string;
+	firstName: string;
+	id: string;
+	lastName: string;
+}
+
 export interface DashboardSummaryResponse {
 	activePatients: {
 		count: number;
 	};
 	billingReadiness: DashboardBillingReadiness;
+	latestPatients: DashboardLatestPatient[];
 	locale: 'en' | 'pt';
 	nudges: Array<{
 		id: string;

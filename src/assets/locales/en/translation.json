@@ -1041,7 +1041,9 @@
                     }
                 },
                 "active-patients": {
-                    "label": "Active patients"
+                    "label": "Active patients",
+                    "title": "Latest patients",
+                    "empty": "No patients added yet"
                 },
                 "billing-readiness": {
                     "label": "Billing readiness",

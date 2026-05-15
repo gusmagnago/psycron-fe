@@ -2,6 +2,7 @@ import { useTranslation } from 'react-i18next';
 import { Box, Skeleton } from '@mui/material';
 import { Avatar as MUIAvatar } from '@mui/material';
 import { ChevronRight, Messenger } from '@psycron/components/icons';
+import { stringToColor } from '@psycron/utils/patient/patient.utils';
 import { formatDistanceToNow, parseISO } from 'date-fns';
 
 import { WidgetHeader, WidgetTitle } from '../schedule-widget/ScheduleWidget.styles';
@@ -27,13 +28,6 @@ const rowVariants = {
 	}),
 };
 
-const stringToColor = (s: string): string => {
-	let hash = 0;
-	for (let i = 0; i < s.length; i++) hash = s.charCodeAt(i) + ((hash << 5) - hash);
-	let color = '#';
-	for (let i = 0; i < 3; i++) color += `00${((hash >> (i * 8)) & 0xff).toString(16)}`.slice(-2);
-	return color;
-};
 
 const getActivityLabel = (
 	patient: RecentPatientsWidgetProps['patients'][number],
