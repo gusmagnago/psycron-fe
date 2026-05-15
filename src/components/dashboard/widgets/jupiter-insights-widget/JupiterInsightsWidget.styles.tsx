@@ -13,14 +13,16 @@ const pulse = keyframes`
 export const CarouselRoot = styled(Box)`
 	display: flex;
 	flex-direction: column;
-	gap: ${spacing.small};
+	gap: ${spacing.extraSmall};
 	height: 100%;
+	justify-content: flex-start;
+	min-height: 0;
 `;
 
 export const CarouselViewport = styled(Box)`
-	flex: 1;
-	height: 5rem;
-	overflow: hidden;
+	flex: 0 1 auto;
+	min-height: 0;
+	overflow: visible;
 	position: relative;
 `;
 
@@ -108,4 +110,17 @@ export const EmptyState = styled(Box)`
 	opacity: 0.6;
 	padding: ${spacing.medium} 0;
 	text-align: center;
+`;
+
+export const ExpandedInsightContent = styled(Box)`
+	display: flex;
+	flex-direction: column;
+	gap: ${spacing.mediumSmall};
+`;
+
+export const ExpandedInsightText = styled(Text)`
+	color: ${palette.text.primary};
+	font-size: 0.9375rem;
+	line-height: 1.7;
+	margin: 0;
 `;

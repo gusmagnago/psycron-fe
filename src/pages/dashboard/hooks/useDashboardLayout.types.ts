@@ -5,6 +5,7 @@ export interface UseDashboardLayoutReturn {
 	layout: DashboardLayoutState;
 	reorderLayout: (activeId: DashboardTileId, overId: DashboardTileId) => void;
 	resetLayout: () => void;
+	resizeTile: (id: DashboardTileId, delta: number) => void;
 	setCustomizing: (value: boolean) => void;
 	toggleVisibility: (id: DashboardTileId) => void;
 }

@@ -1,7 +1,13 @@
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-import { type BeInsightItem, getJupiterInsights } from '@psycron/api/jupiter';
+import {
+	type BeInsightActionTarget,
+	type BeInsightCategory,
+	type BeInsightItem,
+	type BeJupiterInsightsResponse,
+	getJupiterInsights,
+} from '@psycron/api/jupiter';
 import type {
 	InsightTier,
 	JupiterInsight,
@@ -28,19 +34,28 @@ export interface UseJupiterInsightsInput {
 	whatsappRemindersEnabled?: boolean;
 }
 
+export interface UseJupiterInsightsReturn {
+	insights: JupiterInsight[];
+	isLoading: boolean;
+}
+
+const normalizeLocale = (language: string): 'en' | 'pt' =>
+	language.startsWith('pt') ? 'pt' : 'en';
+
 export const useJupiterInsights = ({
 	hasAvailability,
 	metrics,
 	patientCount,
 	weekStart,
 	whatsappRemindersEnabled,
-}: UseJupiterInsightsInput): JupiterInsight[] => {
-	const { t } = useTranslation();
+}: UseJupiterInsightsInput): UseJupiterInsightsReturn => {
+	const { i18n, t } = useTranslation();
 	const navigate = useNavigate();
+	const locale = normalizeLocale(i18n.language);
 
-	const { data: beItems = [] } = useQuery({
-		queryFn: getJupiterInsights,
-		queryKey: ['jupiter-insights'],
+	const { data, isLoading } = useQuery({
+		queryFn: () => getJupiterInsights(locale),
+		queryKey: ['jupiter-insights', locale],
 		staleTime: 5 * 60 * 1000,
 	});
 
@@ -56,67 +71,90 @@ export const useJupiterInsights = ({
 
 		const k = (key: string) => `page.dashboard.widgets.jupiter-insights.${key}`;
 
-		const mapBeItem = (item: BeInsightItem): JupiterInsight => {
-			const { meta } = item;
-			const patientName = meta?.patientFirstName ?? '';
-			const profilePath = PATIENTPROFILE.replace(':patientId', meta?.patientId ?? '');
+		const categoryLabel = (category: BeInsightCategory): string => {
+			const map: Record<BeInsightCategory, string> = {
+				'daily-briefing': t(k('category-daily-briefing')),
+				growth: t(k('category-growth')),
+				operations: t(k('category-operations')),
+				'patient-care': t(k('category-patient-care')),
+				schedule: t(k('category-schedule')),
+				setup: t(k('category-setup')),
+			};
+			return map[category];
+		};
 
-			switch (item.insightType) {
-				case 'missed-rebooking':
-					return {
-						actionLabel: t(k('action-send-message')),
-						category: t(k('category-patient-care')),
-						id: item.id,
-						insightType: 'missed-rebooking',
-						onAction: () => navigate(`../${profilePath}`),
-						onSecondaryAction: () => navigate(`../${profilePath}`),
-						secondaryActionLabel: t(k('action-view-profile')),
-						text: t(k('text-missed-rebooking'), { name: patientName }),
-						tier: item.tier,
-					};
-				case 'setup-availability':
-					return {
-						actionLabel: t(k('action-setup-availability')),
-						category: t(k('category-setup')),
-						id: item.id,
-						insightType: 'setup-availability',
-						onAction: () => navigate(`../${AVAILABILITYWIZARD}`),
-						text: t(k('text-setup-availability')),
-						tier: item.tier,
-					};
-				case 'no-patients-yet':
-					return {
-						category: t(k('category-growth')),
-						id: item.id,
-						insightType: 'no-patients-yet',
-						text: t(k('text-no-patients-yet')),
-						tier: item.tier,
-					};
+		const getTargetHref = (target: BeInsightActionTarget): string => {
+			switch (target.type) {
+				case 'availability-week':
+					return target.date
+						? `../${AVAILABILITYWEEK_BASE}/${target.date}`
+						: `../${AVAILABILITYWEEK_BASE}`;
+				case 'availability-wizard':
+					return `../${AVAILABILITYWIZARD}`;
+				case 'notification-settings':
+					return `../${NOTIFICATIONSETTINGS}`;
+				case 'patient-profile':
+					return `../${PATIENTPROFILE.replace(':patientId', target.patientId)}`;
+				case 'patients':
+					return `../${PATIENTS}`;
 			}
 		};
 
-		const beInsights = beItems.map(mapBeItem);
-		const beInsightTypes = new Set(beItems.map((i) => i.insightType));
+		const mapBackendItem = (item: BeInsightItem): JupiterInsight => ({
+			actionLabel: item.action ? t(item.action.labelKey) : undefined,
+			actionTarget: item.action?.target.type,
+			category: categoryLabel(item.category),
+			id: item.id,
+			insightType: item.insightType,
+			onAction: item.action
+				? () => navigate(getTargetHref(item.action!.target))
+				: undefined,
+			source: item.source,
+			text: item.text,
+			tier: item.tier,
+		});
+
+		const mapBackendResponse = (
+			response: BeJupiterInsightsResponse
+		): JupiterInsight[] => [
+			{
+				category: categoryLabel(response.summary.category),
+				id: response.summary.id,
+				insightType: 'dashboard-summary',
+				source: response.summary.source,
+				text: response.summary.text,
+			},
+			...response.insights.map(mapBackendItem),
+		];
+
+		if (data) {
+			return {
+				insights: mapBackendResponse(data),
+				isLoading,
+			};
+		}
 
 		const feInsights: JupiterInsight[] = [];
 
-		if (!beInsightTypes.has('setup-availability') && !hasAvailability) {
+		if (!hasAvailability) {
 			feInsights.push({
 				actionLabel: t(k('action-setup-availability')),
 				category: t(k('category-setup')),
 				id: 'setup-availability',
 				insightType: 'setup-availability',
 				onAction: () => navigate(`../${AVAILABILITYWIZARD}`),
+				source: 'fallback',
 				text: t(k('text-setup-availability')),
 				tier: 'onboarding',
 			});
 		}
 
-		if (!beInsightTypes.has('no-patients-yet') && hasAvailability && patientCount === 0) {
+		if (hasAvailability && patientCount === 0) {
 			feInsights.push({
 				category: t(k('category-growth')),
 				id: 'no-patients-yet',
 				insightType: 'no-patients-yet',
+				source: 'fallback',
 				text: t(k('text-no-patients-yet')),
 				tier: 'onboarding',
 			});
@@ -140,6 +178,7 @@ export const useJupiterInsights = ({
 					todayBookedCount === 0 && weekBookedCount > 0
 						? () => navigate(weekHref)
 						: undefined,
+				source: 'fallback',
 				text:
 					todayBookedCount === 0
 						? noSessionsText
@@ -155,6 +194,7 @@ export const useJupiterInsights = ({
 				id: 'week-cancellations',
 				insightType: 'week-cancellations',
 				onAction: () => navigate(`../${PATIENTS}`),
+				source: 'fallback',
 				text: t(k('text-week-cancellations'), { count: weekCancelledCount }),
 				tier: 'active',
 			});
@@ -167,6 +207,7 @@ export const useJupiterInsights = ({
 				id: 'low-week-volume',
 				insightType: 'low-week-volume',
 				onAction: () => navigate(weekHref),
+				source: 'fallback',
 				text: t(k('text-low-week-volume'), { count: weekBookedCount }),
 				tier: 'growing',
 			});
@@ -179,6 +220,7 @@ export const useJupiterInsights = ({
 				id: 'busy-day-pattern',
 				insightType: 'busy-day-pattern',
 				onAction: () => navigate(weekHref),
+				source: 'fallback',
 				text: t(k('text-busy-day'), {
 					day: format(parseISO(weekBusiestDay.date), 'EEEE'),
 				}),
@@ -193,6 +235,7 @@ export const useJupiterInsights = ({
 				id: 'whatsapp-reminders',
 				insightType: 'whatsapp-reminders-off',
 				onAction: () => navigate(`../${NOTIFICATIONSETTINGS}`),
+				source: 'fallback',
 				text: t(k('text-whatsapp-reminders')),
 				tier,
 			});
@@ -203,15 +246,31 @@ export const useJupiterInsights = ({
 				category: t(k('category-insights')),
 				id: `patient-milestone-${patientCount}`,
 				insightType: 'patient-milestone',
+				source: 'fallback',
 				text: t(k('text-patient-milestone'), { count: patientCount }),
 				tier,
 			});
 		}
 
-		return [...beInsights, ...feInsights].slice(0, MAX_INSIGHTS);
+		return {
+			insights: [
+				{
+					category: t(k('category-daily-briefing')),
+					id: 'dashboard-summary-fallback',
+					insightType: 'dashboard-summary',
+					source: 'fallback',
+					text: t(k('text-dashboard-summary-fallback'), {
+						count: weekBookedCount,
+					}),
+				},
+				...feInsights.slice(0, MAX_INSIGHTS),
+			],
+			isLoading,
+		};
 	}, [
-		beItems,
+		data,
 		hasAvailability,
+		isLoading,
 		metrics,
 		navigate,
 		patientCount,

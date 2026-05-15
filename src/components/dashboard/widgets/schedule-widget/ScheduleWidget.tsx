@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
+import { useBentoTileChrome } from '@psycron/components/dashboard/bento-tile/BentoTile.context';
 import { Calendar, CalendarRange } from '@psycron/components/icons';
 import { Tooltip } from '@psycron/components/tooltip/Tooltip';
 import { parseISO } from 'date-fns';
@@ -16,7 +17,6 @@ import {
 	SkeletonList,
 	SlotSkeleton,
 	SwitcherOption,
-	WidgetHeader,
 } from './ScheduleWidget.styles';
 import type { ScheduleWidgetProps, ViewMode } from './ScheduleWidget.types';
 
@@ -93,6 +93,47 @@ export const ScheduleWidget = ({
 			? t('page.dashboard.widgets.schedule.sessions-week')
 			: t('page.dashboard.widgets.schedule.sessions-today');
 
+	const title = useMemo(
+		() => (
+			<ScheduleSwitcher>
+				<SwitcherOption
+					aria-label={t('page.dashboard.widgets.schedule.title')}
+					isActive={viewMode === 'today'}
+					onClick={() => setViewMode('today')}
+				>
+					<Calendar />
+					{t('page.dashboard.widgets.schedule.title')}
+				</SwitcherOption>
+				<SwitcherOption
+					aria-label={t('page.dashboard.widgets.schedule.title-week')}
+					isActive={viewMode === 'week'}
+					onClick={() => setViewMode('week')}
+				>
+					<CalendarRange />
+					{t('page.dashboard.widgets.schedule.title-week')}
+				</SwitcherOption>
+			</ScheduleSwitcher>
+		),
+		[t, viewMode]
+	);
+
+	const headerActions = useMemo(
+		() =>
+			weekHref ? (
+				<Tooltip
+					aria-label={t('page.dashboard.widgets.schedule.view-week')}
+					onClick={() => navigate(`../${weekHref}`)}
+					placement='bottom'
+					title={t('page.dashboard.widgets.schedule.view-week')}
+				>
+					<Calendar />
+				</Tooltip>
+			) : undefined,
+		[navigate, t, weekHref]
+	);
+
+	useBentoTileChrome({ headerActions, title });
+
 	if (isLoading) {
 		return (
 			<SkeletonList>
@@ -105,38 +146,6 @@ export const ScheduleWidget = ({
 
 	return (
 		<ScheduleRoot>
-			<WidgetHeader>
-				<ScheduleSwitcher>
-					<SwitcherOption
-						aria-label={t('page.dashboard.widgets.schedule.title')}
-						isActive={viewMode === 'today'}
-						onClick={() => setViewMode('today')}
-					>
-						<Calendar />
-						{t('page.dashboard.widgets.schedule.title')}
-					</SwitcherOption>
-					<SwitcherOption
-						aria-label={t('page.dashboard.widgets.schedule.title-week')}
-						isActive={viewMode === 'week'}
-						onClick={() => setViewMode('week')}
-					>
-						<CalendarRange />
-						{t('page.dashboard.widgets.schedule.title-week')}
-					</SwitcherOption>
-				</ScheduleSwitcher>
-
-				{weekHref && (
-					<Tooltip
-						aria-label={t('page.dashboard.widgets.schedule.view-week')}
-						onClick={() => navigate(`../${weekHref}`)}
-						placement='bottom'
-						title={t('page.dashboard.widgets.schedule.view-week')}
-					>
-						<Calendar />
-					</Tooltip>
-				)}
-			</WidgetHeader>
-
 			<CountBadge>
 				<CountHighlight>{displaySlots.length}</CountHighlight>
 				{' / '}

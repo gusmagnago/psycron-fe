@@ -948,6 +948,16 @@
         "pending-tasks": "Tarefas pendentes",
         "recent-patients": "Pacientes recentes"
       },
+      "tile": {
+        "close": "Fechar",
+        "hide": "Ocultar bloco",
+        "read-more": "Ler mais",
+        "resize-down": "Reduzir altura",
+        "resize-down-aria": "Reduzir altura do bloco",
+        "resize-up": "Aumentar altura",
+        "resize-up-aria": "Aumentar altura do bloco",
+        "show": "Mostrar bloco"
+      },
       "customize": {
         "open": "Personalizar",
         "done": "Concluído",
@@ -985,6 +995,8 @@
           "text-patients": "Você tem atualmente {{count}} paciente(s) ativo(s) na sua lista.",
           "subtitle": "Co-piloto de IA · aprendendo seus padrões",
           "default-category": "Cuidado ao Paciente",
+          "category-daily-briefing": "Resumo do dia",
+          "category-operations": "Operações",
           "category-patient-care": "Cuidado ao Paciente",
           "category-insights": "Insights",
           "action-send-message": "Enviar mensagem",
@@ -1007,7 +1019,8 @@
           "text-low-week-volume": "Você tem {{count}} sessão(ões) esta semana. Abrir mais horários pode ajudar seu crescimento.",
           "action-view-patients": "Ver pacientes",
           "text-session-none-today-week": "Nenhuma sessão hoje — você tem {{count}} sessão(ões) esta semana. Veja sua agenda.",
-          "text-missed-rebooking": "{{name}} faltou à última sessão e não reagendou. Um contato pode ajudar."
+          "text-missed-rebooking": "{{name}} faltou à última sessão e não reagendou. Um contato pode ajudar.",
+          "text-dashboard-summary-fallback": "A Júpiter está lendo seu painel. Você tem {{count}} sessão(ões) agendada(s) esta semana."
         },
         "quick-actions": {
           "title": "Ações Rápidas",

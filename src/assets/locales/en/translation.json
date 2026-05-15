@@ -948,6 +948,16 @@
         "pending-tasks": "Pending tasks",
         "recent-patients": "Recent patients"
       },
+      "tile": {
+        "close": "Close",
+        "hide": "Hide tile",
+        "read-more": "Read more",
+        "resize-down": "Reduce height",
+        "resize-down-aria": "Reduce tile height",
+        "resize-up": "Increase height",
+        "resize-up-aria": "Increase tile height",
+        "show": "Show tile"
+      },
       "customize": {
         "open": "Customize",
         "done": "Done",
@@ -985,6 +995,8 @@
           "text-patients": "You currently have {{count}} active patient(s) on your roster.",
           "subtitle": "AI co-pilot · learning your patterns",
           "default-category": "Patient Care",
+          "category-daily-briefing": "Daily briefing",
+          "category-operations": "Operations",
           "category-patient-care": "Patient Care",
           "category-insights": "Insights",
           "action-send-message": "Send message",
@@ -1007,7 +1019,8 @@
           "text-low-week-volume": "You have {{count}} session(s) this week. Opening more slots could help you grow.",
           "action-view-patients": "View patients",
           "text-session-none-today-week": "No sessions today — you have {{count}} coming up this week. Check your schedule.",
-          "text-missed-rebooking": "{{name}} missed their last session and hasn't rebooked. A check-in might help."
+          "text-missed-rebooking": "{{name}} missed their last session and hasn't rebooked. A check-in might help.",
+          "text-dashboard-summary-fallback": "Júpiter is reading your dashboard. You have {{count}} session(s) booked this week."
         },
         "quick-actions": {
           "title": "Quick Actions",

@@ -59,28 +59,31 @@ import {
 import type { DashboardTileId } from './Dashboard.types';
 
 const TILE_DESKTOP: Record<DashboardTileId, { col: number; row: number }> = {
-	'active-patients': { col: 3, row: 1 },
-	'jupiter-insights': { col: 7, row: 1 },
-	'pending-tasks': { col: 4, row: 1 },
-	'quick-actions': { col: 4, row: 1 },
-	'recent-patients': { col: 12, row: 1 },
-	'revenue-mtd': { col: 6, row: 1 },
-	schedule: { col: 5, row: 2 },
-	'this-week': { col: 6, row: 1 },
-	'weekly-chart': { col: 8, row: 1 },
+	'active-patients': { col: 3, row: 2 },
+	'jupiter-insights': { col: 7, row: 2 },
+	'pending-tasks': { col: 4, row: 2 },
+	'quick-actions': { col: 4, row: 2 },
+	'recent-patients': { col: 12, row: 2 },
+	'revenue-mtd': { col: 6, row: 2 },
+	schedule: { col: 5, row: 4 },
+	'this-week': { col: 6, row: 2 },
+	'weekly-chart': { col: 8, row: 2 },
 };
 
 const TILE_TABLET: Record<DashboardTileId, { col: number; row: number }> = {
-	'active-patients': { col: 3, row: 1 },
-	'jupiter-insights': { col: 6, row: 1 },
-	'pending-tasks': { col: 6, row: 1 },
-	'quick-actions': { col: 3, row: 1 },
-	'recent-patients': { col: 6, row: 1 },
-	'revenue-mtd': { col: 3, row: 1 },
-	schedule: { col: 6, row: 1 },
-	'this-week': { col: 3, row: 1 },
-	'weekly-chart': { col: 6, row: 1 },
+	'active-patients': { col: 3, row: 2 },
+	'jupiter-insights': { col: 6, row: 2 },
+	'pending-tasks': { col: 6, row: 2 },
+	'quick-actions': { col: 3, row: 2 },
+	'recent-patients': { col: 6, row: 2 },
+	'revenue-mtd': { col: 3, row: 2 },
+	schedule: { col: 6, row: 2 },
+	'this-week': { col: 3, row: 2 },
+	'weekly-chart': { col: 6, row: 2 },
 };
+
+const MIN_TILE_ROW_SPAN = 1;
+const MAX_TILE_ROW_SPAN = 6;
 
 const TILE_MIN_HEIGHT: Record<DashboardTileId, number> = {
 	'active-patients': 180,
@@ -107,6 +110,7 @@ export const Dashboard = () => {
 		isCustomizing,
 		layout,
 		reorderLayout,
+		resizeTile,
 		resetLayout,
 		setCustomizing,
 		toggleVisibility,
@@ -172,13 +176,14 @@ export const Dashboard = () => {
 	const whatsappRemindersEnabled =
 		userDetails?.notificationPreferences?.reminder?.whatsapp;
 
-	const jupiterInsights = useJupiterInsights({
+	const { insights: jupiterInsights, isLoading: isJupiterInsightsLoading } =
+		useJupiterInsights({
 		hasAvailability,
 		metrics,
 		patientCount,
 		weekStart,
 		whatsappRemindersEnabled,
-	});
+		});
 
 	const quickActions = useMemo(
 		() => [
@@ -250,7 +255,13 @@ export const Dashboard = () => {
 
 	const getSpan = (id: DashboardTileId) => {
 		if (isMobile) return { col: 1, row: 1 };
-		return isBiggerThanTablet ? TILE_DESKTOP[id] : TILE_TABLET[id];
+		const baseSpan = isBiggerThanTablet ? TILE_DESKTOP[id] : TILE_TABLET[id];
+		const tile = layout.find((t) => t.id === id);
+		const row = Math.min(
+			Math.max(baseSpan.row + (tile?.heightDelta ?? 0), MIN_TILE_ROW_SPAN),
+			MAX_TILE_ROW_SPAN
+		);
+		return { ...baseSpan, row };
 	};
 
 	const renderTile = (tileId: DashboardTileId, index: number) => {
@@ -264,6 +275,7 @@ export const Dashboard = () => {
 			index,
 			isEditMode: isCustomizing,
 			isHidden: !(tile?.visible ?? true),
+			onResize: resizeTile,
 			onToggleVisibility: toggleVisibility,
 			rowSpan: row,
 		};
@@ -289,7 +301,7 @@ export const Dashboard = () => {
 					<BentoTile {...commonProps} key={tileId} variant='jupiter'>
 						<JupiterInsightsWidget
 							insights={jupiterInsights}
-							isLoading={isLoading}
+							isLoading={isLoading || isJupiterInsightsLoading}
 						/>
 					</BentoTile>
 				);

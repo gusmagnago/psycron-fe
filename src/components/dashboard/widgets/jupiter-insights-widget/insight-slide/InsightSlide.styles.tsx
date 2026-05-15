@@ -10,13 +10,12 @@ export const SlideRoot = styled(motion.div)`
 	display: flex;
 	flex-direction: column;
 	gap: ${spacing.xs};
-	inset: 0;
-	position: absolute;
+	min-height: 0;
+	position: relative;
 `;
 
 export const SlideText = styled(Text)`
 	color: ${palette.text.primary};
-	flex: 1;
 	font-size: 0.875rem;
 	line-height: 1.65;
 	margin: 0;
@@ -37,6 +36,7 @@ export const SlidePrimaryAction = styled(Button)`
 		font-size: 0.8125rem;
 		font-weight: 600;
 		padding: ${spacing.xs} ${spacing.small};
+		white-space: nowrap;
 	}
 `;
 
@@ -49,6 +49,7 @@ export const SlideSecondaryAction = styled(Button)`
 		font-size: 0.8125rem;
 		font-weight: 500;
 		padding: ${spacing.xs} ${spacing.small};
+		white-space: nowrap;
 
 		&:hover {
 			background: ${hexToRgba(palette.white, 0.85)};

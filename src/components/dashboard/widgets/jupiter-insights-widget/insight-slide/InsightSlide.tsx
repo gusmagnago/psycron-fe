@@ -3,6 +3,8 @@ import { PostHogEvent } from '@psycron/analytics/posthog/types';
 import { AnimatePresence } from 'framer-motion';
 import { ArrowRight } from 'lucide-react';
 
+import type { JupiterInsight } from '../JupiterInsightsWidget.types';
+
 import {
 	SlideActions,
 	SlidePrimaryAction,
@@ -18,11 +20,47 @@ const slideVariants = {
 	exit: (dir: number) => ({ opacity: 0, x: dir * -32 }),
 };
 
-export const InsightSlide = ({
-	current,
-	direction,
-	idx,
-}: InsightSlideProps) => (
+interface InsightActionsProps {
+	current: JupiterInsight;
+	idx: number;
+}
+
+export const InsightActions = ({ current, idx }: InsightActionsProps) =>
+	current.actionLabel || current.secondaryActionLabel ? (
+		<SlideActions>
+			{current.actionLabel && current.onAction && (
+				<SlidePrimaryAction
+					small
+					aria-label={current.actionLabel}
+					onClick={() => {
+						capture(PostHogEvent.JupiterInsightActionClicked, {
+							action_target: current.actionTarget,
+							insight_index: idx,
+							insight_type: current.insightType,
+							source: current.source,
+						});
+						current.onAction?.();
+					}}
+					tertiary
+					variant='contained'
+				>
+					{current.actionLabel}
+					<ArrowRight size={13} />
+				</SlidePrimaryAction>
+			)}
+			{current.secondaryActionLabel && current.onSecondaryAction && (
+				<SlideSecondaryAction
+					small
+					aria-label={current.secondaryActionLabel}
+					onClick={current.onSecondaryAction}
+				>
+					{current.secondaryActionLabel}
+				</SlideSecondaryAction>
+			)}
+		</SlideActions>
+	) : null;
+
+export const InsightSlide = ({ current, direction }: InsightSlideProps) => (
 	<AnimatePresence custom={direction} initial={false} mode='wait'>
 		<SlideRoot
 			animate='center'
@@ -34,37 +72,6 @@ export const InsightSlide = ({
 			variants={slideVariants}
 		>
 			<SlideText>{current.text}</SlideText>
-			{(current.actionLabel || current.secondaryActionLabel) && (
-				<SlideActions>
-					{current.actionLabel && current.onAction && (
-						<SlidePrimaryAction
-							small
-							aria-label={current.actionLabel}
-							onClick={() => {
-								capture(PostHogEvent.JupiterInsightActionClicked, {
-									insight_index: idx,
-									insight_type: current.insightType,
-								});
-								current.onAction?.();
-							}}
-							tertiary
-							variant='contained'
-						>
-							{current.actionLabel}
-							<ArrowRight size={13} />
-						</SlidePrimaryAction>
-					)}
-					{current.secondaryActionLabel && current.onSecondaryAction && (
-						<SlideSecondaryAction
-							small
-							aria-label={current.secondaryActionLabel}
-							onClick={current.onSecondaryAction}
-						>
-							{current.secondaryActionLabel}
-						</SlideSecondaryAction>
-					)}
-				</SlideActions>
-			)}
 		</SlideRoot>
 	</AnimatePresence>
 );

@@ -1,6 +1,7 @@
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import { Box } from '@mui/material';
+import { bentoTileTheme } from '@psycron/theme/dashboard/bentoTile.theme';
 import { palette } from '@psycron/theme/palette/palette.theme';
 import {
 	shadowGlassShimmer,
@@ -12,27 +13,26 @@ import { motion } from 'framer-motion';
 
 export const glassTile = css`
 	background: ${palette.background.default};
-	backdrop-filter: blur(20px) saturate(140%);
-	border-radius: 24px;
+	backdrop-filter: blur(${bentoTileTheme.backdrop.blur})
+		saturate(${bentoTileTheme.backdrop.saturation});
+	border-radius: ${bentoTileTheme.radius.tile};
 	box-shadow: ${shadowMedium}, ${shadowGlassShimmer};
 	overflow: hidden;
 	position: relative;
-	transition:
-		box-shadow 0.2s ease,
-		border-color 0.2s ease;
+	transition: ${bentoTileTheme.motion.tileTransition};
 
 	&:hover {
 		box-shadow: ${shadowSmallPurple}, ${shadowGlassShimmer};
 	}
 
 	@media (prefers-color-scheme: dark) {
-		background: rgba(6, 11, 14, 0.45);
-		border-color: rgba(255, 255, 255, 0.08);
+		background: ${bentoTileTheme.color.darkBackground};
+		border-color: ${bentoTileTheme.color.darkBorder};
 	}
 `;
 
 export const editModeStyles = css`
-	border: 2px dashed ${palette.tertiary.main};
+	border: ${bentoTileTheme.border.tileEdit} dashed ${palette.tertiary.main};
 	cursor: grab;
 
 	&:active {
@@ -41,11 +41,11 @@ export const editModeStyles = css`
 `;
 
 export const hiddenStyles = css`
-	opacity: 0.4;
+	opacity: ${bentoTileTheme.opacity.hidden};
 	pointer-events: none;
 `;
 
-export const BentoTileRoot = styled('div', {
+export const BentoTileRoot = styled(Box, {
 	shouldForwardProp: (prop) =>
 		prop !== 'isEditMode' &&
 		prop !== 'isHidden' &&
@@ -66,15 +66,23 @@ export const BentoTileRoot = styled('div', {
 
 export const DropTargetOverlay = styled('div')`
 	position: absolute;
-	inset: 0;
-	border-radius: 22px;
-	border: 2px dashed ${palette.success.main};
-	background: color-mix(in oklab, ${palette.success.main} 10%, white 90%);
+	inset: ${spacing.none};
+	border-radius: ${bentoTileTheme.radius.dropTarget};
+	border: ${bentoTileTheme.border.tileEdit} dashed ${palette.success.main};
+	background: color-mix(
+		in oklab,
+		${palette.success.main} 10%,
+		${palette.white} 90%
+	);
 	pointer-events: none;
-	z-index: 10;
+	z-index: ${bentoTileTheme.elevation.overlay};
 
 	@media (prefers-color-scheme: dark) {
-		background: color-mix(in oklab, ${palette.success.main} 10%, black 90%);
+		background: color-mix(
+			in oklab,
+			${palette.success.main} 10%,
+			${palette.black} 90%
+		);
 	}
 `;
 
@@ -82,11 +90,13 @@ export const jupiterTile = css`
 	background: linear-gradient(
 		135deg,
 		${palette.tertiary.light} 0%,
-		rgba(191, 167, 255, 0.35) 40%,
-		rgba(255, 153, 200, 0.25) 100%
+		${bentoTileTheme.jupiter.tertiaryStop} 40%,
+		${bentoTileTheme.jupiter.secondaryStop} 100%
 	);
-	backdrop-filter: blur(20px) saturate(140%);
-	-webkit-backdrop-filter: blur(20px) saturate(140%);
+	backdrop-filter: blur(${bentoTileTheme.backdrop.blur})
+		saturate(${bentoTileTheme.backdrop.saturation});
+	-webkit-backdrop-filter: blur(${bentoTileTheme.backdrop.blur})
+		saturate(${bentoTileTheme.backdrop.saturation});
 `;
 
 export const BentoTileMotionBox = styled(motion.div, {
@@ -99,13 +109,135 @@ export const BentoTileMotionBox = styled(motion.div, {
 	position: relative;
 `;
 
-export const BentoTileInner = styled(Box)`
+export const BentoTileInner = styled(Box, {
+	shouldForwardProp: (prop: string) =>
+		prop !== 'hasFooterChrome' && prop !== 'hasHeaderChrome',
+})<{ hasFooterChrome: boolean; hasHeaderChrome: boolean }>`
 	height: 100%;
 	min-height: 0;
 	padding: ${spacing.medium};
+	display: grid;
+	grid-template-rows: ${({ hasFooterChrome, hasHeaderChrome }) => {
+		if (hasHeaderChrome && hasFooterChrome) return 'auto minmax(0, 1fr) auto';
+		if (hasHeaderChrome) return 'auto minmax(0, 1fr)';
+		if (hasFooterChrome) return 'minmax(0, 1fr) auto';
+		return 'minmax(0, 1fr)';
+	}};
+	gap: ${({ hasFooterChrome, hasHeaderChrome }) =>
+		hasFooterChrome || hasHeaderChrome ? spacing.small : 0};
+`;
+
+export const BentoTileHeader = styled(Box)`
+	align-items: center;
 	display: flex;
-	flex-direction: column;
+	flex-shrink: 0;
+	gap: ${spacing.xs};
+	justify-content: space-between;
+	min-width: 0;
+`;
+
+export const BentoTileHeaderIdentity = styled(Box)`
+	align-items: center;
+	display: flex;
+	gap: ${spacing.xs};
+	min-width: 0;
+`;
+
+export const BentoTileHeaderIcon = styled(Box)`
+	align-items: center;
+	color: ${palette.brand.purple};
+	display: inline-flex;
+	flex-shrink: 0;
+	justify-content: center;
+`;
+
+export const BentoTileHeaderTitle = styled(Box)`
+	color: ${palette.text.primary};
+	font-size: ${bentoTileTheme.size.headerTitleFont};
+	font-weight: 700;
+	line-height: 1.2;
+	min-width: 0;
+`;
+
+export const BentoTileHeaderActions = styled(Box)`
+	align-items: center;
+	display: flex;
+	flex-shrink: 0;
+	gap: ${spacing.xs};
+`;
+
+export const BentoTileBody = styled(Box)`
+	min-height: 0;
+	overflow-x: hidden;
+	overflow-y: auto;
+`;
+
+export const BentoTileFooter = styled(Box)`
+	align-items: center;
+	display: flex;
+	flex-shrink: 0;
 	gap: ${spacing.small};
+	justify-content: space-between;
+	min-height: ${bentoTileTheme.footer.minHeight};
+`;
+
+export const BentoTileFooterSlot = styled(Box)`
+	align-items: center;
+	display: flex;
+	min-width: 0;
+`;
+
+export const BentoTileActionsSlot = styled(Box)`
+	align-items: center;
+	display: flex;
+	flex-wrap: wrap;
+	gap: ${spacing.xs};
+	justify-content: flex-end;
+	min-width: 0;
+`;
+
+export const BentoTileModalPanel = styled(motion.div)`
+	${glassTile}
+	background: ${palette.background.default};
+	display: grid;
+	grid-template-rows: auto minmax(0, 1fr) auto;
+	gap: ${spacing.small};
+	left: 50%;
+	max-height: ${bentoTileTheme.size.modalMaxHeight};
+	max-width: ${bentoTileTheme.size.modalMaxWidth};
+	padding: ${spacing.medium};
+	position: fixed;
+	top: 50%;
+	width: 100%;
+	z-index: ${bentoTileTheme.elevation.overlay};
+	pointer-events: auto;
+`;
+
+export const BentoTileModalFrame = styled(Box)`
+	inset: ${spacing.none};
+	pointer-events: none;
+	position: fixed;
+`;
+
+export const BentoTileExpandedHeader = styled(Box)`
+	align-items: center;
+	display: flex;
+	justify-content: space-between;
+	min-width: 0;
+`;
+
+export const BentoTileExpandedBody = styled(Box)`
+	min-height: 0;
+	overflow-x: hidden;
+	overflow-y: auto;
+`;
+
+export const BentoTileExpandedFooter = styled(Box)`
+	align-items: center;
+	display: flex;
+	flex-shrink: 0;
+	justify-content: space-between;
+	min-height: ${bentoTileTheme.footer.minHeight};
 `;
 
 export const BentoTileControls = styled(Box)`
@@ -115,21 +247,27 @@ export const BentoTileControls = styled(Box)`
 	display: flex;
 	align-items: center;
 	gap: ${spacing.xs};
-	z-index: 2;
+	z-index: ${bentoTileTheme.elevation.chrome};
+`;
+
+export const ResizeControls = styled(Box)`
+	display: flex;
+	align-items: center;
+	gap: ${bentoTileTheme.space.controlPairGap};
 `;
 
 export const DragHandle = styled(Box)`
 	cursor: grab;
-	color: ${palette.gray['05']};
-	font-size: 18px;
+	color: ${bentoTileTheme.color.control};
+	font-size: ${bentoTileTheme.size.dragHandleFont};
 	line-height: 1;
 	user-select: none;
-	padding: 2px 4px;
-	border-radius: 4px;
-	transition: color 0.15s ease;
+	padding: ${bentoTileTheme.space.controlInset} ${spacing.xxs};
+	border-radius: ${bentoTileTheme.radius.control};
+	transition: ${bentoTileTheme.motion.colorTransition};
 
 	&:hover {
-		color: ${palette.tertiary.main};
+		color: ${bentoTileTheme.color.controlHover};
 	}
 
 	&:active {
@@ -137,16 +275,21 @@ export const DragHandle = styled(Box)`
 	}
 `;
 
-export const VisibilityButton = styled(Box)`
-	cursor: pointer;
-	color: ${palette.gray['05']};
-	display: flex;
+export const TileControlIconWrap = styled('span')`
+	color: ${bentoTileTheme.color.control};
 	align-items: center;
-	padding: 2px;
-	border-radius: 4px;
-	transition: color 0.15s ease;
+	display: inline-flex;
+	justify-content: center;
+	padding: ${bentoTileTheme.space.controlInset};
+	border-radius: ${bentoTileTheme.radius.control};
+	transition: ${bentoTileTheme.motion.colorTransition};
 
 	&:hover {
-		color: ${palette.tertiary.main};
+		color: ${bentoTileTheme.color.controlHover};
+	}
+
+	&:focus-visible {
+		outline: ${bentoTileTheme.border.focus} solid ${palette.tertiary.main};
+		outline-offset: ${bentoTileTheme.border.focus};
 	}
 `;

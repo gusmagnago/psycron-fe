@@ -1,20 +1,22 @@
+import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Skeleton } from '@mui/material';
+import { useBentoTileChrome } from '@psycron/components/dashboard/bento-tile/BentoTile.context';
 import { Jupiter } from '@psycron/components/icons';
 
-import { InsightSlide } from './insight-slide/InsightSlide';
+import { InsightActions, InsightSlide } from './insight-slide/InsightSlide';
 import { useInsightCarousel } from './JupiterInsightsWidget.hooks';
 import {
-	CarouselFooter,
 	CarouselRoot,
 	CarouselViewport,
 	Dot,
 	DotsRow,
 	EmptyState,
+	ExpandedInsightContent,
+	ExpandedInsightText,
 	JupiterBadgeRow,
 	JupiterCategory,
 	JupiterDot,
-	JupiterHeader,
 	JupiterSubtitle,
 	LoadingWrapper,
 	RoundedSkeleton,
@@ -29,6 +31,69 @@ export const JupiterInsightsWidget = ({
 	const { direction, goTo, idx, onTouchEnd, onTouchStart } = useInsightCarousel(
 		insights.length
 	);
+	const hasInsights = !isLoading && insights.length > 0;
+	const current = hasInsights ? insights[idx] : undefined;
+
+	const footer = useMemo(
+		() =>
+			hasInsights ? (
+				<DotsRow>
+					{insights.map((ins, i) => (
+						<Dot
+							aria-label={`Insight ${i + 1}`}
+							isActive={i === idx}
+							key={ins.id}
+							onClick={() => goTo(i, i > idx ? 1 : -1)}
+							role='button'
+							tabIndex={0}
+						/>
+					))}
+				</DotsRow>
+			) : undefined,
+		[goTo, hasInsights, idx, insights]
+	);
+
+	const actions = useMemo(
+		() => (current ? <InsightActions current={current} idx={idx} /> : undefined),
+		[current, idx]
+	);
+
+	const title = useMemo(
+		() =>
+			current ? (
+				<JupiterBadgeRow>
+					<JupiterCategory>
+						<JupiterDot />
+						Júpiter ·{' '}
+						{current.category ??
+							t('page.dashboard.widgets.jupiter-insights.default-category')}
+					</JupiterCategory>
+					<JupiterSubtitle>
+						{t('page.dashboard.widgets.jupiter-insights.subtitle')}
+					</JupiterSubtitle>
+				</JupiterBadgeRow>
+			) : undefined,
+		[current, t]
+	);
+
+	const expandedContent = useMemo(
+		() =>
+			current ? (
+				<ExpandedInsightContent>
+					<ExpandedInsightText>{current.text}</ExpandedInsightText>
+					<InsightActions current={current} idx={idx} />
+				</ExpandedInsightContent>
+			) : undefined,
+		[current, idx]
+	);
+
+	useBentoTileChrome({
+		actions,
+		expandedContent,
+		footer,
+		icon: hasInsights ? <Jupiter aria-hidden='true' /> : undefined,
+		title,
+	});
 
 	if (isLoading) {
 		return (
@@ -48,25 +113,8 @@ export const JupiterInsightsWidget = ({
 		);
 	}
 
-	const current = insights[idx];
-
 	return (
 		<CarouselRoot>
-			<JupiterHeader>
-				<Jupiter aria-hidden='true' />
-				<JupiterBadgeRow>
-					<JupiterCategory>
-						<JupiterDot />
-						Júpiter ·{' '}
-						{current.category ??
-							t('page.dashboard.widgets.jupiter-insights.default-category')}
-					</JupiterCategory>
-					<JupiterSubtitle>
-						{t('page.dashboard.widgets.jupiter-insights.subtitle')}
-					</JupiterSubtitle>
-				</JupiterBadgeRow>
-			</JupiterHeader>
-
 			<CarouselViewport
 				aria-label={t('page.dashboard.widgets.jupiter-insights.aria-label')}
 				aria-live='polite'
@@ -76,21 +124,6 @@ export const JupiterInsightsWidget = ({
 			>
 				<InsightSlide current={current} direction={direction} idx={idx} />
 			</CarouselViewport>
-
-			<CarouselFooter>
-				<DotsRow>
-					{insights.map((ins, i) => (
-						<Dot
-							aria-label={`Insight ${i + 1}`}
-							isActive={i === idx}
-							key={ins.id}
-							onClick={() => goTo(i, i > idx ? 1 : -1)}
-							role='button'
-							tabIndex={0}
-						/>
-					))}
-				</DotsRow>
-			</CarouselFooter>
 		</CarouselRoot>
 	);
 };

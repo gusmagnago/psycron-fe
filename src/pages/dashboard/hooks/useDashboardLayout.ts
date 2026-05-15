@@ -11,6 +11,8 @@ import type {
 import type { UseDashboardLayoutReturn } from './useDashboardLayout.types';
 
 const STORAGE_KEY = '_psy_dashboard_layout';
+const MAX_HEIGHT_DELTA = 4;
+const MIN_HEIGHT_DELTA = -1;
 
 const DEFAULT_LAYOUT: DashboardLayoutState = [
 	{ id: 'schedule', order: 0, visible: true },
@@ -50,6 +52,11 @@ const persist = (layout: DashboardLayoutState): void => {
 	}
 };
 
+const normalizeHeightDelta = (value: number | undefined): number | undefined => {
+	if (!value) return undefined;
+	return Math.min(Math.max(value, MIN_HEIGHT_DELTA), MAX_HEIGHT_DELTA);
+};
+
 export const useDashboardLayout = (): UseDashboardLayoutReturn => {
 	const [layout, setLayout] = useState<DashboardLayoutState>(loadLayout);
 	const [isCustomizing, setIsCustomizing] = useState(false);
@@ -76,6 +83,20 @@ export const useDashboardLayout = (): UseDashboardLayoutReturn => {
 		},
 		[]
 	);
+
+	const resizeTile = useCallback((id: DashboardTileId, delta: number) => {
+		setLayout((prev) => {
+			const next = prev.map((tile) => {
+				if (tile.id !== id) return tile;
+				const heightDelta = normalizeHeightDelta(
+					(tile.heightDelta ?? 0) + delta
+				);
+				return { ...tile, heightDelta };
+			});
+			persist(next);
+			return next;
+		});
+	}, []);
 
 	const toggleVisibility = useCallback((id: DashboardTileId) => {
 		setLayout((prev) => {
@@ -104,6 +125,7 @@ export const useDashboardLayout = (): UseDashboardLayoutReturn => {
 		isCustomizing,
 		layout,
 		reorderLayout,
+		resizeTile,
 		resetLayout,
 		setCustomizing,
 		toggleVisibility,

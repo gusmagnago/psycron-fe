@@ -10,10 +10,10 @@ export type DashboardTileId =
 	| 'weekly-chart';
 
 export interface DashboardTile {
+	heightDelta?: number;
 	id: DashboardTileId;
 	order: number;
 	visible: boolean;
 }
 
 export type DashboardLayoutState = DashboardTile[];
-
