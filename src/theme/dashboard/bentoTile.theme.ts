@@ -17,6 +17,7 @@ export const bentoTileTheme = {
 		controlHover: palette.tertiary.main,
 		darkBackground: hexToRgba(palette.black, 0.45),
 		darkBorder: hexToRgba(palette.white, 0.08),
+		lightBackground: hexToRgba(palette.white, 0.5),
 	},
 	elevation: {
 		chrome: zIndexHover,
@@ -38,6 +39,7 @@ export const bentoTileTheme = {
 	},
 	radius: {
 		control: spacing.xxs,
+		controlL: spacing.xs,
 		dropTarget: spacing.mediumSmall,
 		tile: spacing.medium,
 	},

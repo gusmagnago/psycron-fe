@@ -3,19 +3,22 @@ import { Close } from '@psycron/components/icons';
 import { Tooltip } from '@psycron/components/tooltip/Tooltip';
 import { AnimatePresence } from 'framer-motion';
 
-import { bentoTileModalVariants } from '../BentoTile.motion';
+import { bentoTileModalVariants } from '../../BentoTile.motion';
+import {
+	BentoTileHeaderIcon,
+	BentoTileHeaderIdentity,
+	BentoTileHeaderTitle,
+	TileControlIconWrap,
+} from '../../BentoTile.styles';
+
 import {
 	BentoTileExpandedBody,
 	BentoTileExpandedFooter,
 	BentoTileExpandedHeader,
-	BentoTileHeaderIcon,
-	BentoTileHeaderIdentity,
-	BentoTileHeaderTitle,
 	BentoTileModalFrame,
 	BentoTileModalPanel,
-	TileControlIconWrap,
-} from '../BentoTile.styles';
-import type { BentoTileExpandedModalProps } from '../BentoTile.types';
+} from './BentoTileExpandedModal.styles';
+import type { BentoTileExpandedModalProps } from './BentoTileExpandedModal.types';
 
 export const BentoTileExpandedModal = ({
 	closeLabel,

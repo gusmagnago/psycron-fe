@@ -20,6 +20,8 @@ export const DonutRow = styled(Box)`
 export const DonutWrapper = styled(Box)`
 	position: relative;
 	flex-shrink: 0;
+	width: clamp(90px, 30%, 130px);
+	aspect-ratio: 1;
 `;
 
 export const DonutCenter = styled(Box)`

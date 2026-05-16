@@ -46,17 +46,21 @@ export const MetricValue = styled(motion.span)`
 	letter-spacing: -0.03em;
 	color: ${palette.text.primary};
 	line-height: 1;
+	text-align: left;
+	align-self: flex-start;
 `;
 
 export const MetricLabel = styled(Text)`
 	font-size: 13px;
 	font-weight: 500;
 	color: ${palette.text.secondary};
+	text-align: left;
 `;
 
 export const MetricSubLabel = styled(Text)`
 	font-size: 12px;
 	color: ${palette.text.disabled};
+	text-align: left;
 `;
 
 export const DeltaChip = styled(Box, {

@@ -9,8 +9,11 @@ export interface WeeklyBarData {
 	upcoming: number;
 }
 
+export type ChartViewMode = 'month' | 'week';
+
 export interface WeeklyChartWidgetProps {
 	data: WeeklyBarData[];
 	isLoading?: boolean;
+	monthData: WeeklyBarData[];
 	onDayClick?: (day: WeeklyBarData) => void;
 }

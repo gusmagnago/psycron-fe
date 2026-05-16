@@ -2,6 +2,7 @@ import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import { Box } from '@mui/material';
 import { bentoTileTheme } from '@psycron/theme/dashboard/bentoTile.theme';
+import { isSmallerThanMediumMedia } from '@psycron/theme/media-queries/mediaQueries';
 import { palette } from '@psycron/theme/palette/palette.theme';
 import {
 	shadowGlassShimmer,
@@ -42,7 +43,6 @@ export const editModeStyles = css`
 
 export const hiddenStyles = css`
 	opacity: ${bentoTileTheme.opacity.hidden};
-	pointer-events: none;
 `;
 
 export const BentoTileRoot = styled(Box, {
@@ -62,6 +62,12 @@ export const BentoTileRoot = styled(Box, {
 	min-height: 0;
 	min-width: 0;
 	${({ isHidden }) => isHidden && hiddenStyles}
+	${({ isHidden, isEditMode }) =>
+		isHidden &&
+		!isEditMode &&
+		css`
+			pointer-events: none;
+		`}
 `;
 
 export const DropTargetOverlay = styled('div')`
@@ -115,7 +121,7 @@ export const BentoTileInner = styled(Box, {
 })<{ hasFooterChrome: boolean; hasHeaderChrome: boolean }>`
 	height: 100%;
 	min-height: 0;
-	padding: ${spacing.medium};
+	padding: ${spacing.mediumSmall};
 	display: grid;
 	grid-template-rows: ${({ hasFooterChrome, hasHeaderChrome }) => {
 		if (hasHeaderChrome && hasFooterChrome) return 'auto minmax(0, 1fr) auto';
@@ -124,16 +130,11 @@ export const BentoTileInner = styled(Box, {
 		return 'minmax(0, 1fr)';
 	}};
 	gap: ${({ hasFooterChrome, hasHeaderChrome }) =>
-		hasFooterChrome || hasHeaderChrome ? spacing.small : 0};
-`;
+		hasFooterChrome || hasHeaderChrome ? spacing.xs : 0};
 
-export const BentoTileHeader = styled(Box)`
-	align-items: center;
-	display: flex;
-	flex-shrink: 0;
-	gap: ${spacing.xs};
-	justify-content: space-between;
-	min-width: 0;
+	${isSmallerThanMediumMedia} {
+		gap: 0;
+	}
 `;
 
 export const BentoTileHeaderIdentity = styled(Box)`
@@ -159,120 +160,16 @@ export const BentoTileHeaderTitle = styled(Box)`
 	min-width: 0;
 `;
 
-export const BentoTileHeaderActions = styled(Box)`
-	align-items: center;
-	display: flex;
-	flex-shrink: 0;
-	gap: ${spacing.xs};
+export const BentoTileEditFloat = styled(motion.div)`
+	height: 100%;
+	width: 100%;
+	position: relative;
 `;
 
 export const BentoTileBody = styled(Box)`
 	min-height: 0;
 	overflow-x: hidden;
 	overflow-y: auto;
-`;
-
-export const BentoTileFooter = styled(Box)`
-	align-items: center;
-	display: flex;
-	flex-shrink: 0;
-	gap: ${spacing.small};
-	justify-content: space-between;
-	min-height: ${bentoTileTheme.footer.minHeight};
-`;
-
-export const BentoTileFooterSlot = styled(Box)`
-	align-items: center;
-	display: flex;
-	min-width: 0;
-`;
-
-export const BentoTileActionsSlot = styled(Box)`
-	align-items: center;
-	display: flex;
-	flex-wrap: wrap;
-	gap: ${spacing.xs};
-	justify-content: flex-end;
-	min-width: 0;
-`;
-
-export const BentoTileModalPanel = styled(motion.div)`
-	${glassTile}
-	background: ${palette.background.default};
-	display: grid;
-	grid-template-rows: auto minmax(0, 1fr) auto;
-	gap: ${spacing.small};
-	left: 50%;
-	max-height: ${bentoTileTheme.size.modalMaxHeight};
-	max-width: ${bentoTileTheme.size.modalMaxWidth};
-	padding: ${spacing.medium};
-	position: fixed;
-	top: 50%;
-	width: 100%;
-	z-index: ${bentoTileTheme.elevation.overlay};
-	pointer-events: auto;
-`;
-
-export const BentoTileModalFrame = styled(Box)`
-	inset: ${spacing.none};
-	pointer-events: none;
-	position: fixed;
-`;
-
-export const BentoTileExpandedHeader = styled(Box)`
-	align-items: center;
-	display: flex;
-	justify-content: space-between;
-	min-width: 0;
-`;
-
-export const BentoTileExpandedBody = styled(Box)`
-	min-height: 0;
-	overflow-x: hidden;
-	overflow-y: auto;
-`;
-
-export const BentoTileExpandedFooter = styled(Box)`
-	align-items: center;
-	display: flex;
-	flex-shrink: 0;
-	justify-content: space-between;
-	min-height: ${bentoTileTheme.footer.minHeight};
-`;
-
-export const BentoTileControls = styled(Box)`
-	position: absolute;
-	top: ${spacing.small};
-	right: ${spacing.small};
-	display: flex;
-	align-items: center;
-	gap: ${spacing.xs};
-	z-index: ${bentoTileTheme.elevation.chrome};
-`;
-
-export const ResizeControls = styled(Box)`
-	display: flex;
-	align-items: center;
-	gap: ${bentoTileTheme.space.controlPairGap};
-`;
-
-export const DragHandle = styled(Box)`
-	cursor: grab;
-	color: ${bentoTileTheme.color.control};
-	font-size: ${bentoTileTheme.size.dragHandleFont};
-	line-height: 1;
-	user-select: none;
-	padding: ${bentoTileTheme.space.controlInset} ${spacing.xxs};
-	border-radius: ${bentoTileTheme.radius.control};
-	transition: ${bentoTileTheme.motion.colorTransition};
-
-	&:hover {
-		color: ${bentoTileTheme.color.controlHover};
-	}
-
-	&:active {
-		cursor: grabbing;
-	}
 `;
 
 export const TileControlIconWrap = styled('span')`
@@ -291,5 +188,10 @@ export const TileControlIconWrap = styled('span')`
 	&:focus-visible {
 		outline: ${bentoTileTheme.border.focus} solid ${palette.tertiary.main};
 		outline-offset: ${bentoTileTheme.border.focus};
+	}
+
+	& svg {
+		height: ${spacing.small};
+		width: ${spacing.small};
 	}
 `;

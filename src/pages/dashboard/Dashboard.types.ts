@@ -1,5 +1,4 @@
 export type DashboardTileId =
-	| 'active-patients'
 	| 'jupiter-insights'
 	| 'pending-tasks'
 	| 'quick-actions'

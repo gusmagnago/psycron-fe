@@ -1,11 +1,14 @@
 import {
-	BentoTileHeader,
-	BentoTileHeaderActions,
 	BentoTileHeaderIcon,
 	BentoTileHeaderIdentity,
 	BentoTileHeaderTitle,
-} from '../BentoTile.styles';
-import type { BentoTileHeaderChromeProps } from '../BentoTile.types';
+} from '../../BentoTile.styles';
+
+import {
+	BentoTileHeader,
+	BentoTileHeaderActions,
+} from './BentoTileHeaderChrome.styles';
+import type { BentoTileHeaderChromeProps } from './BentoTileHeaderChrome.types';
 
 export const BentoTileHeaderChrome = ({
 	headerActions,

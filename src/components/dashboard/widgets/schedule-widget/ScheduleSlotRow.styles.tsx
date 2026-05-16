@@ -22,7 +22,7 @@ export const SlotRowRoot = styled(motion.div, {
 	align-items: center;
 	gap: ${spacing.small};
 	padding: ${spacing.xs} ${spacing.extraSmall};
-	border-radius: ${spacing.xs};
+	border-radius: ${spacing.small};
 	border: 1px solid ${palette.gray['01']};
 	box-shadow: inset 3px 0 0 ${({ status }) => accentColor(status)};
 	cursor: pointer;

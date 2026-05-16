@@ -99,6 +99,8 @@ export interface DashboardSummaryResponse {
 	billingReadiness: DashboardBillingReadiness;
 	latestPatients: DashboardLatestPatient[];
 	locale: 'en' | 'pt';
+	month: DashboardWeekMetrics;
+	monthlySeries: DashboardWeekSeriesDay[];
 	nudges: Array<{
 		id: string;
 		text: string;

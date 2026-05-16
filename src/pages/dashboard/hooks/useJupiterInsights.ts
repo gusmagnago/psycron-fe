@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
+import type { DashboardBillingReadiness } from '@psycron/api/dashboard/index.types';
 import {
 	type BeInsightActionTarget,
 	type BeInsightCategory,
@@ -27,6 +28,7 @@ const MAX_INSIGHTS = 5;
 const PATIENT_MILESTONES = [1, 5, 10, 20, 50] as const;
 
 export interface UseJupiterInsightsInput {
+	billingReadiness: DashboardBillingReadiness;
 	hasAvailability: boolean;
 	metrics: WeekMetrics;
 	patientCount: number;
@@ -43,6 +45,7 @@ const normalizeLocale = (language: string): 'en' | 'pt' =>
 	language.startsWith('pt') ? 'pt' : 'en';
 
 export const useJupiterInsights = ({
+	billingReadiness,
 	hasAvailability,
 	metrics,
 	patientCount,
@@ -127,9 +130,44 @@ export const useJupiterInsights = ({
 			...response.insights.map(mapBackendItem),
 		];
 
+		const getBillingReadinessInsight = (): JupiterInsight | undefined => {
+			if (billingReadiness.totalCount === 0 || tier === 'onboarding') {
+				return undefined;
+			}
+
+			const isBillingReady = billingReadiness.status === 'ready';
+
+			return {
+				actionLabel: isBillingReady ? undefined : t(k('action-review-patients')),
+				actionTarget: isBillingReady ? undefined : 'patients',
+				category: t(k('category-operations')),
+				id: isBillingReady ? 'billing-readiness-ready' : 'billing-readiness',
+				insightType: 'billing-readiness',
+				onAction: isBillingReady ? undefined : () => navigate(`../${PATIENTS}`),
+				source: 'fallback',
+				text: isBillingReady
+					? t(k('text-billing-readiness-ready'))
+					: t(k('text-billing-readiness-incomplete'), {
+							missing: billingReadiness.missingCount,
+						}),
+				tier,
+			};
+		};
+
+		const withBillingInsight = (
+			insights: JupiterInsight[]
+		): JupiterInsight[] => {
+			if (insights.some((insight) => insight.insightType === 'billing-readiness')) {
+				return insights;
+			}
+
+			const billingInsight = getBillingReadinessInsight();
+			return billingInsight ? [...insights, billingInsight] : insights;
+		};
+
 		if (data) {
 			return {
-				insights: mapBackendResponse(data),
+				insights: withBillingInsight(mapBackendResponse(data)),
 				isLoading,
 			};
 		}
@@ -241,6 +279,9 @@ export const useJupiterInsights = ({
 			});
 		}
 
+		const billingInsight = getBillingReadinessInsight();
+		if (billingInsight) feInsights.push(billingInsight);
+
 		if ((PATIENT_MILESTONES as readonly number[]).includes(patientCount) && patientCount > 0) {
 			feInsights.push({
 				category: t(k('category-insights')),
@@ -268,6 +309,7 @@ export const useJupiterInsights = ({
 			isLoading,
 		};
 	}, [
+		billingReadiness,
 		data,
 		hasAvailability,
 		isLoading,

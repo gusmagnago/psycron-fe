@@ -956,7 +956,9 @@
                 "resize-down-aria": "Reduzir altura do bloco",
                 "resize-up": "Aumentar altura",
                 "resize-up-aria": "Aumentar altura do bloco",
-                "show": "Mostrar bloco"
+                "show": "Mostrar bloco",
+                "drag": "Arrastar para reordenar",
+                "drag-aria": "Arrastar tile para reordenar"
             },
             "customize": {
                 "open": "Personalizar",
@@ -966,8 +968,8 @@
             },
             "widgets": {
                 "schedule": {
-                    "title": "Agenda de Hoje",
-                    "title-week": "Esta Semana",
+                    "title": "Hoje",
+                    "title-week": "Semana",
                     "count": "{{count}} sessões",
                     "empty": "Nenhuma sessão agendada para hoje",
                     "unknown-patient": "Paciente desconhecido",
@@ -1017,6 +1019,9 @@
                     "text-week-cancellations": "{{count}} sessão(ões) cancelada(s) esta semana. Considere entrar em contato para reagendar.",
                     "text-patient-milestone": "Você chegou a {{count}} pacientes ativos. Grande conquista!",
                     "text-low-week-volume": "Você tem {{count}} sessão(ões) esta semana. Abrir mais horários pode ajudar seu crescimento.",
+                    "text-billing-readiness-incomplete": "{{missing}} paciente(s) ainda precisam do valor das sessões para que futuros pagamentos se encaixem no seu fluxo.",
+                    "text-billing-readiness-ready": "Os dados de cobrança dos pacientes estão prontos para futuros fluxos de pagamento e cobrança.",
+                    "action-review-patients": "Revisar pacientes",
                     "action-view-patients": "Ver pacientes",
                     "text-session-none-today-week": "Nenhuma sessão hoje — você tem {{count}} sessão(ões) esta semana. Veja sua agenda.",
                     "text-missed-rebooking": "{{name}} faltou à última sessão e não reagendou. Um contato pode ajudar.",
@@ -1048,9 +1053,21 @@
                 "billing-readiness": {
                     "label": "Cobrança configurada",
                     "status": {
-                        "empty": "Adicione pacientes para configurar cobranças depois. A receita real aparecerá quando houver faturas/pagamentos.",
-                        "partial": "{{configured}} de {{total}} pacientes ativos configurados · {{missing}} pendentes",
-                        "ready": "Todos os pacientes ativos têm cobrança configurada"
+                        "empty": "Prepare as futuras ferramentas de pagamento adicionando pacientes primeiro.",
+                        "partial": "{{configured}} de {{total}} pacientes prontos para pagamentos futuros · {{missing}} pendentes",
+                        "ready": "Configuração pronta para pagamentos futuros"
+                    },
+                    "details": "Adicione o valor das sessões agora para que a Psycron crie fluxos de pagamento e cobrança alinhados à forma como sua prática já funciona.",
+                    "donut-meta": "{{configured}}/{{total}} prontos",
+                    "status-chip": {
+                        "empty": "Ação necessária",
+                        "partial": "Em progresso",
+                        "ready": "Pronto"
+                    },
+                    "teaser": {
+                        "title": "Prepare pagamentos futuros",
+                        "subtitle": "Registre os valores das sessões agora para que as futuras ferramentas de pagamento se encaixem no seu fluxo desde o primeiro dia.",
+                        "coming-soon": "Cobrança e pagamentos virão depois; por enquanto, isso só mantém os dados de cobrança dos pacientes prontos."
                     }
                 },
                 "weekly-chart": {
@@ -1062,23 +1079,29 @@
                         "upcoming": "Próximas",
                         "completed": "Concluídas",
                         "cancelled": "Canceladas"
-                    }
+                    },
+                    "view-week": "Semana",
+                    "view-month": "Mês"
                 },
                 "this-week": {
                     "title": "Esta Semana",
                     "blocked": "Bloqueios admin",
                     "completed": "Concluídas",
                     "upcoming": "Próximas",
-                    "cancelled": "Canceladas"
+                    "cancelled": "Canceladas",
+                    "view-week": "Semana",
+                    "view-month": "Mês",
+                    "title-month": "Este mês"
                 },
                 "pending-tasks": {
                     "title": "Tarefas Pendentes",
                     "cancellation-followups": "Acompanhar cancelamentos",
-                    "empty": "Nada urgente agora.",
+                    "empty": "Nenhuma tarefa pendente no momento.",
                     "missing-billing": "Pacientes sem cobrança",
                     "missing-contact": "Pacientes sem contato",
                     "reminder-delivery": "Problemas nos lembretes",
-                    "setup-availability": "Concluir agenda"
+                    "setup-availability": "Concluir agenda",
+                    "empty-heading": "Tudo certo"
                 },
                 "recent-patients": {
                     "title": "Pacientes Recentes",

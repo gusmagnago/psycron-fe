@@ -9,9 +9,9 @@ import { motion } from 'framer-motion';
 export const SlideRoot = styled(motion.div)`
 	display: flex;
 	flex-direction: column;
-	gap: ${spacing.xs};
 	min-height: 0;
 	position: relative;
+	height: 100%;
 `;
 
 export const SlideText = styled(Text)`

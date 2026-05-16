@@ -956,7 +956,9 @@
                 "resize-down-aria": "Reduce tile height",
                 "resize-up": "Increase height",
                 "resize-up-aria": "Increase tile height",
-                "show": "Show tile"
+                "show": "Show tile",
+                "drag": "Drag to reorder",
+                "drag-aria": "Drag tile to reorder"
             },
             "customize": {
                 "open": "Customize",
@@ -966,8 +968,8 @@
             },
             "widgets": {
                 "schedule": {
-                    "title": "Today's Schedule",
-                    "title-week": "This Week",
+                    "title": "Today",
+                    "title-week": "Week",
                     "count": "{{count}} sessions",
                     "empty": "No sessions scheduled for today",
                     "unknown-patient": "Unknown patient",
@@ -1017,6 +1019,9 @@
                     "text-week-cancellations": "{{count}} session(s) were cancelled this week. Consider reaching out to reschedule.",
                     "text-patient-milestone": "You've reached {{count}} active patients. Great milestone!",
                     "text-low-week-volume": "You have {{count}} session(s) this week. Opening more slots could help you grow.",
+                    "text-billing-readiness-incomplete": "{{missing}} patient(s) still need session-cost details before future payment tools can fit your workflow.",
+                    "text-billing-readiness-ready": "Your patient billing details are ready for future payment and invoicing flows.",
+                    "action-review-patients": "Review patients",
                     "action-view-patients": "View patients",
                     "text-session-none-today-week": "No sessions today — you have {{count}} coming up this week. Check your schedule.",
                     "text-missed-rebooking": "{{name}} missed their last session and hasn't rebooked. A check-in might help.",
@@ -1048,9 +1053,21 @@
                 "billing-readiness": {
                     "label": "Billing readiness",
                     "status": {
-                        "empty": "Add patients to configure billing later. Real revenue will appear once invoices/payments exist.",
-                        "partial": "{{configured}} of {{total}} active patients configured · {{missing}} missing",
-                        "ready": "All active patients have billing configured"
+                        "empty": "Prepare for future payment tools by adding patients first.",
+                        "partial": "{{configured}} of {{total}} patients ready for future payments · {{missing}} to finish",
+                        "ready": "Future payment setup is ready"
+                    },
+                    "details": "Add each patient's session cost now so Psycron can design payment and invoicing flows that match how your practice already works.",
+                    "donut-meta": "{{configured}}/{{total}} ready",
+                    "status-chip": {
+                        "empty": "Action needed",
+                        "partial": "In progress",
+                        "ready": "Ready"
+                    },
+                    "teaser": {
+                        "title": "Prepare for future payments",
+                        "subtitle": "Track session costs now so future payment tools can fit your workflow from day one.",
+                        "coming-soon": "Payment collection and invoicing will come later; this step only keeps your patient billing details ready."
                     }
                 },
                 "weekly-chart": {
@@ -1062,23 +1079,29 @@
                         "upcoming": "Upcoming",
                         "completed": "Completed",
                         "cancelled": "Cancelled"
-                    }
+                    },
+                    "view-week": "Week",
+                    "view-month": "Month"
                 },
                 "this-week": {
                     "title": "This Week",
                     "blocked": "Admin blocks",
                     "completed": "Completed",
                     "upcoming": "Upcoming",
-                    "cancelled": "Cancelled"
+                    "cancelled": "Cancelled",
+                    "view-week": "Week",
+                    "view-month": "Month",
+                    "title-month": "This Month"
                 },
                 "pending-tasks": {
                     "title": "Pending Tasks",
                     "cancellation-followups": "Cancellation follow-ups",
-                    "empty": "Nothing urgent right now.",
+                    "empty": "Nothing requires your attention right now.",
                     "missing-billing": "Patients missing billing",
                     "missing-contact": "Patients missing contact info",
                     "reminder-delivery": "Reminder delivery issues",
-                    "setup-availability": "Finish schedule setup"
+                    "setup-availability": "Finish schedule setup",
+                    "empty-heading": "All clear"
                 },
                 "recent-patients": {
                     "title": "Recent Patients",

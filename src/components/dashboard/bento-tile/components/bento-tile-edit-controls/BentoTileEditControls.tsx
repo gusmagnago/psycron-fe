@@ -1,13 +1,15 @@
 import { Minus, NotVisible, Plus, Visible } from '@psycron/components/icons';
 import { Tooltip } from '@psycron/components/tooltip/Tooltip';
+import { GripVertical } from 'lucide-react';
+
+import { TileControlIconWrap } from '../../BentoTile.styles';
 
 import {
 	BentoTileControls,
 	DragHandle,
 	ResizeControls,
-	TileControlIconWrap,
-} from '../BentoTile.styles';
-import type { BentoTileEditControlsProps } from '../BentoTile.types';
+} from './BentoTileEditControls.styles';
+import type { BentoTileEditControlsProps } from './BentoTileEditControls.types';
 
 export const BentoTileEditControls = ({
 	isHidden,
@@ -20,9 +22,15 @@ export const BentoTileEditControls = ({
 
 	return (
 		<BentoTileControls onPointerDown={(e) => e.stopPropagation()}>
-			<DragHandle aria-hidden='true' title='Drag to reorder'>
-				⠿
-			</DragHandle>
+			<Tooltip
+				aria-label={labels.dragAria}
+				placement='bottom'
+				title={labels.drag}
+			>
+				<DragHandle>
+					<GripVertical />
+				</DragHandle>
+			</Tooltip>
 			{onResizeDown && onResizeUp && (
 				<ResizeControls>
 					<Tooltip
@@ -32,7 +40,7 @@ export const BentoTileEditControls = ({
 						title={labels.resizeDown}
 					>
 						<TileControlIconWrap>
-							<Minus height={14} width={14} />
+							<Minus />
 						</TileControlIconWrap>
 					</Tooltip>
 					<Tooltip
@@ -42,7 +50,7 @@ export const BentoTileEditControls = ({
 						title={labels.resizeUp}
 					>
 						<TileControlIconWrap>
-							<Plus height={14} width={14} />
+							<Plus />
 						</TileControlIconWrap>
 					</Tooltip>
 				</ResizeControls>
@@ -54,11 +62,7 @@ export const BentoTileEditControls = ({
 				title={visibilityLabel}
 			>
 				<TileControlIconWrap>
-					{isHidden ? (
-						<Visible height={16} width={16} />
-					) : (
-						<NotVisible height={16} width={16} />
-					)}
+					{isHidden ? <Visible /> : <NotVisible />}
 				</TileControlIconWrap>
 			</Tooltip>
 		</BentoTileControls>

@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import type { DragEndEvent, DragStartEvent } from '@dnd-kit/core';
@@ -18,16 +18,11 @@ import {
 } from '@dnd-kit/sortable';
 import { capture } from '@psycron/analytics/posthog/events';
 import { PostHogEvent } from '@psycron/analytics/posthog/types';
-import type {
-	DashboardActionTarget,
-	DashboardQuickActionId,
-} from '@psycron/api/dashboard/index.types';
 import { BentoTile } from '@psycron/components/dashboard/bento-tile/BentoTile';
 import { CustomizeControl } from '@psycron/components/dashboard/customize-control/CustomizeControl';
 import { DashboardGreeting } from '@psycron/components/dashboard/greeting/DashboardGreeting';
-import { ActivePatientsWidget } from '@psycron/components/dashboard/widgets/active-patients-widget/ActivePatientsWidget';
+import { BillingReadinessWidget } from '@psycron/components/dashboard/widgets/billing-readiness-widget/BillingReadinessWidget';
 import { JupiterInsightsWidget } from '@psycron/components/dashboard/widgets/jupiter-insights-widget/JupiterInsightsWidget';
-import { MetricCardWidget } from '@psycron/components/dashboard/widgets/metric-card-widget/MetricCardWidget';
 import { PendingTasksWidget } from '@psycron/components/dashboard/widgets/pending-tasks-widget/PendingTasksWidget';
 import type { PendingTask } from '@psycron/components/dashboard/widgets/pending-tasks-widget/PendingTasksWidget.types';
 import { QuickActionsWidget } from '@psycron/components/dashboard/widgets/quick-actions-widget/QuickActionsWidget';
@@ -37,82 +32,37 @@ import { ScheduleWidget } from '@psycron/components/dashboard/widgets/schedule-w
 import { ThisWeekWidget } from '@psycron/components/dashboard/widgets/this-week-widget/ThisWeekWidget';
 import { WeeklyChartWidget } from '@psycron/components/dashboard/widgets/weekly-chart-widget/WeeklyChartWidget';
 import type { WeeklyBarData } from '@psycron/components/dashboard/widgets/weekly-chart-widget/WeeklyChartWidget.types';
-import {
-	AddPatient,
-	AlarmClockMinus,
-	Available,
-	Bell,
-	CalendarRange,
-	Patients,
-	Payment,
-	Settings,
-} from '@psycron/components/icons';
 import { useUserDetails } from '@psycron/context/user/details/UserDetailsContext';
 import { useTimeOfDay } from '@psycron/hooks/useTimeOfDay';
 import useViewport from '@psycron/hooks/useViewport';
 import { PageLayout } from '@psycron/layouts/app/pages-layout/PageLayout';
 import type { IWeekSlot } from '@psycron/pages/availability/week/AvailabilityWeekPage.types';
 import { AvailabilityWeekDrawer } from '@psycron/pages/availability/week/drawer/AvailabilityWeekDrawer';
-import {
-	ADDPATIENT,
-	AVAILABILITYSETTINGS,
-	AVAILABILITYWEEK_BASE,
-	AVAILABILITYWIZARD,
-	NOTIFICATIONS,
-	PATIENTPROFILE,
-	PATIENTS,
-} from '@psycron/pages/urls';
+import { AVAILABILITYWEEK_BASE, PATIENTPROFILE, PATIENTS } from '@psycron/pages/urls';
 
+import { useDashboardBillingReadiness } from './hooks/useDashboardBillingReadiness';
 import { useDashboardLayout } from './hooks/useDashboardLayout';
 import { useDashboardSlots } from './hooks/useDashboardSlots';
 import { useDashboardSummary } from './hooks/useDashboardSummary';
 import { useJupiterInsights } from './hooks/useJupiterInsights';
 import {
 	BentoGrid,
+	BentoGridWrapper,
 	DashboardRoot,
 	DashboardTopBar,
 	DragOverlayCard,
 } from './Dashboard.styles';
 import type { DashboardTileId } from './Dashboard.types';
-
-const TILE_DESKTOP: Record<DashboardTileId, { col: number; row: number }> = {
-	'active-patients': { col: 3, row: 2 },
-	'jupiter-insights': { col: 7, row: 2 },
-	'pending-tasks': { col: 4, row: 2 },
-	'quick-actions': { col: 4, row: 2 },
-	'recent-patients': { col: 12, row: 2 },
-	'billing-readiness': { col: 6, row: 2 },
-	schedule: { col: 5, row: 4 },
-	'this-week': { col: 6, row: 2 },
-	'weekly-chart': { col: 8, row: 2 },
-};
-
-const TILE_TABLET: Record<DashboardTileId, { col: number; row: number }> = {
-	'active-patients': { col: 3, row: 2 },
-	'jupiter-insights': { col: 6, row: 2 },
-	'pending-tasks': { col: 6, row: 2 },
-	'quick-actions': { col: 3, row: 2 },
-	'recent-patients': { col: 6, row: 2 },
-	'billing-readiness': { col: 3, row: 2 },
-	schedule: { col: 6, row: 2 },
-	'this-week': { col: 3, row: 2 },
-	'weekly-chart': { col: 6, row: 2 },
-};
-
-const MIN_TILE_ROW_SPAN = 1;
-const MAX_TILE_ROW_SPAN = 6;
-
-const TILE_MIN_HEIGHT: Record<DashboardTileId, number> = {
-	'active-patients': 180,
-	'jupiter-insights': 240,
-	'pending-tasks': 200,
-	'quick-actions': 260,
-	'recent-patients': 280,
-	'billing-readiness': 180,
-	schedule: 400,
-	'this-week': 200,
-	'weekly-chart': 220,
-};
+import {
+	getQuickActionIcon,
+	getTargetNav,
+	MAX_TILE_ROW_SPAN,
+	MIN_TILE_ROW_SPAN,
+	TILE_DESKTOP,
+	TILE_MIN_HEIGHT,
+	TILE_TABLET,
+} from './Dashboard.utils';
+import { DashboardDevGrid } from './DashboardDevGrid';
 
 export const Dashboard = () => {
 	const { t } = useTranslation();
@@ -123,6 +73,10 @@ export const Dashboard = () => {
 	const { isLoading, metrics, todaySlots, weekEnd, weekSlotsByDay, weekStart } =
 		useDashboardSlots();
 	const { isLoading: isSummaryLoading, summary } = useDashboardSummary();
+	const {
+		billingReadiness,
+		isLoading: isBillingReadinessLoading,
+	} = useDashboardBillingReadiness(summary?.billingReadiness);
 	const {
 		isCustomizing,
 		layout,
@@ -176,6 +130,13 @@ export const Dashboard = () => {
 		[summary?.weeklySeries]
 	);
 
+	const monthlyChartData = useMemo<WeeklyBarData[]>(
+		() => summary?.monthlySeries ?? [],
+		[summary?.monthlySeries]
+	);
+
+	const monthMetrics = summary?.month;
+
 	const patientCount =
 		summary?.activePatients.count ?? userDetails?.patients?.length ?? 0;
 	const hasAvailability =
@@ -186,55 +147,13 @@ export const Dashboard = () => {
 
 	const { insights: jupiterInsights, isLoading: isJupiterInsightsLoading } =
 		useJupiterInsights({
-		hasAvailability,
-		metrics,
+			billingReadiness,
+			hasAvailability,
+			metrics,
 			patientCount,
-		weekStart,
-		whatsappRemindersEnabled,
+			weekStart,
+			whatsappRemindersEnabled,
 		});
-
-	const getTargetNav = useCallback(
-		(target: DashboardActionTarget): { state?: Record<string, unknown>; to: string } => {
-			switch (target.type) {
-				case 'add-patient':
-					return { to: `../${ADDPATIENT}` };
-				case 'availability-settings':
-					return { to: `../${AVAILABILITYSETTINGS}` };
-				case 'availability-week':
-					return {
-						to: target.date
-							? `../${AVAILABILITYWEEK_BASE}/${target.date}`
-							: `../${AVAILABILITYWEEK_BASE}`,
-					};
-				case 'availability-wizard':
-					return { to: `../${AVAILABILITYWIZARD}` };
-				case 'notification-settings':
-					return { state: { openSettings: true }, to: `../${NOTIFICATIONS}` };
-				case 'patients':
-					return { to: `../${PATIENTS}` };
-			}
-		},
-		[]
-	);
-
-	const getQuickActionIcon = useCallback((id: DashboardQuickActionId) => {
-		switch (id) {
-			case 'add-patient':
-				return <AddPatient />;
-			case 'availability-settings':
-				return <Available />;
-			case 'fix-reminders':
-				return <Bell />;
-			case 'follow-up-cancellations':
-				return <AlarmClockMinus />;
-			case 'patients':
-				return <Patients />;
-			case 'setup-availability':
-				return <Settings />;
-			case 'view-week':
-				return <CalendarRange />;
-		}
-	}, []);
 
 	const quickActions = useMemo(
 		() =>
@@ -255,7 +174,7 @@ export const Dashboard = () => {
 				},
 				tier: summary?.tier ?? 'onboarding',
 			})),
-		[getQuickActionIcon, getTargetNav, navigate, summary?.quickActions, summary?.tier, t]
+		[navigate, summary?.quickActions, summary?.tier, t]
 	);
 
 	const pendingTasks = useMemo<PendingTask[]>(
@@ -277,7 +196,7 @@ export const Dashboard = () => {
 				tier: summary?.tier ?? 'onboarding',
 				type: task.type,
 			})),
-		[getTargetNav, navigate, summary?.pendingTasks, summary?.tier, t]
+		[navigate, summary?.pendingTasks, summary?.tier, t]
 	);
 
 	const recentPatients = useMemo<RecentPatient[]>(
@@ -368,45 +287,25 @@ export const Dashboard = () => {
 					</BentoTile>
 				);
 
-			case 'active-patients':
-				return (
-					<BentoTile {...commonProps} key={tileId}>
-						<ActivePatientsWidget
-							isLoading={isSummaryLoading}
-							onPatientClick={(id) =>
-								navigate(`../${PATIENTPROFILE.replace(':patientId', id)}`)
-							}
-							patients={summary?.latestPatients ?? []}
-						/>
-					</BentoTile>
-				);
-
 			case 'billing-readiness':
 				return (
 					<BentoTile {...commonProps} key={tileId}>
-						<MetricCardWidget
-							icon={<Payment />}
-							isLoading={isSummaryLoading}
-							label={t('page.dashboard.widgets.billing-readiness.label')}
+						<BillingReadinessWidget
+							configuredCount={billingReadiness.configuredCount}
+							isLoading={isSummaryLoading || isBillingReadinessLoading}
+							missingCount={billingReadiness.missingCount}
 							onClick={() => {
 								capture(PostHogEvent.DashboardBillingReadinessClicked, {
-									percentage: summary?.billingReadiness.percentage ?? 0,
+									percentage: billingReadiness.percentage,
 									source: 'dashboard-summary',
 									tier: summary?.tier ?? 'unknown',
 									tile_id: 'billing-readiness',
 								});
 								navigate(`../${PATIENTS}`);
 							}}
-							subLabel={t(
-								`page.dashboard.widgets.billing-readiness.status.${summary?.billingReadiness.status ?? 'empty'}`,
-								{
-									configured: summary?.billingReadiness.configuredCount ?? 0,
-									missing: summary?.billingReadiness.missingCount ?? 0,
-									total: summary?.billingReadiness.totalCount ?? 0,
-								}
-							)}
-							suffix='%'
-							value={summary?.billingReadiness.percentage ?? 0}
+							percentage={billingReadiness.percentage}
+							status={billingReadiness.status}
+							totalCount={billingReadiness.totalCount}
 						/>
 					</BentoTile>
 				);
@@ -424,6 +323,12 @@ export const Dashboard = () => {
 								upcoming: summary?.week.upcomingCount ?? metrics.weekUpcomingCount,
 							}}
 							isLoading={isSummaryLoading}
+							monthData={{
+								blocked: monthMetrics?.adminBlockedSlots ?? 0,
+								cancelled: monthMetrics?.cancelledCount ?? 0,
+								completed: monthMetrics?.completedCount ?? 0,
+								upcoming: monthMetrics?.upcomingCount ?? 0,
+							}}
 						/>
 					</BentoTile>
 				);
@@ -434,6 +339,7 @@ export const Dashboard = () => {
 						<WeeklyChartWidget
 							data={weeklyChartData}
 							isLoading={isSummaryLoading}
+							monthData={monthlyChartData}
 							onDayClick={(day) => {
 								capture(PostHogEvent.DashboardChartDayClicked, {
 									date: day.date,
@@ -494,9 +400,12 @@ export const Dashboard = () => {
 					sensors={sensors}
 				>
 					<SortableContext items={sortedIds} strategy={rectSortingStrategy}>
-						<BentoGrid>
-							{sortedLayout.map((tile, index) => renderTile(tile.id, index))}
-						</BentoGrid>
+						<BentoGridWrapper>
+							<DashboardDevGrid />
+							<BentoGrid>
+								{sortedLayout.map((tile, index) => renderTile(tile.id, index))}
+							</BentoGrid>
+						</BentoGridWrapper>
 					</SortableContext>
 
 					<DragOverlay dropAnimation={{ duration: 200, easing: 'ease' }}>

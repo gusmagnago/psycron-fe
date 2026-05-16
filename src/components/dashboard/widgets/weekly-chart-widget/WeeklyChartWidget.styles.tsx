@@ -7,13 +7,15 @@ export const ChartRoot = styled(Box)`
 	display: flex;
 	flex-direction: column;
 	gap: ${spacing.small};
+	height: 100%;
 `;
 
 export const ChartCanvas = styled(Box)`
 	display: flex;
 	align-items: flex-end;
 	gap: 12px;
-	height: 140px;
+	flex: 1;
+	min-height: 80px;
 `;
 
 export const BarGroup = styled(Box, {

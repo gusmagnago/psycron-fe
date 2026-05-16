@@ -1,8 +1,6 @@
 import { useTranslation } from 'react-i18next';
 import { Box, Skeleton } from '@mui/material';
-import type { DashboardQuickActionId } from '@psycron/api/dashboard/index.types';
 import { ChevronRight } from '@psycron/components/icons';
-import { palette } from '@psycron/theme/palette/palette.theme';
 
 import { WidgetHeader, WidgetTitle } from '../schedule-widget/ScheduleWidget.styles';
 
@@ -14,26 +12,8 @@ import {
 	ActionsList,
 	Badge,
 } from './QuickActionsWidget.styles';
-import type { ActionAccent, QuickActionsWidgetProps } from './QuickActionsWidget.types';
-
-const getActionAccent = (id: DashboardQuickActionId): ActionAccent => {
-	switch (id) {
-		case 'add-patient':
-			return { bg: palette.success.surface.light, fg: palette.success.dark };
-		case 'availability-settings':
-			return { bg: palette.tertiary.surface.light, fg: palette.tertiary.dark };
-		case 'fix-reminders':
-			return { bg: palette.alert.surface.light, fg: palette.alert.dark };
-		case 'follow-up-cancellations':
-			return { bg: palette.info.surface.light, fg: palette.info.dark };
-		case 'patients':
-			return { bg: palette.secondary.surface.light, fg: palette.secondary.dark };
-		case 'setup-availability':
-			return { bg: palette.tertiary.surface.light, fg: palette.tertiary.dark };
-		case 'view-week':
-			return { bg: palette.primary.surface.light, fg: palette.primary.dark };
-	}
-};
+import type { QuickActionsWidgetProps } from './QuickActionsWidget.types';
+import { getActionAccent } from './QuickActionsWidget.utils';
 
 const rowVariants = {
 	hidden: { opacity: 0, x: -8 },

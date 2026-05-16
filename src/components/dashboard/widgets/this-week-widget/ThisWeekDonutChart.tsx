@@ -36,9 +36,8 @@ export const ThisWeekDonutChart = ({
 	return (
 		<svg
 			aria-hidden='true'
-			height={SIZE}
+			style={{ height: '100%', width: '100%' }}
 			viewBox={`0 0 ${SIZE} ${SIZE}`}
-			width={SIZE}
 		>
 			<circle
 				cx={SIZE / 2}

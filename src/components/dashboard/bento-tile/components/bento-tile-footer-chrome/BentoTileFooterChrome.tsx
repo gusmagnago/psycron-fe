@@ -1,13 +1,14 @@
 import { Maximize } from '@psycron/components/icons';
 import { Tooltip } from '@psycron/components/tooltip/Tooltip';
 
+import { TileControlIconWrap } from '../../BentoTile.styles';
+
 import {
 	BentoTileActionsSlot,
 	BentoTileFooter,
 	BentoTileFooterSlot,
-	TileControlIconWrap,
-} from '../BentoTile.styles';
-import type { BentoTileFooterChromeProps } from '../BentoTile.types';
+} from './BentoTileFooterChrome.styles';
+import type { BentoTileFooterChromeProps } from './BentoTileFooterChrome.types';
 
 export const BentoTileFooterChrome = ({
 	actions,

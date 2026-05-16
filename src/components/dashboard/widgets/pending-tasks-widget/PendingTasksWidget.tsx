@@ -1,10 +1,17 @@
 import { useTranslation } from 'react-i18next';
 import { Box, Skeleton } from '@mui/material';
-
-import { WidgetHeader, WidgetTitle } from '../schedule-widget/ScheduleWidget.styles';
+import { CheckSuccess } from '@psycron/components/icons';
 
 import {
+	WidgetHeader,
+	WidgetTitle,
+} from '../schedule-widget/ScheduleWidget.styles';
+
+import {
+	EmptyTasksHeading,
+	EmptyTasksIcon,
 	EmptyTasksState,
+	EmptyTasksSubText,
 	TaskCount,
 	TaskLabel,
 	TaskRow,
@@ -21,7 +28,10 @@ const rowVariants = {
 	}),
 };
 
-export const PendingTasksWidget = ({ isLoading, tasks }: PendingTasksWidgetProps) => {
+export const PendingTasksWidget = ({
+	isLoading,
+	tasks,
+}: PendingTasksWidgetProps) => {
 	const { t } = useTranslation();
 
 	if (isLoading) {
@@ -42,11 +52,21 @@ export const PendingTasksWidget = ({ isLoading, tasks }: PendingTasksWidgetProps
 	return (
 		<>
 			<WidgetHeader>
-				<WidgetTitle>{t('page.dashboard.widgets.pending-tasks.title')}</WidgetTitle>
+				<WidgetTitle>
+					{t('page.dashboard.widgets.pending-tasks.title')}
+				</WidgetTitle>
 			</WidgetHeader>
 			{tasks.length === 0 ? (
 				<EmptyTasksState>
-					{t('page.dashboard.widgets.pending-tasks.empty')}
+					<EmptyTasksIcon>
+						<CheckSuccess />
+					</EmptyTasksIcon>
+					<EmptyTasksHeading>
+						{t('page.dashboard.widgets.pending-tasks.empty-heading')}
+					</EmptyTasksHeading>
+					<EmptyTasksSubText>
+						{t('page.dashboard.widgets.pending-tasks.empty')}
+					</EmptyTasksSubText>
 				</EmptyTasksState>
 			) : (
 				<TasksList>

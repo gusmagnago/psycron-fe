@@ -60,6 +60,24 @@ export const formatPatientBillingAmount = (
 	}
 };
 
+const hasConfiguredBillingPrice = (
+	price: IPatientBilling['monthlyPrice'] | IPatientBilling['sessionPrice']
+): boolean =>
+	typeof price?.amount === 'number' &&
+	price.amount > 0 &&
+	Boolean(price.currency?.trim());
+
+export const isPatientBillingConfigured = (
+	billing: IPatientBilling | null | undefined
+): boolean => {
+	if (!billing) return false;
+	if (billing.category === 'pro_bono') return true;
+
+	return billing.model === 'monthly'
+		? hasConfiguredBillingPrice(billing.monthlyPrice)
+		: hasConfiguredBillingPrice(billing.sessionPrice);
+};
+
 export interface PatientBillingViewModel {
 	amountLabel?: string;
 	categoryLabel: string;
@@ -80,8 +98,9 @@ export const getPatientBillingViewModel = (
 	t: TFunction
 ): PatientBillingViewModel => {
 	const emptyLabel = t('patients.list.billing.none');
+	const isConfigured = isPatientBillingConfigured(billing);
 
-	if (!billing) {
+	if (!billing || !isConfigured) {
 		return {
 			categoryLabel: emptyLabel,
 			isConfigured: false,
@@ -111,7 +130,7 @@ export const getPatientBillingViewModel = (
 		return {
 			amountLabel,
 			categoryLabel,
-			isConfigured: true,
+			isConfigured,
 			modelLabel,
 			summaryPrimary:
 				amountLabel && amountLabel !== emptyLabel
@@ -123,7 +142,7 @@ export const getPatientBillingViewModel = (
 	return {
 		amountLabel,
 		categoryLabel,
-		isConfigured: true,
+		isConfigured,
 		modelLabel,
 		summaryPrimary: categoryLabel,
 		summarySecondary:

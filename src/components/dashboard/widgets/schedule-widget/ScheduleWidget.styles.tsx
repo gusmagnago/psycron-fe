@@ -1,5 +1,6 @@
 import styled from '@emotion/styled';
 import { Box, Skeleton } from '@mui/material';
+import { Text } from '@psycron/components/text/Text';
 import { isMobileMedia } from '@psycron/theme/media-queries/mediaQueries';
 import { palette } from '@psycron/theme/palette/palette.theme';
 import {
@@ -31,7 +32,7 @@ export const ScheduleScrollBox = styled(Box)`
 	flex: 1;
 	display: flex;
 	flex-direction: column;
-	gap: 2px;
+	gap: ${spacing.xs};
 
 	scrollbar-width: thin;
 	scrollbar-color: ${palette.gray['02']} transparent;
@@ -68,16 +69,21 @@ export const WidgetTitle = styled.h2`
 	color: ${palette.text.primary};
 `;
 
-export const CountBadge = styled.div`
+export const CountBadge = styled(Box)`
 	font-size: 0.8125rem;
 	color: ${palette.text.secondary};
+	text-align: left;
+	display: flex;
+	align-items: center;
+	padding: ${spacing.xs} ${spacing.small};
 `;
 
-export const CountHighlight = styled.span`
+export const CountHighlight = styled(Text)`
 	font-size: 1.75rem;
 	font-weight: 800;
 	color: ${palette.text.primary};
 	line-height: 1;
+	padding-right: ${spacing.space};
 `;
 
 export const ScheduleSwitcher = styled(Box)`
@@ -101,7 +107,7 @@ export const SwitcherOption = styled('button', {
 	align-items: center;
 	gap: ${spacing.space};
 	padding: ${spacing.space} ${spacing.xs};
-	border-radius: ${spacing.small};
+	border-radius: ${spacing.medium};
 	font-size: 0.75rem;
 	font-weight: 600;
 	cursor: pointer;

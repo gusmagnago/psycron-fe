@@ -1,10 +1,14 @@
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Box, Skeleton } from '@mui/material';
-import { ChevronUp } from '@psycron/components/icons';
+import { useBentoTileChrome } from '@psycron/components/dashboard/bento-tile/BentoTile.context';
+import { Calendar, CalendarRange, ChevronUp } from '@psycron/components/icons';
 
 import { DeltaChip } from '../metric-card-widget/MetricCardWidget.styles';
-import { WidgetHeader, WidgetTitle } from '../schedule-widget/ScheduleWidget.styles';
+import {
+	ScheduleSwitcher,
+	SwitcherOption,
+} from '../schedule-widget/ScheduleWidget.styles';
 
 import { THIS_WEEK_COLORS, ThisWeekDonutChart } from './ThisWeekDonutChart';
 import {
@@ -19,13 +23,57 @@ import {
 	LegendRow,
 	ThisWeekRoot,
 } from './ThisWeekWidget.styles';
-import type { ThisWeekWidgetProps } from './ThisWeekWidget.types';
+import type {
+	ThisWeekViewMode,
+	ThisWeekWidgetProps,
+} from './ThisWeekWidget.types';
 
-export const ThisWeekWidget = ({ data, isLoading }: ThisWeekWidgetProps) => {
+export const ThisWeekWidget = ({
+	data,
+	isLoading,
+	monthData,
+}: ThisWeekWidgetProps) => {
 	const { t } = useTranslation();
+	const [viewMode, setViewMode] = useState<ThisWeekViewMode>('week');
+
+	const displayData = viewMode === 'month' ? monthData : data;
+
+	const headerActions = useMemo(
+		() => (
+			<ScheduleSwitcher>
+				<SwitcherOption
+					aria-label={t('page.dashboard.widgets.this-week.view-week')}
+					isActive={viewMode === 'week'}
+					onClick={() => setViewMode('week')}
+				>
+					<CalendarRange />
+					{t('page.dashboard.widgets.this-week.view-week')}
+				</SwitcherOption>
+				<SwitcherOption
+					aria-label={t('page.dashboard.widgets.this-week.view-month')}
+					isActive={viewMode === 'month'}
+					onClick={() => setViewMode('month')}
+				>
+					<Calendar />
+					{t('page.dashboard.widgets.this-week.view-month')}
+				</SwitcherOption>
+			</ScheduleSwitcher>
+		),
+		[t, viewMode]
+	);
+
+	useBentoTileChrome({
+		headerActions,
+		title: t('page.dashboard.widgets.this-week.title'),
+	});
+
 	const total = useMemo(
-		() => data.completed + data.upcoming + data.cancelled + data.blocked,
-		[data]
+		() =>
+			displayData.completed +
+			displayData.upcoming +
+			displayData.cancelled +
+			displayData.blocked,
+		[displayData]
 	);
 
 	if (isLoading) {
@@ -41,26 +89,23 @@ export const ThisWeekWidget = ({ data, isLoading }: ThisWeekWidgetProps) => {
 		);
 	}
 
-	const isDeltaPositive = (data.delta ?? 0) >= 0;
+	const isDeltaPositive = (displayData.delta ?? 0) >= 0;
 
 	return (
 		<ThisWeekRoot>
-			<WidgetHeader>
-				<WidgetTitle>{t('page.dashboard.widgets.this-week.title')}</WidgetTitle>
-				{data.delta !== undefined && (
-					<DeltaChip isPositive={isDeltaPositive}>
-						<ChevronUp height={11} width={11} />+{data.delta}
-					</DeltaChip>
-				)}
-			</WidgetHeader>
+			{displayData.delta !== undefined && (
+				<DeltaChip isPositive={isDeltaPositive}>
+					<ChevronUp />+{displayData.delta}
+				</DeltaChip>
+			)}
 
 			<DonutRow>
 				<DonutWrapper>
 					<ThisWeekDonutChart
-						blocked={data.blocked}
-						cancelled={data.cancelled}
-						completed={data.completed}
-						upcoming={data.upcoming}
+						blocked={displayData.blocked}
+						cancelled={displayData.cancelled}
+						completed={displayData.completed}
+						upcoming={displayData.upcoming}
 					/>
 					<DonutCenter>
 						<DonutTotal>{total}</DonutTotal>
@@ -70,10 +115,26 @@ export const ThisWeekWidget = ({ data, isLoading }: ThisWeekWidgetProps) => {
 				<LegendList>
 					{(
 						[
-							['completed', data.completed, t('page.dashboard.widgets.this-week.completed')],
-							['upcoming', data.upcoming, t('page.dashboard.widgets.this-week.upcoming')],
-							['cancelled', data.cancelled, t('page.dashboard.widgets.this-week.cancelled')],
-							['blocked', data.blocked, t('page.dashboard.widgets.this-week.blocked')],
+							[
+								'completed',
+								displayData.completed,
+								t('page.dashboard.widgets.this-week.completed'),
+							],
+							[
+								'upcoming',
+								displayData.upcoming,
+								t('page.dashboard.widgets.this-week.upcoming'),
+							],
+							[
+								'cancelled',
+								displayData.cancelled,
+								t('page.dashboard.widgets.this-week.cancelled'),
+							],
+							[
+								'blocked',
+								displayData.blocked,
+								t('page.dashboard.widgets.this-week.blocked'),
+							],
 						] as const
 					).map(([key, count, label]) => (
 						<LegendRow key={key}>

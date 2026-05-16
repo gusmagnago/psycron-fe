@@ -3,10 +3,10 @@ import { useTranslation } from 'react-i18next';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 
-import { BentoTileEditControls } from './components/BentoTileEditControls';
-import { BentoTileExpandedModal } from './components/BentoTileExpandedModal';
-import { BentoTileFooterChrome } from './components/BentoTileFooterChrome';
-import { BentoTileHeaderChrome } from './components/BentoTileHeaderChrome';
+import { BentoTileEditControls } from './components/bento-tile-edit-controls/BentoTileEditControls';
+import { BentoTileExpandedModal } from './components/bento-tile-expanded-modal/BentoTileExpandedModal';
+import { BentoTileFooterChrome } from './components/bento-tile-footer-chrome/BentoTileFooterChrome';
+import { BentoTileHeaderChrome } from './components/bento-tile-header-chrome/BentoTileHeaderChrome';
 import {
 	BentoTileChromeContext,
 	type BentoTileChromeState,
@@ -14,6 +14,7 @@ import {
 import { bentoTileVariants } from './BentoTile.motion';
 import {
 	BentoTileBody,
+	BentoTileEditFloat,
 	BentoTileInner,
 	BentoTileMotionBox,
 	BentoTileRoot,
@@ -69,6 +70,8 @@ export const BentoTile = ({
 	const hasHeaderChrome = Boolean(title || icon || headerActions);
 	const editControlLabels = useMemo(
 		() => ({
+			drag: t('page.dashboard.tile.drag'),
+			dragAria: t('page.dashboard.tile.drag-aria'),
 			hide: t('page.dashboard.tile.hide'),
 			resizeDown: t('page.dashboard.tile.resize-down'),
 			resizeDownAria: t('page.dashboard.tile.resize-down-aria'),
@@ -123,26 +126,41 @@ export const BentoTile = ({
 						onResizeUp={onResize ? handleResizeUp : undefined}
 					/>
 				)}
-				<BentoTileChromeContext.Provider value={chromeContext}>
-					<BentoTileInner
-						hasFooterChrome={hasFooterChrome}
-						hasHeaderChrome={hasHeaderChrome}
-					>
-						<BentoTileHeaderChrome
-							headerActions={headerActions}
-							icon={icon}
-							title={title}
-						/>
-						<BentoTileBody>{children}</BentoTileBody>
-						<BentoTileFooterChrome
-							actions={actions}
-							expandedContent={expandedContent}
-							footer={footer}
-							onExpand={handleExpand}
-							readMoreLabel={readMoreLabel}
-						/>
-					</BentoTileInner>
-				</BentoTileChromeContext.Provider>
+				<BentoTileEditFloat
+					animate={isEditMode ? { y: [-2, 2, -2] } : { y: 0 }}
+					transition={
+						isEditMode
+							? {
+									delay: (index % 5) * 0.22,
+									duration: 1.8 + (index % 3) * 0.35,
+									ease: 'easeInOut',
+									repeat: Infinity,
+									repeatType: 'loop',
+								}
+							: { duration: 0.3, ease: 'easeOut' }
+					}
+				>
+					<BentoTileChromeContext.Provider value={chromeContext}>
+						<BentoTileInner
+							hasFooterChrome={hasFooterChrome}
+							hasHeaderChrome={hasHeaderChrome}
+						>
+							<BentoTileHeaderChrome
+								headerActions={headerActions}
+								icon={icon}
+								title={title}
+							/>
+							<BentoTileBody>{children}</BentoTileBody>
+							<BentoTileFooterChrome
+								actions={actions}
+								expandedContent={expandedContent}
+								footer={footer}
+								onExpand={handleExpand}
+								readMoreLabel={readMoreLabel}
+							/>
+						</BentoTileInner>
+					</BentoTileChromeContext.Provider>
+				</BentoTileEditFloat>
 				<BentoTileExpandedModal
 					closeLabel={closeLabel}
 					expandedContent={expandedContent}

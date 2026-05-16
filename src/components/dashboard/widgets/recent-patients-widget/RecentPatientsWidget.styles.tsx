@@ -1,5 +1,6 @@
 import styled from '@emotion/styled';
 import { Box } from '@mui/material';
+import { Avatar } from '@psycron/components/avatar/Avatar';
 import { palette } from '@psycron/theme/palette/palette.theme';
 import { spacing } from '@psycron/theme/spacing/spacing.theme';
 import { motion } from 'framer-motion';
@@ -7,6 +8,7 @@ import { motion } from 'framer-motion';
 export const PatientsList = styled(Box)`
 	display: flex;
 	flex-direction: column;
+	gap: ${spacing.xs};
 `;
 
 export const EmptyPatientsState = styled(Box)`
@@ -17,12 +19,13 @@ export const EmptyPatientsState = styled(Box)`
 `;
 
 export const PatientRow = styled(motion.div)`
-	display: flex;
 	align-items: center;
-	gap: ${spacing.small};
-	padding: ${spacing.xs} 0;
 	border-bottom: 1px solid ${palette.gray['01']};
 	cursor: pointer;
+	display: flex;
+	gap: ${spacing.small};
+	padding: ${spacing.xs} 0;
+	text-align: left;
 	transition: background 0.15s ease;
 
 	&:last-child {
@@ -37,39 +40,51 @@ export const PatientRow = styled(motion.div)`
 	}
 `;
 
+export const PatientAvatar = styled(Avatar)`
+	font-size: 13px !important;
+	font-weight: 700 !important;
+`;
+
 export const PatientInfo = styled(Box)`
 	flex: 1;
 	min-width: 0;
 `;
 
 export const PatientName = styled.span`
+	color: ${palette.text.primary};
 	display: block;
 	font-size: 14px;
 	font-weight: 600;
-	color: ${palette.text.primary};
 `;
 
 export const PatientMeta = styled.span`
-	font-size: 12px;
 	color: ${palette.text.secondary};
+	font-size: 12px;
 `;
 
 export const MessageButton = styled.button`
 	all: unset;
-	width: 32px;
-	height: 32px;
-	border-radius: 8px;
-	display: flex;
 	align-items: center;
-	justify-content: center;
-	color: ${palette.text.disabled};
-	transition: color 0.15s ease, background 0.15s ease;
+	border-radius: 8px;
 	cursor: pointer;
+	color: ${palette.text.disabled};
+	display: flex;
 	flex-shrink: 0;
+	height: 32px;
+	justify-content: center;
+	transition:
+		color 0.15s ease,
+		background 0.15s ease;
+	width: 32px;
+
+	& svg {
+		height: 16px;
+		width: 16px;
+	}
 
 	&:hover {
-		color: ${palette.primary.dark};
 		background: ${palette.primary.surface.light};
+		color: ${palette.primary.dark};
 	}
 
 	&:focus-visible {
@@ -78,15 +93,20 @@ export const MessageButton = styled.button`
 	}
 `;
 
-export const ViewAllLink = styled.a`
-	font-size: 13px;
-	font-weight: 600;
+export const ViewAllLink = styled.button`
+	all: unset;
+	align-items: center;
 	color: ${palette.primary.dark};
-	text-decoration: none;
 	cursor: pointer;
 	display: flex;
-	align-items: center;
+	font-size: 13px;
+	font-weight: 600;
 	gap: 3px;
+
+	& svg {
+		height: 13px;
+		width: 13px;
+	}
 
 	&:hover {
 		color: ${palette.tertiary.main};

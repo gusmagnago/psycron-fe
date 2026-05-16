@@ -37,10 +37,36 @@ export const TasksList = styled(Box)`
 `;
 
 export const EmptyTasksState = styled(Box)`
-	color: ${palette.text.secondary};
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	gap: ${spacing.xxs};
+`;
+
+export const EmptyTasksIcon = styled(Box)`
+	display: flex;
+	align-items: center;
+	color: ${palette.success.main};
+	margin-bottom: ${spacing.xxs};
+
+	& svg {
+		width: 22px;
+		height: 22px;
+	}
+`;
+
+export const EmptyTasksHeading = styled.span`
 	font-size: 14px;
+	font-weight: 700;
+	color: ${palette.text.primary};
+	text-align: left;
+`;
+
+export const EmptyTasksSubText = styled.span`
+	font-size: 12px;
+	color: ${palette.text.secondary};
+	text-align: left;
 	line-height: 1.4;
-	padding: ${spacing.small} 0;
 `;
 
 export const TaskRow = styled(motion.button, {

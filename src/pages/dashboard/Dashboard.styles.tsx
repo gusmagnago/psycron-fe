@@ -37,6 +37,10 @@ export const DragOverlayCard = styled(Box)`
 	opacity: 0.9;
 `;
 
+export const BentoGridWrapper = styled(Box)`
+	position: relative;
+`;
+
 export const BentoGrid = styled(Box)`
 	display: grid;
 	grid-template-columns: 1fr;
@@ -46,13 +50,13 @@ export const BentoGrid = styled(Box)`
 	padding-top: 0;
 
 	${isBiggerThanTabletMedia} {
-		grid-template-columns: repeat(6, 1fr);
+		grid-template-columns: repeat(6, minmax(0, 1fr));
 		grid-auto-rows: 140px;
 		gap: ${spacing.mediumSmall};
 	}
 
 	${isBiggerThanMediumMedia} {
-		grid-template-columns: repeat(12, 1fr);
-		grid-auto-rows: 150px;
+		grid-template-columns: repeat(12, minmax(0, 1fr));
+		grid-auto-rows: 160px;
 	}
 `;

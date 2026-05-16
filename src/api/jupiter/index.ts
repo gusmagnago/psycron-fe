@@ -130,6 +130,7 @@ export type InsightTier = 'active' | 'growing' | 'onboarding';
 export type InsightSource = 'ai' | 'cache' | 'fallback';
 
 export type BeInsightType =
+	| 'billing-readiness'
 	| 'blocked-admin-time'
 	| 'busy-day-pattern'
 	| 'dashboard-summary'

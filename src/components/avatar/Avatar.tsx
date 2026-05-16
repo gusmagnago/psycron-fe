@@ -6,10 +6,11 @@ export const Avatar = ({
 	large,
 	firstName,
 	lastName,
+	size,
 	src,
 	...props
 }: IAvatarProps) => {
-	const largeSize = large ? 100 : 70;
+	const largeSize = size ?? (large ? 100 : 70);
 
 	const stringToColor = (string: string) => {
 		let hash = 0;

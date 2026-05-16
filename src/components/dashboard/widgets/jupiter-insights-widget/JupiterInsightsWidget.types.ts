@@ -1,6 +1,7 @@
 export type InsightTier = 'active' | 'growing' | 'onboarding';
 
 export type InsightType =
+	| 'billing-readiness'
 	| 'blocked-admin-time'
 	| 'busy-day-pattern'
 	| 'dashboard-summary'
