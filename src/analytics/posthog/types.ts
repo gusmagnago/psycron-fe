@@ -41,6 +41,7 @@ export const enum PostHogEvent {
 	DashboardPendingTaskClicked = 'dashboard pending task clicked',
 	DashboardQuickActionClicked = 'dashboard quick action clicked',
 	DashboardRecentPatientOpened = 'dashboard recent patient opened',
+	DashboardSessionAnalyticsViewToggled = 'dashboard session analytics view toggled',
 	DashboardTileHidden = 'dashboard tile hidden',
 	DashboardTileReordered = 'dashboard tile reordered',
 
@@ -435,6 +436,12 @@ export type PostHogEventProps = {
 		source: 'dashboard-summary';
 		tier: string;
 		tile_id: string;
+	};
+	[PostHogEvent.DashboardSessionAnalyticsViewToggled]: {
+		source: 'dashboard-summary';
+		tier: string;
+		tile_id: string;
+		view_mode: 'month' | 'week';
 	};
 	[PostHogEvent.DashboardTileHidden]: { tile_id: string };
 	[PostHogEvent.DashboardTileReordered]: {

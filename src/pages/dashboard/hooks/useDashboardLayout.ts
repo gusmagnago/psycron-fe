@@ -19,14 +19,15 @@ const DEFAULT_LAYOUT: DashboardLayoutState = [
 	{ id: 'jupiter-insights', order: 1, visible: true },
 	{ id: 'quick-actions', order: 2, visible: true },
 	{ id: 'billing-readiness', order: 3, visible: true },
-	{ id: 'this-week', order: 4, visible: true },
-	{ id: 'weekly-chart', order: 5, visible: true },
-	{ id: 'pending-tasks', order: 6, visible: true },
-	{ id: 'recent-patients', order: 7, visible: true },
+	{ id: 'session-analytics', order: 4, visible: true },
+	{ id: 'pending-tasks', order: 5, visible: true },
+	{ id: 'recent-patients', order: 6, visible: true },
 ];
 
 const LEGACY_TILE_IDS: Record<string, DashboardTileId> = {
 	'revenue-mtd': 'billing-readiness',
+	'this-week': 'session-analytics',
+	'weekly-chart': 'session-analytics',
 };
 
 const normalizeTileId = (id: string): DashboardTileId | null => {

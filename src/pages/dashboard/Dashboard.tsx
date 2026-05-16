@@ -29,8 +29,7 @@ import { QuickActionsWidget } from '@psycron/components/dashboard/widgets/quick-
 import { RecentPatientsWidget } from '@psycron/components/dashboard/widgets/recent-patients-widget/RecentPatientsWidget';
 import type { RecentPatient } from '@psycron/components/dashboard/widgets/recent-patients-widget/RecentPatientsWidget.types';
 import { ScheduleWidget } from '@psycron/components/dashboard/widgets/schedule-widget/ScheduleWidget';
-import { ThisWeekWidget } from '@psycron/components/dashboard/widgets/this-week-widget/ThisWeekWidget';
-import { WeeklyChartWidget } from '@psycron/components/dashboard/widgets/weekly-chart-widget/WeeklyChartWidget';
+import { SessionAnalyticsWidget } from '@psycron/components/dashboard/widgets/session-analytics-widget/SessionAnalyticsWidget';
 import type { WeeklyBarData } from '@psycron/components/dashboard/widgets/weekly-chart-widget/WeeklyChartWidget.types';
 import { useUserDetails } from '@psycron/context/user/details/UserDetailsContext';
 import { useTimeOfDay } from '@psycron/hooks/useTimeOfDay';
@@ -310,44 +309,45 @@ export const Dashboard = () => {
 					</BentoTile>
 				);
 
-			case 'this-week':
+			case 'session-analytics':
 				return (
 					<BentoTile {...commonProps} key={tileId}>
-						<ThisWeekWidget
-							data={{
+						<SessionAnalyticsWidget
+							chartData={weeklyChartData}
+							isLoading={isSummaryLoading}
+							monthChartData={monthlyChartData}
+							monthData={{
+								adminBlockedMinutes: monthMetrics?.adminBlockedMinutes ?? 0,
+								blocked: monthMetrics?.adminBlockedSlots ?? 0,
+								cancelled: monthMetrics?.cancelledCount ?? 0,
+								completed: monthMetrics?.completedCount ?? 0,
+								upcoming: monthMetrics?.upcomingCount ?? 0,
+							}}
+							onDayClick={(day) => {
+								capture(PostHogEvent.DashboardChartDayClicked, {
+									date: day.date,
+									source: 'dashboard-summary',
+									tier: summary?.tier ?? 'unknown',
+									tile_id: 'session-analytics',
+								});
+								navigate(`../${AVAILABILITYWEEK_BASE}/${day.date}`);
+							}}
+							onViewModeChange={(mode) => {
+								capture(PostHogEvent.DashboardSessionAnalyticsViewToggled, {
+									source: 'dashboard-summary',
+									tier: summary?.tier ?? 'unknown',
+									tile_id: 'session-analytics',
+									view_mode: mode,
+								});
+							}}
+							weekData={{
+								adminBlockedMinutes: summary?.week.adminBlockedMinutes ?? 0,
 								blocked: summary?.week.adminBlockedSlots ?? 0,
 								cancelled:
 									summary?.week.cancelledCount ?? metrics.weekCancelledCount,
 								completed:
 									summary?.week.completedCount ?? metrics.weekCompletedCount,
 								upcoming: summary?.week.upcomingCount ?? metrics.weekUpcomingCount,
-							}}
-							isLoading={isSummaryLoading}
-							monthData={{
-								blocked: monthMetrics?.adminBlockedSlots ?? 0,
-								cancelled: monthMetrics?.cancelledCount ?? 0,
-								completed: monthMetrics?.completedCount ?? 0,
-								upcoming: monthMetrics?.upcomingCount ?? 0,
-							}}
-						/>
-					</BentoTile>
-				);
-
-			case 'weekly-chart':
-				return (
-					<BentoTile {...commonProps} key={tileId}>
-						<WeeklyChartWidget
-							data={weeklyChartData}
-							isLoading={isSummaryLoading}
-							monthData={monthlyChartData}
-							onDayClick={(day) => {
-								capture(PostHogEvent.DashboardChartDayClicked, {
-									date: day.date,
-									source: 'dashboard-summary',
-									tier: summary?.tier ?? 'unknown',
-									tile_id: 'weekly-chart',
-								});
-								navigate(`../${AVAILABILITYWEEK_BASE}/${day.date}`);
 							}}
 						/>
 					</BentoTile>

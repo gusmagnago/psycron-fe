@@ -1,12 +1,11 @@
 export type DashboardTileId =
+	| 'billing-readiness'
 	| 'jupiter-insights'
 	| 'pending-tasks'
 	| 'quick-actions'
 	| 'recent-patients'
-	| 'billing-readiness'
 	| 'schedule'
-	| 'this-week'
-	| 'weekly-chart';
+	| 'session-analytics';
 
 export interface DashboardTile {
 	heightDelta?: number;

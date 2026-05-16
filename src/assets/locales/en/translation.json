@@ -943,8 +943,7 @@
                 "quick-actions": "Quick actions",
                 "active-patients": "Active patients",
                 "billing-readiness": "Billing readiness",
-                "weekly-chart": "Weekly sessions",
-                "this-week": "This week",
+                "session-analytics": "Session Analytics",
                 "pending-tasks": "Pending tasks",
                 "recent-patients": "Recent patients"
             },
@@ -1070,28 +1069,24 @@
                         "coming-soon": "Payment collection and invoicing will come later; this step only keeps your patient billing details ready."
                     }
                 },
-                "weekly-chart": {
-                    "title": "Weekly Sessions",
-                    "aria-label": "Bar chart showing sessions by day of the week",
-                    "sessions": "sessions",
+                "session-analytics": {
+                    "title": "Session Analytics",
+                    "completion-rate": "Completion rate",
+                    "blocked": "Admin blocks",
+                    "blocked-hours": "{{hours}}h blocked",
+                    "cancelled": "Cancelled",
+                    "chart-aria-label": "Stacked bar chart showing sessions by day",
+                    "completed": "Completed",
                     "legend": {
                         "blocked": "Admin blocks",
-                        "upcoming": "Upcoming",
+                        "cancelled": "Cancelled",
                         "completed": "Completed",
-                        "cancelled": "Cancelled"
+                        "upcoming": "Upcoming"
                     },
-                    "view-week": "Week",
-                    "view-month": "Month"
-                },
-                "this-week": {
-                    "title": "This Week",
-                    "blocked": "Admin blocks",
-                    "completed": "Completed",
+                    "sessions": "sessions",
                     "upcoming": "Upcoming",
-                    "cancelled": "Cancelled",
-                    "view-week": "Week",
                     "view-month": "Month",
-                    "title-month": "This Month"
+                    "view-week": "Week"
                 },
                 "pending-tasks": {
                     "title": "Pending Tasks",

@@ -943,8 +943,7 @@
                 "quick-actions": "Ações rápidas",
                 "active-patients": "Pacientes ativos",
                 "billing-readiness": "Cobrança configurada",
-                "weekly-chart": "Sessões semanais",
-                "this-week": "Esta semana",
+                "session-analytics": "Análise de sessões",
                 "pending-tasks": "Tarefas pendentes",
                 "recent-patients": "Pacientes recentes"
             },
@@ -1070,28 +1069,24 @@
                         "coming-soon": "Cobrança e pagamentos virão depois; por enquanto, isso só mantém os dados de cobrança dos pacientes prontos."
                     }
                 },
-                "weekly-chart": {
-                    "title": "Sessões Semanais",
-                    "aria-label": "Gráfico de barras com sessões por dia da semana",
-                    "sessions": "sessões",
+                "session-analytics": {
+                    "title": "Análise de sessões",
+                    "completion-rate": "Taxa de conclusão",
+                    "blocked": "Bloqueios admin",
+                    "blocked-hours": "{{hours}}h bloqueadas",
+                    "cancelled": "Canceladas",
+                    "chart-aria-label": "Gráfico de barras empilhadas com sessões por dia",
+                    "completed": "Concluídas",
                     "legend": {
                         "blocked": "Bloqueios admin",
-                        "upcoming": "Próximas",
+                        "cancelled": "Canceladas",
                         "completed": "Concluídas",
-                        "cancelled": "Canceladas"
+                        "upcoming": "Próximas"
                     },
-                    "view-week": "Semana",
-                    "view-month": "Mês"
-                },
-                "this-week": {
-                    "title": "Esta Semana",
-                    "blocked": "Bloqueios admin",
-                    "completed": "Concluídas",
+                    "sessions": "sessões",
                     "upcoming": "Próximas",
-                    "cancelled": "Canceladas",
-                    "view-week": "Semana",
                     "view-month": "Mês",
-                    "title-month": "Este mês"
+                    "view-week": "Semana"
                 },
                 "pending-tasks": {
                     "title": "Tarefas Pendentes",
