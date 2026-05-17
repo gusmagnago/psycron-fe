@@ -1,43 +1,113 @@
 import styled from '@emotion/styled';
-import { Box } from '@mui/material';
+import { Box, Skeleton } from '@mui/material';
 import { isBiggerThanMediumMedia } from '@psycron/theme/media-queries/mediaQueries';
-import { palette } from '@psycron/theme/palette/palette.theme';
+import { hexToRgba, palette } from '@psycron/theme/palette/palette.theme';
+import { shadowGlassShimmer } from '@psycron/theme/shadow/shadow.theme';
 import { spacing } from '@psycron/theme/spacing/spacing.theme';
+
+import type { SessionAnalyticsLayout } from './SessionAnalyticsWidget.types';
+
+export const COLORS = {
+	blocked: palette.alert.main,
+	cancelled: palette.error.main,
+	completed: palette.success.main,
+	upcoming: palette.primary.main,
+} as const;
 
 export const AnalyticsRoot = styled(Box)`
 	display: flex;
 	flex-direction: column;
-	gap: ${spacing.medium};
 	height: 100%;
+`;
+
+export const GlassPanel = styled(Box, {
+	shouldForwardProp: (prop) => prop !== 'layout',
+})<{ layout: SessionAnalyticsLayout }>`
+	align-items: stretch;
+	background:
+		linear-gradient(
+			160deg,
+			${hexToRgba(palette.white, 0.72)},
+			${hexToRgba(palette.primary.surface.light, 0.5)}
+		),
+		${hexToRgba(palette.white, 0.34)};
+	border-radius: ${spacing.small};
+	box-shadow: ${shadowGlassShimmer};
+	display: flex;
+	flex: 1;
+	flex-direction: column;
+	gap: ${spacing.medium};
+	min-height: 0;
+	overflow: hidden;
+	padding: ${spacing.small};
 
 	${isBiggerThanMediumMedia} {
-		flex-direction: row;
+		flex-direction: ${({ layout }) => layout};
 	}
 `;
 
-export const KpiBlock = styled(Box)`
+export const KpiBlock = styled(Box, {
+	shouldForwardProp: (prop) => prop !== 'layout',
+})<{ layout?: SessionAnalyticsLayout }>`
 	display: flex;
 	flex-direction: column;
-	gap: ${spacing.xs};
 	flex-shrink: 0;
+	gap: ${spacing.small};
 	width: 100%;
 
 	${isBiggerThanMediumMedia} {
-		width: 38%;
+		width: ${({ layout }) => (layout === 'column' ? '100%' : '38%')};
 	}
 `;
 
+export const KpiHero = styled(Box)`
+	align-items: flex-start;
+	display: flex;
+	flex-direction: column;
+	gap: ${spacing.xxs};
+`;
+
 export const CompletionRateValue = styled.span<{ rateColor: string }>`
-	font-size: 36px;
+	font-size: 42px;
 	font-weight: 800;
 	color: ${({ rateColor }) => rateColor};
 	line-height: 1;
+
+	${isBiggerThanMediumMedia} {
+		font-size: 58px;
+	}
 `;
 
 export const CompletionRateLabel = styled.span`
 	font-size: 12px;
 	color: ${palette.text.secondary};
-	margin-bottom: ${spacing.xs};
+	text-transform: none;
+`;
+
+export const KpiInsight = styled(Box)`
+	align-items: flex-start;
+	background: ${palette.tertiary.surface.light};
+	border: 1px solid ${hexToRgba(palette.tertiary.main, 0.28)};
+	border-radius: ${spacing.xs};
+	color: ${palette.text.secondary};
+	display: grid;
+	font-size: 12px;
+	gap: ${spacing.xs};
+	grid-template-columns: auto minmax(0, 1fr);
+	line-height: 1.4;
+	padding: ${spacing.xs};
+
+	& svg {
+		color: ${palette.brand.purple};
+		height: ${spacing.small};
+		width: ${spacing.small};
+	}
+`;
+
+export const KpiInsightSource = styled.span`
+	color: ${palette.text.primary};
+	font-weight: 700;
+	margin-right: ${spacing.xxs};
 `;
 
 export const KpiDivider = styled(Box)`
@@ -51,6 +121,19 @@ export const StatRow = styled(Box)`
 	align-items: center;
 	justify-content: space-between;
 	gap: ${spacing.small};
+`;
+
+export const StatGrid = styled(Box, {
+	shouldForwardProp: (prop) => prop !== 'layout',
+})<{ layout?: SessionAnalyticsLayout }>`
+	display: grid;
+	gap: ${spacing.xs};
+	grid-template-columns: 1fr;
+
+	${isBiggerThanMediumMedia} {
+		grid-template-columns: ${({ layout }) =>
+			layout === 'column' ? 'repeat(2, minmax(0, 1fr))' : '1fr'};
+	}
 `;
 
 export const StatLabel = styled.span`
@@ -83,11 +166,37 @@ export const BlockedHours = styled.span`
 `;
 
 export const ChartSection = styled(Box)`
+	display: flex;
 	flex: 1;
+	flex-direction: column;
+	min-height: 120px;
+	min-width: 0;
+`;
+
+export const LoadingPanel = styled(Box)`
+	display: flex;
+	gap: ${spacing.small};
+	width: 100%;
+`;
+
+export const LoadingKpi = styled(Box)`
 	display: flex;
 	flex-direction: column;
-	min-width: 0;
-	height: 100%;
+	gap: ${spacing.xs};
+	width: 38%;
+`;
+
+export const LoadingChart = styled(Box)`
+	align-items: flex-end;
+	display: flex;
+	flex: 1;
+	gap: ${spacing.xs};
+	min-height: 80px;
+`;
+
+export const ChartSkeletonBar = styled(Skeleton)`
+	border-radius: ${spacing.xs};
+	flex: 1;
 `;
 
 export const ChartCanvas = styled(Box)`

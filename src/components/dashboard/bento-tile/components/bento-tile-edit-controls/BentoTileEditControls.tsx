@@ -1,4 +1,10 @@
-import { Minus, NotVisible, Plus, Visible } from '@psycron/components/icons';
+import {
+	Maximize,
+	Minus,
+	NotVisible,
+	Plus,
+	Visible,
+} from '@psycron/components/icons';
 import { Tooltip } from '@psycron/components/tooltip/Tooltip';
 import { GripVertical } from 'lucide-react';
 
@@ -14,11 +20,17 @@ import type { BentoTileEditControlsProps } from './BentoTileEditControls.types';
 export const BentoTileEditControls = ({
 	isHidden,
 	labels,
+	onOrientationToggle,
 	onHideToggle,
 	onResizeDown,
 	onResizeUp,
+	orientation,
 }: BentoTileEditControlsProps) => {
 	const visibilityLabel = isHidden ? labels.show : labels.hide;
+	const layoutLabel =
+		orientation === 'column' ? labels.layoutRow : labels.layoutColumn;
+	const layoutAriaLabel =
+		orientation === 'column' ? labels.layoutRowAria : labels.layoutColumnAria;
 
 	return (
 		<BentoTileControls onPointerDown={(e) => e.stopPropagation()}>
@@ -54,6 +66,18 @@ export const BentoTileEditControls = ({
 						</TileControlIconWrap>
 					</Tooltip>
 				</ResizeControls>
+			)}
+			{onOrientationToggle && orientation && (
+				<Tooltip
+					aria-label={layoutAriaLabel}
+					onClick={onOrientationToggle}
+					placement='bottom'
+					title={layoutLabel}
+				>
+					<TileControlIconWrap>
+						<Maximize />
+					</TileControlIconWrap>
+				</Tooltip>
 			)}
 			<Tooltip
 				aria-label={visibilityLabel}

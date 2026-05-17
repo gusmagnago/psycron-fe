@@ -950,6 +950,10 @@
             "tile": {
                 "close": "Close",
                 "hide": "Hide tile",
+                "layout-column": "Use column layout",
+                "layout-column-aria": "Switch tile to column layout",
+                "layout-row": "Use row layout",
+                "layout-row-aria": "Switch tile to row layout",
                 "read-more": "Read more",
                 "resize-down": "Reduce height",
                 "resize-down-aria": "Reduce tile height",
@@ -1077,11 +1081,21 @@
                     "cancelled": "Cancelled",
                     "chart-aria-label": "Stacked bar chart showing sessions by day",
                     "completed": "Completed",
+                    "insight-down": "Completion rate down {{delta}}% vs last {{period}} — cancellations need attention.",
+                    "insight-empty": "No concluded sessions yet — comparison starts once data arrives.",
+                    "insight-flat": "Completion rate steady vs last {{period}} — keep the reminder rhythm.",
+                    "insight-source": "Júpiter",
+                    "insight-summary": "{{completed}} of {{concluded}} concluded sessions completed.",
+                    "insight-up": "Completion rate up {{delta}}% vs last {{period}} — reminders are working.",
                     "legend": {
                         "blocked": "Admin blocks",
                         "cancelled": "Cancelled",
                         "completed": "Completed",
                         "upcoming": "Upcoming"
+                    },
+                    "period": {
+                        "month": "month",
+                        "week": "week"
                     },
                     "sessions": "sessions",
                     "upcoming": "Upcoming",

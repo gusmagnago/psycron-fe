@@ -7,10 +7,13 @@ export type DashboardTileId =
 	| 'schedule'
 	| 'session-analytics';
 
+export type DashboardTileOrientation = 'column' | 'row';
+
 export interface DashboardTile {
 	heightDelta?: number;
 	id: DashboardTileId;
 	order: number;
+	orientation?: DashboardTileOrientation;
 	visible: boolean;
 }
 

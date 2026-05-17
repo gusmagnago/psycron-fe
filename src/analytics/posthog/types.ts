@@ -43,6 +43,7 @@ export const enum PostHogEvent {
 	DashboardRecentPatientOpened = 'dashboard recent patient opened',
 	DashboardSessionAnalyticsViewToggled = 'dashboard session analytics view toggled',
 	DashboardTileHidden = 'dashboard tile hidden',
+	DashboardTileOrientationToggled = 'dashboard tile orientation toggled',
 	DashboardTileReordered = 'dashboard tile reordered',
 
 	DashboardTileRestored = 'dashboard tile restored',
@@ -444,6 +445,10 @@ export type PostHogEventProps = {
 		view_mode: 'month' | 'week';
 	};
 	[PostHogEvent.DashboardTileHidden]: { tile_id: string };
+	[PostHogEvent.DashboardTileOrientationToggled]: {
+		orientation: 'column' | 'row';
+		tile_id: string;
+	};
 	[PostHogEvent.DashboardTileReordered]: {
 		from_index: number;
 		tile_id: string;

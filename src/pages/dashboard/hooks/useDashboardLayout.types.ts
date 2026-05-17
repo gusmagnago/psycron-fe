@@ -1,4 +1,8 @@
-import type { DashboardLayoutState, DashboardTileId } from '../Dashboard.types';
+import type {
+	DashboardLayoutState,
+	DashboardTileId,
+	DashboardTileOrientation,
+} from '../Dashboard.types';
 
 export interface UseDashboardLayoutReturn {
 	isCustomizing: boolean;
@@ -7,5 +11,9 @@ export interface UseDashboardLayoutReturn {
 	resetLayout: () => void;
 	resizeTile: (id: DashboardTileId, delta: number) => void;
 	setCustomizing: (value: boolean) => void;
+	toggleTileOrientation: (
+		id: DashboardTileId,
+		currentOrientation?: DashboardTileOrientation
+	) => void;
 	toggleVisibility: (id: DashboardTileId) => void;
 }

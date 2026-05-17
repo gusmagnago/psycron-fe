@@ -1,5 +1,8 @@
 import type { CSSProperties, ReactNode } from 'react';
-import type { DashboardTileId } from '@psycron/pages/dashboard/Dashboard.types';
+import type {
+	DashboardTileId,
+	DashboardTileOrientation,
+} from '@psycron/pages/dashboard/Dashboard.types';
 
 export type BentoTileVariant = 'default' | 'jupiter';
 
@@ -12,7 +15,12 @@ export interface BentoTileProps {
 	isEditMode?: boolean;
 	isHidden?: boolean;
 	onResize?: (id: DashboardTileId, delta: number) => void;
+	onToggleOrientation?: (
+		id: DashboardTileId,
+		orientation?: DashboardTileOrientation
+	) => void;
 	onToggleVisibility?: (id: DashboardTileId) => void;
+	orientation?: DashboardTileOrientation;
 	rowSpan?: number;
 	style?: CSSProperties;
 	variant?: BentoTileVariant;

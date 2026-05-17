@@ -30,8 +30,10 @@ export const BentoTile = ({
 	index = 0,
 	isEditMode,
 	isHidden,
+	onToggleOrientation,
 	onResize,
 	onToggleVisibility,
+	orientation,
 	rowSpan,
 	style,
 	variant = 'default',
@@ -73,6 +75,10 @@ export const BentoTile = ({
 			drag: t('page.dashboard.tile.drag'),
 			dragAria: t('page.dashboard.tile.drag-aria'),
 			hide: t('page.dashboard.tile.hide'),
+			layoutColumn: t('page.dashboard.tile.layout-column'),
+			layoutColumnAria: t('page.dashboard.tile.layout-column-aria'),
+			layoutRow: t('page.dashboard.tile.layout-row'),
+			layoutRowAria: t('page.dashboard.tile.layout-row-aria'),
 			resizeDown: t('page.dashboard.tile.resize-down'),
 			resizeDownAria: t('page.dashboard.tile.resize-down-aria'),
 			resizeUp: t('page.dashboard.tile.resize-up'),
@@ -95,6 +101,9 @@ export const BentoTile = ({
 	const handleHideToggle = useCallback(() => {
 		onToggleVisibility?.(id);
 	}, [id, onToggleVisibility]);
+	const handleOrientationToggle = useCallback(() => {
+		onToggleOrientation?.(id, orientation);
+	}, [id, onToggleOrientation, orientation]);
 
 	return (
 		<BentoTileRoot
@@ -122,8 +131,12 @@ export const BentoTile = ({
 						isHidden={isHidden}
 						labels={editControlLabels}
 						onHideToggle={handleHideToggle}
+						onOrientationToggle={
+							onToggleOrientation ? handleOrientationToggle : undefined
+						}
 						onResizeDown={onResize ? handleResizeDown : undefined}
 						onResizeUp={onResize ? handleResizeUp : undefined}
+						orientation={orientation}
 					/>
 				)}
 				<BentoTileEditFloat

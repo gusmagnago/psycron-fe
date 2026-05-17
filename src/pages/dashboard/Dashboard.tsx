@@ -83,6 +83,7 @@ export const Dashboard = () => {
 		resizeTile,
 		resetLayout,
 		setCustomizing,
+		toggleTileOrientation,
 		toggleVisibility,
 	} = useDashboardLayout();
 
@@ -237,6 +238,10 @@ export const Dashboard = () => {
 	const renderTile = (tileId: DashboardTileId, index: number) => {
 		const tile = layout.find((t) => t.id === tileId);
 		const { col, row } = getSpan(tileId);
+		const orientation =
+			tileId === 'session-analytics'
+				? (tile?.orientation ?? (row >= 4 ? 'column' : 'row'))
+				: tile?.orientation;
 
 		const commonProps = {
 			ariaLabel: t(`page.dashboard.tiles.${tileId}`),
@@ -245,8 +250,11 @@ export const Dashboard = () => {
 			index,
 			isEditMode: isCustomizing,
 			isHidden: !(tile?.visible ?? true),
+			onToggleOrientation:
+				tileId === 'session-analytics' ? toggleTileOrientation : undefined,
 			onResize: resizeTile,
 			onToggleVisibility: toggleVisibility,
+			orientation,
 			rowSpan: row,
 		};
 
@@ -309,7 +317,8 @@ export const Dashboard = () => {
 					</BentoTile>
 				);
 
-			case 'session-analytics':
+			case 'session-analytics': {
+				const { row: sessionAnalyticsRowSpan } = getSpan('session-analytics');
 				return (
 					<BentoTile {...commonProps} key={tileId}>
 						<SessionAnalyticsWidget
@@ -340,6 +349,8 @@ export const Dashboard = () => {
 									view_mode: mode,
 								});
 							}}
+							layout={orientation ?? 'row'}
+							rowSpan={sessionAnalyticsRowSpan}
 							weekData={{
 								adminBlockedMinutes: summary?.week.adminBlockedMinutes ?? 0,
 								blocked: summary?.week.adminBlockedSlots ?? 0,
@@ -352,6 +363,7 @@ export const Dashboard = () => {
 						/>
 					</BentoTile>
 				);
+			}
 
 			case 'pending-tasks':
 				return (

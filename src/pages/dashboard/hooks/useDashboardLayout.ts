@@ -6,6 +6,7 @@ import { PostHogEvent } from '@psycron/analytics/posthog/types';
 import type {
 	DashboardLayoutState,
 	DashboardTileId,
+	DashboardTileOrientation,
 } from '../Dashboard.types';
 
 import type { UseDashboardLayoutReturn } from './useDashboardLayout.types';
@@ -37,6 +38,11 @@ const normalizeTileId = (id: string): DashboardTileId | null => {
 		: null;
 };
 
+const normalizeOrientation = (
+	value: DashboardTileOrientation | undefined
+): DashboardTileOrientation | undefined =>
+	value === 'column' || value === 'row' ? value : undefined;
+
 const loadLayout = (): DashboardLayoutState => {
 	try {
 		const raw = localStorage.getItem(STORAGE_KEY);
@@ -45,7 +51,11 @@ const loadLayout = (): DashboardLayoutState => {
 		const normalized = parsed.reduce<DashboardLayoutState>((acc, tile) => {
 			const id = normalizeTileId(tile.id);
 			if (!id || acc.some((item) => item.id === id)) return acc;
-			acc.push({ ...tile, id });
+			acc.push({
+				...tile,
+				id,
+				orientation: normalizeOrientation(tile.orientation),
+			});
 			return acc;
 		}, []);
 		const existingIds = new Set(normalized.map((t) => t.id));
@@ -73,6 +83,10 @@ const normalizeHeightDelta = (value: number | undefined): number | undefined => 
 	if (!value) return undefined;
 	return Math.min(Math.max(value, MIN_HEIGHT_DELTA), MAX_HEIGHT_DELTA);
 };
+
+const getNextOrientation = (
+	orientation: DashboardTileOrientation | undefined
+): DashboardTileOrientation => (orientation === 'column' ? 'row' : 'column');
 
 export const useDashboardLayout = (): UseDashboardLayoutReturn => {
 	const [layout, setLayout] = useState<DashboardLayoutState>(loadLayout);
@@ -131,6 +145,33 @@ export const useDashboardLayout = (): UseDashboardLayoutReturn => {
 		});
 	}, []);
 
+	const toggleTileOrientation = useCallback(
+		(
+			id: DashboardTileId,
+			currentOrientation?: DashboardTileOrientation
+		) => {
+			setLayout((prev) => {
+				const next = prev.map((tile) => {
+					if (tile.id !== id) return tile;
+					return {
+						...tile,
+						orientation: getNextOrientation(currentOrientation ?? tile.orientation),
+					};
+				});
+				persist(next);
+				const tile = next.find((item) => item.id === id);
+				if (tile?.orientation) {
+					capture(PostHogEvent.DashboardTileOrientationToggled, {
+						orientation: tile.orientation,
+						tile_id: id,
+					});
+				}
+				return next;
+			});
+		},
+		[]
+	);
+
 	const resetLayout = useCallback(() => {
 		setLayout(DEFAULT_LAYOUT);
 		persist(DEFAULT_LAYOUT);
@@ -145,6 +186,7 @@ export const useDashboardLayout = (): UseDashboardLayoutReturn => {
 		resizeTile,
 		resetLayout,
 		setCustomizing,
+		toggleTileOrientation,
 		toggleVisibility,
 	};
 };

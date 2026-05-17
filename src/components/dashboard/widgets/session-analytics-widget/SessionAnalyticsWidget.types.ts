@@ -1,6 +1,8 @@
 import type { WeeklyBarData } from '../weekly-chart-widget/WeeklyChartWidget.types';
 
 export type SessionAnalyticsViewMode = 'month' | 'week';
+export type SessionAnalyticsLayout = 'column' | 'row';
+export type SessionAnalyticsRateTone = 'alert' | 'empty' | 'error' | 'success';
 
 export interface SessionAnalyticsPeriodData {
 	adminBlockedMinutes: number;
@@ -14,9 +16,11 @@ export interface SessionAnalyticsPeriodData {
 export interface SessionAnalyticsWidgetProps {
 	chartData: WeeklyBarData[];
 	isLoading?: boolean;
+	layout?: SessionAnalyticsLayout;
 	monthChartData: WeeklyBarData[];
 	monthData: SessionAnalyticsPeriodData;
 	onDayClick?: (day: WeeklyBarData) => void;
 	onViewModeChange?: (mode: SessionAnalyticsViewMode) => void;
+	rowSpan?: number;
 	weekData: SessionAnalyticsPeriodData;
 }

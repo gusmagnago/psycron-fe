@@ -950,6 +950,10 @@
             "tile": {
                 "close": "Fechar",
                 "hide": "Ocultar bloco",
+                "layout-column": "Usar layout em coluna",
+                "layout-column-aria": "Alternar bloco para layout em coluna",
+                "layout-row": "Usar layout em linha",
+                "layout-row-aria": "Alternar bloco para layout em linha",
                 "read-more": "Ler mais",
                 "resize-down": "Reduzir altura",
                 "resize-down-aria": "Reduzir altura do bloco",
@@ -1077,11 +1081,21 @@
                     "cancelled": "Canceladas",
                     "chart-aria-label": "Gráfico de barras empilhadas com sessões por dia",
                     "completed": "Concluídas",
+                    "insight-down": "Taxa de conclusão caiu {{delta}}% vs {{period}} anterior — vale acompanhar os cancelamentos.",
+                    "insight-empty": "Ainda não há sessões encerradas — a comparação começa quando houver dados.",
+                    "insight-flat": "Taxa de conclusão estável vs {{period}} anterior — mantenha o ritmo dos lembretes.",
+                    "insight-source": "Júpiter",
+                    "insight-summary": "{{completed}} de {{concluded}} sessões encerradas foram concluídas.",
+                    "insight-up": "Taxa de conclusão subiu {{delta}}% vs {{period}} anterior — os lembretes estão funcionando.",
                     "legend": {
                         "blocked": "Bloqueios admin",
                         "cancelled": "Canceladas",
                         "completed": "Concluídas",
                         "upcoming": "Próximas"
+                    },
+                    "period": {
+                        "month": "mês",
+                        "week": "semana"
                     },
                     "sessions": "sessões",
                     "upcoming": "Próximas",
