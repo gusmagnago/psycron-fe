@@ -6,10 +6,11 @@ export const Avatar = ({
 	large,
 	firstName,
 	lastName,
+	size,
 	src,
 	...props
 }: IAvatarProps) => {
-	const largeSize = large ? 100 : 70;
+	const largeSize = size ?? (large ? 100 : 70);
 
 	const stringToColor = (string: string) => {
 		let hash = 0;
@@ -29,21 +30,26 @@ export const Avatar = ({
 	};
 
 	const stringAvatar = (name: string) => {
+		const parts = name.trim().split(/\s+/);
+		const initials = [parts[0]?.[0], parts[1]?.[0]]
+			.filter(Boolean)
+			.join('')
+			.toUpperCase();
 		return {
 			sx: {
-				bgcolor: stringToColor(name),
+				bgcolor: name.trim() ? stringToColor(name) : undefined,
 				width: largeSize,
 				height: largeSize,
 			},
-			children: `${name.split(' ')[0][0]}${name.split(' ')[1][0]}`,
+			children: initials || undefined,
 		};
 	};
 
 	return (
 		<MUIAvatar
 			alt={`user-${firstName}-avatar`}
-			src={src ? src : ''}
-			{...stringAvatar(`${firstName} ${lastName}`)}
+			src={src || undefined}
+			{...stringAvatar(`${firstName ?? ''} ${lastName ?? ''}`)}
 			{...props}
 		/>
 	);

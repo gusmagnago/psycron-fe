@@ -34,10 +34,32 @@ export const enum PostHogEvent {
 	AvailabilitySlotUnblocked = 'availability slot unblocked',
 	BackofficeWorkerSessionFailed = 'backoffice worker session failed',
 
+	DashboardActionCenterItemClicked = 'dashboard action center item clicked',
+	DashboardBillingReadinessClicked = 'dashboard billing readiness clicked',
+	DashboardChartDayClicked = 'dashboard chart day clicked',
+	DashboardCustomizeOpened = 'dashboard customize opened',
+	DashboardLayoutOrganized = 'dashboard layout organized button clicked',
+	DashboardLayoutReset = 'dashboard layout reset button clicked',
+	DashboardNotificationStatusClicked = 'dashboard notification status clicked',
+	DashboardPendingTaskClicked = 'dashboard pending task clicked',
+	DashboardQuickActionClicked = 'dashboard quick action clicked',
+	DashboardRecentPatientOpened = 'dashboard recent patient opened',
+	DashboardScheduleSlotClicked = 'dashboard schedule slot clicked',
+	DashboardSessionAnalyticsViewToggled = 'dashboard session analytics view toggled',
+	DashboardTileHidden = 'dashboard tile hidden',
+	DashboardTileOrientationToggled = 'dashboard tile orientation toggled',
+	DashboardTileReordered = 'dashboard tile reordered',
+	DashboardTileRestored = 'dashboard tile restored',
+	DashboardWidgetFeedbackSubmitted = 'dashboard widget feedback submitted',
+	DashboardWidgetInfoOpened = 'dashboard widget info opened',
 	EditUserSubmitted = 'edit user submitted',
-	FeaturePageQueueExpansionChanged = 'feature page queue expansion changed',
-	MarketingConsentToggleChanged = 'marketing consent toggle changed',
 
+	FeaturePageQueueExpansionChanged = 'feature page queue expansion changed',
+	JupiterInsightActionClicked = 'jupiter insight action clicked',
+	JupiterInsightDismissed = 'jupiter insight dismissed',
+	JupiterInsightsFallbackUsed = 'jupiter insights fallback used',
+
+	MarketingConsentToggleChanged = 'marketing consent toggle changed',
 	MarketingConsentToggleFailed = 'marketing consent toggle failed',
 	MarketingConsentToggleSaved = 'marketing consent toggle saved',
 	NotificationArchived = 'notification archived',
@@ -62,6 +84,7 @@ export const enum PostHogEvent {
 	PublicPatientAgendaAppointmentOpened = 'public patient agenda appointment opened',
 	PublicPatientAgendaDaySelected = 'public patient agenda day selected',
 	PublicPatientAgendaOpened = 'public patient agenda opened',
+
 	PublicPatientAgendaViewChanged = 'public patient agenda view changed',
 
 	SettingsLegalLinkClicked = 'settings legal link clicked',
@@ -79,7 +102,6 @@ export const enum PostHogEvent {
 	UserDetailsDeleteDialogOpened = 'user details delete dialog opened',
 
 	UserDetailsDeleteFailed = 'user details delete failed',
-
 	UserDetailsDeleteSucceeded = 'user details delete succeeded',
 	UserDetailsEditSessionClicked = 'user details edit session clicked',
 	UserDetailsEditUserClicked = 'user details edit user clicked',
@@ -230,7 +252,17 @@ export type PostHogEventProps = {
 
 	[PostHogEvent.AvailabilitySettingSaved]: {
 		new_value: string;
-		setting: 'working_hours' | 'session_type' | 'session_duration' | 'timezone' | 'buffer_time' | 'recurrence_pattern' | 'google_calendar' | 'session_address' | 'specialty' | 'specialty_detail';
+		setting:
+			| 'working_hours'
+			| 'session_type'
+			| 'session_duration'
+			| 'timezone'
+			| 'buffer_time'
+			| 'recurrence_pattern'
+			| 'google_calendar'
+			| 'session_address'
+			| 'specialty'
+			| 'specialty_detail';
 	};
 
 	[PostHogEvent.AvailabilityDayBlocked]: {
@@ -376,5 +408,96 @@ export type PostHogEventProps = {
 		confirmation_email: boolean;
 		confirmation_whatsapp: boolean;
 		reminder_enabled: boolean;
+	};
+
+	[PostHogEvent.DashboardCustomizeOpened]: never;
+	[PostHogEvent.DashboardBillingReadinessClicked]: {
+		percentage: number;
+		source: 'dashboard-summary';
+		tier: string;
+		tile_id: string;
+	};
+	[PostHogEvent.DashboardChartDayClicked]: {
+		date: string;
+		source: 'dashboard-summary';
+		tier: string;
+		tile_id: string;
+	};
+	[PostHogEvent.DashboardLayoutOrganized]: never;
+	[PostHogEvent.DashboardLayoutReset]: never;
+	[PostHogEvent.DashboardPendingTaskClicked]: {
+		count: number;
+		source: 'dashboard-summary';
+		task_type: string;
+		tier: string;
+		tile_id: string;
+	};
+	[PostHogEvent.DashboardQuickActionClicked]: {
+		action_id: string;
+		source: 'dashboard-summary';
+		tier: string;
+		tile_id: string;
+	};
+	[PostHogEvent.DashboardRecentPatientOpened]: {
+		patient_id: string;
+		source: 'dashboard-summary';
+		tier: string;
+		tile_id: string;
+	};
+	[PostHogEvent.DashboardSessionAnalyticsViewToggled]: {
+		source: 'dashboard-summary';
+		tier: string;
+		tile_id: string;
+		view_mode: 'month' | 'week';
+	};
+	[PostHogEvent.DashboardTileHidden]: { tile_id: string };
+	[PostHogEvent.DashboardTileOrientationToggled]: {
+		orientation: 'column' | 'row';
+		tile_id: string;
+	};
+	[PostHogEvent.DashboardTileReordered]: {
+		from_index: number;
+		tile_id: string;
+		to_index: number;
+	};
+	[PostHogEvent.DashboardTileRestored]: { tile_id: string };
+
+	[PostHogEvent.JupiterInsightActionClicked]: {
+		action_target?: string;
+		insight_index: number;
+		insight_type?: string;
+		source?: string;
+	};
+	[PostHogEvent.JupiterInsightDismissed]: {
+		insight_index: number;
+		insight_type?: string;
+		source?: string;
+	};
+	[PostHogEvent.JupiterInsightsFallbackUsed]: {
+		tier: string;
+	};
+	[PostHogEvent.DashboardWidgetInfoOpened]: {
+		tier: string;
+		widget_id: string;
+	};
+	[PostHogEvent.DashboardWidgetFeedbackSubmitted]: {
+		feedback: string;
+		feedback_id?: string;
+		tier: string;
+		widget_id: string;
+	};
+	[PostHogEvent.DashboardNotificationStatusClicked]: {
+		status: 'FAILED' | 'PENDING' | 'SENT';
+		tier: string;
+	};
+	[PostHogEvent.DashboardActionCenterItemClicked]: {
+		count: number;
+		item_type: string;
+		tier: string;
+	};
+	[PostHogEvent.DashboardScheduleSlotClicked]: {
+		date: string;
+		tier: string;
+		tile_id: string;
 	};
 };

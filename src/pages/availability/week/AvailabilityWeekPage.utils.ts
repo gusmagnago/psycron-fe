@@ -24,7 +24,8 @@ export const isClickable = (status: SlotStatus, slotDate: Date) => {
 	const isBuffer = status === 'buffer' && isFutureFromToday;
 	const isCancelled = status === 'cancelled';
 
-	const result = isBooked || isAvailable || isBlocked || isBuffer || isCancelled;
+	const result =
+		isBooked || isAvailable || isBlocked || isBuffer || isCancelled;
 
 	return result;
 };
@@ -114,4 +115,27 @@ export const generateSlotStartTimes = (
 	}
 
 	return slots;
+};
+
+export const parseDebugNowMinutes = (value: string | null): number | null => {
+	if (!value || !import.meta.env.DEV) return null;
+
+	const match = value.match(/^(\d{1,2}):(\d{2})$/);
+	if (!match) return null;
+
+	const hours = Number(match[1]);
+	const minutes = Number(match[2]);
+
+	if (
+		Number.isNaN(hours) ||
+		Number.isNaN(minutes) ||
+		hours < 0 ||
+		hours > 23 ||
+		minutes < 0 ||
+		minutes > 59
+	) {
+		return null;
+	}
+
+	return hours * 60 + minutes;
 };

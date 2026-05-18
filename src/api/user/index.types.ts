@@ -89,6 +89,7 @@ export interface IAvailabilityResponse {
 	firstDate: IDateInfo | null;
 	isEmpty: boolean;
 	lastDate: IDateInfo | null;
+	timezone?: string;
 	totalPages: number;
 }
 

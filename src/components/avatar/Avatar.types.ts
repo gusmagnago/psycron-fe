@@ -4,4 +4,5 @@ export interface IAvatarProps extends AvatarProps {
     firstName: string;
     large?: boolean;
     lastName: string;
+    size?: number;
 }

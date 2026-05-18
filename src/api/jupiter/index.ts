@@ -124,3 +124,84 @@ export const getBufferTimeAdvice = async (
 };
 
 export type RecurrencePattern = 'MONTHLY' | 'WEEKLY';
+
+export type InsightTier = 'active' | 'growing' | 'onboarding';
+
+export type InsightSource = 'ai' | 'cache' | 'fallback';
+
+export type BeInsightType =
+	| 'billing-readiness'
+	| 'blocked-admin-time'
+	| 'busy-day-pattern'
+	| 'dashboard-summary'
+	| 'low-week-volume'
+	| 'missed-rebooking'
+	| 'no-patients-yet'
+	| 'patient-milestone'
+	| 'reminder-delivery-risk'
+	| 'session-count-today'
+	| 'setup-availability'
+	| 'week-cancellations'
+	| 'whatsapp-reminders-off';
+
+export type BeInsightCategory =
+	| 'daily-briefing'
+	| 'growth'
+	| 'operations'
+	| 'patient-care'
+	| 'schedule'
+	| 'setup';
+
+export type BeInsightActionTarget =
+	| { date?: string; type: 'availability-week' }
+	| { type: 'availability-wizard' }
+	| { patientId: string; type: 'patient-profile' }
+	| { type: 'notification-settings' }
+	| { type: 'patients' };
+
+export interface BeInsightAction {
+	labelKey: string;
+	target: BeInsightActionTarget;
+}
+
+export interface BeInsightMeta {
+	[key: string]: boolean | null | number | string | undefined;
+}
+
+export interface BeInsightItem {
+	action?: BeInsightAction;
+	category: Exclude<BeInsightCategory, 'daily-briefing'>;
+	id: string;
+	insightType: BeInsightType;
+	meta?: BeInsightMeta;
+	source: InsightSource;
+	text: string;
+	tier: InsightTier;
+}
+
+export interface BeInsightSummary {
+	category: 'daily-briefing';
+	generatedAt: string;
+	id: string;
+	source: InsightSource;
+	text: string;
+}
+
+export interface BeJupiterInsightsResponse {
+	insights: BeInsightItem[];
+	summary: BeInsightSummary;
+}
+
+export const getJupiterInsights = async (
+	locale: 'en' | 'pt'
+): Promise<BeJupiterInsightsResponse | null> => {
+	try {
+		const response = await apiClient.get<BeJupiterInsightsResponse>(
+			'/jupiter/insights',
+			{ params: { locale } }
+		);
+		return response.data;
+	} catch {
+		return null;
+	}
+};

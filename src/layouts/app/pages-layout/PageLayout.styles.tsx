@@ -56,15 +56,9 @@ export const PageChildrenWrapper = styled(Box)`
 	flex: 1;
 	flex-direction: column;
 	min-height: 0;
-	overflow: hidden;
+	overflow-y: auto;
+	overflow-x: hidden;
 	padding: ${spacing.small};
-
-	padding-bottom: 0;
-	padding-right: 0;
-
-	${isSmallerThanTabletMedia} {
-		overflow: visible;
-	}
 
 	${isMobileMedia} {
 		padding: ${spacing.xs};

@@ -162,14 +162,27 @@ export const PatientListPage = () => {
 	};
 	const renderCancellationNotice = (
 		patient: (typeof filteredPatients)[number]
-	) =>
-		patient.unresolvedCancelledSessions > 0 ? (
-			<CancellationNoticePill>
-				{t('patients.list.cancellation-follow-up-needed', {
+	) => {
+		if (patient.unresolvedCancelledSessions <= 0) return null;
+
+		const label = t('patients.list.cancellation-follow-up-needed', {
+			count: patient.unresolvedCancelledSessions,
+		});
+
+		return (
+			<Tooltip
+				arrow
+				placement='top'
+				title={t('patients.list.cancellation-follow-up-tooltip', {
 					count: patient.unresolvedCancelledSessions,
 				})}
-			</CancellationNoticePill>
-		) : null;
+			>
+				<CancellationNoticePill aria-label={label}>
+					{patient.unresolvedCancelledSessions}
+				</CancellationNoticePill>
+			</Tooltip>
+		);
+	};
 	const renderCancellationStatus = (
 		patient: (typeof filteredPatients)[number]
 	) => {

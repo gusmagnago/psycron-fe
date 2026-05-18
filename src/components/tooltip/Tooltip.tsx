@@ -11,6 +11,7 @@ export const Tooltip = ({
 	title,
 	open,
 	disabled = false,
+	'aria-label': ariaLabel,
 }: PsycronTooltipProps) => {
 	const Title =
 		typeof title === 'string' || typeof title === 'number' ? (
@@ -39,7 +40,16 @@ export const Tooltip = ({
 					cursor: disabled ? 'not-allowed' : 'pointer',
 				}}
 			>
-				<TootleTipIconButton disabled={disabled} onClick={onClick}>
+				<TootleTipIconButton
+					aria-label={
+						ariaLabel ??
+						(typeof title === 'string' || typeof title === 'number'
+							? String(title)
+							: undefined)
+					}
+					disabled={disabled}
+					onClick={onClick}
+				>
 					{children}
 				</TootleTipIconButton>
 			</span>

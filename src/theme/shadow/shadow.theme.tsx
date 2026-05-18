@@ -25,3 +25,8 @@ export const shadowMediumError = `4px 5px 10px -6px ${palette.error.main}`;
 export const shadowSmallPurple = `0px 3px 1px -2px rgba(0, 0, 0, 0.2),0px 2px 2px 0px ${hexToRgba(palette.brand.purple, 0.5)},0px 1px 5px 0px ${hexToRgba(palette.brand.purple, 0.5)}`;
 
 export const shadowSmallError = `0px 3px 1px -2px rgba(0, 0, 0, 0.2),0px 2px 2px 0px ${hexToRgba(palette.error.main, 0.5)},0px 1px 5px 0px ${hexToRgba(palette.error.main, 0.5)}`;
+
+export const shadowGlassShimmer = '0 1px 0 rgba(255, 255, 255, 0.6) inset';
+
+export const shadowDashboardTile =
+	'0 1px 2px rgba(20, 24, 33, 0.04), 0 8px 24px -12px rgba(20, 24, 33, 0.1)';

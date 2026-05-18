@@ -239,6 +239,8 @@
 			"possible-duplicate": "Possible duplicate",
 			"cancellation-follow-up-needed": "{{count}} needs follow-up",
 			"cancellation-follow-up-needed_other": "{{count}} need follow-up",
+			"cancellation-follow-up-tooltip": "{{count}} cancelled session has no follow-up, rebook, archive, or reopen recorded.",
+			"cancellation-follow-up-tooltip_other": "{{count}} cancelled sessions have no follow-up, rebook, archive, or reopen recorded.",
 			"cancellation-follow-up-none": "No cancellations",
 			"cancellation-follow-up-resolved": "Resolved",
 			"cancelled-sessions-notice": "{{count}} cancelled session",
@@ -480,7 +482,9 @@
 		"auth-method": "Auth method",
 		"privacy-policy": "Privacy Policy",
 		"terms-of-service": "Terms of Use",
-		"privacy": "Privacy"
+		"privacy": "Privacy",
+		"previous": "Previous",
+		"next": "Next"
 	},
 	"components": {
 		"form": {
@@ -924,6 +928,337 @@
 		"add-patient": {
 			"title": "Add a New Patient",
 			"sub-title": "Fill out the form below with the patient’s details"
+		},
+		"dashboard": {
+			"title": "Dashboard",
+			"greeting": {
+				"headline": "Hello, {{name}}!",
+				"band": {
+					"morning": "Good morning",
+					"afternoon": "Good afternoon",
+					"evening": "Good evening"
+				}
+			},
+			"tiles": {
+				"action-center": "Action center",
+				"schedule": "Today's schedule",
+				"greeting": "Greeting",
+				"jupiter-insights": "Júpiter insights",
+				"notifications": "Notifications",
+				"quick-actions": "Quick actions",
+				"active-patients": "Active patients",
+				"billing-readiness": "Billing readiness",
+				"revenue": "Revenue estimate",
+				"session-analytics": "Session Analytics",
+				"pending-tasks": "Pending tasks",
+				"recent-patients": "Recent patients"
+			},
+			"tile": {
+				"close": "Close",
+				"hide": "Hide tile",
+				"layout-column": "Use column layout",
+				"layout-column-aria": "Switch tile to column layout",
+				"layout-row": "Use row layout",
+				"layout-row-aria": "Switch tile to row layout",
+				"read-more": "Read more",
+				"resize-down": "Reduce height",
+				"resize-down-aria": "Reduce tile height",
+				"resize-narrow": "Narrow",
+				"resize-narrow-aria": "Make tile narrower",
+				"resize-up": "Increase height",
+				"resize-up-aria": "Increase tile height",
+				"resize-wide": "Widen",
+				"resize-wide-aria": "Make tile wider",
+				"show": "Show tile",
+				"drag": "Drag to reorder",
+				"drag-aria": "Drag tile to reorder"
+			},
+			"customize": {
+				"open": "Customize",
+				"done": "Done",
+				"hint": "Drag tiles to reorder · click the eye icon to hide",
+				"organize": "Organize",
+				"reset": "Reset layout"
+			},
+			"widgets": {
+				"schedule": {
+					"title": "Today",
+					"title-week": "Week",
+					"title-label": "Today's schedule",
+					"title-week-label": "This week's schedule",
+					"range-aria-label": "Choose schedule range",
+					"count": "{{count}} sessions",
+					"empty": "No sessions scheduled for today",
+					"unknown-patient": "Unknown patient",
+					"sessions-today": "sessions today",
+					"sessions-week": "sessions this week",
+					"view-week": "View week",
+					"online": "Online",
+					"in-person": "In-person",
+					"min": "min",
+					"status": {
+						"live": "LIVE",
+						"done": "Done",
+						"confirmed": "Confirmed",
+						"pending": "Pending"
+					},
+					"info": {
+						"title": "Today's schedule",
+						"description": "Shows your booked sessions for today and this week, with live status tracking so you always know what's coming next.",
+						"future": "We'll surface prep notes per patient, smart conflict alerts, and one-tap rescheduling suggestions."
+					}
+				},
+				"jupiter-insights": {
+					"aria-label": "Júpiter AI insights carousel",
+					"dismiss": "Dismiss insight",
+					"empty": "No insights available at the moment",
+					"action-availability": "View availability",
+					"title-schedule": "Today's sessions",
+					"text-schedule": "You have {{count}} booked session(s) today. Keep it up!",
+					"title-patients": "Active patients",
+					"text-patients": "You currently have {{count}} active patient(s) on your roster.",
+					"subtitle": "AI co-pilot · learning your patterns",
+					"default-category": "Patient Care",
+					"category-daily-briefing": "Daily briefing",
+					"category-operations": "Operations",
+					"category-patient-care": "Patient Care",
+					"category-insights": "Insights",
+					"action-send-message": "Send message",
+					"action-view-profile": "View profile",
+					"mic": "Voice input",
+					"text-setup-availability": "Set up your schedule with Júpiter to start accepting bookings.",
+					"action-setup-availability": "Set up now",
+					"text-no-patients-yet": "You're all set — share your booking link with your first patients.",
+					"category-setup": "Setup",
+					"category-growth": "Growth",
+					"category-schedule": "Schedule",
+					"text-session-none-today": "No sessions today — a good time to catch up on notes.",
+					"text-session-count-today": "You have {{count}} session(s) today. Keep it up!",
+					"text-whatsapp-reminders": "Enable WhatsApp reminders to reduce no-shows in a few taps.",
+					"action-set-up-reminders": "Set up reminders",
+					"text-busy-day": "{{day}} looks like your busiest day this week. Keep that momentum!",
+					"action-view-schedule": "View schedule",
+					"text-week-cancellations": "{{count}} session(s) were cancelled this week. Consider reaching out to reschedule.",
+					"text-patient-milestone": "You've reached {{count}} active patients. Great milestone!",
+					"text-low-week-volume": "You have {{count}} session(s) this week. Opening more slots could help you grow.",
+					"text-billing-readiness-incomplete": "{{missing}} patient(s) still need session-cost details before future payment tools can fit your workflow.",
+					"text-billing-readiness-ready": "Your patient billing details are ready for future payment and invoicing flows.",
+					"action-review-patients": "Review patients",
+					"action-view-patients": "View patients",
+					"text-session-none-today-week": "No sessions today — you have {{count}} coming up this week. Check your schedule.",
+					"text-missed-rebooking": "{{name}} missed their last session and hasn't rebooked. A check-in might help.",
+					"text-dashboard-summary-fallback": "Júpiter is reading your dashboard. You have {{count}} session(s) booked this week.",
+					"info": {
+						"title": "Júpiter insights",
+						"description": "AI-generated observations about your practice based on your schedule, patients, and billing — personalised every session.",
+						"future": "Predictive scheduling recommendations, patient risk flags, and proactive clinical guidance tailored to your specialty."
+					}
+				},
+				"quick-actions": {
+					"title": "Quick Actions",
+					"descriptions": {
+						"add-patient": "Start a patient profile",
+						"availability-settings": "Working hours, time zone",
+						"fix-reminders-count": "{{count}} failed or queued",
+						"fix-reminders-setup": "Reminder settings",
+						"follow-up-cancellations": "{{count}} recovery item(s)",
+						"patients": "{{count}} active",
+						"setup-availability": "Create working hours",
+						"view-week": "{{count}} sessions"
+					},
+					"actions": {
+						"new-session": "New session",
+						"new-session-aria": "Open availability to book new session",
+						"patients": "My patients",
+						"patients-aria": "Navigate to patients list",
+						"add-patient": "Add patient",
+						"add-patient-aria": "Add a new patient",
+						"fix-reminders": "Fix reminders",
+						"follow-up-cancellations": "Follow up cancellations",
+						"notifications": "Notifications",
+						"notifications-aria": "View notifications",
+						"setup-availability": "Set up schedule",
+						"view-week": "View week",
+						"availability-settings": "Availability settings"
+					},
+					"info": {
+						"title": "Quick actions",
+						"description": "Shortcuts to the most relevant actions based on your current practice state. Psycron picks what matters most right now.",
+						"future": "Fully contextual action suggestions powered by Júpiter that adapt to your week, your patients, and your habits."
+					}
+				},
+				"active-patients": {
+					"label": "Active patients",
+					"title": "Latest patients",
+					"empty": "No patients added yet"
+				},
+				"billing-readiness": {
+					"label": "Billing readiness",
+					"status": {
+						"empty": "Prepare for future payment tools by adding patients first.",
+						"partial": "{{configured}} of {{total}} patients ready for future payments · {{missing}} to finish",
+						"ready": "Future payment setup is ready"
+					},
+					"details": "Add each patient's session cost now so Psycron can design payment and invoicing flows that match how your practice already works.",
+					"donut-meta": "{{configured}}/{{total}} ready",
+					"status-chip": {
+						"empty": "Action needed",
+						"partial": "In progress",
+						"ready": "Ready"
+					},
+					"teaser": {
+						"title": "Prepare for future payments",
+						"subtitle": "Track session costs now so future payment tools can fit your workflow from day one.",
+						"coming-soon": "Payment collection and invoicing will come later; this step only keeps your patient billing details ready."
+					},
+					"info": {
+						"title": "Billing readiness",
+						"description": "Add each patient's session cost now so Psycron can design payment and invoicing flows that match how your practice already works.",
+						"future": "Next, Psycron will move into payments by creating an automated payment system tailored to how you charge each patient."
+					}
+				},
+				"revenue": {
+					"title": "Revenue",
+					"title-with-month": "Revenue · {{month}}",
+					"estimate-chip": "Est.",
+					"completed": "Completed",
+					"configured": "Billing setup",
+					"sessions": "{{count}} session(s)",
+					"patients-ready": "{{configured}} ready · {{missing}} missing",
+					"info": {
+						"title": "Revenue estimate",
+						"description": "Estimates your monthly earnings based on the billing configurations you've set for active patients. Updated in real time.",
+						"future": "Psycron will use these revenue patterns to create an automated payment system tailored to your practice, with invoicing, collection, and payment tracking built around your workflow."
+					}
+				},
+				"notifications": {
+					"title": "Notifications · 24h",
+					"window": "Last 24h",
+					"sent": "Sent",
+					"failed": "Failed",
+					"queued": "Queued",
+					"view-feed": "View feed",
+					"info": {
+						"title": "Notifications",
+						"description": "Shows how many appointment reminders and confirmations were delivered to your patients in the last 24 hours.",
+						"future": "Channel performance over time, intelligent retry logic, and delivery failure alerts before patients miss sessions."
+					}
+				},
+				"action-center": {
+					"title": "Action center",
+					"count-chip": "{{count}} needs you",
+					"count-chip_other": "{{count}} need you",
+					"empty": "No operational alerts right now.",
+					"item-count": "{{count}} item(s)",
+					"summary-title": "{{count}} item needs attention",
+					"summary-title_other": "{{count}} items need attention",
+					"summary-body": "A quiet summary of unresolved operational work. Actions stay in the dedicated workspace.",
+					"breakdown-label": "Action center summary",
+					"view-all": "Open action center",
+					"view-all-meta": "Conflicts and recovery queue",
+					"items": {
+						"notification-failed": "Notification failed",
+						"patient-duplicate": "Patient duplicate",
+						"recovery-needed": "Recovery needed",
+						"schedule-conflict": "Schedule conflict"
+					},
+					"info": {
+						"title": "Action center",
+						"description": "Flags issues that require resolution — scheduling conflicts, failed notification deliveries, and cancellations awaiting follow-up.",
+						"future": "Automated conflict resolution proposals, one-click recovery workflows, and priority-ranked issue queues."
+					}
+				},
+				"session-analytics": {
+					"title": "Session Analytics",
+					"range-aria-label": "Choose analytics range",
+					"completion-rate": "Completion rate",
+					"blocked": "Admin blocks",
+					"blocked-hours": "{{hours}}h blocked",
+					"cancelled": "Cancelled",
+					"chart-aria-label": "Stacked bar chart showing sessions by day",
+					"completed": "Completed",
+					"insight-down": "Completion rate down {{delta}}% vs last {{period}} — cancellations need attention.",
+					"insight-empty": "No concluded sessions yet — comparison starts once data arrives.",
+					"insight-flat": "Completion rate steady vs last {{period}} — keep the reminder rhythm.",
+					"insight-source": "Júpiter",
+					"insight-summary": "{{completed}} of {{concluded}} concluded sessions completed.",
+					"insight-up": "Completion rate up {{delta}}% vs last {{period}} — reminders are working.",
+					"legend": {
+						"blocked": "Admin blocks",
+						"cancelled": "Cancelled",
+						"completed": "Completed",
+						"upcoming": "Upcoming"
+					},
+					"period": {
+						"month": "month",
+						"week": "week"
+					},
+					"sessions": "sessions",
+					"upcoming": "Upcoming",
+					"view-month": "Month",
+					"view-week": "Week",
+					"info": {
+						"title": "Session analytics",
+						"description": "Tracks your session completion rate, cancellations, and session volume over time — your practice health at a glance.",
+						"future": "Trend analysis, no-show prediction, and session pace benchmarks compared to similar practices."
+					}
+				},
+				"pending-tasks": {
+					"title": "Pending Tasks",
+					"cancellation-followups": "Cancellation follow-ups",
+					"descriptions": {
+						"cancellation-followups": "{{count}} need recovery",
+						"missing-billing": "{{count}} patient(s) to configure",
+						"missing-contact": "{{count}} patient(s) to update",
+						"reminder-delivery": "{{count}} need review",
+						"setup-availability": "Required before bookings"
+					},
+					"empty": "Nothing requires your attention right now.",
+					"missing-billing": "Patients missing billing",
+					"missing-contact": "Patients missing contact info",
+					"reminder-delivery": "Reminder delivery issues",
+					"setup-availability": "Finish schedule setup",
+					"empty-heading": "All clear",
+					"info": {
+						"title": "Pending tasks",
+						"description": "Surfaces admin items that need your attention to keep your practice running smoothly — from missing billing to unresolved cancellations.",
+						"future": "Priority scoring, task delegation for group practices, and completion streaks to keep your admin momentum."
+					}
+				},
+				"recent-patients": {
+					"title": "Recent Patients",
+					"activity": {
+						"cancelled": "Cancelled session",
+						"created": "Added",
+						"session": "Session activity",
+						"updated": "Updated"
+					},
+					"empty": "Recent patient activity will appear here.",
+					"view-all": "All",
+					"last-note": "last note",
+					"message-aria": "Send message to {{name}}",
+					"info": {
+						"title": "Recent patients",
+						"description": "Highlights the patients with the most recent activity in your caseload, so you can quickly pick up where you left off.",
+						"future": "Patient engagement scores, session frequency heatmaps, and proactive care alerts when a patient goes quiet."
+					}
+				},
+				"latest-patients": {
+					"info": {
+						"title": "Latest patients",
+						"description": "Shows the most recently added patients so you never lose track of new intakes and can start onboarding them right away.",
+						"future": "Automated onboarding checklists, intake form integration, and personalised welcome message templates."
+					}
+				},
+				"info-modal": {
+					"feedback-error": "We couldn't save this feedback. Please try again.",
+					"feedback-placeholder": "Share your thoughts on this widget...",
+					"feedback-submit": "Send feedback",
+					"feedback-thanks": "Thanks! Your input helps shape Psycron.",
+					"future-heading": "What's coming",
+					"tooltip": "About this widget"
+				}
+			}
 		}
 	},
 	"chat": {

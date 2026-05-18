@@ -5,6 +5,16 @@ import type {
 } from '@psycron/context/user/auth/UserAuthenticationContext.types';
 import type { TFunction } from 'i18next';
 
+export const stringToColor = (s: string): string => {
+	let hash = 0;
+	for (let i = 0; i < s.length; i++)
+		hash = s.charCodeAt(i) + ((hash << 5) - hash);
+	let color = '#';
+	for (let i = 0; i < 3; i++)
+		color += `00${((hash >> (i * 8)) & 0xff).toString(16)}`.slice(-2);
+	return color;
+};
+
 type PatientNameParts = Partial<Pick<IPatient, 'firstName' | 'lastName'>>;
 
 export const getPatientFullName = (patient?: PatientNameParts | null): string =>
@@ -50,6 +60,24 @@ export const formatPatientBillingAmount = (
 	}
 };
 
+const hasConfiguredBillingPrice = (
+	price: IPatientBilling['monthlyPrice'] | IPatientBilling['sessionPrice']
+): boolean =>
+	typeof price?.amount === 'number' &&
+	price.amount > 0 &&
+	Boolean(price.currency?.trim());
+
+export const isPatientBillingConfigured = (
+	billing: IPatientBilling | null | undefined
+): boolean => {
+	if (!billing) return false;
+	if (billing.category === 'pro_bono') return true;
+
+	return billing.model === 'monthly'
+		? hasConfiguredBillingPrice(billing.monthlyPrice)
+		: hasConfiguredBillingPrice(billing.sessionPrice);
+};
+
 export interface PatientBillingViewModel {
 	amountLabel?: string;
 	categoryLabel: string;
@@ -70,8 +98,9 @@ export const getPatientBillingViewModel = (
 	t: TFunction
 ): PatientBillingViewModel => {
 	const emptyLabel = t('patients.list.billing.none');
+	const isConfigured = isPatientBillingConfigured(billing);
 
-	if (!billing) {
+	if (!billing || !isConfigured) {
 		return {
 			categoryLabel: emptyLabel,
 			isConfigured: false,
@@ -101,7 +130,7 @@ export const getPatientBillingViewModel = (
 		return {
 			amountLabel,
 			categoryLabel,
-			isConfigured: true,
+			isConfigured,
 			modelLabel,
 			summaryPrimary:
 				amountLabel && amountLabel !== emptyLabel
@@ -113,7 +142,7 @@ export const getPatientBillingViewModel = (
 	return {
 		amountLabel,
 		categoryLabel,
-		isConfigured: true,
+		isConfigured,
 		modelLabel,
 		summaryPrimary: categoryLabel,
 		summarySecondary:

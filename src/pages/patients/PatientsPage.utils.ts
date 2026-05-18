@@ -173,7 +173,8 @@ export const getPatientCancellationCount = (patient?: IPatient): number =>
 	getPatientStats(getPatientSessions(patient)).cancelledSessions;
 
 export const isPatientCancelledSessionResolved = (
-	session: PatientSessionRow
+	session: PatientSessionRow,
+	sessions: PatientSessionRow[] = []
 ): boolean => {
 	if (!session.isCancelled) return true;
 	if (
@@ -186,16 +187,34 @@ export const isPatientCancelledSessionResolved = (
 	}
 
 	return Boolean(
-		session.followedUpAt || session.rebookedAppointmentId || session.reopenedAt
+		session.followedUpAt ||
+			session.rebookedAppointmentId ||
+			session.reopenedAt ||
+			hasLaterActiveSession(session, sessions)
 	);
 };
 
+const hasLaterActiveSession = (
+	cancelledSession: PatientSessionRow,
+	sessions: PatientSessionRow[]
+): boolean =>
+	sessions.some(
+		(session) =>
+			!session.isCancelled &&
+			session.slot._id !== cancelledSession.slot._id &&
+			session.startsAt.getTime() > cancelledSession.startsAt.getTime()
+	);
+
 export const getPatientUnresolvedCancellationCount = (
 	patient?: IPatient
-): number =>
-	getPatientSessions(patient).filter(
-		(session) => session.isCancelled && !isPatientCancelledSessionResolved(session)
+): number => {
+	const sessions = getPatientSessions(patient);
+
+	return sessions.filter(
+		(session) =>
+			session.isCancelled && !isPatientCancelledSessionResolved(session, sessions)
 	).length;
+};
 
 export const getLastCompletedSession = (
 	sessions: PatientSessionRow[]

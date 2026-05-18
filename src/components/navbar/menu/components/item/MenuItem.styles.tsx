@@ -6,6 +6,7 @@ import { spacing } from '@psycron/theme/spacing/spacing.theme';
 export const MobileMenuIconWrapper = styled(Box)`
 	width: 50px;
 	height: auto;
+	border-radius: 100%;
 `;
 
 export const MenuIconWrap = styled('span')`
@@ -13,6 +14,8 @@ export const MenuIconWrap = styled('span')`
 	align-items: center;
 	justify-content: center;
 	position: relative;
+	padding: ${spacing.xs};
+	border-radius: 100%;
 `;
 
 export const MenuBadge = styled('span')`
@@ -22,7 +25,7 @@ export const MenuBadge = styled('span')`
 	min-width: 16px;
 	height: 16px;
 	padding: 0 4px;
-	border-radius: 999px;
+	border-radius: 100%;
 	background: ${palette.error.main};
 	color: ${palette.white};
 	font-size: 10px;
@@ -60,8 +63,8 @@ export const MobileMenuItem = styled(Box, {
 
 	width: 100%;
 
-	padding-left: ${spacing.xs};
-	padding-bottom: ${spacing.small};
+	padding: ${spacing.xs};
+	border-radius: 100%;
 	gap: ${spacing.small};
 
 	p {
