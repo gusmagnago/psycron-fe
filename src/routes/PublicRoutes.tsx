@@ -5,6 +5,7 @@ import { ResetPassword } from '@psycron/pages/auth/password/ResetPassword';
 import { VerifyEmail } from '@psycron/pages/auth/verification/email/VerifyEmail';
 import { TestHomePage } from '@psycron/pages/back-office/home/TestHomePage';
 import { Unsubscribe } from '@psycron/pages/unsubscribe/Unsubscribe';
+import { UnsubscribePreferences } from '@psycron/pages/unsubscribe-preferences/UnsubscribePreferences';
 import {
 	APPOINTMENTCONFIRMATIONPATH,
 	AUTHCALLBACK,
@@ -16,6 +17,7 @@ import {
 	SIGNIN,
 	SIGNUP,
 	UNSUBSCRIBE,
+	UNSUBSCRIBE_PREFERENCES,
 	VERIFYEMAIL,
 } from '@psycron/pages/urls';
 import { BookAppointment } from '@psycron/pages/user/appointment/booking/BookAppointment';
@@ -25,6 +27,7 @@ import { AppointmentsList } from '@psycron/pages/user/appointment/list/patient/A
 const publicRoutes = [
 	{ path: HOMEPAGE, element: <TestHomePage /> },
 	{ path: UNSUBSCRIBE, element: <Unsubscribe /> },
+	{ path: UNSUBSCRIBE_PREFERENCES, element: <UnsubscribePreferences /> },
 	{ path: SIGNIN, element: <AuthPage /> },
 	{ path: SIGNUP, element: <AuthPage /> },
 	{ path: AUTHCALLBACK, element: <AuthCallback /> },

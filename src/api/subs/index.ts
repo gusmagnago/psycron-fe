@@ -30,3 +30,13 @@ export const unSubscribe = async (
 	);
 	return response.data;
 };
+
+export const unsubscribeByEmail = async (
+	email: string
+): Promise<UnsubscribeResponse> => {
+	const response = await apiClient.post<UnsubscribeResponse>(
+		'/subs/unsubscribe-email',
+		{ email }
+	);
+	return response.data;
+};

@@ -22,6 +22,7 @@ export const AUTHCALLBACK = 'auth/callback';
 
 // UNSUBSCRIBE
 export const UNSUBSCRIBE = ':token/unsubscribe';
+export const UNSUBSCRIBE_PREFERENCES = 'unsubscribe';
 
 // PRIVATE
 export const DASHBOARD = 'dashboard';
