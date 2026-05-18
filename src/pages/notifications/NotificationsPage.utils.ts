@@ -20,7 +20,6 @@ import type { TFunction } from 'i18next';
 export const NOTIFICATION_CHANNELS: NotificationChannel[] = [
 	'WHATSAPP',
 	'EMAIL',
-	'SMS',
 	'ICALENDAR',
 ];
 

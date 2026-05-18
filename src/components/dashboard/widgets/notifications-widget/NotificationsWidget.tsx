@@ -4,7 +4,6 @@ import {
 	Calendar,
 	ChevronRight,
 	Mail,
-	Phone,
 	WhatsApp,
 } from '@psycron/components/icons';
 
@@ -96,10 +95,6 @@ export const NotificationsWidget = ({
 					<ChannelCounter>
 						<Mail />
 						{summary.channels.EMAIL}
-					</ChannelCounter>
-					<ChannelCounter>
-						<Phone />
-						{summary.channels.SMS}
 					</ChannelCounter>
 					<ChannelCounter>
 						<Calendar />

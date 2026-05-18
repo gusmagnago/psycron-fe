@@ -1,4 +1,4 @@
-export type NotificationChannel = 'EMAIL' | 'ICALENDAR' | 'SMS' | 'WHATSAPP';
+export type NotificationChannel = 'EMAIL' | 'ICALENDAR' | 'WHATSAPP';
 
 export interface INotificationChannelPref {
 	email: boolean;
@@ -29,12 +29,13 @@ export interface IUpdateNotificationPreferencesResponse {
 export type NotificationStatus = 'DELIVERED' | 'FAILED' | 'PENDING' | 'SENT';
 
 export type NotificationMessageType =
+	| 'ACCOUNT_SETUP'
 	| 'APPOINTMENT_CONFIRMATION'
 	| 'APPOINTMENT_UPDATED'
-	| 'ACCOUNT_SETUP'
 	| 'CONFLICT'
 	| 'DAILY_SCHEDULE_SUMMARY'
 	| 'REMINDER'
+	| 'WHATSAPP_ACTION_REQUIRED'
 	| string;
 
 export interface INotificationPatient {

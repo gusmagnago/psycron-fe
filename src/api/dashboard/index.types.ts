@@ -94,7 +94,7 @@ export interface DashboardBillingReadiness {
 	totalCount: number;
 }
 
-export type DashboardNotificationChannel = 'EMAIL' | 'ICALENDAR' | 'SMS' | 'WHATSAPP';
+export type DashboardNotificationChannel = 'EMAIL' | 'ICALENDAR' | 'WHATSAPP';
 
 export interface DashboardNotifications24h {
 	channels: Record<DashboardNotificationChannel, number>;

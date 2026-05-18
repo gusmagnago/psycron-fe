@@ -10,14 +10,22 @@ export type SignInFormTypes = {
 	onSubmit: SubmitHandler<ISignInForm>;
 };
 
-export interface ISignInResponse {
-	refreshToken: string;
-	token: string;
-	user: {
-		email: string;
-		id: string;
-	};
-}
+export type ISignInResponse =
+	| {
+			mode?: never;
+			refreshToken: string;
+			status: 'success';
+			token: string;
+			user: { email: string; id: string };
+	  }
+	| {
+			mode: 'whatsapp_challenge';
+			refreshToken?: never;
+			status: 'success';
+			therapistId: string;
+			token?: never;
+			user?: never;
+	  };
 
 export interface IRefreshToken {
 	accessToken: string;

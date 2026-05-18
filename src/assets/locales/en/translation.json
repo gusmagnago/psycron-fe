@@ -1270,6 +1270,14 @@
       "success-title": "You have been unsubscribed",
       "success-description": "If this email was on our list, it has been removed. You will no longer receive marketing emails from Psycron.",
       "back-home": "Back to homepage"
+    },
+    "auth": {
+      "whatsapp-otp": {
+        "title": "Two-step verification",
+        "description": "Enter the 6-digit code sent to your WhatsApp number.",
+        "label": "Verification code",
+        "submit": "Verify"
+      }
     }
   },
   "chat": {
@@ -2091,7 +2099,8 @@
       "conflict": "Conflict",
       "account_setup": "Account setup",
       "daily_schedule_summary": "Daily schedule summary",
-      "unknown": "Notification"
+      "unknown": "Notification",
+      "whatsapp_action_required": "WhatsApp follow-up required"
     },
     "bulk": {
       "resend-eligible": "Re-notify eligible",
