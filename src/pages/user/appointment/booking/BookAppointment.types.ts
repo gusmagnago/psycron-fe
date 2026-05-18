@@ -22,6 +22,7 @@ export interface IBookingFilters {
 
 export interface IBookingFormValues {
 	address?: ISlotAddress;
+	consentAccepted: boolean;
 	countryCode: string;
 	email: string;
 	firstName: string;

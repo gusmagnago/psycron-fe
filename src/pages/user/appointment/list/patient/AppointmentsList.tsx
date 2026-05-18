@@ -47,6 +47,7 @@ import { PatientDrawerShell } from '../../shared/PatientDrawerShell';
 import { PublicSchedulingCalendar } from '../../shared/PublicSchedulingCalendar';
 import type { PublicSchedulingViewMode } from '../../shared/PublicSchedulingCalendar.types';
 
+import { PatientPrivacySection } from './components/privacy/PatientPrivacySection';
 import {
 	ActionsRow,
 	CancelReasonGrid,
@@ -622,6 +623,8 @@ export const AppointmentsList = () => {
 					viewMode={calendarViewMode}
 					weekLabel={t('booking.calendar.view-week')}
 				/>
+
+				{patientId ? <PatientPrivacySection patientId={patientId} /> : null}
 
 				{selectedAppointment ? (
 					<PatientDrawerShell

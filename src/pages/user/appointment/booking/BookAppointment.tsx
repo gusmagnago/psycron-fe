@@ -6,6 +6,7 @@ import { Skeleton, Typography } from '@mui/material';
 import { capture } from '@psycron/analytics/posthog/events';
 import { PostHogEvent } from '@psycron/analytics/posthog/types';
 import { bookAppointmentFromLink } from '@psycron/api/patient';
+import { recordConsent } from '@psycron/api/patient/consent';
 import { getAvailabilityCalendar, getUserById } from '@psycron/api/user';
 import { Button } from '@psycron/components/button/Button';
 import { Calendar, ClockIn, Globe, MapPin } from '@psycron/components/icons';
@@ -101,6 +102,7 @@ export const BookAppointment = () => {
 	const methods = useForm<IBookingFormValues>({
 		defaultValues: {
 			countryCode: '',
+			consentAccepted: false,
 			email: '',
 			firstName: '',
 			lastName: '',
@@ -213,6 +215,20 @@ export const BookAppointment = () => {
 					therapist_id: therapistId,
 				});
 			}
+			recordConsent(res.patient._id, {
+				channel: 'web_booking',
+				purpose: 'data_processing',
+				version: '1.0',
+			})
+				.then(() => {
+					capture(PostHogEvent.ConsentGranted, {
+						channel: 'web_booking',
+						purpose: 'data_processing',
+					});
+				})
+				.catch(() => {
+					showAlert({ message: t('booking.error'), severity: 'error' });
+				});
 			navigate(`../${therapistId}/${res.patient._id}/appointment-confirmation`, {
 				replace: true,
 			});
@@ -627,6 +643,11 @@ export const BookAppointment = () => {
 						<PublicBookingForm
 							letPatientChooseAddress={selectedSlot.letPatientChooseAddress ?? false}
 							methods={methods}
+							therapistName={
+								therapist
+									? `${therapist.firstName} ${therapist.lastName}`
+									: t('globals.therapist')
+							}
 						/>
 					</PatientDrawerShell>
 				) : null}

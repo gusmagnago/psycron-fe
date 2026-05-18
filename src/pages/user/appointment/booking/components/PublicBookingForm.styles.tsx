@@ -61,3 +61,22 @@ export const NotifyCheckboxWrapper = styled(Box)`
 	flex-direction: column;
 	padding-left: ${spacing.small};
 `;
+
+export const ConsentBox = styled(Box)`
+	background: ${palette.background.paper};
+	border: 1px solid ${palette.gray['02']};
+	border-radius: ${spacing.small};
+	padding: ${spacing.small};
+`;
+
+export const ConsentLabel = styled('span')`
+	color: ${palette.text.primary};
+	font-size: 0.875rem;
+	line-height: 1.5;
+
+	a {
+		color: ${palette.brand.purple};
+		font-weight: 600;
+		text-decoration: underline;
+	}
+`;

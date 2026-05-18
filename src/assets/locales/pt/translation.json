@@ -2198,5 +2198,30 @@
       "success": "Notificação arquivada.",
       "error": "Não foi possível arquivar esta notificação."
     }
+  },
+  "consent": {
+    "title": "Consentimento",
+    "dataProcessing": "Eu consinto que minhas informações pessoais sejam armazenadas e processadas por {{therapistName}} por meio da Psycron para fins de gestão de consultas. Li a <privacyLink>Política de Privacidade</privacyLink>.",
+    "privacyPolicyLink": "Política de Privacidade",
+    "required": "O consentimento é obrigatório para continuar",
+    "yourPrivacy": "Seus dados e privacidade",
+    "activeConsents": "Consentimentos ativos",
+    "revokeConsent": "Revogar",
+    "requestDeletion": "Solicitar exclusão dos meus dados",
+    "deletionRequested": "Sua solicitação de exclusão foi enviada.",
+    "noActiveConsents": "Nenhum consentimento ativo.",
+    "notGranted": "Não concedido",
+    "yourTherapist": "seu terapeuta",
+    "deletionModal": {
+      "title": "Solicitação de exclusão de dados",
+      "body": "Sua solicitação será enviada ao seu terapeuta. Registros de consultas de saúde são mantidos por no mínimo 5 anos conforme a resolução CFP 001/2009. Seus dados serão anonimizados, não excluídos imediatamente.",
+      "confirm": "Enviar solicitação"
+    },
+    "noConsentWarning": "Nenhum consentimento explícito registrado para este paciente",
+    "purposes": {
+      "data_processing": "Processamento de dados",
+      "marketing_communications": "Comunicações de marketing",
+      "third_party_sharing": "Compartilhamento com terceiros"
+    }
   }
 }

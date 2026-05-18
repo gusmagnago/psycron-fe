@@ -44,6 +44,7 @@ import {
 	getSessionsAscending,
 } from '../PatientsPage.utils';
 
+import { ConsentSection } from './components/consent/ConsentSection';
 import { PatientEditForm } from './edit-patient-form/PatientEditForm';
 import { SessionDrawer } from './session-drawer/SessionDrawer';
 import {
@@ -518,6 +519,11 @@ export const PatientProfilePage = () => {
 									})}
 								</MutedValue>
 							) : null}
+						</SectionCard>
+
+						<SectionCard>
+							<SectionTitle>{t('consent.title')}</SectionTitle>
+							<ConsentSection patientId={patientDetails._id} />
 						</SectionCard>
 
 						<SectionCard>

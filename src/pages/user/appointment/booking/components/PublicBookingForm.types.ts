@@ -5,4 +5,5 @@ import type { IBookingFormValues } from '../BookAppointment.types';
 export interface IPublicBookingFormProps {
 	letPatientChooseAddress: boolean;
 	methods: UseFormReturn<IBookingFormValues>;
+	therapistName: string;
 }

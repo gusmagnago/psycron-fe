@@ -75,6 +75,7 @@ export interface ICreatePatientResponse {
 export type SessionDelivery = 'in_person' | 'online';
 
 export interface ICreatePatientForm {
+	consentAccepted?: boolean;
 	countryCode: string;
 	email?: string;
 	firstName: string;

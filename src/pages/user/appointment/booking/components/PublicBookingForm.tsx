@@ -1,15 +1,19 @@
 import { Controller, FormProvider } from 'react-hook-form';
-import { useTranslation } from 'react-i18next';
-import { Checkbox, FormControlLabel, Radio } from '@mui/material';
+import { Trans, useTranslation } from 'react-i18next';
+import { Link } from 'react-router-dom';
+import { Checkbox, FormControlLabel, FormHelperText, Radio } from '@mui/material';
 import { Divider } from '@psycron/components/divider/Divider';
 import { AddressForm } from '@psycron/components/form/components/address/AddressForm';
 import { ContactsForm } from '@psycron/components/form/components/contacts/ContactsForm';
 import { NameForm } from '@psycron/components/form/components/name/NameForm';
 import { Text } from '@psycron/components/text/Text';
+import { externalUrls } from '@psycron/pages/urls';
 
 import type { IBookingFormValues } from '../BookAppointment.types';
 
 import {
+	ConsentBox,
+	ConsentLabel,
 	FormSection,
 	NotifyBox,
 	NotifyCheckboxWrapper,
@@ -29,9 +33,14 @@ const RECURRENCE_OPTIONS = [
 export const PublicBookingForm = ({
 	letPatientChooseAddress,
 	methods,
+	therapistName,
 }: IPublicBookingFormProps) => {
-	const { t } = useTranslation();
-	const { control, watch } = methods;
+	const { i18n, t } = useTranslation();
+	const {
+		control,
+		formState: { errors },
+		watch,
+	} = methods;
 	const recurrence = watch('recurrencePattern');
 
 	return (
@@ -146,6 +155,42 @@ export const PublicBookingForm = ({
 						{t('booking.notifications.fallback-note')}
 					</Text>
 				</NotifyBox>
+
+				<ConsentBox>
+					<Controller
+						control={control}
+						name='consentAccepted'
+						rules={{ validate: (value) => value || t('consent.required') }}
+						render={({ field }) => (
+							<FormControlLabel
+								control={
+									<Checkbox
+										checked={Boolean(field.value)}
+										onChange={(e) => field.onChange(e.target.checked)}
+									/>
+								}
+								label={
+									<ConsentLabel>
+										<Trans
+											i18nKey='consent.dataProcessing'
+											values={{ therapistName }}
+											components={{
+												privacyLink: (
+													<Link to={externalUrls(i18n.language).PRIVACY} />
+												),
+											}}
+										/>
+									</ConsentLabel>
+								}
+							/>
+						)}
+					/>
+					{errors.consentAccepted?.message ? (
+						<FormHelperText error>
+							{String(errors.consentAccepted.message)}
+						</FormHelperText>
+					) : null}
+				</ConsentBox>
 			</FormSection>
 		</FormProvider>
 	);
