@@ -1,4 +1,5 @@
-import { Box, styled } from '@mui/material';
+import styled from '@emotion/styled';
+import { Box } from '@mui/material';
 import { spacing } from '@psycron/theme/spacing/spacing.theme';
 
 export const OtpWrapper = styled(Box)`
@@ -9,11 +10,4 @@ export const OtpWrapper = styled(Box)`
 	max-width: 400px;
 	width: 100%;
 	padding: ${spacing[6]};
-`;
-
-export const OtpInputRow = styled(Box)`
-	display: flex;
-	gap: ${spacing[2]};
-	justify-content: center;
-	width: 100%;
 `;

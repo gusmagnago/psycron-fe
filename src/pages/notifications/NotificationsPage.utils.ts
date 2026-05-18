@@ -37,6 +37,7 @@ export const NOTIFICATION_MESSAGE_TYPES = [
 	'CONFLICT',
 	'ACCOUNT_SETUP',
 	'DAILY_SCHEDULE_SUMMARY',
+	'WHATSAPP_ACTION_REQUIRED',
 ] satisfies NotificationMessageType[];
 
 export const DEFAULT_NOTIFICATION_LIMIT = 20;
@@ -155,27 +156,16 @@ export const formatNotificationDeliveryDate = (
 	);
 };
 
-const APPOINTMENT_MESSAGE_TYPES: NotificationMessageType[] = [
-	'APPOINTMENT_CONFIRMATION',
-	'APPOINTMENT_UPDATED',
-	'REMINDER',
-];
-
 export const isNotificationResendable = (
 	notification: INotificationRecord
 ): boolean => {
-	if (notification.status === 'FAILED') return true;
+	if (notification.messageType === 'WHATSAPP_ACTION_REQUIRED') return false;
 
-	// Appointment hydrated — trust its isUpcoming flag
-	if (notification.appointment) {
-		return Boolean(notification.appointment.isUpcoming);
-	}
-
-	// Appointment not hydrated — optimistically allow resend for appointment-related types;
-	// the backend validates the actual slot date on retry
-	return APPOINTMENT_MESSAGE_TYPES.includes(
-		notification.messageType as NotificationMessageType
-	);
+	// Appointment must be hydrated and upcoming. If the slot can't be found by the
+	// backend (deleted, old record without slotId) appointment is null — in that
+	// case we conservatively hide the button; resending a past or unknown slot is
+	// always wrong and the backend guards against it anyway.
+	return Boolean(notification.appointment?.isUpcoming);
 };
 
 export const getPatientProfilePath = (
