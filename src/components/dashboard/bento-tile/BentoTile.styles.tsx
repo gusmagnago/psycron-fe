@@ -2,7 +2,6 @@ import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import { Box } from '@mui/material';
 import { bentoTileTheme } from '@psycron/theme/dashboard/bentoTile.theme';
-import { isSmallerThanMediumMedia } from '@psycron/theme/media-queries/mediaQueries';
 import { palette } from '@psycron/theme/palette/palette.theme';
 import {
 	shadowDashboardTile,
@@ -121,12 +120,7 @@ export const BentoTileInner = styled(Box, {
 		if (hasFooterChrome) return 'minmax(0, 1fr) auto';
 		return 'minmax(0, 1fr)';
 	}};
-	gap: ${({ hasFooterChrome, hasHeaderChrome }) =>
-		hasFooterChrome || hasHeaderChrome ? spacing.xs : 0};
-
-	${isSmallerThanMediumMedia} {
-		gap: 0;
-	}
+	gap: 0;
 `;
 
 export const BentoTileHeaderIdentity = styled(Box)`

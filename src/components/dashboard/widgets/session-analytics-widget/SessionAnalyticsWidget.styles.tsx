@@ -25,7 +25,7 @@ export const GlassPanel = styled(Box, {
 })<{ layout: SessionAnalyticsLayout }>`
 	align-items: stretch;
 	background: ${palette.white};
-	border: 1px solid ${palette.gray['01']};
+
 	border-radius: ${spacing.small};
 	display: flex;
 	flex: 1;

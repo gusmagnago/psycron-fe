@@ -107,7 +107,7 @@ export const ActionCenterEmpty = styled(Box)`
 	font-size: 0.875rem;
 	font-weight: 700;
 	justify-content: center;
-	min-height: 5rem;
+	min-height: 2rem;
 	text-align: center;
 `;
 

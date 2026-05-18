@@ -65,10 +65,14 @@ export const useNotificationsPageState = ({
 	const queryClient = useQueryClient();
 	const { showAlert } = useAlert();
 	const location = useLocation();
-	const locationState = location.state as { patientId?: string } | null;
+	const locationState = location.state as {
+		patientId?: string;
+		status?: NotificationFilters['status'];
+	} | null;
 	const [filters, setFilters] = useState<NotificationFilters>({
 		...DEFAULT_FILTERS,
 		patientId: locationState?.patientId,
+		status: locationState?.status,
 	});
 	const [selectedNotificationId, setSelectedNotificationId] = useState<string | null>(null);
 	const [isFiltersDrawerOpen, setIsFiltersDrawerOpen] = useState(false);

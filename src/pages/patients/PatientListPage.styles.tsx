@@ -310,7 +310,7 @@ export const DuplicateWarningPill = styled('button')`
 	}
 `;
 
-export const CancellationNoticePill = styled(Box)`
+export const CancellationNoticePill = styled('span')`
 	align-items: center;
 	background: ${hexToRgba(palette.error.main, 0.1)};
 	border: 1px solid ${hexToRgba(palette.error.main, 0.18)};
