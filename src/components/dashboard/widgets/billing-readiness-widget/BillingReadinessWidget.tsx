@@ -2,25 +2,41 @@ import { useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Skeleton } from '@mui/material';
 import { useBentoTileChrome } from '@psycron/components/dashboard/bento-tile/BentoTile.context';
+import { StatusChip } from '@psycron/components/dashboard/status-chip/StatusChip';
 import { Payment } from '@psycron/components/icons';
 import { DonutProgressGlass } from '@psycron/components/progress/donut/DonutProgressGlass';
 import { useCountUp } from '@psycron/hooks/useCountUp';
+import type { DashboardAccentTone } from '@psycron/theme/palette/dashboardAccents';
 
 import {
 	BillingContent,
 	BillingCopy,
-	BillingDetails,
+	BillingProgressStage,
 	BillingRoot,
 	BillingSubLabel,
 	BillingTeaser,
 	BillingTeaserIconWrap,
 	BillingTeaserSubText,
 	BillingTeaserTitle,
-	StatusChip,
 } from './BillingReadinessWidget.styles';
-import type { BillingReadinessWidgetProps } from './BillingReadinessWidget.types';
+import type {
+	BillingReadinessWidgetProps,
+	BillingStatus,
+} from './BillingReadinessWidget.types';
+
+const getBillingStatusTone = (status: BillingStatus): DashboardAccentTone => {
+	switch (status) {
+		case 'ready':
+			return 'success';
+		case 'partial':
+			return 'warning';
+		case 'empty':
+			return 'danger';
+	}
+};
 
 export const BillingReadinessWidget = ({
+	colSpan,
 	configuredCount,
 	isLoading,
 	missingCount,
@@ -29,16 +45,20 @@ export const BillingReadinessWidget = ({
 	status,
 	totalCount,
 }: BillingReadinessWidgetProps) => {
+	const isWide = (colSpan ?? 0) >= 6;
 	const { t } = useTranslation();
 	const animatedValue = useCountUp({ end: percentage });
 
 	const headerActions = useMemo(
-		() =>
-			status !== 'empty' ? (
-				<StatusChip status={status}>
-					{t(`page.dashboard.widgets.billing-readiness.status-chip.${status}`)}
-				</StatusChip>
-			) : undefined,
+		() => (
+			<>
+				{status !== 'empty' && (
+					<StatusChip tone={getBillingStatusTone(status)}>
+						{t(`page.dashboard.widgets.billing-readiness.status-chip.${status}`)}
+					</StatusChip>
+				)}
+			</>
+		),
 		[status, t]
 	);
 
@@ -102,15 +122,19 @@ export const BillingReadinessWidget = ({
 			role='button'
 			tabIndex={0}
 		>
-			<BillingContent>
-				<DonutProgressGlass
-					label={`${animatedValue.toLocaleString()}%`}
-					meta={t('page.dashboard.widgets.billing-readiness.donut-meta', {
-						configured: configuredCount,
-						total: totalCount,
-					})}
-					value={percentage}
-				/>
+			<BillingContent isWide={isWide}>
+				<BillingProgressStage>
+					<DonutProgressGlass
+						label={`${animatedValue.toLocaleString()}%`}
+						meta={t('page.dashboard.widgets.billing-readiness.donut-meta', {
+							configured: configuredCount,
+							total: totalCount,
+						})}
+						size={128}
+						stroke={12}
+						value={percentage}
+					/>
+				</BillingProgressStage>
 
 				<BillingCopy>
 					<BillingSubLabel>
@@ -120,14 +144,6 @@ export const BillingReadinessWidget = ({
 							total: totalCount,
 						})}
 					</BillingSubLabel>
-
-					<BillingDetails>
-						{t('page.dashboard.widgets.billing-readiness.details', {
-							configured: configuredCount,
-							missing: missingCount,
-							total: totalCount,
-						})}
-					</BillingDetails>
 				</BillingCopy>
 			</BillingContent>
 		</BillingRoot>

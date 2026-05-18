@@ -1,4 +1,5 @@
-import { addMinutes, isAfter, isBefore, parseISO } from 'date-fns';
+import { addMinutes, isAfter, isBefore } from 'date-fns';
+import { fromZonedTime } from 'date-fns-tz';
 
 import type { SlotStatusChip } from './ScheduleWidget.types';
 
@@ -14,9 +15,11 @@ export const ROW_VARIANTS = {
 export const getSlotStatus = (
 	date: string,
 	duration: number,
-	startTime: string
+	startTime: string,
+	timezone?: string
 ): { progress: number | null; status: SlotStatusChip } => {
-	const start = parseISO(`${date}T${startTime}`);
+	const tz = timezone ?? Intl.DateTimeFormat().resolvedOptions().timeZone;
+	const start = fromZonedTime(`${date}T${startTime}`, tz);
 	const end = addMinutes(start, duration);
 	const now = new Date();
 

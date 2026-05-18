@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import type { DragEndEvent, DragStartEvent } from '@dnd-kit/core';
@@ -18,28 +18,35 @@ import {
 } from '@dnd-kit/sortable';
 import { capture } from '@psycron/analytics/posthog/events';
 import { PostHogEvent } from '@psycron/analytics/posthog/types';
+import type { DashboardActionTarget } from '@psycron/api/dashboard/index.types';
 import { BentoTile } from '@psycron/components/dashboard/bento-tile/BentoTile';
 import { CustomizeControl } from '@psycron/components/dashboard/customize-control/CustomizeControl';
-import { DashboardGreeting } from '@psycron/components/dashboard/greeting/DashboardGreeting';
+import { ActionCenterWidget } from '@psycron/components/dashboard/widgets/action-center-widget/ActionCenterWidget';
 import { BillingReadinessWidget } from '@psycron/components/dashboard/widgets/billing-readiness-widget/BillingReadinessWidget';
+import { GreetingWidget } from '@psycron/components/dashboard/widgets/greeting-widget/GreetingWidget';
 import { JupiterInsightsWidget } from '@psycron/components/dashboard/widgets/jupiter-insights-widget/JupiterInsightsWidget';
+import { NotificationsWidget } from '@psycron/components/dashboard/widgets/notifications-widget/NotificationsWidget';
 import { PendingTasksWidget } from '@psycron/components/dashboard/widgets/pending-tasks-widget/PendingTasksWidget';
 import type { PendingTask } from '@psycron/components/dashboard/widgets/pending-tasks-widget/PendingTasksWidget.types';
 import { QuickActionsWidget } from '@psycron/components/dashboard/widgets/quick-actions-widget/QuickActionsWidget';
+import { getActionTone } from '@psycron/components/dashboard/widgets/quick-actions-widget/QuickActionsWidget.utils';
 import { RecentPatientsWidget } from '@psycron/components/dashboard/widgets/recent-patients-widget/RecentPatientsWidget';
 import type { RecentPatient } from '@psycron/components/dashboard/widgets/recent-patients-widget/RecentPatientsWidget.types';
+import { RevenueWidget } from '@psycron/components/dashboard/widgets/revenue-widget/RevenueWidget';
 import { ScheduleWidget } from '@psycron/components/dashboard/widgets/schedule-widget/ScheduleWidget';
 import { SessionAnalyticsWidget } from '@psycron/components/dashboard/widgets/session-analytics-widget/SessionAnalyticsWidget';
 import type { WeeklyBarData } from '@psycron/components/dashboard/widgets/weekly-chart-widget/WeeklyChartWidget.types';
 import { useUserDetails } from '@psycron/context/user/details/UserDetailsContext';
 import { useTimeOfDay } from '@psycron/hooks/useTimeOfDay';
 import useViewport from '@psycron/hooks/useViewport';
-import { PageLayout } from '@psycron/layouts/app/pages-layout/PageLayout';
 import type { IWeekSlot } from '@psycron/pages/availability/week/AvailabilityWeekPage.types';
 import { AvailabilityWeekDrawer } from '@psycron/pages/availability/week/drawer/AvailabilityWeekDrawer';
-import { AVAILABILITYWEEK_BASE, PATIENTPROFILE, PATIENTS } from '@psycron/pages/urls';
+import {
+	AVAILABILITYWEEK_BASE,
+	PATIENTPROFILE,
+	PATIENTS,
+} from '@psycron/pages/urls';
 
-import { useDashboardBillingReadiness } from './hooks/useDashboardBillingReadiness';
 import { useDashboardLayout } from './hooks/useDashboardLayout';
 import { useDashboardSlots } from './hooks/useDashboardSlots';
 import { useDashboardSummary } from './hooks/useDashboardSummary';
@@ -55,13 +62,14 @@ import type { DashboardTileId } from './Dashboard.types';
 import {
 	getQuickActionIcon,
 	getTargetNav,
+	getWidgetInfoId,
+	MAX_TILE_COL_SPAN,
 	MAX_TILE_ROW_SPAN,
 	MIN_TILE_ROW_SPAN,
 	TILE_DESKTOP,
 	TILE_MIN_HEIGHT,
 	TILE_TABLET,
 } from './Dashboard.utils';
-import { DashboardDevGrid } from './DashboardDevGrid';
 
 export const Dashboard = () => {
 	const { t } = useTranslation();
@@ -69,18 +77,24 @@ export const Dashboard = () => {
 	const { userDetails } = useUserDetails();
 	const band = useTimeOfDay();
 	const { isMobile, isBiggerThanTablet } = useViewport();
-	const { isLoading, metrics, todaySlots, weekEnd, weekSlotsByDay, weekStart } =
-		useDashboardSlots();
-	const { isLoading: isSummaryLoading, summary } = useDashboardSummary();
 	const {
-		billingReadiness,
-		isLoading: isBillingReadinessLoading,
-	} = useDashboardBillingReadiness(summary?.billingReadiness);
+		isLoading,
+		metrics,
+		timezone,
+		todaySlots,
+		weekEnd,
+		weekSlotsByDay,
+		weekStart,
+	} = useDashboardSlots();
+	const { isLoading: isSummaryLoading, summary } = useDashboardSummary();
+	const billingReadiness = summary?.billingReadiness;
 	const {
 		isCustomizing,
 		layout,
+		organizeLayout,
 		reorderLayout,
 		resizeTile,
+		resizeTileWidth,
 		resetLayout,
 		setCustomizing,
 		toggleTileOrientation,
@@ -105,6 +119,14 @@ export const Dashboard = () => {
 	const sortedIds = useMemo(
 		() => sortedLayout.map((t) => t.id),
 		[sortedLayout]
+	);
+
+	const navigateToDashboardTarget = useCallback(
+		(target: DashboardActionTarget) => {
+			const { state, to } = getTargetNav(target);
+			navigate(to, { state });
+		},
+		[navigate]
 	);
 
 	const handleDragStart = ({ active }: DragStartEvent) => {
@@ -140,14 +162,21 @@ export const Dashboard = () => {
 	const patientCount =
 		summary?.activePatients.count ?? userDetails?.patients?.length ?? 0;
 	const hasAvailability =
-		summary?.setup.hasAvailability ?? (userDetails?.availability?.length ?? 0) > 0;
+		summary?.setup.hasAvailability ??
+		(userDetails?.availability?.length ?? 0) > 0;
 	const whatsappRemindersEnabled =
 		summary?.setup.remindersEnabled ??
 		userDetails?.notificationPreferences?.reminder?.whatsapp;
 
 	const { insights: jupiterInsights, isLoading: isJupiterInsightsLoading } =
 		useJupiterInsights({
-			billingReadiness,
+			billingReadiness: billingReadiness ?? {
+				configuredCount: 0,
+				missingCount: 0,
+				percentage: 0,
+				status: 'empty',
+				totalCount: 0,
+			},
 			hasAvailability,
 			metrics,
 			patientCount,
@@ -162,6 +191,9 @@ export const Dashboard = () => {
 				icon: getQuickActionIcon(action.id),
 				id: action.id,
 				label: t(action.labelKey),
+				description: action.descriptionKey
+					? t(action.descriptionKey, action.descriptionValues)
+					: undefined,
 				onClick: () => {
 					capture(PostHogEvent.DashboardQuickActionClicked, {
 						action_id: action.id,
@@ -169,18 +201,21 @@ export const Dashboard = () => {
 						tier: summary?.tier ?? 'unknown',
 						tile_id: 'quick-actions',
 					});
-					const { state, to } = getTargetNav(action.target);
-					navigate(to, { state });
+					navigateToDashboardTarget(action.target);
 				},
 				tier: summary?.tier ?? 'onboarding',
+				tone: getActionTone(action.id),
 			})),
-		[navigate, summary?.quickActions, summary?.tier, t]
+		[navigateToDashboardTarget, summary?.quickActions, summary?.tier, t]
 	);
 
 	const pendingTasks = useMemo<PendingTask[]>(
 		() =>
 			(summary?.pendingTasks ?? []).map((task) => ({
 				count: task.count,
+				description: task.descriptionKey
+					? t(task.descriptionKey, task.descriptionValues)
+					: undefined,
 				label: t(task.labelKey),
 				onClick: () => {
 					capture(PostHogEvent.DashboardPendingTaskClicked, {
@@ -190,13 +225,12 @@ export const Dashboard = () => {
 						tier: summary?.tier ?? 'unknown',
 						tile_id: 'pending-tasks',
 					});
-					const { state, to } = getTargetNav(task.target);
-					navigate(to, { state });
+					navigateToDashboardTarget(task.target);
 				},
 				tier: summary?.tier ?? 'onboarding',
 				type: task.type,
 			})),
-		[navigate, summary?.pendingTasks, summary?.tier, t]
+		[navigateToDashboardTarget, summary?.pendingTasks, summary?.tier, t]
 	);
 
 	const recentPatients = useMemo<RecentPatient[]>(
@@ -208,7 +242,8 @@ export const Dashboard = () => {
 				lastActivityType: patient.lastActivityType,
 				lastName: patient.lastName,
 				onMessage: patient.hasMessageContact
-					? () => navigate(`../${PATIENTPROFILE.replace(':patientId', patient.id)}`)
+					? () =>
+							navigate(`../${PATIENTPROFILE.replace(':patientId', patient.id)}`)
 					: undefined,
 				onOpen: () => {
 					capture(PostHogEvent.DashboardRecentPatientOpened, {
@@ -228,11 +263,17 @@ export const Dashboard = () => {
 		if (isMobile) return { col: 1, row: 1 };
 		const baseSpan = isBiggerThanTablet ? TILE_DESKTOP[id] : TILE_TABLET[id];
 		const tile = layout.find((t) => t.id === id);
+		const minRow = baseSpan.minRow ?? MIN_TILE_ROW_SPAN;
+		const minCol = baseSpan.minCol ?? 1;
 		const row = Math.min(
-			Math.max(baseSpan.row + (tile?.heightDelta ?? 0), MIN_TILE_ROW_SPAN),
+			Math.max(baseSpan.row + (tile?.heightDelta ?? 0), minRow),
 			MAX_TILE_ROW_SPAN
 		);
-		return { ...baseSpan, row };
+		const col = Math.min(
+			Math.max(baseSpan.col + (tile?.colDelta ?? 0), minCol),
+			MAX_TILE_COL_SPAN
+		);
+		return { ...baseSpan, col, row };
 	};
 
 	const renderTile = (tileId: DashboardTileId, index: number) => {
@@ -253,19 +294,37 @@ export const Dashboard = () => {
 			onToggleOrientation:
 				tileId === 'session-analytics' ? toggleTileOrientation : undefined,
 			onResize: resizeTile,
+			onResizeWidth: resizeTileWidth,
 			onToggleVisibility: toggleVisibility,
 			orientation,
 			rowSpan: row,
+			tier: summary?.tier,
+			widgetInfoId: getWidgetInfoId(tileId),
 		};
 
 		switch (tileId) {
+			case 'greeting':
+				return (
+					<BentoTile {...commonProps} key={tileId}>
+						<GreetingWidget band={band} name={userDetails?.firstName ?? ''} />
+					</BentoTile>
+				);
+
 			case 'schedule':
 				return (
 					<BentoTile {...commonProps} key={tileId}>
 						<ScheduleWidget
 							isLoading={isLoading}
-							onSlotClick={setSelectedSlot}
+							onSlotClick={(slot) => {
+								capture(PostHogEvent.DashboardScheduleSlotClicked, {
+									date: slot.date,
+									tier: summary?.tier ?? 'unknown',
+									tile_id: 'schedule',
+								});
+								setSelectedSlot(slot);
+							}}
 							slots={todaySlots}
+							timezone={timezone}
 							weekEnd={weekEnd}
 							weekHref={`${AVAILABILITYWEEK_BASE}/${weekStart}`}
 							weekSlotsByDay={weekSlotsByDay}
@@ -289,6 +348,7 @@ export const Dashboard = () => {
 					<BentoTile {...commonProps} key={tileId}>
 						<QuickActionsWidget
 							actions={quickActions}
+							colSpan={col}
 							isLoading={isSummaryLoading}
 						/>
 					</BentoTile>
@@ -298,21 +358,57 @@ export const Dashboard = () => {
 				return (
 					<BentoTile {...commonProps} key={tileId}>
 						<BillingReadinessWidget
-							configuredCount={billingReadiness.configuredCount}
-							isLoading={isSummaryLoading || isBillingReadinessLoading}
-							missingCount={billingReadiness.missingCount}
+							colSpan={col}
+							configuredCount={billingReadiness?.configuredCount ?? 0}
+							isLoading={isSummaryLoading}
+							missingCount={billingReadiness?.missingCount ?? 0}
 							onClick={() => {
 								capture(PostHogEvent.DashboardBillingReadinessClicked, {
-									percentage: billingReadiness.percentage,
+									percentage: billingReadiness?.percentage ?? 0,
 									source: 'dashboard-summary',
 									tier: summary?.tier ?? 'unknown',
 									tile_id: 'billing-readiness',
 								});
 								navigate(`../${PATIENTS}`);
 							}}
-							percentage={billingReadiness.percentage}
-							status={billingReadiness.status}
-							totalCount={billingReadiness.totalCount}
+							percentage={billingReadiness?.percentage ?? 0}
+							status={billingReadiness?.status ?? 'empty'}
+							totalCount={billingReadiness?.totalCount ?? 0}
+						/>
+					</BentoTile>
+				);
+
+			case 'revenue':
+				return (
+					<BentoTile {...commonProps} key={tileId}>
+						<RevenueWidget
+							colSpan={col}
+							estimate={summary?.revenueEstimate}
+							isLoading={isSummaryLoading}
+							onClick={() => navigate(`../${PATIENTS}`)}
+						/>
+					</BentoTile>
+				);
+
+			case 'notifications':
+				return (
+					<BentoTile {...commonProps} key={tileId}>
+						<NotificationsWidget
+							colSpan={col}
+							isLoading={isSummaryLoading}
+							onStatusClick={(status) => {
+								if (status) {
+									capture(PostHogEvent.DashboardNotificationStatusClicked, {
+										status: status as 'FAILED' | 'PENDING' | 'SENT',
+										tier: summary?.tier ?? 'unknown',
+									});
+								}
+								navigateToDashboardTarget({ status, type: 'notifications' });
+							}}
+							onViewFeed={() =>
+								navigateToDashboardTarget({ type: 'notifications' })
+							}
+							summary={summary?.notifications24h}
 						/>
 					</BentoTile>
 				);
@@ -358,7 +454,8 @@ export const Dashboard = () => {
 									summary?.week.cancelledCount ?? metrics.weekCancelledCount,
 								completed:
 									summary?.week.completedCount ?? metrics.weekCompletedCount,
-								upcoming: summary?.week.upcomingCount ?? metrics.weekUpcomingCount,
+								upcoming:
+									summary?.week.upcomingCount ?? metrics.weekUpcomingCount,
 							}}
 						/>
 					</BentoTile>
@@ -369,8 +466,19 @@ export const Dashboard = () => {
 				return (
 					<BentoTile {...commonProps} key={tileId}>
 						<PendingTasksWidget
+							colSpan={col}
 							isLoading={isSummaryLoading}
 							tasks={pendingTasks}
+						/>
+					</BentoTile>
+				);
+
+			case 'action-center':
+				return (
+					<BentoTile {...commonProps} key={tileId}>
+						<ActionCenterWidget
+							isLoading={isSummaryLoading}
+							summary={summary?.actionCenter}
 						/>
 					</BentoTile>
 				);
@@ -379,6 +487,7 @@ export const Dashboard = () => {
 				return (
 					<BentoTile {...commonProps} key={tileId}>
 						<RecentPatientsWidget
+							colSpan={col}
 							isLoading={isSummaryLoading && recentPatients.length === 0}
 							onViewAll={() => navigate(`../${PATIENTS}`)}
 							patients={recentPatients}
@@ -394,12 +503,12 @@ export const Dashboard = () => {
 	const activeSpan = activeId ? getSpan(activeId) : null;
 
 	return (
-		<PageLayout isLoading={false} title={t('page.dashboard.title')}>
+		<>
 			<DashboardRoot>
 				<DashboardTopBar>
-					<DashboardGreeting band={band} name={userDetails?.firstName ?? ''} />
 					<CustomizeControl
 						isCustomizing={isCustomizing}
+						onOrganize={organizeLayout}
 						onReset={resetLayout}
 						onToggle={setCustomizing}
 					/>
@@ -413,7 +522,6 @@ export const Dashboard = () => {
 				>
 					<SortableContext items={sortedIds} strategy={rectSortingStrategy}>
 						<BentoGridWrapper>
-							<DashboardDevGrid />
 							<BentoGrid>
 								{sortedLayout.map((tile, index) => renderTile(tile.id, index))}
 							</BentoGrid>
@@ -439,6 +547,6 @@ export const Dashboard = () => {
 					slot={selectedSlot}
 				/>
 			)}
-		</PageLayout>
+		</>
 	);
 };

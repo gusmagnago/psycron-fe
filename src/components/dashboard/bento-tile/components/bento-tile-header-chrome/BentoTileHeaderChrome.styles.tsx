@@ -15,5 +15,8 @@ export const BentoTileHeaderActions = styled(Box)`
 	align-items: center;
 	display: flex;
 	flex-shrink: 0;
-	gap: ${spacing.xs};
+
+	& button {
+		padding: ${spacing.xs};
+	}
 `;

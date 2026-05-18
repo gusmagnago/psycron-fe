@@ -69,9 +69,11 @@ export const DonutShell = styled(Box, {
 	align-items: center;
 	aspect-ratio: 1;
 	background:
-		radial-gradient(circle, ${hexToRgba(palette.white, 0.44)} 0%, ${({
-			tone,
-		}) => toneSurface(tone)} 100%),
+		radial-gradient(
+			circle,
+			${hexToRgba(palette.white, 0.44)} 0%,
+			${({ tone }) => toneSurface(tone)} 100%
+		),
 		${glassSurface};
 	border: 1px solid ${hexToRgba(palette.white, 0.72)};
 	border-radius: ${SHELL_RADIUS};
@@ -170,12 +172,11 @@ export const DonutFill = styled(motion.circle)`
 export const DonutCenter = styled(Box)`
 	align-items: center;
 	aspect-ratio: 1;
-	background:
-		radial-gradient(
-			circle,
-			${hexToRgba(palette.white, 0.8)} 0%,
-			${hexToRgba(palette.white, 0.48)} 100%
-		);
+	background: radial-gradient(
+		circle,
+		${hexToRgba(palette.white, 0.8)} 0%,
+		${hexToRgba(palette.white, 0.48)} 100%
+	);
 	backdrop-filter: blur(14px) saturate(145%);
 	border: 1px solid ${hexToRgba(palette.white, 0.52)};
 	border-radius: ${SHELL_RADIUS};

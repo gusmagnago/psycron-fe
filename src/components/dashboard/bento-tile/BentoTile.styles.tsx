@@ -5,25 +5,22 @@ import { bentoTileTheme } from '@psycron/theme/dashboard/bentoTile.theme';
 import { isSmallerThanMediumMedia } from '@psycron/theme/media-queries/mediaQueries';
 import { palette } from '@psycron/theme/palette/palette.theme';
 import {
-	shadowGlassShimmer,
-	shadowMedium,
+	shadowDashboardTile,
 	shadowSmallPurple,
 } from '@psycron/theme/shadow/shadow.theme';
 import { spacing } from '@psycron/theme/spacing/spacing.theme';
 import { motion } from 'framer-motion';
 
 export const glassTile = css`
-	background: ${palette.background.default};
-	backdrop-filter: blur(${bentoTileTheme.backdrop.blur})
-		saturate(${bentoTileTheme.backdrop.saturation});
+	background: ${palette.white};
 	border-radius: ${bentoTileTheme.radius.tile};
-	box-shadow: ${shadowMedium}, ${shadowGlassShimmer};
+	box-shadow: ${shadowDashboardTile};
 	overflow: hidden;
 	position: relative;
 	transition: ${bentoTileTheme.motion.tileTransition};
 
 	&:hover {
-		box-shadow: ${shadowSmallPurple}, ${shadowGlassShimmer};
+		box-shadow: ${shadowSmallPurple};
 	}
 
 	@media (prefers-color-scheme: dark) {
@@ -66,7 +63,7 @@ export const BentoTileRoot = styled(Box, {
 		isHidden &&
 		!isEditMode &&
 		css`
-			pointer-events: none;
+			display: none;
 		`}
 `;
 
@@ -93,12 +90,7 @@ export const DropTargetOverlay = styled('div')`
 `;
 
 export const jupiterTile = css`
-	background: linear-gradient(
-		135deg,
-		${palette.tertiary.light} 0%,
-		${bentoTileTheme.jupiter.tertiaryStop} 40%,
-		${bentoTileTheme.jupiter.secondaryStop} 100%
-	);
+	background-color: ${palette.brand.light};
 	backdrop-filter: blur(${bentoTileTheme.backdrop.blur})
 		saturate(${bentoTileTheme.backdrop.saturation});
 	-webkit-backdrop-filter: blur(${bentoTileTheme.backdrop.blur})

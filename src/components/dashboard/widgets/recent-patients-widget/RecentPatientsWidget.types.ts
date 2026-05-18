@@ -12,6 +12,7 @@ export interface RecentPatient {
 }
 
 export interface RecentPatientsWidgetProps {
+	colSpan?: number;
 	isLoading?: boolean;
 	onViewAll?: () => void;
 	patients: RecentPatient[];

@@ -1,8 +1,8 @@
 import styled from '@emotion/styled';
 import { Box, Skeleton } from '@mui/material';
 import { isBiggerThanMediumMedia } from '@psycron/theme/media-queries/mediaQueries';
-import { hexToRgba, palette } from '@psycron/theme/palette/palette.theme';
-import { shadowGlassShimmer } from '@psycron/theme/shadow/shadow.theme';
+import { dashboardAccents } from '@psycron/theme/palette/dashboardAccents';
+import { palette } from '@psycron/theme/palette/palette.theme';
 import { spacing } from '@psycron/theme/spacing/spacing.theme';
 
 import type { SessionAnalyticsLayout } from './SessionAnalyticsWidget.types';
@@ -11,7 +11,7 @@ export const COLORS = {
 	blocked: palette.alert.main,
 	cancelled: palette.error.main,
 	completed: palette.success.main,
-	upcoming: palette.primary.main,
+	upcoming: dashboardAccents.info.main,
 } as const;
 
 export const AnalyticsRoot = styled(Box)`
@@ -24,15 +24,9 @@ export const GlassPanel = styled(Box, {
 	shouldForwardProp: (prop) => prop !== 'layout',
 })<{ layout: SessionAnalyticsLayout }>`
 	align-items: stretch;
-	background:
-		linear-gradient(
-			160deg,
-			${hexToRgba(palette.white, 0.72)},
-			${hexToRgba(palette.primary.surface.light, 0.5)}
-		),
-		${hexToRgba(palette.white, 0.34)};
+	background: ${palette.white};
+	border: 1px solid ${palette.gray['01']};
 	border-radius: ${spacing.small};
-	box-shadow: ${shadowGlassShimmer};
 	display: flex;
 	flex: 1;
 	flex-direction: column;
@@ -53,6 +47,8 @@ export const KpiBlock = styled(Box, {
 	flex-direction: column;
 	flex-shrink: 0;
 	gap: ${spacing.small};
+	min-height: 0;
+	overflow: hidden;
 	width: 100%;
 
 	${isBiggerThanMediumMedia} {
@@ -64,6 +60,7 @@ export const KpiHero = styled(Box)`
 	align-items: flex-start;
 	display: flex;
 	flex-direction: column;
+	flex-shrink: 0;
 	gap: ${spacing.xxs};
 `;
 
@@ -84,32 +81,6 @@ export const CompletionRateLabel = styled.span`
 	text-transform: none;
 `;
 
-export const KpiInsight = styled(Box)`
-	align-items: flex-start;
-	background: ${palette.tertiary.surface.light};
-	border: 1px solid ${hexToRgba(palette.tertiary.main, 0.28)};
-	border-radius: ${spacing.xs};
-	color: ${palette.text.secondary};
-	display: grid;
-	font-size: 12px;
-	gap: ${spacing.xs};
-	grid-template-columns: auto minmax(0, 1fr);
-	line-height: 1.4;
-	padding: ${spacing.xs};
-
-	& svg {
-		color: ${palette.brand.purple};
-		height: ${spacing.small};
-		width: ${spacing.small};
-	}
-`;
-
-export const KpiInsightSource = styled.span`
-	color: ${palette.text.primary};
-	font-weight: 700;
-	margin-right: ${spacing.xxs};
-`;
-
 export const KpiDivider = styled(Box)`
 	height: 1px;
 	background: ${palette.gray['01']};
@@ -127,8 +98,11 @@ export const StatGrid = styled(Box, {
 	shouldForwardProp: (prop) => prop !== 'layout',
 })<{ layout?: SessionAnalyticsLayout }>`
 	display: grid;
+	flex: 1;
 	gap: ${spacing.xs};
 	grid-template-columns: 1fr;
+	min-height: 0;
+	overflow: hidden;
 
 	${isBiggerThanMediumMedia} {
 		grid-template-columns: ${({ layout }) =>
@@ -201,7 +175,7 @@ export const ChartSkeletonBar = styled(Skeleton)`
 
 export const ChartCanvas = styled(Box)`
 	display: flex;
-	align-items: flex-end;
+	align-items: stretch;
 	gap: 12px;
 	flex: 1;
 	min-height: 80px;
@@ -234,7 +208,7 @@ export const BarGroup = styled(Box, {
 		display: flex;
 		flex-direction: column-reverse;
 		outline: ${({ isToday }) =>
-			isToday ? `2px solid ${palette.tertiary.main}` : 'none'};
+			isToday ? `2px solid ${dashboardAccents.today.main}` : 'none'};
 		outline-offset: 2px;
 	}
 `;
@@ -253,7 +227,7 @@ export const BarLabel = styled.span<{ isToday: boolean }>`
 	font-size: 11px;
 	font-weight: ${({ isToday }) => (isToday ? 700 : 400)};
 	color: ${({ isToday }) =>
-		isToday ? palette.tertiary.main : palette.text.secondary};
+		isToday ? dashboardAccents.today.contrast : palette.text.secondary};
 `;
 
 export const ChartLegend = styled(Box)`

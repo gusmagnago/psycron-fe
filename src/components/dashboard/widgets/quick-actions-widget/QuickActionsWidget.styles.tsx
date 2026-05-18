@@ -1,36 +1,40 @@
 import styled from '@emotion/styled';
-import { Box } from '@mui/material';
+import { Box, Skeleton } from '@mui/material';
 import { Text } from '@psycron/components/text/Text';
+import { dashboardAccents } from '@psycron/theme/palette/dashboardAccents';
 import { palette } from '@psycron/theme/palette/palette.theme';
 import { spacing } from '@psycron/theme/spacing/spacing.theme';
 import { motion } from 'framer-motion';
 
-export const ActionsList = styled(Box)`
-	display: flex;
-	flex-direction: column;
+export const ActionsList = styled(Box, {
+	shouldForwardProp: (prop) => prop !== 'isWide',
+})<{ isWide?: boolean }>`
+	display: grid;
+	grid-template-columns: ${({ isWide }) => (isWide ? 'repeat(2, 1fr)' : '1fr')};
 	gap: ${spacing.xs};
 `;
 
-export const ActionButton = styled(motion.button, {
-	shouldForwardProp: (prop) => prop !== 'hasBadge',
-})<{ hasBadge?: boolean }>`
+export const ActionSkeleton = styled(Skeleton)`
+	border-radius: ${spacing.xs};
+`;
+
+export const ActionButton = styled(motion.button)`
 	all: unset;
-	display: flex;
+	display: grid;
+	grid-template-columns: auto minmax(0, 1fr) auto auto;
 	align-items: center;
 	gap: ${spacing.small};
-	padding: ${spacing.small} ${spacing.extraSmall};
-	border-radius: ${spacing.extraSmall};
-	border: 1px solid ${palette.gray['02']};
+	padding: ${spacing.xs} 0;
+	border-bottom: 1px solid ${palette.gray['01']};
 	background: transparent;
 	cursor: pointer;
 	transition:
-		background 0.15s ease,
-		border-color 0.15s ease;
+		color 0.16s ease,
+		opacity 0.16s ease;
 	position: relative;
 
 	&:hover {
-		background: ${palette.primary.surface.light};
-		border-color: ${palette.primary.main};
+		color: ${palette.text.primary};
 	}
 
 	&:hover [data-chevron] {
@@ -39,31 +43,37 @@ export const ActionButton = styled(motion.button, {
 	}
 
 	&:focus-visible {
-		outline: 2px solid ${palette.primary.main};
+		outline: 2px solid ${dashboardAccents.info.main};
 		outline-offset: 2px;
+		border-radius: ${spacing.xs};
 	}
 `;
 
-export const ActionLabel = styled(Text)`
-	font-size: 14px;
-	font-weight: 500;
-	color: ${palette.text.primary};
-	flex: 1;
-	text-align: left;
+export const ActionText = styled(Box)`
+	display: flex;
+	flex-direction: column;
+	gap: ${spacing.xxs};
+	min-width: 0;
 `;
 
-export const ActionIconWrapper = styled(Box, {
-	shouldForwardProp: (prop) => prop !== 'iconBg' && prop !== 'iconFg',
-})<{ iconBg: string; iconFg: string }>`
-	width: ${spacing.large};
-	height: ${spacing.large};
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	border-radius: ${spacing.xs};
-	background: ${({ iconBg }) => iconBg};
-	color: ${({ iconFg }) => iconFg};
-	flex-shrink: 0;
+export const ActionLabel = styled(Text)`
+	font-size: 0.875rem;
+	font-weight: 800;
+	color: ${palette.text.primary};
+	overflow: hidden;
+	text-align: left;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+`;
+
+export const ActionDescription = styled(Text)`
+	color: ${palette.text.secondary};
+	font-size: 0.75rem;
+	font-weight: 700;
+	overflow: hidden;
+	text-align: left;
+	text-overflow: ellipsis;
+	white-space: nowrap;
 `;
 
 export const ActionChevron = styled(Box)`
@@ -78,8 +88,9 @@ export const ActionChevron = styled(Box)`
 `;
 
 export const Badge = styled(Box)`
-	background: ${palette.alert.main};
-	color: ${palette.white};
+	background: ${dashboardAccents.warning.surface};
+	border: 1px solid ${dashboardAccents.warning.border};
+	color: ${dashboardAccents.warning.contrast};
 	font-size: 11px;
 	font-weight: 700;
 	border-radius: 99px;

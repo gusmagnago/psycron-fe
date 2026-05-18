@@ -87,48 +87,6 @@ export const SlotDateLabel = styled.span`
 	letter-spacing: 0.05em;
 `;
 
-export const StatusChip = styled.span<{
-	status: 'confirmed' | 'done' | 'live' | 'pending';
-}>`
-	font-size: 0.6875rem;
-	font-weight: 700;
-	padding: ${spacing.space} ${spacing.xs};
-	border-radius: 99px;
-	flex-shrink: 0;
-
-	${({ status }) => {
-		if (status === 'live')
-			return css`
-				background: ${palette.success.main};
-				color: ${palette.white};
-				animation: livePulse 2s ease-in-out infinite;
-				@keyframes livePulse {
-					0%,
-					100% {
-						opacity: 1;
-					}
-					50% {
-						opacity: 0.7;
-					}
-				}
-			`;
-		if (status === 'confirmed')
-			return css`
-				background: ${palette.primary.surface.light};
-				color: ${palette.primary.dark};
-			`;
-		if (status === 'pending')
-			return css`
-				background: ${palette.alert.surface.light};
-				color: ${palette.alert.dark};
-			`;
-		return css`
-			background: ${palette.gray['01']};
-			color: ${palette.gray['07']};
-		`;
-	}}
-`;
-
 export const ProgressBarWrapper = styled(Box)`
 	margin-top: ${spacing.xs};
 	border-radius: 99px;

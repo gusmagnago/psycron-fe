@@ -7,9 +7,11 @@ import type {
 export interface UseDashboardLayoutReturn {
 	isCustomizing: boolean;
 	layout: DashboardLayoutState;
+	organizeLayout: () => void;
 	reorderLayout: (activeId: DashboardTileId, overId: DashboardTileId) => void;
 	resetLayout: () => void;
 	resizeTile: (id: DashboardTileId, delta: number) => void;
+	resizeTileWidth: (id: DashboardTileId, delta: number) => void;
 	setCustomizing: (value: boolean) => void;
 	toggleTileOrientation: (
 		id: DashboardTileId,

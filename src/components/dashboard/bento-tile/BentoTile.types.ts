@@ -1,4 +1,5 @@
 import type { CSSProperties, ReactNode } from 'react';
+import type { WidgetInfoId } from '@psycron/components/dashboard/widget-info-modal/WidgetInfoModal.types';
 import type {
 	DashboardTileId,
 	DashboardTileOrientation,
@@ -15,6 +16,7 @@ export interface BentoTileProps {
 	isEditMode?: boolean;
 	isHidden?: boolean;
 	onResize?: (id: DashboardTileId, delta: number) => void;
+	onResizeWidth?: (id: DashboardTileId, delta: number) => void;
 	onToggleOrientation?: (
 		id: DashboardTileId,
 		orientation?: DashboardTileOrientation
@@ -23,5 +25,7 @@ export interface BentoTileProps {
 	orientation?: DashboardTileOrientation;
 	rowSpan?: number;
 	style?: CSSProperties;
+	tier?: string;
 	variant?: BentoTileVariant;
+	widgetInfoId?: WidgetInfoId;
 }

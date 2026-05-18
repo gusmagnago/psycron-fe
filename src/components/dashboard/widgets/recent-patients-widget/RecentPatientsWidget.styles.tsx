@@ -5,9 +5,11 @@ import { palette } from '@psycron/theme/palette/palette.theme';
 import { spacing } from '@psycron/theme/spacing/spacing.theme';
 import { motion } from 'framer-motion';
 
-export const PatientsList = styled(Box)`
-	display: flex;
-	flex-direction: column;
+export const PatientsList = styled(Box, {
+	shouldForwardProp: (prop) => prop !== 'isWide',
+})<{ isWide?: boolean }>`
+	display: grid;
+	grid-template-columns: ${({ isWide }) => (isWide ? 'repeat(2, 1fr)' : '1fr')};
 	gap: ${spacing.xs};
 `;
 
@@ -90,25 +92,5 @@ export const MessageButton = styled.button`
 	&:focus-visible {
 		outline: 2px solid ${palette.primary.main};
 		outline-offset: 2px;
-	}
-`;
-
-export const ViewAllLink = styled.button`
-	all: unset;
-	align-items: center;
-	color: ${palette.primary.dark};
-	cursor: pointer;
-	display: flex;
-	font-size: 13px;
-	font-weight: 600;
-	gap: 3px;
-
-	& svg {
-		height: 13px;
-		width: 13px;
-	}
-
-	&:hover {
-		color: ${palette.tertiary.main};
 	}
 `;

@@ -1,4 +1,5 @@
 export interface BillingReadinessWidgetProps {
+	colSpan?: number;
 	configuredCount: number;
 	isLoading?: boolean;
 	missingCount: number;

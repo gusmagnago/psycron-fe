@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { useBentoTileChrome } from '@psycron/components/dashboard/bento-tile/BentoTile.context';
+import { RangeToggle } from '@psycron/components/dashboard/range-toggle/RangeToggle';
 import { Calendar, CalendarRange } from '@psycron/components/icons';
 import { Tooltip } from '@psycron/components/tooltip/Tooltip';
 import { parseISO } from 'date-fns';
@@ -13,10 +14,8 @@ import {
 	EmptyState,
 	ScheduleRoot,
 	ScheduleScrollBox,
-	ScheduleSwitcher,
 	SkeletonList,
 	SlotSkeleton,
-	SwitcherOption,
 } from './ScheduleWidget.styles';
 import type { ScheduleWidgetProps, ViewMode } from './ScheduleWidget.types';
 
@@ -24,6 +23,7 @@ export const ScheduleWidget = ({
 	isLoading,
 	onSlotClick,
 	slots,
+	timezone,
 	weekEnd,
 	weekHref,
 	weekSlotsByDay,
@@ -94,42 +94,48 @@ export const ScheduleWidget = ({
 			: t('page.dashboard.widgets.schedule.sessions-today');
 
 	const title = useMemo(
-		() => (
-			<ScheduleSwitcher>
-				<SwitcherOption
-					aria-label={t('page.dashboard.widgets.schedule.title')}
-					isActive={viewMode === 'today'}
-					onClick={() => setViewMode('today')}
-				>
-					<Calendar />
-					{t('page.dashboard.widgets.schedule.title')}
-				</SwitcherOption>
-				<SwitcherOption
-					aria-label={t('page.dashboard.widgets.schedule.title-week')}
-					isActive={viewMode === 'week'}
-					onClick={() => setViewMode('week')}
-				>
-					<CalendarRange />
-					{t('page.dashboard.widgets.schedule.title-week')}
-				</SwitcherOption>
-			</ScheduleSwitcher>
-		),
+		() =>
+			viewMode === 'week'
+				? t('page.dashboard.widgets.schedule.title-week-label')
+				: t('page.dashboard.widgets.schedule.title-label'),
 		[t, viewMode]
 	);
 
 	const headerActions = useMemo(
-		() =>
-			weekHref ? (
-				<Tooltip
-					aria-label={t('page.dashboard.widgets.schedule.view-week')}
-					onClick={() => navigate(`../${weekHref}`)}
-					placement='bottom'
-					title={t('page.dashboard.widgets.schedule.view-week')}
-				>
-					<Calendar />
-				</Tooltip>
-			) : undefined,
-		[navigate, t, weekHref]
+		() => (
+			<>
+				<RangeToggle<ViewMode>
+					ariaLabel={t('page.dashboard.widgets.schedule.range-aria-label')}
+					onChange={setViewMode}
+					options={[
+						{
+							ariaLabel: t('page.dashboard.widgets.schedule.title'),
+							icon: <Calendar />,
+							label: t('page.dashboard.widgets.schedule.title'),
+							value: 'today',
+						},
+						{
+							ariaLabel: t('page.dashboard.widgets.schedule.title-week'),
+							icon: <CalendarRange />,
+							label: t('page.dashboard.widgets.schedule.title-week'),
+							value: 'week',
+						},
+					]}
+					value={viewMode}
+				/>
+				{weekHref && (
+					<Tooltip
+						aria-label={t('page.dashboard.widgets.schedule.view-week')}
+						onClick={() => navigate(`../${weekHref}`)}
+						placement='bottom'
+						title={t('page.dashboard.widgets.schedule.view-week')}
+					>
+						<CalendarRange />
+					</Tooltip>
+				)}
+			</>
+		),
+		[navigate, t, viewMode, weekHref]
 	);
 
 	useBentoTileChrome({ headerActions, title });
@@ -148,8 +154,10 @@ export const ScheduleWidget = ({
 		<ScheduleRoot>
 			<CountBadge>
 				<CountHighlight>{displaySlots.length}</CountHighlight>
-				{' / '}
-				{sessionCount} {sessionLabel}
+				{viewMode === 'today' && (
+					<>{' / '}{sessionCount}</>
+				)}
+				{' '}{sessionLabel}
 			</CountBadge>
 
 			{displaySlots.length === 0 ? (
@@ -163,6 +171,7 @@ export const ScheduleWidget = ({
 							onClick={onSlotClick}
 							showDate={viewMode === 'week' && slot.date !== todayStr}
 							slot={slot}
+							timezone={timezone}
 						/>
 					))}
 				</ScheduleScrollBox>

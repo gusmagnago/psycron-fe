@@ -13,9 +13,10 @@ import type { BentoTileHeaderChromeProps } from './BentoTileHeaderChrome.types';
 export const BentoTileHeaderChrome = ({
 	headerActions,
 	icon,
+	infoButton,
 	title,
 }: BentoTileHeaderChromeProps) => {
-	if (!title && !icon && !headerActions) return null;
+	if (!title && !icon && !headerActions && !infoButton) return null;
 
 	return (
 		<BentoTileHeader>
@@ -23,9 +24,10 @@ export const BentoTileHeaderChrome = ({
 				{icon && <BentoTileHeaderIcon>{icon}</BentoTileHeaderIcon>}
 				{title && <BentoTileHeaderTitle>{title}</BentoTileHeaderTitle>}
 			</BentoTileHeaderIdentity>
-			{headerActions && (
-				<BentoTileHeaderActions>{headerActions}</BentoTileHeaderActions>
-			)}
+			<BentoTileHeaderActions>
+				{headerActions}
+				{infoButton}
+			</BentoTileHeaderActions>
 		</BentoTileHeader>
 	);
 };

@@ -2,12 +2,8 @@ import { useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Skeleton } from '@mui/material';
 import { useBentoTileChrome } from '@psycron/components/dashboard/bento-tile/BentoTile.context';
+import { RangeToggle } from '@psycron/components/dashboard/range-toggle/RangeToggle';
 import { Calendar, CalendarRange } from '@psycron/components/icons';
-
-import {
-	ScheduleSwitcher,
-	SwitcherOption,
-} from '../schedule-widget/ScheduleWidget.styles';
 
 import { SessionAnalyticsChart } from './SessionAnalyticsChart';
 import { SessionAnalyticsKpi } from './SessionAnalyticsKpi';
@@ -64,24 +60,27 @@ export const SessionAnalyticsWidget = ({
 
 	const headerActions = useMemo(
 		() => (
-			<ScheduleSwitcher>
-				<SwitcherOption
-					aria-label={t(k('view-week'))}
-					isActive={viewMode === 'week'}
-					onClick={() => handleViewModeChange('week')}
-				>
-					<CalendarRange />
-					{t(k('view-week'))}
-				</SwitcherOption>
-				<SwitcherOption
-					aria-label={t(k('view-month'))}
-					isActive={viewMode === 'month'}
-					onClick={() => handleViewModeChange('month')}
-				>
-					<Calendar />
-					{t(k('view-month'))}
-				</SwitcherOption>
-			</ScheduleSwitcher>
+			<>
+				<RangeToggle<SessionAnalyticsViewMode>
+					ariaLabel={t(k('range-aria-label'))}
+					onChange={handleViewModeChange}
+					options={[
+						{
+							ariaLabel: t(k('view-week')),
+							icon: <CalendarRange />,
+							label: t(k('view-week')),
+							value: 'week',
+						},
+						{
+							ariaLabel: t(k('view-month')),
+							icon: <Calendar />,
+							label: t(k('view-month')),
+							value: 'month',
+						},
+					]}
+					value={viewMode}
+				/>
+			</>
 		),
 		[handleViewModeChange, t, viewMode]
 	);
@@ -130,12 +129,11 @@ export const SessionAnalyticsWidget = ({
 					</LoadingPanel>
 				) : (
 					<>
-						<SessionAnalyticsKpi
-							data={displayData}
-							layout={effectiveLayout}
-							viewMode={viewMode}
+						<SessionAnalyticsKpi data={displayData} layout={effectiveLayout} />
+						<SessionAnalyticsChart
+							data={displayChartData}
+							onDayClick={onDayClick}
 						/>
-						<SessionAnalyticsChart data={displayChartData} onDayClick={onDayClick} />
 					</>
 				)}
 			</GlassPanel>

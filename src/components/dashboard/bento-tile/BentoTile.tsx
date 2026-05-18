@@ -2,6 +2,9 @@ import { useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
+import { WidgetInfoButton } from '@psycron/components/dashboard/widget-info-modal/WidgetInfoButton';
+import { WidgetInfoModal } from '@psycron/components/dashboard/widget-info-modal/WidgetInfoModal';
+import { COL_RESIZE_STEP } from '@psycron/pages/dashboard/Dashboard.utils';
 
 import { BentoTileEditControls } from './components/bento-tile-edit-controls/BentoTileEditControls';
 import { BentoTileExpandedModal } from './components/bento-tile-expanded-modal/BentoTileExpandedModal';
@@ -32,15 +35,19 @@ export const BentoTile = ({
 	isHidden,
 	onToggleOrientation,
 	onResize,
+	onResizeWidth,
 	onToggleVisibility,
 	orientation,
 	rowSpan,
 	style,
+	tier,
 	variant = 'default',
+	widgetInfoId,
 }: BentoTileProps) => {
 	const { t } = useTranslation();
 	const [chrome, setChrome] = useState<BentoTileChromeState>({});
 	const [isExpanded, setIsExpanded] = useState(false);
+	const [isInfoOpen, setIsInfoOpen] = useState(false);
 	const {
 		attributes,
 		isDragging,
@@ -69,7 +76,7 @@ export const BentoTile = ({
 		: undefined;
 	const chromeContext = useMemo(() => ({ setChrome }), []);
 	const hasFooterChrome = Boolean(footer || actions || expandedContent);
-	const hasHeaderChrome = Boolean(title || icon || headerActions);
+	const hasHeaderChrome = Boolean(title || icon || headerActions || widgetInfoId);
 	const editControlLabels = useMemo(
 		() => ({
 			drag: t('page.dashboard.tile.drag'),
@@ -81,8 +88,12 @@ export const BentoTile = ({
 			layoutRowAria: t('page.dashboard.tile.layout-row-aria'),
 			resizeDown: t('page.dashboard.tile.resize-down'),
 			resizeDownAria: t('page.dashboard.tile.resize-down-aria'),
+			resizeNarrow: t('page.dashboard.tile.resize-narrow'),
+			resizeNarrowAria: t('page.dashboard.tile.resize-narrow-aria'),
 			resizeUp: t('page.dashboard.tile.resize-up'),
 			resizeUpAria: t('page.dashboard.tile.resize-up-aria'),
+			resizeWide: t('page.dashboard.tile.resize-wide'),
+			resizeWideAria: t('page.dashboard.tile.resize-wide-aria'),
 			show: t('page.dashboard.tile.show'),
 		}),
 		[t]
@@ -92,12 +103,20 @@ export const BentoTile = ({
 
 	const handleExpand = useCallback(() => setIsExpanded(true), []);
 	const handleClose = useCallback(() => setIsExpanded(false), []);
+	const handleInfoOpen = useCallback(() => setIsInfoOpen(true), []);
+	const handleInfoClose = useCallback(() => setIsInfoOpen(false), []);
 	const handleResizeDown = useCallback(() => {
 		onResize?.(id, -1);
 	}, [id, onResize]);
 	const handleResizeUp = useCallback(() => {
 		onResize?.(id, 1);
 	}, [id, onResize]);
+	const handleResizeNarrow = useCallback(() => {
+		onResizeWidth?.(id, -COL_RESIZE_STEP);
+	}, [id, onResizeWidth]);
+	const handleResizeWide = useCallback(() => {
+		onResizeWidth?.(id, COL_RESIZE_STEP);
+	}, [id, onResizeWidth]);
 	const handleHideToggle = useCallback(() => {
 		onToggleVisibility?.(id);
 	}, [id, onToggleVisibility]);
@@ -135,7 +154,9 @@ export const BentoTile = ({
 							onToggleOrientation ? handleOrientationToggle : undefined
 						}
 						onResizeDown={onResize ? handleResizeDown : undefined}
+						onResizeNarrow={onResizeWidth ? handleResizeNarrow : undefined}
 						onResizeUp={onResize ? handleResizeUp : undefined}
+						onResizeWide={onResizeWidth ? handleResizeWide : undefined}
 						orientation={orientation}
 					/>
 				)}
@@ -161,6 +182,11 @@ export const BentoTile = ({
 							<BentoTileHeaderChrome
 								headerActions={headerActions}
 								icon={icon}
+								infoButton={
+									widgetInfoId ? (
+										<WidgetInfoButton onClick={handleInfoOpen} />
+									) : undefined
+								}
 								title={title}
 							/>
 							<BentoTileBody>{children}</BentoTileBody>
@@ -183,6 +209,14 @@ export const BentoTile = ({
 					open={isExpanded && Boolean(expandedContent)}
 					title={title}
 				/>
+				{widgetInfoId ? (
+					<WidgetInfoModal
+						isOpen={isInfoOpen}
+						onClose={handleInfoClose}
+						tier={tier}
+						widgetId={widgetInfoId}
+					/>
+				) : null}
 			</BentoTileMotionBox>
 		</BentoTileRoot>
 	);

@@ -4,6 +4,7 @@ export type PendingTaskType = DashboardPendingTaskType;
 
 export interface PendingTask {
 	count: number;
+	description?: string;
 	label: string;
 	onClick?: () => void;
 	tier: DashboardTier;
@@ -11,6 +12,7 @@ export interface PendingTask {
 }
 
 export interface PendingTasksWidgetProps {
+	colSpan?: number;
 	isLoading?: boolean;
 	tasks: PendingTask[];
 }

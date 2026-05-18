@@ -1,6 +1,8 @@
-import { useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
+import { capture } from '@psycron/analytics/posthog/events';
+import { PostHogEvent } from '@psycron/analytics/posthog/types';
 import type { DashboardBillingReadiness } from '@psycron/api/dashboard/index.types';
 import {
 	type BeInsightActionTarget,
@@ -21,6 +23,7 @@ import {
 	PATIENTPROFILE,
 	PATIENTS,
 } from '@psycron/pages/urls';
+import * as Sentry from '@sentry/react';
 import { useQuery } from '@tanstack/react-query';
 import { format, parseISO } from 'date-fns';
 
@@ -56,11 +59,22 @@ export const useJupiterInsights = ({
 	const navigate = useNavigate();
 	const locale = normalizeLocale(i18n.language);
 
-	const { data, isLoading } = useQuery({
+	const { data, isError, isLoading } = useQuery({
 		queryFn: () => getJupiterInsights(locale),
 		queryKey: ['jupiter-insights', locale],
 		staleTime: 5 * 60 * 1000,
 	});
+
+	useEffect(() => {
+		if (!isError) return;
+		Sentry.addBreadcrumb({
+			category: 'dashboard',
+			level: 'warning',
+			message: 'Jupiter insights fetch failed — using FE fallback',
+		});
+		const tier = !hasAvailability ? 'onboarding' : patientCount < 5 ? 'growing' : 'active';
+		capture(PostHogEvent.JupiterInsightsFallbackUsed, { tier });
+	}, [hasAvailability, isError, patientCount]);
 
 	return useMemo(() => {
 		const { todayBookedCount, weekBusiestDay, weekBookedCount, weekCancelledCount } = metrics;

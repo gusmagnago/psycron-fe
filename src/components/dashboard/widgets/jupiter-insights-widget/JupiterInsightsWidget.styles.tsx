@@ -13,7 +13,6 @@ const pulse = keyframes`
 export const CarouselRoot = styled(Box)`
 	display: flex;
 	flex-direction: column;
-	gap: ${spacing.extraSmall};
 	height: 100%;
 	justify-content: flex-start;
 	min-height: 0;
@@ -39,7 +38,7 @@ export const JupiterHeader = styled(Box)`
 
 export const JupiterBadgeRow = styled(Box)`
 	display: flex;
-	flex-direction: column;
+	flex-direction: row;
 	gap: ${spacing.xxs};
 `;
 

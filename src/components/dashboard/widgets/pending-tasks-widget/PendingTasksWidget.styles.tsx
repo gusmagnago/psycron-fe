@@ -1,46 +1,27 @@
-import { css } from '@emotion/react';
 import styled from '@emotion/styled';
-import { Box } from '@mui/material';
+import { Box, Skeleton } from '@mui/material';
+import { dashboardAccents } from '@psycron/theme/palette/dashboardAccents';
 import { palette } from '@psycron/theme/palette/palette.theme';
 import { spacing } from '@psycron/theme/spacing/spacing.theme';
 import { motion } from 'framer-motion';
 
-import type { PendingTaskType } from './PendingTasksWidget.types';
-
-const taskColors: Record<PendingTaskType, { bg: string; color: string }> = {
-	'cancellation-followups': {
-		bg: palette.alert.surface.light,
-		color: palette.alert.dark,
-	},
-	'missing-billing': {
-		bg: palette.primary.surface.light,
-		color: palette.primary.dark,
-	},
-	'missing-contact': {
-		bg: palette.tertiary.surface.light,
-		color: palette.tertiary.dark,
-	},
-	'reminder-delivery': {
-		bg: palette.error.surface.light,
-		color: palette.error.dark,
-	},
-	'setup-availability': {
-		bg: palette.success.surface.light,
-		color: palette.success.dark,
-	},
-};
-
-export const TasksList = styled(Box)`
-	display: flex;
-	flex-direction: column;
-	gap: ${spacing.xs};
+export const TasksList = styled(Box, {
+	shouldForwardProp: (prop) => prop !== 'isWide',
+})<{ isWide?: boolean }>`
+	display: grid;
+	grid-template-columns: ${({ isWide }) => (isWide ? 'repeat(2, 1fr)' : '1fr')};
+	gap: 0;
 `;
 
 export const EmptyTasksState = styled(Box)`
 	display: flex;
 	flex-direction: column;
-	align-items: flex-start;
-	gap: ${spacing.xxs};
+	align-items: center;
+	flex: 1;
+	gap: ${spacing.xs};
+	justify-content: center;
+	min-height: 5rem;
+	text-align: center;
 `;
 
 export const EmptyTasksIcon = styled(Box)`
@@ -50,8 +31,8 @@ export const EmptyTasksIcon = styled(Box)`
 	margin-bottom: ${spacing.xxs};
 
 	& svg {
-		width: 22px;
-		height: 22px;
+		width: 50px;
+		height: 50px;
 	}
 `;
 
@@ -65,46 +46,59 @@ export const EmptyTasksHeading = styled.span`
 export const EmptyTasksSubText = styled.span`
 	font-size: 12px;
 	color: ${palette.text.secondary};
-	text-align: left;
+	text-align: center;
 	line-height: 1.4;
 `;
 
-export const TaskRow = styled(motion.button, {
-	shouldForwardProp: (prop) => prop !== 'taskType',
-})<{ taskType: PendingTaskType }>`
+export const TaskSkeleton = styled(Skeleton)`
+	border-radius: ${spacing.xs};
+`;
+
+export const TaskRow = styled(motion.button)`
 	all: unset;
-	display: flex;
+	display: grid;
 	align-items: center;
-	justify-content: space-between;
-	padding: ${spacing.extraSmall} ${spacing.small};
-	border-radius: 12px;
+	grid-template-columns: minmax(0, 1fr) auto;
+	gap: ${spacing.small};
+	padding: ${spacing.xs} 0;
+	border-bottom: 1px solid ${palette.gray['01']};
 	cursor: pointer;
 	width: 100%;
 	box-sizing: border-box;
-	transition: opacity 0.15s ease;
-
-	${({ taskType }) => css`
-		background: ${taskColors[taskType].bg};
-		color: ${taskColors[taskType].color};
-	`}
+	transition: color 0.15s ease;
 
 	&:hover {
-		opacity: 0.85;
+		color: ${palette.text.primary};
 	}
 
 	&:focus-visible {
-		outline: 2px solid currentColor;
+		border-radius: ${spacing.xs};
+		outline: 2px solid ${dashboardAccents.info.main};
 		outline-offset: 2px;
 	}
 `;
 
-export const TaskLabel = styled.span`
-	font-size: 14px;
-	font-weight: 600;
+export const TaskText = styled(Box)`
+	display: flex;
+	flex-direction: column;
+	gap: ${spacing.xxs};
+	min-width: 0;
 `;
 
-export const TaskCount = styled.span`
-	font-size: 18px;
+export const TaskLabel = styled.span`
+	color: ${palette.text.primary};
+	font-size: 0.875rem;
 	font-weight: 800;
-	line-height: 1;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+`;
+
+export const TaskDescription = styled.span`
+	color: ${palette.text.secondary};
+	font-size: 0.75rem;
+	font-weight: 700;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
 `;

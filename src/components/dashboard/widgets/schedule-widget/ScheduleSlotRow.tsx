@@ -1,6 +1,8 @@
 import { useTranslation } from 'react-i18next';
+import { StatusChip as DashboardStatusChip } from '@psycron/components/dashboard/status-chip/StatusChip';
+import { MapPin } from '@psycron/components/icons';
 import { format, parseISO } from 'date-fns';
-import { MapPin, Monitor } from 'lucide-react';
+import { Monitor } from 'lucide-react';
 
 import {
 	ProgressBarFill,
@@ -11,14 +13,13 @@ import {
 	SlotPatientName,
 	SlotRowRoot,
 	SlotTime,
-	StatusChip,
 } from './ScheduleSlotRow.styles';
 import type { ScheduleSlotRowProps } from './ScheduleSlotRow.types';
 import { getSlotStatus, ROW_VARIANTS } from './ScheduleWidget.utils';
 
-export const ScheduleSlotRow = ({ index, onClick, showDate, slot }: ScheduleSlotRowProps) => {
+export const ScheduleSlotRow = ({ index, onClick, showDate, slot, timezone }: ScheduleSlotRowProps) => {
 	const { t } = useTranslation();
-	const { progress, status } = getSlotStatus(slot.date, slot.duration, slot.startTime);
+	const { progress, status } = getSlotStatus(slot.date, slot.duration, slot.startTime, timezone);
 
 	return (
 		<SlotRowRoot
@@ -68,9 +69,11 @@ export const ScheduleSlotRow = ({ index, onClick, showDate, slot }: ScheduleSlot
 				)}
 			</SlotBody>
 
-			<StatusChip status={status}>
+			<DashboardStatusChip
+				tone={status === 'live' || status === 'done' ? 'success' : 'info'}
+			>
 				{t(`page.dashboard.widgets.schedule.status.${status}`)}
-			</StatusChip>
+			</DashboardStatusChip>
 		</SlotRowRoot>
 	);
 };

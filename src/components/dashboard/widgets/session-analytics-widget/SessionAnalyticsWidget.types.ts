@@ -2,7 +2,7 @@ import type { WeeklyBarData } from '../weekly-chart-widget/WeeklyChartWidget.typ
 
 export type SessionAnalyticsViewMode = 'month' | 'week';
 export type SessionAnalyticsLayout = 'column' | 'row';
-export type SessionAnalyticsRateTone = 'alert' | 'empty' | 'error' | 'success';
+export type SessionAnalyticsRateTone = 'empty' | 'error' | 'success' | 'warning';
 
 export interface SessionAnalyticsPeriodData {
 	adminBlockedMinutes: number;

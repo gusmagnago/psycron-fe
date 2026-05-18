@@ -1,6 +1,5 @@
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Jupiter } from '@psycron/components/icons';
 
 import {
 	BlockedHours,
@@ -10,8 +9,6 @@ import {
 	KpiBlock,
 	KpiDivider,
 	KpiHero,
-	KpiInsight,
-	KpiInsightSource,
 	StatCount,
 	StatDot,
 	StatGrid,
@@ -21,13 +18,8 @@ import {
 import type {
 	SessionAnalyticsLayout,
 	SessionAnalyticsPeriodData,
-	SessionAnalyticsViewMode,
 } from './SessionAnalyticsWidget.types';
-import {
-	computeCompletionRateSummary,
-	getInsightKey,
-	getRateColor,
-} from './SessionAnalyticsWidget.utils';
+import { computeCompletionRateSummary, getRateColor } from './SessionAnalyticsWidget.utils';
 
 const k = (key: string) => `page.dashboard.widgets.session-analytics.${key}`;
 
@@ -38,13 +30,11 @@ type StatKey = (typeof STAT_KEYS)[number];
 interface SessionAnalyticsKpiProps {
 	data: SessionAnalyticsPeriodData;
 	layout: SessionAnalyticsLayout;
-	viewMode: SessionAnalyticsViewMode;
 }
 
 export const SessionAnalyticsKpi = ({
 	data,
 	layout,
-	viewMode,
 }: SessionAnalyticsKpiProps) => {
 	const { t } = useTranslation();
 
@@ -59,14 +49,7 @@ export const SessionAnalyticsKpi = ({
 		return t(k('blocked-hours'), { hours });
 	}, [data.adminBlockedMinutes, t]);
 
-	const insightKey = getInsightKey(data, completionRate.concluded);
 	const rateColor = getRateColor(completionRate.tone);
-	const insightText = t(k(insightKey), {
-		completed: data.completed,
-		concluded: completionRate.concluded,
-		delta: Math.abs(data.delta ?? 0),
-		period: t(k(`period.${viewMode}`)).toLowerCase(),
-	});
 
 	const statValues: Record<StatKey, number> = {
 		blocked: data.blocked,
@@ -83,14 +66,6 @@ export const SessionAnalyticsKpi = ({
 				</CompletionRateValue>
 				<CompletionRateLabel>{t(k('completion-rate'))}</CompletionRateLabel>
 			</KpiHero>
-
-			<KpiInsight>
-				<Jupiter />
-				<span>
-					<KpiInsightSource>{t(k('insight-source'))}</KpiInsightSource>
-					{insightText}
-				</span>
-			</KpiInsight>
 
 			<KpiDivider />
 

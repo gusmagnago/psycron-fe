@@ -5,7 +5,7 @@ import { useUserDetails } from '@psycron/context/user/details/UserDetailsContext
 import type { SlotStatus } from '@psycron/pages/availability/week/AvailabilityWeekPage.types';
 import type { IWeekSlot } from '@psycron/pages/availability/week/AvailabilityWeekPage.types';
 import { useQuery } from '@tanstack/react-query';
-import { endOfWeek, format, startOfWeek } from 'date-fns';
+import { addMinutes, endOfWeek, format, isAfter, parseISO, startOfWeek } from 'date-fns';
 
 export interface WeekMetrics {
 	todayBookedCount: number;
@@ -19,6 +19,7 @@ export interface WeekMetrics {
 export interface UseDashboardSlotsReturn {
 	isLoading: boolean;
 	metrics: WeekMetrics;
+	timezone: string | undefined;
 	todaySlots: IWeekSlot[];
 	weekEnd: string;
 	weekSlotsByDay: Record<string, IWeekSlot[]>;
@@ -98,6 +99,8 @@ export const useDashboardSlots = (): UseDashboardSlotsReturn => {
 
 	const metrics = useMemo<WeekMetrics>(() => {
 		const allWeekSlots = Object.values(weekSlotsByDay).flat();
+		const bookedWeekSlots = allWeekSlots.filter(isBooked);
+		const now = new Date();
 		const weekBusiestDay = Object.entries(weekSlotsByDay).reduce(
 			(best, [date, slots]) => {
 				const count = slots.filter(isBooked).length;
@@ -105,17 +108,21 @@ export const useDashboardSlots = (): UseDashboardSlotsReturn => {
 			},
 			{ count: 0, date: '' }
 		);
-		const weekUpcomingCount = allWeekSlots.filter((s) => s.status === 'booked-jupiter').length;
-		const weekCompletedCount = allWeekSlots.filter((s) => s.status === 'booked-google').length;
+		const weekCompletedCount = bookedWeekSlots.filter((s) =>
+			isAfter(now, addMinutes(parseISO(`${s.date}T${s.startTime}`), s.duration))
+		).length;
+		const weekUpcomingCount = bookedWeekSlots.filter((s) =>
+			isAfter(parseISO(`${s.date}T${s.startTime}`), now)
+		).length;
 		return {
 			todayBookedCount: todaySlots.filter(isBooked).length,
 			weekBusiestDay,
-			weekBookedCount: weekUpcomingCount + weekCompletedCount,
+			weekBookedCount: bookedWeekSlots.length,
 			weekCancelledCount: allWeekSlots.filter((s) => s.status === 'cancelled').length,
 			weekCompletedCount,
 			weekUpcomingCount,
 		};
 	}, [todaySlots, weekSlotsByDay]);
 
-	return { isLoading, metrics, todaySlots, weekEnd: to, weekSlotsByDay, weekStart: from };
+	return { isLoading, metrics, timezone: data?.timezone, todaySlots, weekEnd: to, weekSlotsByDay, weekStart: from };
 };

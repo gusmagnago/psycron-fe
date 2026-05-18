@@ -8,6 +8,8 @@ export const TootleTipIconButton = styled(IconButton, {
 	shouldForwardProp: (props) => props !== 'disabled',
 })<{ disabled?: boolean }>`
 	border-radius: ${spacing.small};
+	color: ${palette.text.disabled};
+	padding: 0;
 
 	${({ disabled }) =>
 		disabled
@@ -19,7 +21,7 @@ export const TootleTipIconButton = styled(IconButton, {
 			: css`
 					:hover {
 						background-color: ${palette.brand.purple};
-						color: ${palette.background.default};
+						color: ${palette.white};
 						box-shadow: ${shadowSmallPurple};
 					}
 				`}

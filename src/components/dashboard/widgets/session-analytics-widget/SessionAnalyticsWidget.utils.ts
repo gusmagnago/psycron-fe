@@ -15,11 +15,14 @@ export const computeCompletionRateSummary = (
 	data: SessionAnalyticsPeriodData
 ): CompletionRateSummary => {
 	const concluded = data.completed + data.cancelled;
-	if (concluded === 0) return { concluded, tone: 'empty' };
+	const total = concluded + data.upcoming + data.blocked;
+
+	if (total === 0) return { concluded, tone: 'empty' };
+	if (concluded === 0) return { concluded, rate: 0, tone: 'empty' };
 
 	const rate = Math.round((data.completed / concluded) * 100);
-	if (rate >= 75) return { concluded, rate, tone: 'success' };
-	if (rate >= 40) return { concluded, rate, tone: 'alert' };
+	if (rate >= 80) return { concluded, rate, tone: 'success' };
+	if (rate >= 60) return { concluded, rate, tone: 'warning' };
 	return { concluded, rate, tone: 'error' };
 };
 
@@ -27,7 +30,7 @@ export const getRateColor = (tone: SessionAnalyticsRateTone): string => {
 	switch (tone) {
 		case 'success':
 			return palette.success.main as string;
-		case 'alert':
+		case 'warning':
 			return palette.alert.dark as string;
 		case 'error':
 			return palette.error.main as string;

@@ -1,32 +1,9 @@
 import styled from '@emotion/styled';
 import { Box } from '@mui/material';
 import { Text } from '@psycron/components/text/Text';
-import { hexToRgba, palette } from '@psycron/theme/palette/palette.theme';
+import { palette } from '@psycron/theme/palette/palette.theme';
 import { shadowGlassShimmer } from '@psycron/theme/shadow/shadow.theme';
 import { spacing } from '@psycron/theme/spacing/spacing.theme';
-
-import type { BillingStatus } from './BillingReadinessWidget.types';
-
-const statusColors: Record<
-	BillingStatus,
-	{ bar: string; bg: string; fg: string }
-> = {
-	empty: {
-		bar: palette.error.main,
-		bg: palette.error.surface.light,
-		fg: palette.error.dark,
-	},
-	partial: {
-		bar: palette.alert.main,
-		bg: palette.alert.surface.light,
-		fg: palette.alert.dark,
-	},
-	ready: {
-		bar: palette.success.main,
-		bg: palette.success.surface.light,
-		fg: palette.success.dark,
-	},
-};
 
 export const BillingRoot = styled(Box, {
 	shouldForwardProp: (prop) => prop !== 'isInteractive',
@@ -36,7 +13,6 @@ export const BillingRoot = styled(Box, {
 	gap: ${spacing.xs};
 	height: 100%;
 	cursor: ${({ isInteractive }) => (isInteractive ? 'pointer' : 'default')};
-	perspective: 720px;
 	text-align: left;
 
 	&:focus-visible {
@@ -85,71 +61,52 @@ export const BillingTeaserSubText = styled(Text)`
 	line-height: 1.5;
 `;
 
-export const BillingContent = styled(Box)`
+export const BillingContent = styled(Box, {
+	shouldForwardProp: (prop) => prop !== 'isWide',
+})<{ isWide?: boolean }>`
 	align-items: center;
-	background:
-		linear-gradient(
-			160deg,
-			${hexToRgba(palette.white, 0.72)},
-			${hexToRgba(palette.primary.surface.light, 0.5)}
-		),
-		${hexToRgba(palette.white, 0.34)};
-	border-radius: ${spacing.small};
 	display: flex;
 	flex: 1;
 	flex-direction: column;
-	gap: ${spacing.xs};
-	justify-content: center;
+	gap: ${spacing.small};
+	justify-content: stretch;
 	min-height: 0;
 	overflow: hidden;
-	padding: ${spacing.xs};
-	transform: translateY(0) rotateX(0);
+	padding: ${spacing.xxs} ${spacing.xs} ${spacing.xs};
+	transform: translateY(0);
 	transition:
 		box-shadow 0.24s ease,
 		transform 0.24s ease;
 
 	&:hover {
 		box-shadow: ${shadowGlassShimmer};
-		transform: translateY(-3px) rotateX(2deg);
+		transform: translateY(-3px);
 	}
+`;
+
+export const BillingProgressStage = styled(Box)`
+	align-items: center;
+	display: flex;
+	flex: 1 1 auto;
+	justify-content: center;
+	min-height: 0;
+	width: 100%;
 `;
 
 export const BillingCopy = styled(Box)`
 	align-items: center;
 	display: flex;
+	flex: 0 0 auto;
 	flex-direction: column;
 	gap: ${spacing.space};
 	min-width: 0;
-	text-align: left;
-`;
-
-export const StatusChip = styled(Box, {
-	shouldForwardProp: (prop) => prop !== 'status',
-})<{ status: BillingStatus }>`
-	display: inline-flex;
-	align-items: center;
-	font-size: 11px;
-	font-weight: 700;
-	padding: ${spacing.space} ${spacing.xs};
-	border-radius: 99px;
-	background: ${({ status }) => statusColors[status].bg};
-	color: ${({ status }) => statusColors[status].fg};
+	text-align: center;
+	width: 100%;
 `;
 
 export const BillingSubLabel = styled(Text)`
 	color: ${palette.text.primary};
-	font-size: 12px;
-	font-weight: 800;
-	line-height: 1.35;
-`;
-
-export const BillingDetails = styled(Text)`
-	color: ${palette.text.secondary};
-	display: -webkit-box;
-	font-size: 10px;
-	font-weight: 600;
-	-webkit-line-clamp: 3;
-	-webkit-box-orient: vertical;
-	line-height: 1.35;
-	overflow: hidden;
+	font-size: 0.875rem;
+	font-weight: 700;
+	line-height: 1.3;
 `;

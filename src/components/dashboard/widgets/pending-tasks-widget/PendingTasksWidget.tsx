@@ -1,23 +1,22 @@
 import { useTranslation } from 'react-i18next';
-import { Box, Skeleton } from '@mui/material';
+import { useBentoTileChrome } from '@psycron/components/dashboard/bento-tile/BentoTile.context';
+import { StatusChip } from '@psycron/components/dashboard/status-chip/StatusChip';
 import { CheckSuccess } from '@psycron/components/icons';
-
-import {
-	WidgetHeader,
-	WidgetTitle,
-} from '../schedule-widget/ScheduleWidget.styles';
 
 import {
 	EmptyTasksHeading,
 	EmptyTasksIcon,
 	EmptyTasksState,
 	EmptyTasksSubText,
-	TaskCount,
+	TaskDescription,
 	TaskLabel,
 	TaskRow,
+	TaskSkeleton,
 	TasksList,
+	TaskText,
 } from './PendingTasksWidget.styles';
 import type { PendingTasksWidgetProps } from './PendingTasksWidget.types';
+import { getPendingTaskTone } from './PendingTasksWidget.utils';
 
 const rowVariants = {
 	hidden: { opacity: 0, y: 8 },
@@ -29,33 +28,33 @@ const rowVariants = {
 };
 
 export const PendingTasksWidget = ({
+	colSpan,
 	isLoading,
 	tasks,
 }: PendingTasksWidgetProps) => {
+	const isWide = (colSpan ?? 0) >= 6;
 	const { t } = useTranslation();
+
+	useBentoTileChrome({
+		title: t('page.dashboard.widgets.pending-tasks.title'),
+	});
 
 	if (isLoading) {
 		return (
-			<Box display='flex' flexDirection='column' gap={1}>
+			<TasksList isWide={isWide}>
 				{[...Array(3)].map((_, i) => (
-					<Skeleton
+					<TaskSkeleton
 						height={52}
 						key={`task-skeleton-${i}`}
-						sx={{ borderRadius: '12px' }}
 						variant='rectangular'
 					/>
 				))}
-			</Box>
+			</TasksList>
 		);
 	}
 
 	return (
 		<>
-			<WidgetHeader>
-				<WidgetTitle>
-					{t('page.dashboard.widgets.pending-tasks.title')}
-				</WidgetTitle>
-			</WidgetHeader>
 			{tasks.length === 0 ? (
 				<EmptyTasksState>
 					<EmptyTasksIcon>
@@ -69,7 +68,7 @@ export const PendingTasksWidget = ({
 					</EmptyTasksSubText>
 				</EmptyTasksState>
 			) : (
-				<TasksList>
+				<TasksList isWide={isWide}>
 					{tasks.map((task, i) => (
 						<TaskRow
 							animate='visible'
@@ -78,11 +77,18 @@ export const PendingTasksWidget = ({
 							initial='hidden'
 							key={task.type}
 							onClick={task.onClick}
-							taskType={task.type}
+							type='button'
 							variants={rowVariants}
 						>
-							<TaskLabel>{task.label}</TaskLabel>
-							<TaskCount>{task.count}</TaskCount>
+							<TaskText>
+								<TaskLabel>{task.label}</TaskLabel>
+								{task.description ? (
+									<TaskDescription>{task.description}</TaskDescription>
+								) : null}
+							</TaskText>
+							<StatusChip tone={getPendingTaskTone(task.type)}>
+								{task.count}
+							</StatusChip>
 						</TaskRow>
 					))}
 				</TasksList>

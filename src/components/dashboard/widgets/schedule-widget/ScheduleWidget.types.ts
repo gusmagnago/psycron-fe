@@ -4,6 +4,7 @@ export interface ScheduleWidgetProps {
 	isLoading: boolean;
 	onSlotClick: (slot: IWeekSlot) => void;
 	slots: IWeekSlot[];
+	timezone?: string;
 	weekEnd?: string;
 	weekHref?: string;
 	weekSlotsByDay?: Record<string, IWeekSlot[]>;

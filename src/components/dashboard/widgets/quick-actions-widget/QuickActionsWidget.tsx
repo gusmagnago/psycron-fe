@@ -1,19 +1,19 @@
 import { useTranslation } from 'react-i18next';
-import { Box, Skeleton } from '@mui/material';
+import { useBentoTileChrome } from '@psycron/components/dashboard/bento-tile/BentoTile.context';
+import { IconBox } from '@psycron/components/dashboard/icon-box/IconBox';
 import { ChevronRight } from '@psycron/components/icons';
-
-import { WidgetHeader, WidgetTitle } from '../schedule-widget/ScheduleWidget.styles';
 
 import {
 	ActionButton,
 	ActionChevron,
-	ActionIconWrapper,
+	ActionDescription,
 	ActionLabel,
+	ActionSkeleton,
 	ActionsList,
+	ActionText,
 	Badge,
 } from './QuickActionsWidget.styles';
 import type { QuickActionsWidgetProps } from './QuickActionsWidget.types';
-import { getActionAccent } from './QuickActionsWidget.utils';
 
 const rowVariants = {
 	hidden: { opacity: 0, x: -8 },
@@ -26,58 +26,60 @@ const rowVariants = {
 
 export const QuickActionsWidget = ({
 	actions,
+	colSpan,
 	isLoading,
 }: QuickActionsWidgetProps) => {
+	const isWide = (colSpan ?? 0) >= 6;
 	const { t } = useTranslation();
+
+	useBentoTileChrome({
+		title: t('page.dashboard.widgets.quick-actions.title'),
+	});
 
 	if (isLoading) {
 		return (
-			<Box display='flex' flexDirection='column' gap={1}>
+			<ActionsList isWide={isWide}>
 				{[...Array(4)].map((_, i) => (
-					<Skeleton
+					<ActionSkeleton
 						height={56}
 						key={`quick-action-skeleton-${i}`}
-						sx={{ borderRadius: '12px' }}
 						variant='rectangular'
 					/>
 				))}
-			</Box>
+			</ActionsList>
 		);
 	}
 
 	return (
 		<>
-			<WidgetHeader>
-				<WidgetTitle>{t('page.dashboard.widgets.quick-actions.title')}</WidgetTitle>
-			</WidgetHeader>
-			<ActionsList>
-				{actions.map((action, i) => {
-					const accent = getActionAccent(action.id);
-					return (
-						<ActionButton
-							animate='visible'
-							aria-label={action.ariaLabel}
-							custom={i}
-							hasBadge={!!action.badge}
-							initial='hidden'
-							key={action.id}
-							onClick={action.onClick}
-							variants={rowVariants}
-							whileTap={{ scale: 0.98 }}
-						>
-							<ActionIconWrapper iconBg={accent.bg} iconFg={accent.fg}>
-								{action.icon}
-							</ActionIconWrapper>
+			<ActionsList isWide={isWide}>
+				{actions.map((action, i) => (
+					<ActionButton
+						animate='visible'
+						aria-label={action.ariaLabel}
+						custom={i}
+						initial='hidden'
+						key={action.id}
+						onClick={action.onClick}
+						type='button'
+						variants={rowVariants}
+						whileTap={{ scale: 0.98 }}
+					>
+						<IconBox tone={action.tone}>{action.icon}</IconBox>
+						<ActionText>
 							<ActionLabel>{action.label}</ActionLabel>
-							{action.badge !== undefined && action.badge > 0 ? (
-								<Badge aria-label={`${action.badge} pending`}>{action.badge}</Badge>
+							{action.description ? (
+								<ActionDescription>{action.description}</ActionDescription>
 							) : null}
-							<ActionChevron data-chevron='true'>
-								<ChevronRight />
-							</ActionChevron>
-						</ActionButton>
-					);
-				})}
+						</ActionText>
+						{action.badge !== undefined && action.badge > 0 ? (
+							<Badge aria-label={`${action.badge} pending`}>{action.badge}</Badge>
+						) : null}
+						<ActionChevron data-chevron='true'>
+							<ChevronRight />
+						</ActionChevron>
+					</ActionButton>
+				))}
 			</ActionsList>
 		</>
 	);

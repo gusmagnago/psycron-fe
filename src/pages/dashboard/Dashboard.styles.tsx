@@ -18,14 +18,21 @@ export const DashboardRoot = styled(Box)`
 	overflow-y: auto;
 	width: 100%;
 	height: 100%;
+	position: relative;
+	padding: ${spacing.xs};
 `;
 
 export const DashboardTopBar = styled(Box)`
 	display: flex;
 	align-items: center;
-	justify-content: space-between;
+	justify-content: flex-end;
 	flex-wrap: wrap;
 	gap: ${spacing.small};
+	padding: 0 ${spacing.xs};
+
+	position: absolute;
+	top: 0;
+	left: 0;
 `;
 
 export const DragOverlayCard = styled(Box)`
@@ -39,6 +46,7 @@ export const DragOverlayCard = styled(Box)`
 
 export const BentoGridWrapper = styled(Box)`
 	position: relative;
+	height: 100%;
 `;
 
 export const BentoGrid = styled(Box)`
@@ -46,17 +54,17 @@ export const BentoGrid = styled(Box)`
 	grid-template-columns: 1fr;
 	gap: ${spacing.small};
 	grid-auto-rows: auto;
-	padding: ${spacing.xs};
-	padding-top: 0;
+	height: auto;
 
 	${isBiggerThanTabletMedia} {
 		grid-template-columns: repeat(6, minmax(0, 1fr));
-		grid-auto-rows: 140px;
-		gap: ${spacing.mediumSmall};
+		grid-auto-rows: 120px;
+		align-content: space-between;
+		height: 100%;
 	}
 
 	${isBiggerThanMediumMedia} {
 		grid-template-columns: repeat(12, minmax(0, 1fr));
-		grid-auto-rows: 160px;
+		grid-auto-rows: auto;
 	}
 `;

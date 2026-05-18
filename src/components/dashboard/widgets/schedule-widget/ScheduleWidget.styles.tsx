@@ -59,7 +59,7 @@ export const WidgetHeader = styled(Box)`
 	position: sticky;
 	top: 0;
 	z-index: 1;
-	background: ${palette.background.default};
+	background: ${palette.white};
 `;
 
 export const WidgetTitle = styled.h2`

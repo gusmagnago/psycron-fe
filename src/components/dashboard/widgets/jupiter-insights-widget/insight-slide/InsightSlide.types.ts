@@ -5,3 +5,8 @@ export interface InsightSlideProps {
 	direction: number;
 	idx: number;
 }
+
+export interface InsightActionsProps {
+	current: JupiterInsight;
+	idx: number;
+}

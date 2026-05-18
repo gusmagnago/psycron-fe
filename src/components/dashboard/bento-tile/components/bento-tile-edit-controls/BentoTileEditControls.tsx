@@ -6,7 +6,7 @@ import {
 	Visible,
 } from '@psycron/components/icons';
 import { Tooltip } from '@psycron/components/tooltip/Tooltip';
-import { GripVertical } from 'lucide-react';
+import { ChevronsLeftRight, ChevronsRightLeft, GripVertical } from 'lucide-react';
 
 import { TileControlIconWrap } from '../../BentoTile.styles';
 
@@ -23,7 +23,9 @@ export const BentoTileEditControls = ({
 	onOrientationToggle,
 	onHideToggle,
 	onResizeDown,
+	onResizeNarrow,
 	onResizeUp,
+	onResizeWide,
 	orientation,
 }: BentoTileEditControlsProps) => {
 	const visibilityLabel = isHidden ? labels.show : labels.hide;
@@ -63,6 +65,30 @@ export const BentoTileEditControls = ({
 					>
 						<TileControlIconWrap>
 							<Plus />
+						</TileControlIconWrap>
+					</Tooltip>
+				</ResizeControls>
+			)}
+			{onResizeNarrow && onResizeWide && (
+				<ResizeControls>
+					<Tooltip
+						aria-label={labels.resizeNarrowAria}
+						onClick={onResizeNarrow}
+						placement='bottom'
+						title={labels.resizeNarrow}
+					>
+						<TileControlIconWrap>
+							<ChevronsRightLeft />
+						</TileControlIconWrap>
+					</Tooltip>
+					<Tooltip
+						aria-label={labels.resizeWideAria}
+						onClick={onResizeWide}
+						placement='bottom'
+						title={labels.resizeWide}
+					>
+						<TileControlIconWrap>
+							<ChevronsLeftRight />
 						</TileControlIconWrap>
 					</Tooltip>
 				</ResizeControls>

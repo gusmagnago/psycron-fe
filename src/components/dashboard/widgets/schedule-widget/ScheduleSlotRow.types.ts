@@ -5,4 +5,5 @@ export interface ScheduleSlotRowProps {
 	onClick: (slot: IWeekSlot) => void;
 	showDate?: boolean;
 	slot: IWeekSlot;
+	timezone?: string;
 }

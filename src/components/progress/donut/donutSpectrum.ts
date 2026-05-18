@@ -1,4 +1,9 @@
+import { palette } from '@psycron/theme/palette/palette.theme';
+
 export type SpectrumStop = { at: number; hex: string };
+
+export const toThickness = (stroke: number, size: number): number =>
+	(stroke * 44) / size;
 
 const clamp01 = (value: number): number => Math.max(0, Math.min(1, value));
 
@@ -33,6 +38,16 @@ export const mixHex = (from: string, to: string, ratio: number): string => {
 	);
 };
 
+// Palette anchors: error → alert → success.
+// Intermediate stops are derived via mixHex so no hex is hardcoded.
+export const PROGRESS_STOPS: SpectrumStop[] = [
+	{ at: 0, hex: palette.error.main },
+	{ at: 0.3, hex: mixHex(palette.error.main, palette.alert.main, 0.5) },
+	{ at: 0.55, hex: palette.alert.main },
+	{ at: 0.8, hex: mixHex(palette.alert.main, palette.success.main, 0.6) },
+	{ at: 1, hex: palette.success.main },
+];
+
 export const sampleStops = (stops: SpectrumStop[], ratio: number): string => {
 	const value = clamp01(ratio);
 
@@ -47,26 +62,4 @@ export const sampleStops = (stops: SpectrumStop[], ratio: number): string => {
 	}
 
 	return stops[stops.length - 1].hex;
-};
-
-export const PROGRESS_STOPS: SpectrumStop[] = [
-	{ at: 0, hex: '#ff5450' },
-	{ at: 0.34, hex: '#ff8a4c' },
-	{ at: 0.67, hex: '#f59e0b' },
-	{ at: 0.9, hex: '#a3e635' },
-	{ at: 1, hex: '#00c777' },
-];
-
-export interface ProgressGradient {
-	endColor: string;
-	glow: string;
-	startColor: string;
-}
-
-export const progressGradient = (percentage: number): ProgressGradient => {
-	const ratio = clamp01(percentage / 100);
-	const startColor = sampleStops(PROGRESS_STOPS, Math.max(0, ratio - 0.18));
-	const endColor = sampleStops(PROGRESS_STOPS, ratio);
-
-	return { endColor, glow: endColor, startColor };
 };

@@ -8,6 +8,7 @@ import {
 	ControlsBar,
 	CustomizeIconWrap,
 	EditModeBanner,
+	OrganizeButton,
 	ResetButton,
 } from './CustomizeControl.styles';
 import type { CustomizeControlProps } from './CustomizeControl.types';
@@ -25,6 +26,7 @@ const bannerVariants = {
 
 export const CustomizeControl = ({
 	isCustomizing,
+	onOrganize,
 	onReset,
 	onToggle,
 }: CustomizeControlProps) => {
@@ -59,11 +61,18 @@ export const CustomizeControl = ({
 					>
 						<BannerRow>
 							<span>{t('page.dashboard.customize.hint')}</span>
-							{onReset && (
-								<ResetButton onClick={onReset}>
-									{t('page.dashboard.customize.reset')}
-								</ResetButton>
-							)}
+							<BannerRow>
+								{onOrganize && (
+									<OrganizeButton onClick={onOrganize}>
+										{t('page.dashboard.customize.organize')}
+									</OrganizeButton>
+								)}
+								{onReset && (
+									<ResetButton onClick={onReset}>
+										{t('page.dashboard.customize.reset')}
+									</ResetButton>
+								)}
+							</BannerRow>
 						</BannerRow>
 					</EditModeBanner>
 				)}
