@@ -33,6 +33,8 @@ export const enum PostHogEvent {
 	AvailabilitySlotBlocked = 'availability slot blocked',
 	AvailabilitySlotUnblocked = 'availability slot unblocked',
 	BackofficeWorkerSessionFailed = 'backoffice worker session failed',
+	ConsentGranted = 'consent granted',
+	ConsentRevoked = 'consent revoked',
 
 	DashboardActionCenterItemClicked = 'dashboard action center item clicked',
 	DashboardBillingReadinessClicked = 'dashboard billing readiness clicked',
@@ -52,6 +54,7 @@ export const enum PostHogEvent {
 	DashboardTileRestored = 'dashboard tile restored',
 	DashboardWidgetFeedbackSubmitted = 'dashboard widget feedback submitted',
 	DashboardWidgetInfoOpened = 'dashboard widget info opened',
+	DeletionRequested = 'deletion requested',
 	EditUserSubmitted = 'edit user submitted',
 
 	FeaturePageQueueExpansionChanged = 'feature page queue expansion changed',
@@ -232,6 +235,21 @@ export type PostHogEventProps = {
 	[PostHogEvent.BackofficeWorkerSessionFailed]: {
 		reason: 'not_authenticated' | 'missing_worker';
 	};
+
+	[PostHogEvent.ConsentGranted]: {
+		channel: 'self_management' | 'therapist_booked' | 'web_booking';
+		purpose:
+			| 'data_processing'
+			| 'marketing_communications'
+			| 'third_party_sharing';
+	};
+	[PostHogEvent.ConsentRevoked]: {
+		purpose:
+			| 'data_processing'
+			| 'marketing_communications'
+			| 'third_party_sharing';
+	};
+	[PostHogEvent.DeletionRequested]: never;
 
 	[PostHogEvent.AuthSignInStarted]: {
 		audience: 'therapist' | 'worker';

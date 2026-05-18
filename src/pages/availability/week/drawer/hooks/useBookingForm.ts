@@ -1,6 +1,9 @@
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
+import { capture } from '@psycron/analytics/posthog/events';
+import { PostHogEvent } from '@psycron/analytics/posthog/types';
+import { recordConsent } from '@psycron/api/patient/consent';
 import {
 	type ICreatePatientForm,
 	RecurrencePattern,
@@ -94,7 +97,7 @@ export const useBookingForm = (
 	const executeBooking = async (payload: IPendingBooking) => {
 		const deliveryMode = sessionType === 'ONLINE' ? 'online' : 'in-person';
 
-		await bookSlotByTherapist({
+		const response = await bookSlotByTherapist({
 			therapistId: therapistId ?? '',
 			availabilityDayId: slot.availabilityDayId ?? '',
 			slotId: slot._id ?? slot.id,
@@ -122,6 +125,18 @@ export const useBookingForm = (
 				? { existingPatientId: payload.existingPatientId }
 				: {}),
 		});
+
+		if (!payload.existingPatientId && response.patient._id) {
+			await recordConsent(response.patient._id, {
+				channel: 'therapist_booked',
+				purpose: 'data_processing',
+				version: '1.0',
+			});
+			capture(PostHogEvent.ConsentGranted, {
+				channel: 'therapist_booked',
+				purpose: 'data_processing',
+			});
+		}
 
 		await queryClient.invalidateQueries({
 			queryKey: ['therapistAvailability'],

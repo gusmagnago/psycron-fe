@@ -2198,5 +2198,30 @@
       "success": "Notification archived.",
       "error": "Could not archive this notification."
     }
+  },
+  "consent": {
+    "title": "Consent",
+    "dataProcessing": "I consent to my personal information being stored and processed by {{therapistName}} through Psycron for appointment management purposes. I have read the <privacyLink>Privacy Policy</privacyLink>.",
+    "privacyPolicyLink": "Privacy Policy",
+    "required": "Consent is required to proceed",
+    "yourPrivacy": "Your data & privacy",
+    "activeConsents": "Active consents",
+    "revokeConsent": "Revoke",
+    "requestDeletion": "Request deletion of my data",
+    "deletionRequested": "Your deletion request was sent.",
+    "noActiveConsents": "No active consents.",
+    "notGranted": "Not granted",
+    "yourTherapist": "your therapist",
+    "deletionModal": {
+      "title": "Data deletion request",
+      "body": "Your request will be sent to your therapist. Health appointment records are retained for a minimum of 5 years under Brazilian CFP resolution 001/2009. Your data will be anonymised, not immediately deleted.",
+      "confirm": "Submit request"
+    },
+    "noConsentWarning": "No explicit consent on record for this patient",
+    "purposes": {
+      "data_processing": "Data processing",
+      "marketing_communications": "Marketing communications",
+      "third_party_sharing": "Third-party sharing"
+    }
   }
 }

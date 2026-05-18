@@ -1,13 +1,21 @@
 import { useMemo } from 'react';
-import { FormProvider, useWatch } from 'react-hook-form';
-import { useTranslation } from 'react-i18next';
-import { Box, TextField } from '@mui/material';
+import { Controller, FormProvider, useWatch } from 'react-hook-form';
+import { Trans, useTranslation } from 'react-i18next';
+import { Link } from 'react-router-dom';
+import {
+	Box,
+	Checkbox,
+	FormControlLabel,
+	FormHelperText,
+	TextField,
+} from '@mui/material';
 import type { ICreatePatientForm } from '@psycron/api/patient/index.types';
 import { ShareButton } from '@psycron/components/button/share/ShareButton';
 import { Divider } from '@psycron/components/divider/Divider';
 import { ContactsForm } from '@psycron/components/form/components/contacts/ContactsForm';
 import { PreferredContactForm } from '@psycron/components/form/components/preferred-contact/PreferredContactForm';
 import { TimezoneSelect } from '@psycron/components/form/components/timezone/TimezoneSelect';
+import { externalUrls } from '@psycron/pages/urls';
 
 import { FormWrapper } from '../../AvailabilityWeekDrawer.styles';
 import { PatientNameAutocomplete } from '../patient-name-autocomplete/PatientNameAutocomplete';
@@ -23,6 +31,8 @@ import {
 	BookingLinkSection,
 	BookingLinkValue,
 	BookingLinkValueRow,
+	ConsentBox,
+	ConsentLabel,
 	ReopenedNote,
 	ReopenedNoteLabel,
 	ReopenedNoteText,
@@ -46,7 +56,7 @@ export const SlotAvailableBody = ({
 	shareTitle,
 	...locationProps
 }: ISlotAvailableBodyProps) => {
-	const { t } = useTranslation();
+	const { i18n, t } = useTranslation();
 	const {
 		control,
 		register,
@@ -166,6 +176,47 @@ export const SlotAvailableBody = ({
 					{isInPerson && <SlotLocationSection {...locationProps} />}
 					<SlotRecurrenceSection />
 					<TimezoneSelect />
+					{!selectedPatient ? (
+						<ConsentBox>
+							<Controller
+								control={control}
+								name='consentAccepted'
+								rules={{ validate: (value) => value || t('consent.required') }}
+								render={({ field }) => (
+									<FormControlLabel
+										control={
+											<Checkbox
+												checked={Boolean(field.value)}
+												onChange={(e) => field.onChange(e.target.checked)}
+											/>
+										}
+										label={
+											<ConsentLabel>
+												<Trans
+													i18nKey='consent.dataProcessing'
+													values={{
+														therapistName: t('consent.yourTherapist'),
+													}}
+													components={{
+														privacyLink: (
+															<Link
+																to={externalUrls(i18n.language).PRIVACY}
+															/>
+														),
+													}}
+												/>
+											</ConsentLabel>
+										}
+									/>
+								)}
+							/>
+							{errors.consentAccepted?.message ? (
+								<FormHelperText error>
+									{String(errors.consentAccepted.message)}
+								</FormHelperText>
+							) : null}
+						</ConsentBox>
+					) : null}
 				</FormWrapper>
 			</Box>
 		</FormProvider>
