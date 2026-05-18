@@ -138,3 +138,34 @@ export const FiltersContent = styled(Box)`
 	flex-direction: column;
 	gap: ${spacing.small};
 `;
+
+export const WhatsAppActionBanner = styled(Box)`
+	align-items: flex-start;
+	background: ${hexToRgba(palette.warning.main, 0.08)};
+	border: 1px solid ${hexToRgba(palette.warning.main, 0.25)};
+	border-radius: ${spacing.xs};
+	color: ${palette.warning.dark};
+	display: flex;
+	flex-direction: column;
+	gap: ${spacing.xs};
+	padding: ${spacing.small};
+
+	svg {
+		flex-shrink: 0;
+		height: 18px;
+		width: 18px;
+	}
+`;
+
+export const WhatsAppActionBannerRow = styled(Box)`
+	align-items: center;
+	display: flex;
+	gap: ${spacing.xs};
+	font-size: 0.88rem;
+	font-weight: 700;
+`;
+
+export const WhatsAppActionBannerBody = styled(Box)`
+	font-size: 0.84rem;
+	line-height: 1.55;
+`;

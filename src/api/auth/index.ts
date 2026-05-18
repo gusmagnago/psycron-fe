@@ -110,6 +110,24 @@ export const getGoogleCalendarStatus = async (): Promise<{
 	return response.data;
 };
 
+export type VerifyWhatsAppOtpResponse = {
+	refreshToken: string;
+	status: 'success';
+	token: string;
+	user: { _id: string; firstName: string; lastName: string; role: string };
+};
+
+export const verifyWhatsAppOtpFc = async (data: {
+	otp: string;
+	therapistId: string;
+}): Promise<VerifyWhatsAppOtpResponse> => {
+	const response = await apiClient.post<VerifyWhatsAppOtpResponse>(
+		'/users/whatsapp-otp/verify',
+		data
+	);
+	return response.data;
+};
+
 /**
  * @deprecated getEncryptionKey removed for security (P1.3)
  * The encryption key endpoint was removed from the backend.

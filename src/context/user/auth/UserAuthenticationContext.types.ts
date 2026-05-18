@@ -12,17 +12,20 @@ export type TherapistRole = 'THERAPIST' | 'ADMIN';
 export type AuthProvider = 'local' | 'google';
 
 export interface AuthContextType {
+	hasPendingWhatsAppChallenge: boolean;
 	isAuthenticated: boolean;
 	isSessionLoading: boolean;
 	isSessionSuccess: boolean;
 	isSignInMutationLoading: boolean;
 	isSignUpMutationLoading: boolean;
 	isVerifyEmailLoading: boolean;
+	isVerifyWhatsAppOtpLoading: boolean;
 	logout: () => void;
 	signIn: (data: ISignInForm) => void;
 	signUp: (data: ISignUpForm) => void;
 	user?: ITherapist;
 	verifyEmailToken: (token: string) => Promise<IVerifyEmailResponse>;
+	verifyWhatsAppOtp: (otp: string) => void;
 }
 
 export interface AuthProviderProps {

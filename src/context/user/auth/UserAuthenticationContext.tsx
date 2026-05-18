@@ -21,12 +21,13 @@ import {
 	signInFc,
 	signUpFc,
 	verifyEmail,
+	verifyWhatsAppOtpFc,
 } from '@psycron/api/auth';
 import type { CustomError } from '@psycron/api/error';
 import type { ISignInForm } from '@psycron/components/form/SignIn/SignIn.types';
 import type { ISignUpForm } from '@psycron/components/form/SignUp/SignUpEmail.types';
 import { useAlert } from '@psycron/context/alert/AlertContext';
-import { DASHBOARD, HOMEPAGE } from '@psycron/pages/urls';
+import { DASHBOARD, HOMEPAGE, WHATSAPP_OTP_CHALLENGE } from '@psycron/pages/urls';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
 import {
@@ -68,9 +69,11 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 	const queryClient = useQueryClient();
 	const { showAlert } = useAlert();
 
-	const [redirectAfterAuth, setRedirectAfterAuth] = useState<string | null>(
-		null
-	);
+	const [redirectAfterAuth, setRedirectAfterAuth] = useState<string | null>(null);
+	const [pendingChallenge, setPendingChallenge] = useState<{
+		persist: boolean;
+		therapistId: string;
+	} | null>(null);
 
 	const accessToken = getAccessToken();
 	const hasAccessToken = Boolean(accessToken);
@@ -145,6 +148,15 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 	const signInMutation = useMutation({
 		mutationFn: signInFc,
 		onSuccess: async (res, variables: ISignInForm) => {
+			if (res.mode === 'whatsapp_challenge') {
+				setPendingChallenge({
+					therapistId: res.therapistId,
+					persist: Boolean(variables.stayConnected),
+				});
+				navigate(WHATSAPP_OTP_CHALLENGE, { replace: true });
+				return;
+			}
+
 			const persist = Boolean(variables.stayConnected);
 
 			await handleAuthSuccess({
@@ -168,6 +180,31 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 				audience: 'therapist',
 				error_code: toAuthErrorCode(error),
 			});
+			showAlert({ severity: 'error', message: t(error.message) });
+		},
+	});
+
+	const verifyWhatsAppOtpMutation = useMutation({
+		mutationFn: verifyWhatsAppOtpFc,
+		onSuccess: async (res) => {
+			const persist = pendingChallenge?.persist ?? false;
+			setPendingChallenge(null);
+
+			await handleAuthSuccess({
+				accessToken: res.token,
+				refreshToken: res.refreshToken,
+				persist,
+				redirectTo: redirectAfterAuth ?? DASHBOARD,
+			});
+
+			capture(PostHogEvent.AuthSignInSucceeded, {
+				method: '2fa_whatsapp',
+				audience: 'therapist',
+			});
+
+			setRedirectAfterAuth(null);
+		},
+		onError: (error: CustomError) => {
 			showAlert({ severity: 'error', message: t(error.message) });
 		},
 	});
@@ -263,6 +300,17 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 		logoutMutation.mutate();
 	}, [logoutMutation]);
 
+	const verifyWhatsAppOtp = useCallback(
+		(otp: string) => {
+			if (!pendingChallenge) return;
+			verifyWhatsAppOtpMutation.mutate({
+				therapistId: pendingChallenge.therapistId,
+				otp,
+			});
+		},
+		[pendingChallenge, verifyWhatsAppOtpMutation]
+	);
+
 	const value = useMemo<AuthContextType>(
 		() => ({
 			signIn,
@@ -276,6 +324,9 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 			isSignUpMutationLoading: signUpMutation.isPending,
 			verifyEmailToken,
 			isVerifyEmailLoading: verifyEmailMutation.isPending,
+			verifyWhatsAppOtp,
+			isVerifyWhatsAppOtpLoading: verifyWhatsAppOtpMutation.isPending,
+			hasPendingWhatsAppChallenge: Boolean(pendingChallenge),
 		}),
 		[
 			signIn,
@@ -289,6 +340,9 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 			signUpMutation.isPending,
 			verifyEmailToken,
 			verifyEmailMutation.isPending,
+			verifyWhatsAppOtp,
+			verifyWhatsAppOtpMutation.isPending,
+			pendingChallenge,
 		]
 	);
 

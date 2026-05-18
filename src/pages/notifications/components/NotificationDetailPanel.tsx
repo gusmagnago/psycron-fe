@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next';
 import { Button } from '@psycron/components/button/Button';
-import { Archive } from '@psycron/components/icons';
+import { Alert, Archive } from '@psycron/components/icons';
 import { Link } from '@psycron/components/link/Link';
 import {
 	QueueActionsRow,
@@ -22,6 +22,9 @@ import {
 	ContextList,
 	NotificationStatusPill,
 	NotificationUtilityRow,
+	WhatsAppActionBanner,
+	WhatsAppActionBannerBody,
+	WhatsAppActionBannerRow,
 } from '../NotificationsPage.styles';
 import {
 	formatNotificationAppointment,
@@ -153,6 +156,18 @@ export const NotificationDetailPanel = ({
 				<QueueDetailLabel>{t('notifications.detail.message')}</QueueDetailLabel>
 				<QueueDetailMessage>{notification.content}</QueueDetailMessage>
 			</QueueDetailCard>
+
+			{notification.messageType === 'WHATSAPP_ACTION_REQUIRED' ? (
+				<WhatsAppActionBanner>
+					<WhatsAppActionBannerRow>
+						<Alert aria-hidden='true' />
+						{t('notifications.whatsapp-action-required.title')}
+					</WhatsAppActionBannerRow>
+					<WhatsAppActionBannerBody>
+						{t('notifications.whatsapp-action-required.body')}
+					</WhatsAppActionBannerBody>
+				</WhatsAppActionBanner>
+			) : null}
 
 			<QueueActionsRow>
 				{canResend ? (
