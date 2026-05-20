@@ -63,7 +63,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 type LocationState = { from?: { pathname?: string } };
 
 export const AuthProvider = ({ children }: AuthProviderProps) => {
-	const { t } = useTranslation();
+	const { t, i18n } = useTranslation();
 	const navigate = useNavigate();
 	const location = useLocation();
 	const queryClient = useQueryClient();
@@ -153,7 +153,9 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 					therapistId: res.therapistId,
 					persist: Boolean(variables.stayConnected),
 				});
-				navigate(WHATSAPP_OTP_CHALLENGE, { replace: true });
+				navigate(`/${i18n.language}/${WHATSAPP_OTP_CHALLENGE}`, {
+					replace: true,
+				});
 				return;
 			}
 

@@ -90,7 +90,7 @@ export const UserDetailsProvider = ({ children }: UserDetailsProviderProps) => {
 		(id: string): void => {
 			capture(PostHogEvent.UserDetailsEditUserClicked, { target_user_id: id });
 
-			navigate(`${EDITUSERPATH}/${id}`);
+			navigate(`/${i18n.language}/${EDITUSERPATH}/${id}`);
 
 			if (isUserDetailsVisible === false) return;
 			toggleUserDetails();
@@ -105,8 +105,7 @@ export const UserDetailsProvider = ({ children }: UserDetailsProviderProps) => {
 				session,
 			});
 
-			const editUserPath = `${EDITUSERPATH}/${userId}`;
-			navigate(`${editUserPath}/${session}`);
+			navigate(`/${i18n.language}/${EDITUSERPATH}/${userId}/${session}`);
 
 			toggleUserDetails();
 		},

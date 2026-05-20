@@ -2,6 +2,7 @@ import type { ReactNode } from 'react';
 import type { IEditAppointment } from '@psycron/api/appointment/index.types';
 import type {
 	IBookAppointment,
+	ICreateManualPatient,
 	ICreatePatient,
 	IEditPatientDetailsById,
 } from '@psycron/api/patient/index.types';
@@ -9,6 +10,8 @@ import type {
 export interface IPatientContextType {
 	bookAppointmentFromLinkMttnIsLoading: boolean;
 	bookAppointmentWithLink: (data: IBookAppointment) => void;
+	createManualPatientIsLoading: boolean;
+	createManualPatientMttn: (data: ICreateManualPatient) => void;
 	createPatientIsLoading: boolean;
 	createPatientMttn: (data: ICreatePatient) => void;
 	patientEditAppointment: (data: IEditAppointment) => void;

@@ -5,12 +5,14 @@ import type { IEditAppointment } from '@psycron/api/appointment/index.types';
 import type { CustomError } from '@psycron/api/error';
 import {
 	bookAppointmentFromLink,
+	createManualPatient,
 	createPatientFromSlot,
 	getPatientById,
 	updatePatientDetailsById,
 } from '@psycron/api/patient';
 import type {
 	IBookAppointment,
+	ICreateManualPatient,
 	ICreatePatient,
 	IEditPatientDetailsById,
 } from '@psycron/api/patient/index.types';
@@ -102,6 +104,26 @@ export const PatientProvider = ({ children }: IPatientProviderProps) => {
 	const createPatientMttn = (data: ICreatePatient) =>
 		createPatientMutation.mutate(data);
 
+	const createManualPatientMutation = useMutation({
+		mutationFn: createManualPatient,
+		onSuccess: (data) => {
+			queryClient.invalidateQueries({ queryKey: ['patientList'] });
+			showAlert({
+				message: data.message,
+				severity: 'success',
+			});
+		},
+		onError: (error: CustomError) => {
+			showAlert({
+				message: error.message,
+				severity: 'error',
+			});
+		},
+	});
+
+	const createManualPatientMttn = (data: ICreateManualPatient) =>
+		createManualPatientMutation.mutate(data);
+
 	const patientEditAppointmentMutation = useMutation({
 		mutationFn: editAppointment,
 		onSuccess: (data) => {
@@ -134,6 +156,8 @@ export const PatientProvider = ({ children }: IPatientProviderProps) => {
 				updatePatientIsLoading: updatePatientMutation.isPending,
 				createPatientMttn,
 				createPatientIsLoading: createPatientMutation.isPending,
+				createManualPatientMttn,
+				createManualPatientIsLoading: createManualPatientMutation.isPending,
 				patientEditAppointment,
 				patientEditAppointmentIsLoading:
 					patientEditAppointmentMutation.isPending,

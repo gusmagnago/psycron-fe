@@ -1,29 +1,60 @@
 import { useState } from 'react';
-import { type FieldValues, useForm } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { Button, Grid, IconButton } from '@mui/material';
 import { AddPatient } from '@psycron/components/icons/user/patient/AddPatient';
+import { useAlert } from '@psycron/context/alert/AlertContext';
+import { usePatient } from '@psycron/context/patient/PatientContext';
+import { useUserDetails } from '@psycron/context/user/details/UserDetailsContext';
 
 import { ContactsForm } from '../components/contacts/ContactsForm';
 import { NameForm } from '../components/name/NameForm';
 import { FormWrapper } from '../FormWrapper/FormWrapper';
 
-import type { AddPatientProps } from './AddPatientForm.types';
+import type { AddPatientFormData, AddPatientProps } from './AddPatientForm.types';
 
 export const AddPatientForm = ({ shortButton }: AddPatientProps) => {
 	const { t } = useTranslation();
+	const { showAlert } = useAlert();
+	const { therapistId } = useUserDetails();
+	const { createManualPatientMttn } = usePatient();
+
 	const {
 		register,
 		handleSubmit,
 		getValues,
 		setValue,
+		reset,
 		formState: { errors },
-	} = useForm();
+	} = useForm<AddPatientFormData>();
 
 	const [open, setOpen] = useState<boolean>(false);
 
-	const onSubmit = (data: FieldValues) => {
-		data;
+	const onSubmit = (data: AddPatientFormData) => {
+		const { email, phone } = data.contacts ?? {};
+
+		if (!email && !phone) {
+			showAlert({
+				message: t('components.form.add-patient.contacts-required'),
+				severity: 'error',
+			});
+			return;
+		}
+
+		createManualPatientMttn({
+			therapistId,
+			patient: {
+				firstName: data.firstName,
+				lastName: data.lastName,
+				contacts: {
+					...(email && { email }),
+					...(phone && { phone }),
+					...(data.contacts?.whatsapp && { whatsapp: data.contacts.whatsapp }),
+				},
+			},
+		});
+		reset();
+		setOpen(false);
 	};
 
 	return (

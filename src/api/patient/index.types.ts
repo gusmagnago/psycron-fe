@@ -66,6 +66,13 @@ export interface ICreatePatient {
 	therapistId: string;
 }
 
+export interface ICreateManualPatient {
+	patient: Pick<PatientPartial, 'firstName' | 'lastName' | 'contacts'> & {
+		timeZone?: string;
+	};
+	therapistId: string;
+}
+
 export interface ICreatePatientResponse {
 	message: string;
 	patient: IPatient;
