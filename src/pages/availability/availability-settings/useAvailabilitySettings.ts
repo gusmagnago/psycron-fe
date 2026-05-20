@@ -5,7 +5,13 @@ import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { useFeatureFlagEnabled } from '@posthog/react';
 import { capture } from '@psycron/analytics/posthog/events';
 import { PostHogEvent } from '@psycron/analytics/posthog/types';
-import { getGoogleCalendarConnectUrl } from '@psycron/api/auth';
+import type { CalendarItem } from '@psycron/api/auth';
+import {
+	getGoogleCalendarConnectUrl,
+	getGoogleCalendarList,
+	getGoogleCalendarStatus,
+	selectGoogleCalendar,
+} from '@psycron/api/auth';
 import { updateAvailabilitySettings } from '@psycron/api/availability';
 import type { IAvailabilityRecord } from '@psycron/api/availability/index.types';
 import { editUserById } from '@psycron/api/user';
@@ -173,6 +179,11 @@ export const useAvailabilitySettings = (): UseAvailabilitySettingsReturn => {
 	const [activeDrawer, setActiveDrawer] = useState<DrawerKey>(null);
 	const [bannerDismissed, setBannerDismissed] = useState(false);
 	const [isConnecting, setIsConnecting] = useState(false);
+	const [isDisconnecting, setIsDisconnecting] = useState(false);
+	const [isTogglingSync, setIsTogglingSync] = useState(false);
+	const [syncEnabled, setSyncEnabled] = useState(false);
+	const [calendarList, setCalendarList] = useState<CalendarItem[]>([]);
+	const [selectedCalendarId, setSelectedCalendarId] = useState<string | undefined>();
 	const [showTimezoneWarning, setShowTimezoneWarning] = useState(false);
 
 	// Buffer time
@@ -569,6 +580,23 @@ export const useAvailabilitySettings = (): UseAvailabilitySettingsReturn => {
 		});
 	}, [showAlert, t]);
 
+	// Fetch status + calendar list when Google Calendar drawer opens
+	useEffect(() => {
+		if (activeDrawer !== 'google-calendar') return;
+		if (!availability.googleCalendarConnected) return;
+
+		getGoogleCalendarStatus()
+			.then((status) => {
+				setSyncEnabled(status.syncEnabled);
+				setSelectedCalendarId(status.calendarId);
+			})
+			.catch(() => null);
+
+		getGoogleCalendarList()
+			.then(setCalendarList)
+			.catch(() => null);
+	}, [activeDrawer, availability.googleCalendarConnected]);
+
 	const handleGoogleCalendarConnect = useCallback(async () => {
 		setIsConnecting(true);
 		try {
@@ -585,6 +613,62 @@ export const useAvailabilitySettings = (): UseAvailabilitySettingsReturn => {
 			setIsConnecting(false);
 		}
 	}, [i18n.language, showAlert, t]);
+
+	const handleDisconnectCalendar = useCallback(async () => {
+		setIsDisconnecting(true);
+		try {
+			await fetch('/auth/google/calendar', { method: 'DELETE', credentials: 'include' });
+			queryClient.invalidateQueries({ queryKey: ['availability'] });
+			showAlert({
+				message: t('availability.settings.google-calendar-disconnected'),
+				severity: 'success',
+			});
+			setActiveDrawer(null);
+		} catch {
+			showAlert({
+				message: t('availability.settings.google-calendar-connect-error'),
+				severity: 'error',
+			});
+		} finally {
+			setIsDisconnecting(false);
+		}
+	}, [queryClient, showAlert, t]);
+
+	const handleToggleCalendarSync = useCallback(async () => {
+		const next = !syncEnabled;
+		setIsTogglingSync(true);
+		try {
+			await fetch('/auth/google/calendar/toggle', {
+				method: 'POST',
+				credentials: 'include',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({ enabled: next }),
+			});
+			setSyncEnabled(next);
+		} catch {
+			showAlert({
+				message: t('availability.settings.google-calendar-connect-error'),
+				severity: 'error',
+			});
+		} finally {
+			setIsTogglingSync(false);
+		}
+	}, [syncEnabled, showAlert, t]);
+
+	const handleChangeCalendar = useCallback(
+		async (calendarId: string) => {
+			try {
+				await selectGoogleCalendar(calendarId);
+				setSelectedCalendarId(calendarId);
+			} catch {
+				showAlert({
+					message: t('availability.settings.google-calendar-connect-error'),
+					severity: 'error',
+				});
+			}
+		},
+		[showAlert, t]
+	);
 
 	const handleJupiterCta = useCallback(() => {
 		navigate(`/${locale}/${AVAILABILITYGENERATE}`);
@@ -640,8 +724,16 @@ export const useAvailabilitySettings = (): UseAvailabilitySettingsReturn => {
 		firstMissingRecommended,
 		handleAddressSave,
 		handleBufferSave,
+		calendarList,
+		handleChangeCalendar,
+		handleDisconnectCalendar,
 		handleGoogleCalendarConnect,
 		handleJupiterCta,
+		handleToggleCalendarSync,
+		isDisconnecting,
+		isTogglingSync,
+		selectedCalendarId,
+		syncEnabled,
 		handleRecurrencePatternSave,
 		handleSessionDurationSave,
 		handleSessionTypeSave,

@@ -282,3 +282,27 @@ export const GoogleCalendarStatus = styled(Box)`
 	border: 1px solid ${hexToRgba(palette.success.main, 0.25)};
 	color: ${palette.success.main};
 `;
+
+export const CalendarNameRow = styled(Box)`
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: ${spacing.small};
+	padding: ${spacing.extraSmall} 0;
+`;
+
+export const CalendarSyncRow = styled(Box)`
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: ${spacing.small};
+	padding: ${spacing.extraSmall} 0;
+	border-top: 1px solid ${hexToRgba(palette.text.primary, 0.08)};
+	margin-top: ${spacing.extraSmall};
+`;
+
+export const CalendarActionRow = styled(Box)`
+	display: flex;
+	justify-content: flex-end;
+	margin-top: ${spacing.small};
+`;
