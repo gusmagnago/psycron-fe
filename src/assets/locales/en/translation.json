@@ -1452,6 +1452,11 @@
       "tip-buffer-time": "Adding buffer time between sessions helps you prepare, take notes, and avoid running late. Even 5 minutes makes a difference.",
       "tip-session-address": "Let your patients know where to find you. Add your clinic or office address so in-person sessions are easy to locate."
     },
+    "calendar-picker": {
+      "title": "Which calendar should Psycron use?",
+      "primary": "primary",
+      "confirm": "Use this calendar"
+    },
     "google-calendar": {
       "permissions-intro": "We’ll securely connect to your Google Calendar to:",
       "permission-1": "Read your busy times",

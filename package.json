@@ -11,6 +11,8 @@
 		"preview": "vite preview",
 		"storybook": "storybook dev -p 6006",
 		"build-storybook": "storybook build",
+		"test:e2e": "playwright test",
+		"test:e2e:ui": "playwright test --ui",
 		"generate-stories-list": "node generateStoriesList.js",
 		"prepare": "husky"
 	},
@@ -72,6 +74,7 @@
 		"@emotion/babel-plugin": "^11.13.5",
 		"@emotion/eslint-plugin": "^11.11.0",
 		"@emotion/react": "^11.14.0",
+		"@playwright/test": "^1.60.0",
 		"@storybook/react-vite": "^10.1.11",
 		"@types/connect-history-api-fallback": "^1.5.4",
 		"@types/crypto-js": "^4.2.2",

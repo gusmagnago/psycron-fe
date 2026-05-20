@@ -11,12 +11,14 @@ export type JupiterStep =
 	| 'recurrence-pattern'
 	| 'preview'
 	| 'google-permissions'
+	| 'calendar-picker'
 	| 'google-success'
 	| 'done';
 
 export interface JupiterAnswers {
 	calendarChoice?: 'google' | 'manual';
 	recurrencePattern?: RecurrencePattern;
+	selectedCalendarId?: string;
 	sessionDuration?: string;
 	sessionType?: string;
 	specialities?: string[];

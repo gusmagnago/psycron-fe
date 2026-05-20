@@ -110,6 +110,26 @@ export const getGoogleCalendarStatus = async (): Promise<{
 	return response.data;
 };
 
+export type CalendarItem = {
+	backgroundColor?: string;
+	id: string;
+	primary: boolean;
+	summary: string;
+};
+
+export const getGoogleCalendarList = async (): Promise<CalendarItem[]> => {
+	const response = await apiClient.get<{ calendars: CalendarItem[] }>(
+		'/auth/google/calendar/list'
+	);
+	return response.data.calendars;
+};
+
+export const selectGoogleCalendar = async (
+	calendarId: string
+): Promise<void> => {
+	await apiClient.patch('/auth/google/calendar/select', { calendarId });
+};
+
 export type VerifyWhatsAppOtpResponse = {
 	refreshToken: string;
 	status: 'success';

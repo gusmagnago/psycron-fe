@@ -1452,6 +1452,11 @@
       "tip-buffer-time": "Adicionar um intervalo entre sessões ajuda você a se preparar, fazer anotações e evitar atrasos. Apenas 5 minutos já fazem diferença.",
       "tip-session-address": "Deixe seus pacientes saberem onde encontrá-lo. Adicione o endereço da sua clínica ou consultório para que as sessões presenciais sejam fáceis de localizar."
     },
+    "calendar-picker": {
+      "title": "Qual calendário o Psycron deve usar?",
+      "primary": "principal",
+      "confirm": "Usar este calendário"
+    },
     "google-calendar": {
       "permissions-intro": "Vamos conectar sua Google Agenda com segurança para:",
       "permission-1": "Ler seus horários ocupados",
