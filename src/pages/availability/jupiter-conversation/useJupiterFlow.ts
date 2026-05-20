@@ -529,22 +529,30 @@ export const useJupiterFlow = ({
 				setIsImporting(true);
 				addBotMessage(t('jupiter.google-calendar.importing'));
 
-				const schedule = await importGoogleCalendarSchedule();
+				try {
+					const schedule = await importGoogleCalendarSchedule();
 
-				setIsImporting(false);
+					setIsImporting(false);
 
-				if (schedule && schedule.workingDays.length > 0) {
-					const timeRange = `${schedule.startTime} - ${schedule.endTime}`;
-					setAnswers((prev) => ({
-						...prev,
-						workingDays: schedule.workingDays,
-						timeRange,
-					}));
-					setTimeout(() => {
-						addBotMessage(t('jupiter.google-calendar.imported'), false);
-						setStep('session-duration');
-					}, 300);
-				} else {
+					if (schedule && schedule.workingDays.length > 0) {
+						const timeRange = `${schedule.startTime} - ${schedule.endTime}`;
+						setAnswers((prev) => ({
+							...prev,
+							workingDays: schedule.workingDays,
+							timeRange,
+						}));
+						setTimeout(() => {
+							addBotMessage(t('jupiter.google-calendar.imported'), false);
+							setStep('session-duration');
+						}, 300);
+					} else {
+						setTimeout(() => {
+							addBotMessage(t('jupiter.google-calendar.import-failed'), false);
+							setStep('working-days');
+						}, 300);
+					}
+				} catch {
+					setIsImporting(false);
 					setTimeout(() => {
 						addBotMessage(t('jupiter.google-calendar.import-failed'), false);
 						setStep('working-days');
