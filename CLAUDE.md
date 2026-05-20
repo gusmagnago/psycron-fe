@@ -6,6 +6,28 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 Never create a git commit without the user explicitly asking for it. Always present the work for review first and wait for approval before committing.
 
+## Obsidian Context
+
+Use the Psycron Obsidian vault as product and engineering memory when a task involves product behavior, architecture, compliance, Jira, Confluence, releases, or cross-repo decisions:
+
+```text
+/Users/gusmagnago/Documents/Obsidian Vault
+```
+
+Start with:
+- `10 AI Context/Agent Handoff.md`
+- `10 AI Context/Claude Bridge.md`
+- `10 AI Context/Psycron Brief.md`
+- `10 AI Context/Engineering Rules.md`
+- `10 AI Context/Shared Engineering Conventions.md`
+- `04 Engineering/psycron-fe/Frontend Architecture Map.md`
+- `04 Engineering/GitHub Workflow Map.md`
+- `04 Engineering/Release And Versioning Map.md`
+
+## Branching And Release
+
+`dev` is the integration root before `main`. Feature/fix work should branch from `dev` and merge back into `dev`. Only promote `dev` into `main` for release. Update `.github/release-requirements.json` when frontend work changes v1.0.0 feature, blocker, or launch-readiness status.
+
 ## Skill
 
 Always invoke the `psycron-fullstack` skill at the start of every session in this repository before doing any work.
