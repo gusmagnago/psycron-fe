@@ -9,6 +9,7 @@ import {
 	clearSentryUser,
 	setSentryUser,
 } from '@psycron/analytics/sentry/sentry';
+import { QUERY_KEYS } from '@psycron/api/queryKeys';
 import { getWorkerMe } from '@psycron/api/worker';
 import type { IWorker } from '@psycron/api/worker/index.types';
 import { useQuery } from '@tanstack/react-query';
@@ -44,7 +45,7 @@ export const WorkerProvider: React.FC<React.PropsWithChildren> = ({
 		isLoading,
 		error,
 	} = useQuery<IWorker, Error>({
-		queryKey: ['worker-me'],
+		queryKey: QUERY_KEYS.workerMe(),
 		queryFn: async () => getWorkerMe(),
 		enabled: isAuthenticated,
 		retry: false,
