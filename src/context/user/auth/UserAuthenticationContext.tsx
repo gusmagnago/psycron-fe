@@ -292,7 +292,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 			clearAuthTokens();
 			clearSentryUser();
 			await queryClient.removeQueries({ queryKey: QUERY_KEYS.session() });
-			navigate(HOMEPAGE, { replace: true });
+			navigate(`/${i18n.language}/${HOMEPAGE}`, { replace: true });
 		},
 	});
 
