@@ -1,3 +1,4 @@
+import { Navigate } from 'react-router-dom';
 import { ActionCenterPage } from '@psycron/pages/action-center/ActionCenterPage';
 import { AvailabilitySettings } from '@psycron/pages/availability/availability-settings/AvailabilitySettings';
 import { GenerateAvailability } from '@psycron/pages/availability/GenerateAvailability';
@@ -9,6 +10,8 @@ import { PatientProfilePage } from '@psycron/pages/patients/patient-details/Pati
 import { PatientListPage } from '@psycron/pages/patients/PatientListPage';
 import {
 	ACTIONCENTER,
+	AGENDA,
+	APPOINTMENTS,
 	AVAILABILITYGENERATE,
 	AVAILABILITYPATH,
 	AVAILABILITYRECOVERY,
@@ -20,6 +23,7 @@ import {
 	EDITUSER,
 	EDITUSERBYSESSION,
 	NOTIFICATIONS,
+	NOTIFICATIONSETTINGS,
 	PATIENTPROFILE,
 	PATIENTS,
 	USERDETAILS,
@@ -38,6 +42,9 @@ const privateRoutes = [
 	{ path: ACTIONCENTER, element: <ActionCenterPage /> },
 	{ path: CONFLICTS, element: <ActionCenterPage initialTab='conflicts' /> },
 	{ path: NOTIFICATIONS, element: <NotificationsPage /> },
+	{ path: NOTIFICATIONSETTINGS, element: <NotificationsPage initialSettingsOpen /> },
+	{ path: APPOINTMENTS, element: <Navigate replace to={`../${AVAILABILITYPATH}`} /> },
+	{ path: AGENDA, element: <Navigate replace to={`../${AVAILABILITYPATH}`} /> },
 	{ path: PATIENTS, element: <PatientListPage /> },
 	{ path: PATIENTPROFILE, element: <PatientProfilePage /> },
 	{ path: USERDETAILS, element: <UserDetailsPage /> },
