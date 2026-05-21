@@ -7,8 +7,6 @@ import { Text } from '@psycron/components/text/Text';
 import { useAlert } from '@psycron/context/alert/AlertContext';
 import { useMutation, useQuery } from '@tanstack/react-query';
 
-import { HOMEPAGE } from '../urls';
-
 import {
 	ImgWrapper,
 	StyldBodyText,
@@ -21,7 +19,7 @@ import {
 export const Unsubscribe = () => {
 	const { token } = useParams<{ token: string }>();
 
-	const { t } = useTranslation();
+	const { t, i18n } = useTranslation();
 
 	const { showAlert } = useAlert();
 	const navigate = useNavigate();
@@ -33,7 +31,7 @@ export const Unsubscribe = () => {
 
 	const handleNavigationAfterSuccess = () => {
 		setTimeout(() => {
-			navigate(HOMEPAGE);
+			navigate(`/${i18n.language}`);
 		}, 5000);
 	};
 

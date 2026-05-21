@@ -13,7 +13,7 @@ import type { CustomError } from '@psycron/api/error';
 import { changePassword } from '@psycron/api/user';
 import type {
 	IChangePass,
-	IPasswordChange,
+	IPasswordChangePayload as IPasswordChange,
 } from '@psycron/api/user/index.types';
 import { FormFooter } from '@psycron/components/form/components/footer/FormFooter';
 import { PasswordInput } from '@psycron/components/form/components/password/PasswordInput';

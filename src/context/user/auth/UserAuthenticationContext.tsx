@@ -63,7 +63,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 type LocationState = { from?: { pathname?: string } };
 
 export const AuthProvider = ({ children }: AuthProviderProps) => {
-	const { t } = useTranslation();
+	const { t, i18n } = useTranslation();
 	const navigate = useNavigate();
 	const location = useLocation();
 	const queryClient = useQueryClient();
@@ -153,15 +153,21 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 					therapistId: res.therapistId,
 					persist: Boolean(variables.stayConnected),
 				});
-				navigate(WHATSAPP_OTP_CHALLENGE, { replace: true });
+				navigate(`/${i18n.language}/${WHATSAPP_OTP_CHALLENGE}`, {
+					replace: true,
+				});
 				return;
 			}
 
 			const persist = Boolean(variables.stayConnected);
+			const { token: accessToken, refreshToken } = res as {
+				refreshToken: string;
+				token: string;
+			};
 
 			await handleAuthSuccess({
-				accessToken: res.token,
-				refreshToken: res.refreshToken,
+				accessToken,
+				refreshToken,
 				persist,
 				redirectTo: redirectAfterAuth ?? DASHBOARD,
 			});
@@ -212,6 +218,17 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 	const signUpMutation = useMutation({
 		mutationFn: signUpFc,
 		onSuccess: async (res, variables: ISignUpForm) => {
+			if (!('token' in res) || !res.token) {
+				showAlert({ severity: 'info', message: res.message });
+				capture(PostHogEvent.AuthSignUpSucceeded, {
+					method: 'email',
+					audience: 'therapist',
+					stay_connected: false,
+					marketing_emails_accepted: false,
+				});
+				return;
+			}
+
 			const persist = Boolean(variables.stayConnected);
 
 			await handleAuthSuccess({

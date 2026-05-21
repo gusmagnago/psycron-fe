@@ -1,11 +1,13 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
+import type { CustomError } from '@psycron/api/error';
 import { getPatientById } from '@psycron/api/patient';
 import {
 	getConflicts,
 	scanPatientDuplicates,
 } from '@psycron/api/user/conflicts';
 import type { IPatientDuplicateConflictMetadata } from '@psycron/api/user/conflicts/index.types';
+import { useAlert } from '@psycron/context/alert/AlertContext';
 import type { IPatient } from '@psycron/context/user/auth/UserAuthenticationContext.types';
 import { useUserDetails } from '@psycron/context/user/details/UserDetailsContext';
 import useViewport from '@psycron/hooks/useViewport';
@@ -28,6 +30,7 @@ export const usePatientListPageState = () => {
 	const { locale } = useParams<{ locale: string }>();
 	const { isSmallerThanTablet } = useViewport();
 	const { isUserDetailsLoading, therapistId, userDetails } = useUserDetails();
+	const { showAlert } = useAlert();
 
 	const [searchQuery, setSearchQuery] = useState('');
 	const [sortDirection, setSortDirection] = useState<PatientListSortDirection>(
@@ -41,6 +44,9 @@ export const usePatientListPageState = () => {
 
 	const scanMutation = useMutation({
 		mutationFn: () => scanPatientDuplicates(therapistId),
+		onError: (error: CustomError) => {
+			showAlert({ message: error.message, severity: 'error' });
+		},
 	});
 
 	useEffect(() => {

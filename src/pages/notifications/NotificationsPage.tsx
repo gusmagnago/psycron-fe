@@ -31,12 +31,16 @@ import { useNotificationsPageState } from './hooks/useNotificationsPageState';
 import { BulkActionsRow } from './NotificationsPage.styles';
 import { getMessageTypeLabelKey } from './NotificationsPage.utils';
 
-export const NotificationsPage = () => {
+interface NotificationsPageProps {
+	initialSettingsOpen?: boolean;
+}
+
+export const NotificationsPage = ({ initialSettingsOpen = false }: NotificationsPageProps) => {
 	const { t } = useTranslation();
 	const [isBulkRetrySelected, setIsBulkRetrySelected] = useState(false);
 	const [isFeedExpanded, setIsFeedExpanded] = useState(false);
 	const [isMobileDetailOpen, setIsMobileDetailOpen] = useState(false);
-	const [isSettingsDrawerOpen, setIsSettingsDrawerOpen] = useState(false);
+	const [isSettingsDrawerOpen, setIsSettingsDrawerOpen] = useState(initialSettingsOpen);
 	const [patientSettingsState, setPatientSettingsState] = useState<{
 		isOpen: boolean;
 		patientId: string | null;

@@ -5,6 +5,7 @@ import apiClient from '../axios-instance';
 import type {
 	IBookAppointment,
 	IBookAppointmentResponse,
+	ICreateManualPatient,
 	ICreatePatient,
 	ICreatePatientResponse,
 	IEditPatientDetailsById,
@@ -50,6 +51,17 @@ export const updatePatientDetailsById = async ({
 	return response.data;
 };
 
+export const archivePatientById = async (
+	patientId: string
+): Promise<IEditPatientDetailsByIdResponse> => {
+	const response = await apiClient.put<IEditPatientDetailsByIdResponse>(
+		`/patient/${patientId}`,
+		{ status: 'ARCHIVED' }
+	);
+
+	return response.data;
+};
+
 export const getPublicPatientSessions = async (
 	patientId: string
 ): Promise<IPublicPatientSessionsResponse> => {
@@ -68,6 +80,18 @@ export const updatePatientNotificationPreferences = async (
 			`/patient/${patientId}/notification-preferences`,
 			payload
 		);
+
+	return response.data;
+};
+
+export const createManualPatient = async ({
+	therapistId,
+	patient,
+}: ICreateManualPatient): Promise<ICreatePatientResponse> => {
+	const response = await apiClient.post<ICreatePatientResponse>(
+		`/patient/${therapistId}/create`,
+		patient
+	);
 
 	return response.data;
 };

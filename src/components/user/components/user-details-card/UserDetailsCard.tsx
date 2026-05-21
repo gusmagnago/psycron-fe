@@ -152,7 +152,7 @@ export const UserDetailsCard = ({ user, isPage }: IUserDetailsCardProps) => {
 						capture(PostHogEvent.UserDetailsPatientsNavigationClicked, {
 							view: isPage ? 'page' : 'overlay',
 						});
-						navigate(PATIENTS);
+						navigate(`/${i18n.language}/${PATIENTS}`);
 						toggleUserDetails();
 					}}
 				/>

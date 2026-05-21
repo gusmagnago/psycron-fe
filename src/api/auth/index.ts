@@ -75,6 +75,10 @@ export const refreshTokenService = async (
 	return data;
 };
 
+export const requestEmailVerification = async (email: string): Promise<void> => {
+	await apiClient.post('/users/request-email-verification', { email });
+};
+
 export const verifyEmail = async (
 	token: string
 ): Promise<IVerifyEmailResponse> => {
@@ -100,14 +104,36 @@ export const getGoogleCalendarConnectUrl = async (params: {
 };
 
 export const getGoogleCalendarStatus = async (): Promise<{
+	calendarId?: string;
 	connected: boolean;
 	syncEnabled: boolean;
 }> => {
 	const response = await apiClient.get<{
+		calendarId?: string;
 		connected: boolean;
 		syncEnabled: boolean;
 	}>('/auth/google/calendar/status');
 	return response.data;
+};
+
+export type CalendarItem = {
+	backgroundColor?: string;
+	id: string;
+	primary: boolean;
+	summary: string;
+};
+
+export const getGoogleCalendarList = async (): Promise<CalendarItem[]> => {
+	const response = await apiClient.get<{ calendars: CalendarItem[] }>(
+		'/auth/google/calendar/list'
+	);
+	return response.data.calendars;
+};
+
+export const selectGoogleCalendar = async (
+	calendarId: string
+): Promise<void> => {
+	await apiClient.patch('/auth/google/calendar/select', { calendarId });
 };
 
 export type VerifyWhatsAppOtpResponse = {

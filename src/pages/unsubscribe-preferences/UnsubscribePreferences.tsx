@@ -70,7 +70,7 @@ export const UnsubscribePreferences = () => {
 							<Button
 								type='submit'
 								fullWidth
-								isLoading={mutation.isPending}
+								loading={mutation.isPending}
 							>
 								{t('page.unsubscribe-preferences.submit')}
 							</Button>

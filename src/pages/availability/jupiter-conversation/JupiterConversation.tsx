@@ -11,6 +11,7 @@ import { useUserDetails } from '@psycron/context/user/details/UserDetailsContext
 
 import { AvailabilityPreviewCard } from '../availability-preview-card/AvailabilityPreviewCard';
 import { GoogleCalendarPermissions } from '../google-calendar-path/GoogleCalendarPermissions';
+import { GoogleCalendarPicker } from '../google-calendar-path/GoogleCalendarPicker';
 import { GoogleCalendarSuccess } from '../google-calendar-path/GoogleCalendarSuccess';
 
 import {
@@ -48,13 +49,16 @@ export const JupiterConversation = () => {
 		step,
 		answers,
 		messages,
+		calendarList,
 		isImporting,
+		isLoadingCalendars,
 		isPublishing,
 		specialityKey,
 		workingDaysKey,
 		detectedTimezone,
 		initFlow,
 		handleCalendarChoice,
+		handleCalendarPicked,
 		handleGoogleBack,
 		handleGoogleContinue,
 		handleGooglePostConnect,
@@ -438,6 +442,15 @@ export const JupiterConversation = () => {
 					<GoogleCalendarPermissions
 						onContinue={handleGoogleContinue}
 						onBack={handleGoogleBack}
+					/>
+				);
+
+			case 'calendar-picker':
+				if (isLoadingCalendars || calendarList.length === 0) return null;
+				return (
+					<GoogleCalendarPicker
+						calendars={calendarList}
+						onSelect={handleCalendarPicked}
 					/>
 				);
 

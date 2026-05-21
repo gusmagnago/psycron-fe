@@ -1,4 +1,5 @@
 import type { UseFormReturn } from 'react-hook-form';
+import type { CalendarItem } from '@psycron/api/auth';
 import type { IAvailabilityRecord } from '@psycron/api/availability/index.types';
 import type { IBufferTimeAdviceRequest } from '@psycron/api/jupiter';
 import type { IClinicAddress } from '@psycron/context/user/auth/UserAuthenticationContext.types';
@@ -58,6 +59,7 @@ export interface UseAvailabilitySettingsReturn {
 	bufferAdviceRequest: IBufferTimeAdviceRequest | null;
 	bufferInput: string;
 	bufferInsights: IBufferTimeInsights;
+	calendarList: CalendarItem[];
 	cancelTimezoneWarning: () => void;
 	checklistItems: ChecklistItem[];
 	closeDrawer: () => void;
@@ -67,6 +69,8 @@ export interface UseAvailabilitySettingsReturn {
 	firstMissingRecommended: ChecklistItem | undefined;
 	handleAddressSave: () => void;
 	handleBufferSave: () => void;
+	handleChangeCalendar: (calendarId: string) => Promise<void>;
+	handleDisconnectCalendar: () => Promise<void>;
 	handleGoogleCalendarConnect: () => void;
 	handleJupiterCta: () => void;
 	handleRecurrencePatternSave: () => void;
@@ -74,16 +78,20 @@ export interface UseAvailabilitySettingsReturn {
 	handleSessionTypeSave: () => void;
 	handleSpecialtySave: () => void;
 	handleTimezoneSave: () => void;
+	handleToggleCalendarSync: () => Promise<void>;
 	handleWorkingHoursSave: () => void;
 	isAddressSaving: boolean;
 	isConnecting: boolean;
+	isDisconnecting: boolean;
 	isJupiterCtaEnabled: boolean;
 	isLoading: boolean;
 	isSaving: boolean;
+	isTogglingSync: boolean;
 	openDrawer: (key: DrawerKey) => void;
 	progress: number;
 	recurrencePatternInput: string;
 	renderActionLabel: (item: ChecklistItem) => string;
+	selectedCalendarId: string | undefined;
 	sessionDurationInput: string;
 	sessionTypeInput: string;
 	setBannerDismissed: (dismissed: boolean) => void;
@@ -98,8 +106,10 @@ export interface UseAvailabilitySettingsReturn {
 	setTimezoneInput: (value: string) => void;
 	showTimezoneWarning: boolean;
 	specialtyDetailInput: string;
+	specialtyInput: string;
 	startTimeInput: string;
 	statusStats: AvailabilityStatusStats;
+	syncEnabled: boolean;
 	timezoneInput: string;
 	toggleWorkingDay: (day: string) => void;
 	workingDaysInput: string[];

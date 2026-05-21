@@ -52,11 +52,6 @@ export const initPostHog = (): void => {
 			},
 			recordHeaders: false,
 			recordBody: false,
-			networkRecordOptions: {
-				recordHeaders: false,
-				recordBody: false,
-				recordInitiatorType: true,
-			},
 		},
 
 		// ✅ Performance & UX metrics

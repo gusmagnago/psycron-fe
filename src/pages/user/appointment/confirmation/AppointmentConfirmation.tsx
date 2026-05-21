@@ -21,7 +21,7 @@ export const AppointmentConfirmation = () => {
 		therapistId: string;
 	}>();
 
-	const { data: patient, isLoading } = useQuery({
+	const { data: patient, isError, isLoading } = useQuery({
 		enabled: Boolean(therapistId) && Boolean(patientId),
 		queryFn: () => getPatientById(therapistId!, patientId!),
 		queryKey: ['publicPatient', therapistId, patientId],
@@ -38,6 +38,24 @@ export const AppointmentConfirmation = () => {
 			<PublicBookingShell>
 				<PageWrapper>
 					<Typography color='text.secondary'>{t('common.loading')}</Typography>
+				</PageWrapper>
+			</PublicBookingShell>
+		);
+	}
+
+	if (isError) {
+		return (
+			<PublicBookingShell>
+				<PageWrapper>
+					<Typography color='error' mb={2} variant='h6'>
+						{t('booking.confirmation.error.title', 'Something went wrong')}
+					</Typography>
+					<Typography color='text.secondary' variant='body2'>
+						{t(
+							'booking.confirmation.error.message',
+							'We could not load your booking details. Please contact your practitioner to confirm your appointment.'
+						)}
+					</Typography>
 				</PageWrapper>
 			</PublicBookingShell>
 		);

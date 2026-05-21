@@ -2,9 +2,10 @@ import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { Box, Grid, Typography } from '@mui/material';
 import { Divider } from '@psycron/components/divider/Divider';
-import { Edit, Payment } from '@psycron/components/icons';
+import { Payment } from '@psycron/components/icons';
 import { Text } from '@psycron/components/text/Text';
 import { Tooltip } from '@psycron/components/tooltip/Tooltip';
+import { PATIENTS } from '@psycron/pages/urls';
 import {
 	checkAppointmentTimes,
 	formatDateTime,
@@ -33,13 +34,13 @@ export const DashboardCardItem = ({
 		appointmentInfo.duration
 	);
 
-	const { t } = useTranslation();
+	const { t, i18n } = useTranslation();
 
 	return (
 		<>
 			<DashboardCardItemWrapper
 				width={'100%'}
-				onClick={() => navigate(`patient/${patientId}`)}
+				onClick={() => navigate(`/${i18n.language}/${PATIENTS}/${patientId}`)}
 				isPatientCard={isPatientCard}
 				lessThanThirtyMinutes={!isPatientCard && lessThanThirtyMinutes}
 				isNow={isNow}
@@ -51,17 +52,17 @@ export const DashboardCardItem = ({
 					alignItems='center'
 					width={'100%'}
 				>
-					<Grid item xs={2.5}>
+					<Grid size={2.5}>
 						<Box display='flex' justifyContent='center' p={2}>
 							<Typography variant='subtitle1' textAlign='left'>
 								{`${firstName} ${lastName}`}
 							</Typography>
 						</Box>
 					</Grid>
-					<GridDivider item xs={0.2}>
+					<GridDivider size={0.2}>
 						<Divider small orientation='vertical' flexItem />
 					</GridDivider>
-					<Grid item xs={2.5}>
+					<Grid size={2.5}>
 						<Box p={2}>
 							<DashboardCardTooltip title={'next appointment'}>
 								<Typography variant='body2' textAlign='left'>
@@ -70,10 +71,10 @@ export const DashboardCardItem = ({
 							</DashboardCardTooltip>
 						</Box>
 					</Grid>
-					<GridDivider item xs={0.2}>
+					<GridDivider size={0.2}>
 						<Divider small orientation='vertical' flexItem />
 					</GridDivider>
-					<Grid item xs={1} display='flex' justifyContent='center'>
+					<Grid size={1} display='flex' justifyContent='center'>
 						{isPatientCard ? (
 							<Box display='flex' justifyContent='center'>
 								<Tooltip
@@ -90,27 +91,18 @@ export const DashboardCardItem = ({
 							</Box>
 						)}
 					</Grid>
-					<GridDivider item xs={0.2}>
+					<GridDivider size={0.2}>
 						<Divider small orientation='vertical' flexItem />
 					</GridDivider>
-					<Grid item xs={1} display='flex' justifyContent='center'>
+					<Grid size={1} display='flex' justifyContent='center'>
 						<Box display='flex' justifyContent='center'>
-							{isPatientCard ? (
-								<DashboardCardTooltip title={'monthly appointments'}>
-									<Typography variant='body2'>
-										{appointmentInfo.appointments}
-									</Typography>
-								</DashboardCardTooltip>
-							) : (
-								<Tooltip
-									title={'edit appointment'}
-									onClick={() =>
-										navigate(`/${appointmentInfo.appointmentId}/edit`)
-									}
-								>
-									<Edit />
-								</Tooltip>
-							)}
+							{isPatientCard && (
+							<DashboardCardTooltip title={'monthly appointments'}>
+								<Typography variant='body2'>
+									{appointmentInfo.appointments}
+								</Typography>
+							</DashboardCardTooltip>
+						)}
 						</Box>
 					</Grid>
 				</Grid>

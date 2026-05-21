@@ -1,6 +1,7 @@
 import { tooltipClasses } from '@mui/material';
 import type { CSSObject, Theme } from '@mui/material/styles';
 
+import type { AppPalette } from '../palette/palette.types';
 import { spacing } from '../spacing/spacing.theme';
 
 const tooltipStyles = ({ palette }: Theme): Record<string, CSSObject> => {

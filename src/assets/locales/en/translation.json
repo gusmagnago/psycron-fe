@@ -253,11 +253,16 @@
       "merged-note": "This patient record was merged into {{patientId}} and is kept for audit history.",
       "not-found": "We could not load this patient. They may have been archived or merged into another record.",
       "actions": {
+        "archive": "Archive patient",
+        "archive-confirm": "Archive patient",
+        "archive-dialog-body": "This patient will be hidden from your active list. All their data, session history, and records are preserved and can be found by searching archived patients.",
+        "archive-dialog-title": "Archive this patient?",
+        "archive-loading": "Archiving…",
         "call": "Call",
         "edit": "Edit patient",
+        "email": "Email",
         "open-sessions": "Open sessions page",
-        "whatsapp": "WhatsApp",
-        "email": "Email"
+        "whatsapp": "WhatsApp"
       },
       "edit": {
         "title": "Edit patient details",
@@ -1452,6 +1457,11 @@
       "tip-buffer-time": "Adding buffer time between sessions helps you prepare, take notes, and avoid running late. Even 5 minutes makes a difference.",
       "tip-session-address": "Let your patients know where to find you. Add your clinic or office address so in-person sessions are easy to locate."
     },
+    "calendar-picker": {
+      "title": "Which calendar should Psycron use?",
+      "primary": "primary",
+      "confirm": "Use this calendar"
+    },
     "google-calendar": {
       "permissions-intro": "We’ll securely connect to your Google Calendar to:",
       "permission-1": "Read your busy times",
@@ -1844,9 +1854,14 @@
       "google-calendar-connect-btn": "Connect Google Calendar",
       "google-calendar-connect-error": "Could not start Google Calendar connection. Please try again.",
       "first-publish-alert": "Your availability is live! Complete the checklist below to optimize your setup.",
+      "google-calendar-change": "Change",
       "google-calendar-connected": "Your Google Calendar is connected.",
       "google-calendar-desc": "Sync your Google Calendar to import your existing schedule, block busy times automatically, and keep your Psycron sessions in sync.",
+      "google-calendar-disconnect": "Disconnect",
+      "google-calendar-disconnected": "Google Calendar disconnected.",
       "google-calendar-drawer-title": "Google Calendar",
+      "google-calendar-primary": "Primary calendar",
+      "google-calendar-sync-label": "Sync sessions to Google Calendar",
       "live-alert": "Your availability is now live. Clients can start booking sessions with you right away.",
       "page-title": "Availability Settings",
       "save-error": "Could not save settings. Please try again.",

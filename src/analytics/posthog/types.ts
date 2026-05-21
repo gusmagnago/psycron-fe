@@ -71,6 +71,9 @@ export const enum PostHogEvent {
 	NotificationResent = 'notification resent',
 	NotificationSettingsFailed = 'notification settings failed',
 	NotificationSettingsSaved = 'notification settings saved',
+	PatientCenterArchiveConfirmed = 'patient center archive confirmed',
+	PatientCenterArchiveFailed = 'patient center archive failed',
+	PatientCenterArchiveOpened = 'patient center archive opened',
 	PatientCenterOpened = 'patient center opened',
 	PatientCenterSessionCancelled = 'patient center session cancelled',
 	PatientCenterSessionDrawerOpened = 'patient center session drawer opened',
@@ -130,8 +133,8 @@ export type PostHogEventProps = {
 
 	[PostHogEvent.AuthSignInSucceeded]: {
 		audience: 'therapist' | 'worker';
-		method: 'password' | 'google';
-		stay_connected: boolean;
+		method: 'password' | 'google' | '2fa_whatsapp';
+		stay_connected?: boolean;
 	};
 	[PostHogEvent.AuthSignInFailed]: {
 		audience: 'therapist' | 'worker';
@@ -320,6 +323,16 @@ export type PostHogEventProps = {
 		triggered_by: 'patient' | 'therapist';
 	};
 
+	[PostHogEvent.PatientCenterArchiveOpened]: {
+		target_user_id: string;
+	};
+	[PostHogEvent.PatientCenterArchiveConfirmed]: {
+		target_user_id: string;
+	};
+	[PostHogEvent.PatientCenterArchiveFailed]: {
+		error_code: string;
+		target_user_id: string;
+	};
 	[PostHogEvent.PatientCenterOpened]: {
 		target_user_id: string;
 	};

@@ -1,6 +1,5 @@
 import type { To } from 'react-router-dom';
 import { useNavigate, useParams } from 'react-router-dom';
-import { HOMEPAGE } from '@psycron/pages/urls';
 import { trackLinkClick } from '@psycron/utils/variables/GA4';
 
 import { StyledAnchor, StyledLink } from './Link.styles';
@@ -41,7 +40,7 @@ export const Link = ({
 			if (isInternalReferrer) {
 				navigate(-1);
 			} else {
-				navigate(HOMEPAGE);
+				navigate(`/${locale ?? 'en'}`);
 			}
 		}
 

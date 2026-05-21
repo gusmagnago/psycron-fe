@@ -253,11 +253,16 @@
       "merged-note": "Este registro foi mesclado em {{patientId}} e fica disponível para histórico de auditoria.",
       "not-found": "Não conseguimos carregar este paciente. Ele pode ter sido arquivado ou mesclado em outro registro.",
       "actions": {
+        "archive": "Arquivar paciente",
+        "archive-confirm": "Arquivar paciente",
+        "archive-dialog-body": "Este paciente será ocultado da sua lista ativa. Todos os dados, histórico de sessões e registros são preservados e podem ser encontrados buscando pacientes arquivados.",
+        "archive-dialog-title": "Arquivar este paciente?",
+        "archive-loading": "Arquivando…",
         "call": "Ligar",
         "edit": "Editar paciente",
+        "email": "Email",
         "open-sessions": "Abrir página de sessões",
-        "whatsapp": "WhatsApp",
-        "email": "Email"
+        "whatsapp": "WhatsApp"
       },
       "edit": {
         "title": "Editar dados do paciente",
@@ -1452,6 +1457,11 @@
       "tip-buffer-time": "Adicionar um intervalo entre sessões ajuda você a se preparar, fazer anotações e evitar atrasos. Apenas 5 minutos já fazem diferença.",
       "tip-session-address": "Deixe seus pacientes saberem onde encontrá-lo. Adicione o endereço da sua clínica ou consultório para que as sessões presenciais sejam fáceis de localizar."
     },
+    "calendar-picker": {
+      "title": "Qual calendário o Psycron deve usar?",
+      "primary": "principal",
+      "confirm": "Usar este calendário"
+    },
     "google-calendar": {
       "permissions-intro": "Vamos conectar sua Google Agenda com segurança para:",
       "permission-1": "Ler seus horários ocupados",
@@ -1844,9 +1854,14 @@
       "google-calendar-connect-btn": "Conectar Google Agenda",
       "google-calendar-connect-error": "Não foi possível iniciar a conexão com o Google Agenda. Tente novamente.",
       "first-publish-alert": "A sua disponibilidade está ativa! Complete o checklist abaixo para otimizar a sua configuração.",
+      "google-calendar-change": "Alterar",
       "google-calendar-connected": "Seu Google Agenda está conectado.",
       "google-calendar-desc": "Sincronize seu Google Agenda para importar sua agenda existente, bloquear horários ocupados automaticamente e manter suas sessões no Psycron sincronizadas.",
+      "google-calendar-disconnect": "Desconectar",
+      "google-calendar-disconnected": "Google Agenda desconectado.",
       "google-calendar-drawer-title": "Google Agenda",
+      "google-calendar-primary": "Calendário principal",
+      "google-calendar-sync-label": "Sincronizar sessões com o Google Agenda",
       "live-alert": "Sua disponibilidade está ativa. Seus clientes já podem agendar sessões com você.",
       "page-title": "Configurações de Disponibilidade",
       "save-error": "Não foi possível salvar. Tente novamente.",

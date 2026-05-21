@@ -2,7 +2,7 @@ import { Fragment } from 'react';
 import { FormProvider } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { Navigate, useParams } from 'react-router-dom';
-import { Autocomplete, TextField, Tooltip } from '@mui/material';
+import { Autocomplete, Switch, TextField, Tooltip, Typography } from '@mui/material';
 import { Button } from '@psycron/components/button/Button';
 import { SettingsDrawer } from '@psycron/components/drawer/SettingsDrawer';
 import { AddressForm } from '@psycron/components/form/components/address/AddressForm';
@@ -15,6 +15,9 @@ import { BufferTimeEditor } from '@psycron/pages/availability/components/buffer-
 import { AVAILABILITYGENERATE } from '@psycron/pages/urls';
 
 import {
+	CalendarActionRow,
+	CalendarNameRow,
+	CalendarSyncRow,
 	ChecklistCard,
 	ChecklistDivider,
 	ChecklistHeader,
@@ -131,13 +134,21 @@ export const AvailabilitySettings = () => {
 		firstMissingRecommended,
 		handleAddressSave,
 		handleBufferSave,
+		calendarList,
+		handleChangeCalendar,
+		handleDisconnectCalendar,
 		handleGoogleCalendarConnect,
 		handleJupiterCta,
 		handleRecurrencePatternSave,
 		handleSessionDurationSave,
 		handleSpecialtySave,
+		handleToggleCalendarSync,
 		isAddressSaving,
 		isConnecting,
+		isDisconnecting,
+		isTogglingSync,
+		selectedCalendarId,
+		syncEnabled,
 		isJupiterCtaEnabled,
 		handleSessionTypeSave,
 		handleTimezoneSave,
@@ -555,10 +566,58 @@ export const AvailabilitySettings = () => {
 						showCancel
 					>
 						{availability.googleCalendarConnected && (
-							<GoogleCalendarStatus>
-								<CheckSuccess />
-								{t('availability.settings.google-calendar-connected')}
-							</GoogleCalendarStatus>
+							<>
+								<GoogleCalendarStatus>
+									<CheckSuccess />
+									{t('availability.settings.google-calendar-connected')}
+								</GoogleCalendarStatus>
+
+								{calendarList.length > 0 && (
+									<CalendarNameRow>
+										<Typography variant='body2'>
+											{calendarList.find((c) => c.id === selectedCalendarId)?.summary ??
+												t('availability.settings.google-calendar-primary')}
+										</Typography>
+										{calendarList.length > 1 && (
+											<Button
+												size='small'
+												variant='text'
+												onClick={() =>
+													calendarList
+														.filter((c) => c.id !== selectedCalendarId)
+														.forEach((c) => handleChangeCalendar(c.id))
+												}
+											>
+												{t('availability.settings.google-calendar-change')}
+											</Button>
+										)}
+									</CalendarNameRow>
+								)}
+
+								<CalendarSyncRow>
+									<Typography variant='body2'>
+										{t('availability.settings.google-calendar-sync-label')}
+									</Typography>
+									<Switch
+										checked={syncEnabled}
+										disabled={isTogglingSync}
+										onChange={handleToggleCalendarSync}
+										size='small'
+									/>
+								</CalendarSyncRow>
+
+								<CalendarActionRow>
+									<Button
+										color='error'
+										disabled={isDisconnecting}
+										size='small'
+										variant='outlined'
+										onClick={handleDisconnectCalendar}
+									>
+										{t('availability.settings.google-calendar-disconnect')}
+									</Button>
+								</CalendarActionRow>
+							</>
 						)}
 					</SettingsDrawer>
 				)}

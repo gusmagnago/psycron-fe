@@ -1,7 +1,13 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-import { getGoogleCalendarConnectUrl, getGoogleCalendarStatus } from '@psycron/api/auth';
+import type { CalendarItem } from '@psycron/api/auth';
+import {
+	getGoogleCalendarConnectUrl,
+	getGoogleCalendarList,
+	getGoogleCalendarStatus,
+	selectGoogleCalendar,
+} from '@psycron/api/auth';
 import type { IAvailabilityRecord } from '@psycron/api/availability/index.types';
 import {
 	generateJupiterAvailability,
@@ -132,7 +138,7 @@ export const useJupiterFlow = ({
 	}, []);
 
 	const [step, setStep] = useState<JupiterStep>(() => {
-		if (isCalendarConnected) return 'google-success';
+		if (isCalendarConnected) return 'calendar-picker';
 		if (saved) return saved.step;
 		if (!userSpecialities?.length) return 'specialty';
 		return 'calendar-choice';
@@ -143,6 +149,8 @@ export const useJupiterFlow = ({
 	const [messages, setMessages] = useState<JupiterMessage[]>([]);
 	const [isPublishing, setIsPublishing] = useState(false);
 	const [isImporting, setIsImporting] = useState(false);
+	const [isLoadingCalendars, setIsLoadingCalendars] = useState(false);
+	const [calendarList, setCalendarList] = useState<CalendarItem[]>([]);
 	const [specialityKey, setSpecialityKey] = useState(0);
 	const [workingDaysKey, setWorkingDaysKey] = useState(0);
 
@@ -501,6 +509,45 @@ export const useJupiterFlow = ({
 		hasInitialized.current = true;
 	}, [t]);
 
+	// ─── Calendar picker ───────────────────────────────────────────────────────
+
+	useEffect(() => {
+		if (step !== 'calendar-picker') return;
+
+		setIsLoadingCalendars(true);
+		getGoogleCalendarList()
+			.then((calendars) => {
+				// If only one calendar (primary), auto-select and skip the picker
+				if (calendars.length <= 1) {
+					const id = calendars[0]?.id ?? 'primary';
+					setAnswers((prev) => ({ ...prev, selectedCalendarId: id }));
+					selectGoogleCalendar(id).catch(() => null);
+					setStep('google-success');
+					return;
+				}
+				setCalendarList(calendars);
+			})
+			.catch(() => {
+				// On error fall through to google-success without forcing a selection
+				setStep('google-success');
+			})
+			.finally(() => setIsLoadingCalendars(false));
+	 
+	}, [step]);
+
+	const handleCalendarPicked = useCallback(
+		async (calendarId: string) => {
+			setAnswers((prev) => ({ ...prev, selectedCalendarId: calendarId }));
+			try {
+				await selectGoogleCalendar(calendarId);
+			} catch {
+				// Non-critical — continue regardless
+			}
+			setStep('google-success');
+		},
+		[]
+	);
+
 	// ─── Google Calendar path ──────────────────────────────────────────────────
 
 	const handleGoogleContinue = useCallback(async () => {
@@ -569,13 +616,16 @@ export const useJupiterFlow = ({
 		step,
 		answers,
 		messages,
+		calendarList,
 		isImporting,
+		isLoadingCalendars,
 		isPublishing,
 		specialityKey,
 		workingDaysKey,
 		detectedTimezone,
 		initFlow,
 		handleCalendarChoice,
+		handleCalendarPicked,
 		handleGoogleBack,
 		handleGoogleContinue,
 		handleGooglePostConnect,

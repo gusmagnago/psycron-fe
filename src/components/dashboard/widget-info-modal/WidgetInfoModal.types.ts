@@ -1,4 +1,4 @@
-import type { DashboardWidgetInfoId } from '@psycron/api/dashboard/index.types';
+import type { DashboardTier, DashboardWidgetInfoId } from '@psycron/api/dashboard/index.types';
 
 export type WidgetInfoId =
 	DashboardWidgetInfoId;
@@ -6,6 +6,6 @@ export type WidgetInfoId =
 export interface WidgetInfoModalProps {
 	isOpen: boolean;
 	onClose: () => void;
-	tier?: string;
+	tier?: DashboardTier;
 	widgetId: WidgetInfoId;
 }

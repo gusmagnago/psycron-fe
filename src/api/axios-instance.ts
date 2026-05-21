@@ -4,6 +4,7 @@ import {
 	getRefreshToken,
 	setTokensKeepingAuthPersistence,
 } from '@psycron/context/user/auth/utils/tokenStorage';
+import { SIGNIN } from '@psycron/pages/urls';
 import { PSYCRON_BASE_API } from '@psycron/utils/variables';
 import type {
 	AxiosError,
@@ -22,6 +23,30 @@ type ApiErrorPayload = {
 
 type RetryableRequestConfig = InternalAxiosRequestConfig & {
 	_retry?: boolean;
+};
+
+// Module-level lock: prevents multiple concurrent 401s from each triggering a
+// separate token refresh. All queued requests retry once the single refresh resolves.
+let isRefreshing = false;
+let failedQueue: Array<{
+	reject: (error: unknown) => void;
+	resolve: (token: string) => void;
+}> = [];
+
+const flushQueue = (error: unknown, token: string | null = null): void => {
+	failedQueue.forEach(({ resolve, reject }) => {
+		if (error) {
+			reject(error);
+		} else {
+			resolve(token!);
+		}
+	});
+	failedQueue = [];
+};
+
+const getLocaleFromPath = (): string => {
+	const [, locale] = window.location.pathname.split('/');
+	return locale && locale.length === 2 ? locale : 'en';
 };
 
 const apiClient: AxiosInstance = axios.create({
@@ -62,15 +87,29 @@ apiClient.interceptors.response.use(
 		const statusCode = error.response?.status ?? 500;
 		const requestUrl = originalRequest?.url ?? '';
 
-		// 401 -> attempt refresh once
+		// 401 -> attempt refresh. A module-level lock ensures only one refresh fires
+		// even when multiple concurrent requests all receive 401 simultaneously.
 		if (statusCode === 401 && originalRequest && !originalRequest._retry) {
 			originalRequest._retry = true;
+
+			if (isRefreshing) {
+				// Another refresh is already in flight — queue this request and wait.
+				return new Promise((resolve, reject) => {
+					failedQueue.push({ resolve, reject });
+				}).then((token) => {
+					originalRequest.headers.set('Authorization', `Bearer ${token}`);
+					return apiClient(originalRequest);
+				});
+			}
+
+			isRefreshing = true;
 
 			try {
 				const storedRefreshToken = getRefreshToken();
 
 				if (!storedRefreshToken) {
 					clearAuthTokens();
+					flushQueue(new Error('No refresh token'), null);
 					return Promise.reject(
 						createSanitizedError('Session expired', 401, requestUrl)
 					);
@@ -79,21 +118,24 @@ apiClient.interceptors.response.use(
 				const { accessToken, refreshToken } =
 					await refreshTokenService(storedRefreshToken);
 
-				// Keep the same storage kind the user originally chose
 				setTokensKeepingAuthPersistence({ accessToken, refreshToken });
 
-				// Update headers and retry
 				apiClient.defaults.headers.common['Authorization'] =
 					`Bearer ${accessToken}`;
 				originalRequest.headers.set('Authorization', `Bearer ${accessToken}`);
 
+				flushQueue(null, accessToken);
+
 				return apiClient(originalRequest);
-			} catch {
+			} catch (refreshError) {
+				flushQueue(refreshError, null);
 				clearAuthTokens();
-				window.location.href = '/en/sign-in';
+				window.location.href = `/${getLocaleFromPath()}/${SIGNIN}`;
 				return Promise.reject(
 					createSanitizedError('Session expired', 401, requestUrl)
 				);
+			} finally {
+				isRefreshing = false;
 			}
 		}
 
