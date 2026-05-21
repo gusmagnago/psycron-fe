@@ -1,5 +1,6 @@
 import type { CSSObject, Theme } from '@mui/material/styles';
 
+import type { AppPalette } from '../palette/palette.types';
 import { shadowMedium } from '../shadow/shadow.theme';
 import { spacing } from '../spacing/spacing.theme';
 

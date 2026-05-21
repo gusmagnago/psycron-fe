@@ -1,6 +1,7 @@
 import type { Theme } from '@mui/material/styles';
 import type { CSSObject } from '@mui/system';
 
+import type { AppPalette } from '../palette/palette.types';
 import { shadowSmall } from '../shadow/shadow.theme';
 import { spacing } from '../spacing/spacing.theme';
 import { zIndexAlert } from '../zIndex';

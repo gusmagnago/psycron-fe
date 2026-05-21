@@ -590,11 +590,11 @@ export const useAvailabilitySettings = (): UseAvailabilitySettingsReturn => {
 				setSyncEnabled(status.syncEnabled);
 				setSelectedCalendarId(status.calendarId);
 			})
-			.catch(() => null);
+			.catch((): null => null);
 
 		getGoogleCalendarList()
 			.then(setCalendarList)
-			.catch(() => null);
+			.catch((): null => null);
 	}, [activeDrawer, availability.googleCalendarConnected]);
 
 	const handleGoogleCalendarConnect = useCallback(async () => {
@@ -763,7 +763,7 @@ export const useAvailabilitySettings = (): UseAvailabilitySettingsReturn => {
 		setSpecialtyInput,
 		setStartTimeInput,
 		setTimezoneInput,
-		// specialtyInput,
+		specialtyInput,
 		startTimeInput,
 		timezoneInput,
 		toggleWorkingDay,

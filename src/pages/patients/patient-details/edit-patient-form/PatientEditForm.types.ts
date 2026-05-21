@@ -4,16 +4,16 @@ import type {
 } from '@psycron/api/patient/index.types';
 import type {
 	IPatient,
-	IPatientBillingCategory,
-	IPatientBillingModel,
 	ISlotAddress,
+	PatientBillingCategory,
+	PatientBillingModel,
 } from '@psycron/context/user/auth/UserAuthenticationContext.types';
 
 export interface PatientEditFormValues extends ICreatePatientForm {
 	address?: ISlotAddress | null;
 	billing: {
-		category: IPatientBillingCategory;
-		model: IPatientBillingModel;
+		category: PatientBillingCategory;
+		model: PatientBillingModel;
 		monthlyPrice: {
 			amount: number | '';
 			currency: string;

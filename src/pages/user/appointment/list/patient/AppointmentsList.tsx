@@ -11,10 +11,8 @@ import type {
 	IPublicSessionSlot,
 } from '@psycron/api/patient/index.types';
 import { getAvailabilityCalendar, getUserById } from '@psycron/api/user';
-import {
-	cancelAppointmentByPatient,
-	type CancellationReasonEnum,
-} from '@psycron/api/user/availability';
+import { cancelAppointmentByPatient } from '@psycron/api/user/availability';
+import type { CancellationReasonEnum } from '@psycron/api/user/availability/index.types';
 import { Avatar } from '@psycron/components/avatar/Avatar';
 import { Button } from '@psycron/components/button/Button';
 import { useAlert } from '@psycron/context/alert/AlertContext';

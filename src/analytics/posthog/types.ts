@@ -130,8 +130,8 @@ export type PostHogEventProps = {
 
 	[PostHogEvent.AuthSignInSucceeded]: {
 		audience: 'therapist' | 'worker';
-		method: 'password' | 'google';
-		stay_connected: boolean;
+		method: 'password' | 'google' | '2fa_whatsapp';
+		stay_connected?: boolean;
 	};
 	[PostHogEvent.AuthSignInFailed]: {
 		audience: 'therapist' | 'worker';

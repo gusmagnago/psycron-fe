@@ -130,6 +130,7 @@ export const palette: AppPalette = {
 	black: '#060B0E',
 	border: '#',
 	gray: {
+		'00': '#FAFAFA',
 		'01': '#F3F4F4',
 		'02': '#DBDDDE',
 		'03': '#C4C7C9',

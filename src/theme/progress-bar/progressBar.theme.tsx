@@ -2,6 +2,7 @@ import { linearProgressClasses } from '@mui/material';
 import type { Theme } from '@mui/material/styles';
 import type { CSSObject } from '@mui/system';
 
+import type { AppPalette } from '../palette/palette.types';
 import { shadowDisabled } from '../shadow/shadow.theme';
 import { spacing } from '../spacing/spacing.theme';
 

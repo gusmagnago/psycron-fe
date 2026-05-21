@@ -28,6 +28,7 @@ export type TextColors = {
 };
 
 export type GrayScaleKey =
+	| '00'
 	| '01'
 	| '02'
 	| '03'

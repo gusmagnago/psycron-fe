@@ -62,6 +62,7 @@ export const UserDetailsProvider = ({ children }: UserDetailsProviderProps) => {
 	const [isDeleteOpen, setIsDeleteOpen] = useState(false);
 
 	const navigate = useNavigate();
+	const { i18n } = useTranslation();
 	const { user } = useAuth();
 
 	const toggleUserDetails = useCallback((): void => {
@@ -95,7 +96,7 @@ export const UserDetailsProvider = ({ children }: UserDetailsProviderProps) => {
 			if (isUserDetailsVisible === false) return;
 			toggleUserDetails();
 		},
-		[isUserDetailsVisible, navigate, toggleUserDetails]
+		[i18n, isUserDetailsVisible, navigate, toggleUserDetails]
 	);
 
 	const handleClickEditSession = useCallback(
@@ -109,7 +110,7 @@ export const UserDetailsProvider = ({ children }: UserDetailsProviderProps) => {
 
 			toggleUserDetails();
 		},
-		[navigate, toggleUserDetails]
+		[i18n, navigate, toggleUserDetails]
 	);
 
 	return (

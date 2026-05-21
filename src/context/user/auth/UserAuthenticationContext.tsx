@@ -160,10 +160,14 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 			}
 
 			const persist = Boolean(variables.stayConnected);
+			const { token: accessToken, refreshToken } = res as {
+				refreshToken: string;
+				token: string;
+			};
 
 			await handleAuthSuccess({
-				accessToken: res.token,
-				refreshToken: res.refreshToken,
+				accessToken,
+				refreshToken,
 				persist,
 				redirectTo: redirectAfterAuth ?? DASHBOARD,
 			});
@@ -219,7 +223,8 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 				capture(PostHogEvent.AuthSignUpSucceeded, {
 					method: 'email',
 					audience: 'therapist',
-					mode: 'needs_verification',
+					stay_connected: false,
+					marketing_emails_accepted: false,
 				});
 				return;
 			}

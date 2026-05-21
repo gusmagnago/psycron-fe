@@ -1,6 +1,7 @@
 import { radioClasses } from '@mui/material';
 import type { CSSObject, Theme } from '@mui/material/styles';
 
+import type { AppPalette } from '../palette/palette.types';
 import { shadowPress } from '../shadow/shadow.theme';
 import { spacing } from '../spacing/spacing.theme';
 

@@ -104,10 +104,12 @@ export const getGoogleCalendarConnectUrl = async (params: {
 };
 
 export const getGoogleCalendarStatus = async (): Promise<{
+	calendarId?: string;
 	connected: boolean;
 	syncEnabled: boolean;
 }> => {
 	const response = await apiClient.get<{
+		calendarId?: string;
 		connected: boolean;
 		syncEnabled: boolean;
 	}>('/auth/google/calendar/status');

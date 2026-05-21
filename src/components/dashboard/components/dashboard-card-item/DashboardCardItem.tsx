@@ -52,17 +52,17 @@ export const DashboardCardItem = ({
 					alignItems='center'
 					width={'100%'}
 				>
-					<Grid item xs={2.5}>
+					<Grid size={2.5}>
 						<Box display='flex' justifyContent='center' p={2}>
 							<Typography variant='subtitle1' textAlign='left'>
 								{`${firstName} ${lastName}`}
 							</Typography>
 						</Box>
 					</Grid>
-					<GridDivider item xs={0.2}>
+					<GridDivider size={0.2}>
 						<Divider small orientation='vertical' flexItem />
 					</GridDivider>
-					<Grid item xs={2.5}>
+					<Grid size={2.5}>
 						<Box p={2}>
 							<DashboardCardTooltip title={'next appointment'}>
 								<Typography variant='body2' textAlign='left'>
@@ -71,10 +71,10 @@ export const DashboardCardItem = ({
 							</DashboardCardTooltip>
 						</Box>
 					</Grid>
-					<GridDivider item xs={0.2}>
+					<GridDivider size={0.2}>
 						<Divider small orientation='vertical' flexItem />
 					</GridDivider>
-					<Grid item xs={1} display='flex' justifyContent='center'>
+					<Grid size={1} display='flex' justifyContent='center'>
 						{isPatientCard ? (
 							<Box display='flex' justifyContent='center'>
 								<Tooltip
@@ -91,10 +91,10 @@ export const DashboardCardItem = ({
 							</Box>
 						)}
 					</Grid>
-					<GridDivider item xs={0.2}>
+					<GridDivider size={0.2}>
 						<Divider small orientation='vertical' flexItem />
 					</GridDivider>
-					<Grid item xs={1} display='flex' justifyContent='center'>
+					<Grid size={1} display='flex' justifyContent='center'>
 						<Box display='flex' justifyContent='center'>
 							{isPatientCard && (
 							<DashboardCardTooltip title={'monthly appointments'}>
