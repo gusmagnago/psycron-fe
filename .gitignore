@@ -46,3 +46,9 @@ secrets/
 # Claude Code local config
 .claude/
 .vercel
+
+# Playwright artifacts
+test-results/
+playwright-report/
+blob-report/
+.last-run.json
