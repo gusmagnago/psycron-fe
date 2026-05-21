@@ -24,6 +24,7 @@ import {
 	verifyWhatsAppOtpFc,
 } from '@psycron/api/auth';
 import type { CustomError } from '@psycron/api/error';
+import { QUERY_KEYS } from '@psycron/api/queryKeys';
 import type { ISignInForm } from '@psycron/components/form/SignIn/SignIn.types';
 import type { ISignUpForm } from '@psycron/components/form/SignUp/SignUpEmail.types';
 import { useAlert } from '@psycron/context/alert/AlertContext';
@@ -85,7 +86,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 		isError: isSessionError,
 		error: sessionError,
 	} = useQuery<IUserData>({
-		queryKey: ['session'],
+		queryKey: QUERY_KEYS.session(),
 		queryFn: getSession,
 		enabled: hasAccessToken,
 		retry: false,
@@ -138,7 +139,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 				persist: args.persist,
 			});
 
-			await queryClient.invalidateQueries({ queryKey: ['session'] });
+			await queryClient.invalidateQueries({ queryKey: QUERY_KEYS.session() });
 
 			navigate(args.redirectTo ?? DASHBOARD, { replace: true });
 		},
@@ -290,8 +291,8 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 			resetPostHog();
 			clearAuthTokens();
 			clearSentryUser();
-			await queryClient.removeQueries({ queryKey: ['session'] });
-			navigate(HOMEPAGE, { replace: true });
+			await queryClient.removeQueries({ queryKey: QUERY_KEYS.session() });
+			navigate(`/${i18n.language}/${HOMEPAGE}`, { replace: true });
 		},
 	});
 

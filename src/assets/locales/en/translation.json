@@ -69,6 +69,7 @@
     },
     "confirm": "Confirm",
     "error": "Something went wrong. Please try again.",
+    "error-slot-taken": "This slot was just taken. Please choose another time.",
     "no-slots": "No available slots match your filters.",
     "form": {
       "address-fallback": "Address will appear here after you enter it above.",
@@ -156,6 +157,8 @@
       "cancel": "Cancel appointment",
       "reschedule": "Reschedule",
       "confirm-reschedule": "Confirm reschedule",
+      "contact-verify-label": "Confirm your email or phone",
+      "contact-verify-placeholder": "Email or phone used when you booked",
       "reschedule-success": "Appointment rescheduled successfully.",
       "reschedule-error": "We could not reschedule this appointment. Please try again.",
       "no-reschedule-slots": "No other available slots were found right now.",

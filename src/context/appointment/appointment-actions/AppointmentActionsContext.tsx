@@ -6,6 +6,7 @@ import type {
 	IEditAppointment,
 } from '@psycron/api/appointment/index.types';
 import type { CustomError } from '@psycron/api/error';
+import { QUERY_KEYS } from '@psycron/api/queryKeys';
 import { useAlert } from '@psycron/context/alert/AlertContext';
 import type { ISessionDate } from '@psycron/context/user/auth/UserAuthenticationContext.types';
 import i18n from '@psycron/i18n';
@@ -58,10 +59,10 @@ export const AppointmentActionsProvider = ({
 				message: data.message,
 			});
 
-			queryClient.invalidateQueries({ queryKey: ['therapistAvailability'] });
-			queryClient.invalidateQueries({ queryKey: ['userDetails'] });
+			queryClient.invalidateQueries({ queryKey: QUERY_KEYS.therapistAvailability() });
+			queryClient.invalidateQueries({ queryKey: QUERY_KEYS.userDetails() });
 			queryClient
-				.refetchQueries({ queryKey: ['therapistAvailability'] })
+				.refetchQueries({ queryKey: QUERY_KEYS.therapistAvailability() })
 				.then(() => {
 					navigate(`/${i18n.language}/${APPOINTMENTS}`);
 				});
@@ -88,7 +89,7 @@ export const AppointmentActionsProvider = ({
 			queryClient.invalidateQueries({ queryKey: ['userDetails'] });
 			queryClient.invalidateQueries({ queryKey: ['therapistAvailability'] });
 			queryClient.invalidateQueries({
-				queryKey: ['getAppointmentDetailsBySlotId'],
+				queryKey: QUERY_KEYS.appointmentDetailsBySlotId(),
 			});
 
 			queryClient

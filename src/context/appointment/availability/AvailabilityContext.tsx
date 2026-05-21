@@ -1,6 +1,7 @@
 import { createContext, useMemo } from 'react';
 import { useContext } from 'react';
 import type { CustomError } from '@psycron/api/error';
+import { QUERY_KEYS } from '@psycron/api/queryKeys';
 import { getTherapistLatestAvailability } from '@psycron/api/user';
 import { getAvailabilityByDayId } from '@psycron/api/user';
 import {
@@ -42,7 +43,7 @@ export const AvailabilityProvider = ({
 	const therapistId = useTherapistId();
 
 	const { data, isLoading } = useQuery({
-		queryKey: ['therapistAvailability', therapistId],
+		queryKey: QUERY_KEYS.therapistAvailability(therapistId),
 		queryFn: async () => getTherapistLatestAvailability(therapistId),
 		enabled: !!therapistId,
 		staleTime: 1000 * 60 * 5,
@@ -100,7 +101,7 @@ export const useAvailability = (
 		hasNextPage,
 		hasPreviousPage,
 	} = useInfiniteQuery({
-		queryKey: ['availabilityByDay', initialDaySelected?.dateId],
+		queryKey: QUERY_KEYS.availabilityByDay(initialDaySelected?.dateId),
 		queryFn: async ({ pageParam }) => {
 			return getAvailabilityByDayId(therapistId, {
 				dateId: initialDaySelected?.dateId,
@@ -134,7 +135,7 @@ export const useAvailability = (
 		queryFn: () =>
 			getAppointmentDetailsBySlotId(therapistId, availabilityDayId, slotId),
 		enabled: !!therapistId && !!slotId && !!patientId,
-		queryKey: ['slotAppointmentDetails', slotId],
+		queryKey: QUERY_KEYS.slotAppointmentDetails(slotId),
 		staleTime: 1000 * 60 * 5,
 	});
 
@@ -174,7 +175,7 @@ export const useAvailability = (
 					};
 				}
 			);
-			queryClient.invalidateQueries({ queryKey: ['availabilityByDay'] });
+			queryClient.invalidateQueries({ queryKey: QUERY_KEYS.availabilityByDay() });
 		},
 		onError: (error: CustomError) => {
 			showAlert({
@@ -190,7 +191,7 @@ export const useAvailability = (
 
 	const { data: publicSlotDetails, isLoading: publicSlotDetailsIsLoading } =
 		useQuery({
-			queryKey: ['getPublicSlotDetailsById', slotId],
+			queryKey: QUERY_KEYS.publicSlotDetails(slotId),
 			queryFn: () => getPublicSlotDetailsById(therapistId, slotId),
 			enabled: !!therapistId && !!slotId,
 			retry: false,
@@ -204,9 +205,9 @@ export const useAvailability = (
 				message: data.message,
 				severity: 'success',
 			});
-			queryClient.invalidateQueries({ queryKey: ['availabilityByDay'] });
+			queryClient.invalidateQueries({ queryKey: QUERY_KEYS.availabilityByDay() });
 			queryClient.invalidateQueries({
-				queryKey: ['patientDetails', patientId],
+				queryKey: QUERY_KEYS.patientDetails(patientId),
 			});
 		},
 		onError: (error: CustomError) => {

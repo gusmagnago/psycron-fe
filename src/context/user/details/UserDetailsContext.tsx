@@ -9,6 +9,7 @@ import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { capture } from '@psycron/analytics/posthog/events';
 import { PostHogEvent } from '@psycron/analytics/posthog/types';
+import { QUERY_KEYS } from '@psycron/api/queryKeys';
 import {
 	deleteUserById,
 	exportUserDataById,
@@ -159,7 +160,7 @@ export const useUserDetails = (passedUserId?: string) => {
 		isLoading: isUserDetailsLoading,
 		isSuccess: isUserDetailsSucces,
 	} = useQuery<ITherapist>({
-		queryKey: ['userDetails', userId],
+		queryKey: QUERY_KEYS.userDetails(userId),
 		queryFn: async () => {
 			if (!userId) throw new Error(t('auth.error.not-found'));
 			return getUserById(userId);
@@ -273,7 +274,7 @@ export const useUserDetails = (passedUserId?: string) => {
 			capture(PostHogEvent.MarketingConsentToggleSaved, { granted });
 
 			await queryClient.invalidateQueries({
-				queryKey: ['userDetails', sessionUserId],
+				queryKey: QUERY_KEYS.userDetails(sessionUserId),
 			});
 		},
 		onError: (error: Error, granted) => {

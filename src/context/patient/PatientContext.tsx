@@ -19,6 +19,7 @@ import type {
 	ICreatePatient,
 	IEditPatientDetailsById,
 } from '@psycron/api/patient/index.types';
+import { QUERY_KEYS } from '@psycron/api/queryKeys';
 import { useSecureStorage } from '@psycron/hooks/useSecureStorage';
 import i18n from '@psycron/i18n';
 import { APPOINTMENTCONFIRMATION, APPOINTMENTS } from '@psycron/pages/urls';
@@ -68,7 +69,7 @@ export const PatientProvider = ({ children }: IPatientProviderProps) => {
 		mutationFn: updatePatientDetailsById,
 		onSuccess: (data) => {
 			queryClient.invalidateQueries({
-				queryKey: ['patientDetails', data.patient?._id],
+				queryKey: QUERY_KEYS.patientDetails(data.patient?._id?.toString()),
 			});
 
 			showAlert({
@@ -94,8 +95,8 @@ export const PatientProvider = ({ children }: IPatientProviderProps) => {
 			capture(PostHogEvent.PatientCenterArchiveConfirmed, {
 				target_user_id: patientId,
 			});
-			queryClient.invalidateQueries({ queryKey: ['patientDetails', patientId] });
-			queryClient.invalidateQueries({ queryKey: ['patientList'] });
+			queryClient.invalidateQueries({ queryKey: QUERY_KEYS.patientDetails(patientId) });
+			queryClient.invalidateQueries({ queryKey: QUERY_KEYS.patientList() });
 			showAlert({
 				message: data.message,
 				severity: 'success',
@@ -143,7 +144,7 @@ export const PatientProvider = ({ children }: IPatientProviderProps) => {
 	const createManualPatientMutation = useMutation({
 		mutationFn: createManualPatient,
 		onSuccess: (data) => {
-			queryClient.invalidateQueries({ queryKey: ['patientList'] });
+			queryClient.invalidateQueries({ queryKey: QUERY_KEYS.patientList() });
 			showAlert({
 				message: data.message,
 				severity: 'success',
@@ -214,17 +215,16 @@ export const usePatient = (therapisId?: string, patientId?: string | null) => {
 
 	const queryClient = useQueryClient();
 
-	const cachedPatient = queryClient.getQueryData<IPatient>([
-		'patientDetails',
-		patientId,
-	]);
+	const cachedPatient = queryClient.getQueryData<IPatient>(
+		QUERY_KEYS.patientDetails(patientId)
+	);
 
 	const {
 		data: patientDetails,
 		isLoading: isPatientDetailsLoading,
 		isSuccess: isPatientDetailsSucces,
 	} = useQuery<IPatient>({
-		queryKey: ['patientDetails', patientId],
+		queryKey: QUERY_KEYS.patientDetails(patientId),
 		queryFn: () => getPatientById(therapisId as string, patientId as string),
 		enabled: Boolean(therapisId && patientId && patientId !== 'undefined'),
 		initialData: cachedPatient,

@@ -69,6 +69,7 @@
     },
     "confirm": "Confirmar",
     "error": "Algo deu errado. Por favor, tente novamente.",
+    "error-slot-taken": "Este horário acabou de ser reservado. Por favor, escolha outro horário.",
     "no-slots": "Nenhum horário disponível corresponde aos seus filtros.",
     "form": {
       "address-fallback": "O endereço aparecerá aqui após você preenchê-lo acima.",
@@ -156,6 +157,8 @@
       "cancel": "Cancelar agendamento",
       "reschedule": "Reagendar",
       "confirm-reschedule": "Confirmar reagendamento",
+      "contact-verify-label": "Confirme seu e-mail ou telefone",
+      "contact-verify-placeholder": "E-mail ou telefone usado no agendamento",
       "reschedule-success": "Agendamento reagendado com sucesso.",
       "reschedule-error": "Não foi possível reagendar este agendamento. Tente novamente.",
       "no-reschedule-slots": "Nenhum outro horário disponível foi encontrado agora.",
