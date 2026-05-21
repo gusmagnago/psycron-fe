@@ -58,7 +58,6 @@ export const AGENDA = 'agenda';
 export const BOOKAPPOINTMENT = `${USERID}/book-appointment`;
 export const PATIENTEDITAPPOINTMENT = 'book-appointment';
 export const APPOINTMENTCONFIRMATIONPATH = `${THERAPISTID}/${PATIENTID}/${APPOINTMENTCONFIRMATION}`;
-export const RESCHEDULEAPPOINTMENT = `${APPOINTMENTID}/edit-appointment`;
 export const PATIENTAPPOINTMENTSLIST = `${PATIENTID}/${APPOINTMENTS}`;
 
 export const ADDPATIENT = 'patient/create';

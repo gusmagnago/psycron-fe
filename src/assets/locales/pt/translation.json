@@ -388,7 +388,9 @@
       "password-reset-failed": "Não foi possível redefinir a senha. O link pode ter expirado. Por favor, solicite um novo.",
       "session-expired": "Sua sessão expirou. Por favor, faça login novamente.",
       "rate-limited": "Muitas tentativas. Por favor, aguarde um momento antes de tentar novamente.",
-      "generic": "Algo deu errado. Por favor, tente novamente mais tarde."
+      "generic": "Algo deu errado. Por favor, tente novamente mais tarde.",
+      "not-found": "ID de usuário não encontrado",
+      "not-allowed": "Você não pode excluir esta conta."
     },
     "success": {
       "password-reset-request": "Se este email estiver cadastrado, você receberá instruções para redefinir sua senha em breve.",
@@ -713,7 +715,6 @@
       "next-week": "Próxima semana",
       "previous-week": "Semana anterior",
       "today": "Hoje",
-      "Month": "Mês",
       "appointment-details": {
         "title": "Detalhes da sessão",
         "mailto-subject": "🔔 Sobre sua consulta com {{therapistName}} 🔔",
@@ -737,7 +738,8 @@
       },
       "book-appointment": {
         "title": "Agendando sua consulta"
-      }
+      },
+      "month": "Mês"
     }
   },
   "page": {

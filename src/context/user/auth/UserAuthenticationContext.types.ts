@@ -224,6 +224,9 @@ export interface ISessionDatesGroup {
 	slots: ISlot[];
 }
 
+/** @deprecated Use ISessionDatesGroup */
+export type ISessionDate = ISessionDatesGroup;
+
 export type PreferredContactType =
 	| 'google_meet'
 	| 'phone'

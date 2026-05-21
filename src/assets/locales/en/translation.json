@@ -506,7 +506,9 @@
         "first-name": "First name",
         "last-name": "Last name",
         "already-have-acc": "Already have an account?",
-        "signin-here-link": "Sign in here"
+        "signin-here-link": "Sign in here",
+        "firstName": "First name",
+        "lastName": "Last name"
       },
       "signin": {
         "sign-in": "Sign in",
