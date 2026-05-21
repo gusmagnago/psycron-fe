@@ -1,12 +1,21 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useParams, useSearchParams } from 'react-router-dom';
-import { Tooltip } from '@mui/material';
+import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
+import {
+	Button,
+	Dialog,
+	DialogActions,
+	DialogContent,
+	DialogContentText,
+	DialogTitle,
+	Tooltip,
+} from '@mui/material';
 import { capture } from '@psycron/analytics/posthog/events';
 import { PostHogEvent } from '@psycron/analytics/posthog/types';
 import { Avatar } from '@psycron/components/avatar/Avatar';
 import { ShareButton } from '@psycron/components/button/share/ShareButton';
 import {
+	Archive,
 	Calendar,
 	Edit,
 	Mail,
@@ -87,13 +96,15 @@ import {
 export const PatientProfilePage = () => {
 	const { i18n, t } = useTranslation();
 	const { patientId } = useParams<{ patientId: string }>();
+	const navigate = useNavigate();
 	const [searchParams, setSearchParams] = useSearchParams();
 	const [editFormOpen, setEditFormOpen] = useState(false);
+	const [archiveDialogOpen, setArchiveDialogOpen] = useState(false);
 	const [notificationSettingsOpen, setNotificationSettingsOpen] = useState(false);
 	const [selectedSession, setSelectedSession] =
 		useState<PatientSessionRow | null>(null);
 	const therapistId = useTherapistId();
-	const { isPatientDetailsLoading, patientDetails } = usePatient(
+	const { archivePatient, archivePatientIsLoading, isPatientDetailsLoading, patientDetails } = usePatient(
 		therapistId,
 		patientId ?? null
 	);
@@ -246,6 +257,22 @@ export const PatientProfilePage = () => {
 		});
 	};
 
+	const handleOpenArchiveDialog = () => {
+		if (!patientDetails?._id) return;
+		capture(PostHogEvent.PatientCenterArchiveOpened, {
+			target_user_id: patientDetails._id,
+		});
+		setArchiveDialogOpen(true);
+	};
+
+	const handleConfirmArchive = () => {
+		if (!patientId) return;
+		archivePatient(patientId, () => {
+			setArchiveDialogOpen(false);
+			navigate(`/${i18n.language}/${PATIENTS}`);
+		});
+	};
+
 	return (
 		<PageLayout
 			title={title}
@@ -278,20 +305,35 @@ export const PatientProfilePage = () => {
 												url={publicSessionsPath}
 											/>
 										) : null}
-										{status !== 'MERGED' ? (
-											<Tooltip
-												arrow
-												placement='top'
-												title={t('patients.profile.actions.edit')}
-											>
-												<HeroIconButton
-													aria-label={t('patients.profile.actions.edit')}
-													onClick={() => setEditFormOpen(true)}
-													size='small'
+										{status === 'ACTIVE' ? (
+											<>
+												<Tooltip
+													arrow
+													placement='top'
+													title={t('patients.profile.actions.archive')}
 												>
-													<Edit />
-												</HeroIconButton>
-											</Tooltip>
+													<HeroIconButton
+														aria-label={t('patients.profile.actions.archive')}
+														onClick={handleOpenArchiveDialog}
+														size='small'
+													>
+														<Archive />
+													</HeroIconButton>
+												</Tooltip>
+												<Tooltip
+													arrow
+													placement='top'
+													title={t('patients.profile.actions.edit')}
+												>
+													<HeroIconButton
+														aria-label={t('patients.profile.actions.edit')}
+														onClick={() => setEditFormOpen(true)}
+														size='small'
+													>
+														<Edit />
+													</HeroIconButton>
+												</Tooltip>
+											</>
 										) : null}
 									</HeroActions>
 								</HeroHeaderRow>
@@ -659,6 +701,37 @@ export const PatientProfilePage = () => {
 							therapistId={therapistId}
 						/>
 					) : null}
+					<Dialog
+						onClose={() => setArchiveDialogOpen(false)}
+						open={archiveDialogOpen}
+					>
+						<DialogTitle>
+							{t('patients.profile.actions.archive-dialog-title')}
+						</DialogTitle>
+						<DialogContent>
+							<DialogContentText>
+								{t('patients.profile.actions.archive-dialog-body')}
+							</DialogContentText>
+						</DialogContent>
+						<DialogActions>
+							<Button
+								disabled={archivePatientIsLoading}
+								onClick={() => setArchiveDialogOpen(false)}
+								variant='text'
+							>
+								{t('globals.cancel')}
+							</Button>
+							<Button
+								disabled={archivePatientIsLoading}
+								onClick={handleConfirmArchive}
+								variant='contained'
+							>
+								{archivePatientIsLoading
+									? t('patients.profile.actions.archive-loading')
+									: t('patients.profile.actions.archive-confirm')}
+							</Button>
+						</DialogActions>
+					</Dialog>
 				</ProfileLayout>
 			) : (
 				<EmptyPanel>

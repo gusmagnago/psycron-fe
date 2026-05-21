@@ -253,11 +253,16 @@
       "merged-note": "Este registro foi mesclado em {{patientId}} e fica disponível para histórico de auditoria.",
       "not-found": "Não conseguimos carregar este paciente. Ele pode ter sido arquivado ou mesclado em outro registro.",
       "actions": {
+        "archive": "Arquivar paciente",
+        "archive-confirm": "Arquivar paciente",
+        "archive-dialog-body": "Este paciente será ocultado da sua lista ativa. Todos os dados, histórico de sessões e registros são preservados e podem ser encontrados buscando pacientes arquivados.",
+        "archive-dialog-title": "Arquivar este paciente?",
+        "archive-loading": "Arquivando…",
         "call": "Ligar",
         "edit": "Editar paciente",
+        "email": "Email",
         "open-sessions": "Abrir página de sessões",
-        "whatsapp": "WhatsApp",
-        "email": "Email"
+        "whatsapp": "WhatsApp"
       },
       "edit": {
         "title": "Editar dados do paciente",

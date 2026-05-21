@@ -51,6 +51,17 @@ export const updatePatientDetailsById = async ({
 	return response.data;
 };
 
+export const archivePatientById = async (
+	patientId: string
+): Promise<IEditPatientDetailsByIdResponse> => {
+	const response = await apiClient.put<IEditPatientDetailsByIdResponse>(
+		`/patient/${patientId}`,
+		{ status: 'ARCHIVED' }
+	);
+
+	return response.data;
+};
+
 export const getPublicPatientSessions = async (
 	patientId: string
 ): Promise<IPublicPatientSessionsResponse> => {

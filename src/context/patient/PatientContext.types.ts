@@ -8,6 +8,8 @@ import type {
 } from '@psycron/api/patient/index.types';
 
 export interface IPatientContextType {
+	archivePatient: (patientId: string, onSuccess?: () => void) => void;
+	archivePatientIsLoading: boolean;
 	bookAppointmentFromLinkMttnIsLoading: boolean;
 	bookAppointmentWithLink: (data: IBookAppointment) => void;
 	createManualPatientIsLoading: boolean;

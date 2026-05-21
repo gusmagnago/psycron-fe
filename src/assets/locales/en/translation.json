@@ -253,11 +253,16 @@
       "merged-note": "This patient record was merged into {{patientId}} and is kept for audit history.",
       "not-found": "We could not load this patient. They may have been archived or merged into another record.",
       "actions": {
+        "archive": "Archive patient",
+        "archive-confirm": "Archive patient",
+        "archive-dialog-body": "This patient will be hidden from your active list. All their data, session history, and records are preserved and can be found by searching archived patients.",
+        "archive-dialog-title": "Archive this patient?",
+        "archive-loading": "Archiving…",
         "call": "Call",
         "edit": "Edit patient",
+        "email": "Email",
         "open-sessions": "Open sessions page",
-        "whatsapp": "WhatsApp",
-        "email": "Email"
+        "whatsapp": "WhatsApp"
       },
       "edit": {
         "title": "Edit patient details",

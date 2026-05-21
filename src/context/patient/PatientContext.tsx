@@ -1,9 +1,12 @@
-import { createContext, useContext } from 'react';
+import { createContext, useCallback, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { capture } from '@psycron/analytics/posthog/events';
+import { PostHogEvent } from '@psycron/analytics/posthog/types';
 import { editAppointment } from '@psycron/api/appointment';
 import type { IEditAppointment } from '@psycron/api/appointment/index.types';
 import type { CustomError } from '@psycron/api/error';
 import {
+	archivePatientById,
 	bookAppointmentFromLink,
 	createManualPatient,
 	createPatientFromSlot,
@@ -84,6 +87,39 @@ export const PatientProvider = ({ children }: IPatientProviderProps) => {
 	const updatePatientDetails = (data: IEditPatientDetailsById) =>
 		updatePatientMutation.mutate(data);
 
+	const archivePatientMutation = useMutation({
+		mutationFn: ({ patientId }: { patientId: string }) =>
+			archivePatientById(patientId),
+		onSuccess: (data, { patientId }) => {
+			capture(PostHogEvent.PatientCenterArchiveConfirmed, {
+				target_user_id: patientId,
+			});
+			queryClient.invalidateQueries({ queryKey: ['patientDetails', patientId] });
+			queryClient.invalidateQueries({ queryKey: ['patientList'] });
+			showAlert({
+				message: data.message,
+				severity: 'success',
+			});
+		},
+		onError: (error: CustomError, { patientId }) => {
+			capture(PostHogEvent.PatientCenterArchiveFailed, {
+				error_code: error.message,
+				target_user_id: patientId,
+			});
+			showAlert({
+				message: error.message,
+				severity: 'error',
+			});
+		},
+	});
+
+	const archivePatient = useCallback(
+		(patientId: string, onSuccess?: () => void) => {
+			archivePatientMutation.mutate({ patientId }, { onSuccess: onSuccess });
+		},
+		[archivePatientMutation]
+	);
+
 	const createPatientMutation = useMutation({
 		mutationFn: createPatientFromSlot,
 		onSuccess: (data) => {
@@ -149,18 +185,20 @@ export const PatientProvider = ({ children }: IPatientProviderProps) => {
 	return (
 		<PatientContext.Provider
 			value={{
+				archivePatient,
+				archivePatientIsLoading: archivePatientMutation.isPending,
 				bookAppointmentWithLink,
 				bookAppointmentFromLinkMttnIsLoading:
 					bookAppointmentFromLinkMutation.isPending,
-				updatePatientDetails,
-				updatePatientIsLoading: updatePatientMutation.isPending,
-				createPatientMttn,
-				createPatientIsLoading: createPatientMutation.isPending,
-				createManualPatientMttn,
 				createManualPatientIsLoading: createManualPatientMutation.isPending,
+				createManualPatientMttn,
+				createPatientIsLoading: createPatientMutation.isPending,
+				createPatientMttn,
 				patientEditAppointment,
 				patientEditAppointmentIsLoading:
 					patientEditAppointmentMutation.isPending,
+				updatePatientDetails,
+				updatePatientIsLoading: updatePatientMutation.isPending,
 			}}
 		>
 			{children}
