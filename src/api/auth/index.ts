@@ -75,6 +75,10 @@ export const refreshTokenService = async (
 	return data;
 };
 
+export const requestEmailVerification = async (email: string): Promise<void> => {
+	await apiClient.post('/users/request-email-verification', { email });
+};
+
 export const verifyEmail = async (
 	token: string
 ): Promise<IVerifyEmailResponse> => {

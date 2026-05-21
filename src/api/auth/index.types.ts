@@ -22,12 +22,19 @@ export type SessionResponse = {
 	user: ITherapist;
 };
 
-export type RegisterResponse = {
+export type RegisterNeedsVerification = {
+	message: string;
+	status: 'success';
+};
+
+export type RegisterLoggedIn = {
 	message: string;
 	refreshToken: string;
 	status: 'success';
 	token: string;
 };
+
+export type RegisterResponse = RegisterNeedsVerification | RegisterLoggedIn;
 
 export type ConsentPayload = {
 	dataProcessingAccepted?: boolean;

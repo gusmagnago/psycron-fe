@@ -214,6 +214,16 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 	const signUpMutation = useMutation({
 		mutationFn: signUpFc,
 		onSuccess: async (res, variables: ISignUpForm) => {
+			if (!('token' in res) || !res.token) {
+				showAlert({ severity: 'info', message: res.message });
+				capture(PostHogEvent.AuthSignUpSucceeded, {
+					method: 'email',
+					audience: 'therapist',
+					mode: 'needs_verification',
+				});
+				return;
+			}
+
 			const persist = Boolean(variables.stayConnected);
 
 			await handleAuthSuccess({
