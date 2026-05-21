@@ -19,6 +19,8 @@ export interface ICancelEditAppointmentResponse {
 
 export interface IEditAppointment {
 	availabilityDayId: string;
+	/** Email or phone to verify the caller is the patient (required for unauthenticated reschedule) */
+	contactVerification?: string;
 	newSlotId: string;
 	oldSlotId: string;
 	patientId: string;

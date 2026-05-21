@@ -139,6 +139,7 @@ export const AppointmentsList = () => {
 	const [customReason, setCustomReason] = useState('');
 	const [selectedRescheduleSlot, setSelectedRescheduleSlot] =
 		useState<IPublicSlot | null>(null);
+	const [contactVerification, setContactVerification] = useState('');
 
 	const { data, isLoading } = useQuery({
 		enabled: Boolean(patientId),
@@ -276,6 +277,7 @@ export const AppointmentsList = () => {
 
 			return editAppointment({
 				availabilityDayId: selectedRescheduleSlot.availabilityDayId,
+				contactVerification,
 				newSlotId: selectedRescheduleSlot.slotId,
 				oldSlotId: selectedAppointment.slot._id,
 				patientId,
@@ -674,10 +676,22 @@ export const AppointmentsList = () => {
 										</Button>
 									</ActionsRow>
 								) : (
-									<ActionsRow>
+									<>
+									<TextField
+										fullWidth
+										label={t('booking.patient-drawer.contact-verify-label')}
+										onChange={(e) => setContactVerification(e.target.value)}
+										placeholder={t('booking.patient-drawer.contact-verify-placeholder')}
+										size='small'
+										type='text'
+										value={contactVerification}
+									/>
+								<ActionsRow>
 										<Button
 											disabled={
-												!selectedRescheduleSlot || rescheduleMutation.isPending
+												!selectedRescheduleSlot ||
+												!contactVerification.trim() ||
+												rescheduleMutation.isPending
 											}
 											onClick={() => rescheduleMutation.mutate()}
 											variant='contained'
@@ -688,12 +702,14 @@ export const AppointmentsList = () => {
 											onClick={() => {
 												setDrawerMode('details');
 												setSelectedRescheduleSlot(null);
+												setContactVerification('');
 											}}
 											secondary
 										>
 											{t('common.back')}
 										</Button>
 									</ActionsRow>
+									</>
 								)
 							) : selectedAppointment.status === 'cancelled' ? (
 								<Button

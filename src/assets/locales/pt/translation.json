@@ -157,6 +157,8 @@
       "cancel": "Cancelar agendamento",
       "reschedule": "Reagendar",
       "confirm-reschedule": "Confirmar reagendamento",
+      "contact-verify-label": "Confirme seu e-mail ou telefone",
+      "contact-verify-placeholder": "E-mail ou telefone usado no agendamento",
       "reschedule-success": "Agendamento reagendado com sucesso.",
       "reschedule-error": "Não foi possível reagendar este agendamento. Tente novamente.",
       "no-reschedule-slots": "Nenhum outro horário disponível foi encontrado agora.",

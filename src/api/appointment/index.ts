@@ -25,10 +25,11 @@ export const editAppointment = async ({
 	newSlotId,
 	availabilityDayId,
 	patientId,
+	contactVerification,
 }: IEditAppointment) => {
 	const response = await apiClient.post<IPatientEditAppointmentResponse>(
 		`/patient/${therapistId}/appointment/${oldSlotId}/edit`,
-		{ newSlotId, availabilityDayId, patientId }
+		{ newSlotId, availabilityDayId, patientId, ...(contactVerification ? { contactVerification } : {}) }
 	);
 
 	return response.data;
