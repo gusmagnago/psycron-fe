@@ -67,6 +67,7 @@ const isHttpError = (err: unknown): err is { statusCode: number } => {
 const reportQueryError = (err: unknown): void => {
 	if (!shouldSendToSentry(err)) return;
 	Sentry.captureException(err);
+	posthog.captureException(err instanceof Error ? err : new Error(String(err)));
 };
 
 const shouldSendToSentry = (err: unknown): boolean => {

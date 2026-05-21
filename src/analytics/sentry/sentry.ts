@@ -115,10 +115,7 @@ export const initSentry = (): void => {
 		tracesSampleRate: config.tracesSampleRate,
 		tracePropagationTargets: config.tracePropagationTargets,
 		beforeSend: sanitizeEvent,
-		replaysSessionSampleRate: 0.1,
-		replaysOnErrorSampleRate: 1.0,
 		integrations: [
-			Sentry.replayIntegration(),
 			Sentry.browserTracingIntegration(),
 			Sentry.feedbackIntegration({
 				autoInject: true,
