@@ -69,6 +69,7 @@
     },
     "confirm": "Confirmar",
     "error": "Algo deu errado. Por favor, tente novamente.",
+    "error-slot-taken": "Este horário acabou de ser reservado. Por favor, escolha outro horário.",
     "no-slots": "Nenhum horário disponível corresponde aos seus filtros.",
     "form": {
       "address-fallback": "O endereço aparecerá aqui após você preenchê-lo acima.",

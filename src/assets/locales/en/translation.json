@@ -69,6 +69,7 @@
     },
     "confirm": "Confirm",
     "error": "Something went wrong. Please try again.",
+    "error-slot-taken": "This slot was just taken. Please choose another time.",
     "no-slots": "No available slots match your filters.",
     "form": {
       "address-fallback": "Address will appear here after you enter it above.",

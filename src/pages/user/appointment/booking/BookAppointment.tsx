@@ -203,8 +203,18 @@ export const BookAppointment = () => {
 				},
 			});
 		},
-		onError: () => {
-			showAlert({ message: t('booking.error'), severity: 'error' });
+		onError: (error: unknown) => {
+			const statusCode =
+				error instanceof Error && 'statusCode' in error
+					? (error as { statusCode: number }).statusCode
+					: undefined;
+
+			if (statusCode === 409) {
+				setSelectedSlot(null);
+				showAlert({ message: t('booking.error-slot-taken'), severity: 'warning' });
+			} else {
+				showAlert({ message: t('booking.error'), severity: 'error' });
+			}
 		},
 		onSuccess: (res, values) => {
 			if (selectedSlot && therapistId) {
