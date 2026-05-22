@@ -1358,7 +1358,10 @@
       "response-with-suggestion": "How do you usually conduct your sessions? I have a suggestion based on your specialty — pick what works best for you.",
       "chip-online": "Online only",
       "chip-in-person": "In person only",
-      "chip-both": "Both online and in person"
+      "chip-both": "Both online and in person",
+      "ONLINE": "Online only",
+      "IN_PERSON": "In person only",
+      "BOTH": "Both online and in person"
     },
     "timezone": {
       "response": "Almost there! I’ll use your device’s timezone to schedule appointments accurately. This helps ensure your clients book at the right time for you. Sound good?",
