@@ -34,14 +34,8 @@ export const Link = ({
 
 		if (to === 'go-back') {
 			e.preventDefault();
-			const referrer = document.referrer;
-			const isInternalReferrer = referrer.includes(window.location.origin);
-
-			if (isInternalReferrer) {
-				navigate(-1);
-			} else {
-				navigate(`/${locale ?? 'en'}`);
-			}
+			navigate(-1);
+			return;
 		}
 
 		const label = isString(to) ? to : to.pathname;
