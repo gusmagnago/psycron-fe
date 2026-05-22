@@ -2,6 +2,7 @@ import { type ReactNode, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { getAvailability } from '@psycron/api/availability';
+import { Loader } from '@psycron/components/loader/Loader';
 import { useAlert } from '@psycron/context/alert/AlertContext';
 import {
 	ONBOARDING_KEY,
@@ -52,6 +53,10 @@ export const AvailabilityGate = ({ children }: AvailabilityGateProps) => {
 			navigate(`/${i18n.language}/${AVAILABILITYGENERATE}`, { replace: true });
 		}
 	}, [data, isLoading, location.pathname, navigate, i18n.language, showAlert, t]);
+
+	if (isLoading && data === undefined) {
+		return <Loader />;
+	}
 
 	return <>{children}</>;
 };

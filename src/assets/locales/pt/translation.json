@@ -1358,7 +1358,10 @@
       "response-with-suggestion": "Como você costuma realizar suas sessões? Tenho uma sugestão com base na sua especialidade — escolha o que funciona melhor para você.",
       "chip-online": "Apenas online",
       "chip-in-person": "Apenas presencial",
-      "chip-both": "Online e presencial"
+      "chip-both": "Online e presencial",
+      "ONLINE": "Apenas online",
+      "IN_PERSON": "Apenas presencial",
+      "BOTH": "Online e presencial"
     },
     "timezone": {
       "response": "Quase lá! Vou usar o fuso horário do seu dispositivo para agendar consultas com precisão. Assim, seus clientes sempre vão agendar no horário certo. Tudo bem?",

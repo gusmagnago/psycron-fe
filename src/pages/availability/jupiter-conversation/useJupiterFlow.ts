@@ -14,6 +14,7 @@ import {
 	importGoogleCalendarSchedule,
 	type RecurrencePattern,
 } from '@psycron/api/jupiter';
+import { QUERY_KEYS } from '@psycron/api/queryKeys';
 import { editUserById } from '@psycron/api/user';
 import { useAlert } from '@psycron/context/alert/AlertContext';
 import { AVAILABILITYGENERATE, AVAILABILITYPATH } from '@psycron/pages/urls';
@@ -485,6 +486,7 @@ export const useJupiterFlow = ({
 			};
 			queryClient.setQueryData<IAvailabilityRecord>(['availability'], record);
 			queryClient.setQueryData<IAvailabilityRecord>(['availabilityGate'], record);
+			queryClient.invalidateQueries({ queryKey: QUERY_KEYS.therapistAvailability(therapistId) });
 			showAlert({ message: t('jupiter.post-publish.success-toast'), severity: 'success' });
 			showAlert({ message: t('jupiter.post-publish.welcome-toast'), severity: 'success' });
 			navigate(`/${i18n.language}/${AVAILABILITYPATH}`);
@@ -493,7 +495,7 @@ export const useJupiterFlow = ({
 		} finally {
 			setIsPublishing(false);
 		}
-	}, [answers, addBotMessage, i18n.language, navigate, queryClient, showAlert, t]);
+	}, [answers, addBotMessage, i18n.language, navigate, queryClient, showAlert, t, therapistId]);
 
 	const handleReset = useCallback(() => {
 		localStorage.removeItem(STORAGE_KEY);
