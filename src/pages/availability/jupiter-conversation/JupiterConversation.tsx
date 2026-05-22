@@ -42,6 +42,7 @@ export const JupiterConversation = () => {
 	const [customInputFor, setCustomInputFor] = useState<string | null>(null);
 	const [customValue, setCustomValue] = useState('');
 	const [isParsing, setIsParsing] = useState(false);
+	const specialtyRetryCount = useRef(0);
 
 	const { therapistId, userDetails } = useUserDetails();
 
@@ -83,6 +84,13 @@ export const JupiterConversation = () => {
 
 	const handleSpecialtyOtherSubmit = useCallback(
 		async (raw: string) => {
+			// After 2 failed parse attempts, accept raw input to unblock the user
+			if (specialtyRetryCount.current >= 2) {
+				specialtyRetryCount.current = 0;
+				handleSpecialtyFromText([raw]);
+				return;
+			}
+
 			setIsParsing(true);
 			const result = await parseJupiterInput('specialty', raw);
 			setIsParsing(false);
@@ -90,13 +98,17 @@ export const JupiterConversation = () => {
 			if (result.valid && Array.isArray(result.parsed)) {
 				const flag = 'flag' in result ? result.flag : 'accepted';
 				if (flag === 'rejected') {
+					specialtyRetryCount.current += 1;
 					retrySpeciality(true);
 				} else if (flag === 'rephrase') {
+					specialtyRetryCount.current += 1;
 					retrySpeciality(false);
 				} else {
+					specialtyRetryCount.current = 0;
 					handleSpecialtyFromText(result.parsed);
 				}
 			} else {
+				specialtyRetryCount.current += 1;
 				retrySpeciality(false);
 			}
 		},
