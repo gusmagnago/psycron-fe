@@ -1784,7 +1784,13 @@
         "unblock-confirm-body": "Este horário ficará disponível para agendamentos novamente.",
         "unblock-error": "Falha ao desbloquear o horário. Tente novamente.",
         "unblock-slot": "Desbloquear horário",
-        "unblock-success": "Horário desbloqueado com sucesso."
+        "unblock-success": "Horário desbloqueado com sucesso.",
+        "section": {
+          "booking-link": "Link de agendamento",
+          "contact-delivery": "Contato e modalidade",
+          "patient": "Paciente",
+          "session": "Sessão"
+        }
       },
       "buffer-label": "Buffer",
       "legend-available": "Disponível",
@@ -1850,6 +1856,14 @@
         "unblock-all-confirm": "Desbloquear todos os {{count}} horários bloqueados em {{day}}? Esses horários ficarão disponíveis para agendamento.",
         "unblock-all-error": "Falha ao desbloquear os horários. Tente novamente.",
         "unblock-all-success": "Todos os horários bloqueados foram desbloqueados."
+      },
+      "block-conflict-modal": {
+        "confirm": "Bloquear dia",
+        "next": "Revisar e confirmar",
+        "step1-hint": "{{count}} agendamento(s) em {{day}} se tornarão conflitos. Você pode cancelá-los ou reagendá-los pela Central de Ações.",
+        "step1-title": "Agendamentos precisam de atenção",
+        "step2-summary": "Bloquear este dia irá bloquear {{available}} horário(s) disponível(is) e criar {{conflicts}} conflito(s) para agendamentos existentes.",
+        "step2-title": "Confirmar bloqueio do dia"
       }
     },
     "gate": {
@@ -1955,6 +1969,7 @@
       "dismissed": "Dispensado"
     },
     "types": {
+      "day-block": "Bloqueio de dia",
       "patient-duplicate": "Paciente duplicado",
       "slot-replication": "Replicação de horário"
     },
@@ -1986,6 +2001,8 @@
       "preferred-contact": "Contato preferido",
       "additional-candidates": "{{count}} outro possível registro ainda está na fila para revisão.",
       "additional-candidates_other": "{{count}} outros possíveis registros ainda estão na fila para revisão.",
+      "appointment-date": "Data do atendimento",
+      "appointment-time": "Horário do atendimento",
       "not-provided": "Não informado"
     },
     "merge-review": {
@@ -2027,16 +2044,19 @@
       }
     },
     "actions": {
-      "recommended-title": "Resolução recomendada",
-      "recommended-hint": "Una ambos os registros e mantenha um único paciente como fonte principal.",
-      "alternatives-title": "Outras opções",
       "alternatives-hint": "Use apenas um registro se não quiser unir os dois agora.",
-      "merge": "Unir pacientes",
+      "alternatives-title": "Outras opções",
+      "cancel-appointment": "Cancelar atendimento",
+      "day-block-hint": "Este atendimento foi afetado por um bloqueio de dia. Cancele-o para notificar o paciente e resolver o conflito.",
+      "day-block-title": "Resolver conflito de agendamento",
+      "dismiss": "Dispensar",
+      "error": "Não foi possível atualizar este conflito. Tente novamente.",
       "keep-existing": "Manter paciente existente",
       "keep-new": "Manter novo paciente",
-      "dismiss": "Dispensar",
       "mark-resolved": "Marcar como resolvido",
-      "error": "Não foi possível atualizar este conflito. Tente novamente."
+      "merge": "Unir pacientes",
+      "recommended-hint": "Una ambos os registros e mantenha um único paciente como fonte principal.",
+      "recommended-title": "Resolução recomendada"
     }
   },
   "action-center": {

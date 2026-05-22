@@ -8,10 +8,11 @@ import { getPatientFullName } from '@psycron/utils/patient/patient.utils';
 export const getConflictTypeLabel = (
 	type: ConflictType,
 	t: (key: string) => string
-) =>
-	type === 'PATIENT_DUPLICATE'
-		? t('conflicts.types.patient-duplicate')
-		: t('conflicts.types.slot-replication');
+) => {
+	if (type === 'PATIENT_DUPLICATE') return t('conflicts.types.patient-duplicate');
+	if (type === 'DAY_BLOCK') return t('conflicts.types.day-block');
+	return t('conflicts.types.slot-replication');
+};
 
 export const getConflictStatusLabel = (
 	status: 'OPEN' | 'RESOLVED' | 'DISMISSED',

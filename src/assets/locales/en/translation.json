@@ -1784,7 +1784,13 @@
         "unblock-confirm-body": "This slot will become available for booking again.",
         "unblock-error": "Failed to unblock slot. Please try again.",
         "unblock-slot": "Unblock slot",
-        "unblock-success": "Slot unblocked successfully."
+        "unblock-success": "Slot unblocked successfully.",
+        "section": {
+          "booking-link": "Booking link",
+          "contact-delivery": "Contact & Delivery",
+          "patient": "Patient",
+          "session": "Session"
+        }
       },
       "buffer-label": "Buffer",
       "legend-available": "Available",
@@ -1850,6 +1856,14 @@
         "unblock-all-confirm": "Unblock all {{count}} blocked slots on {{day}}? These slots will become available for booking.",
         "unblock-all-error": "Failed to unblock slots. Please try again.",
         "unblock-all-success": "All blocked slots unblocked successfully."
+      },
+      "block-conflict-modal": {
+        "confirm": "Block day",
+        "next": "Review & confirm",
+        "step1-hint": "{{count}} booked appointment(s) on {{day}} will become conflicts. You can cancel or reschedule them from the Action Center.",
+        "step1-title": "Booked appointments need attention",
+        "step2-summary": "Blocking this day will block {{available}} available slot(s) and create {{conflicts}} conflict(s) for booked appointments.",
+        "step2-title": "Confirm day block"
       }
     },
     "gate": {
@@ -1955,6 +1969,7 @@
       "dismissed": "Dismissed"
     },
     "types": {
+      "day-block": "Day block",
       "patient-duplicate": "Patient duplicate",
       "slot-replication": "Slot replication"
     },
@@ -1986,6 +2001,8 @@
       "preferred-contact": "Preferred contact",
       "additional-candidates": "{{count}} more possible match is still queued for review.",
       "additional-candidates_other": "{{count}} more possible matches are still queued for review.",
+      "appointment-date": "Appointment date",
+      "appointment-time": "Appointment time",
       "not-provided": "Not provided"
     },
     "merge-review": {
@@ -2027,16 +2044,19 @@
       }
     },
     "actions": {
-      "recommended-title": "Recommended resolution",
-      "recommended-hint": "Merge both records and keep one patient as the source of truth.",
-      "alternatives-title": "Other options",
       "alternatives-hint": "Use one record only if you do not want to merge them now.",
-      "merge": "Merge patients",
+      "alternatives-title": "Other options",
+      "cancel-appointment": "Cancel appointment",
+      "day-block-hint": "This appointment is affected by a day block. Cancel it to notify the patient and resolve the conflict.",
+      "day-block-title": "Resolve this booking conflict",
+      "dismiss": "Dismiss",
+      "error": "We couldn't update this conflict. Please try again.",
       "keep-existing": "Keep existing patient",
       "keep-new": "Keep new patient",
-      "dismiss": "Dismiss",
       "mark-resolved": "Mark resolved",
-      "error": "We couldn't update this conflict. Please try again."
+      "merge": "Merge patients",
+      "recommended-hint": "Merge both records and keep one patient as the source of truth.",
+      "recommended-title": "Recommended resolution"
     }
   },
   "action-center": {

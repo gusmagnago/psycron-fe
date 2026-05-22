@@ -1,4 +1,4 @@
-export type ConflictType = 'SLOT_REPLICATION' | 'PATIENT_DUPLICATE';
+export type ConflictType = 'SLOT_REPLICATION' | 'PATIENT_DUPLICATE' | 'DAY_BLOCK';
 export type ConflictStatus = 'OPEN' | 'RESOLVED' | 'DISMISSED';
 export type PatientMergeFieldSource = 'primary' | 'secondary';
 export type PatientMergeField =
@@ -53,6 +53,16 @@ export interface IPatientDuplicateConflictMetadata {
 	match: 'multiple' | 'single';
 }
 
+export interface IBookingConflictMetadata {
+	appointmentDate: string;
+	availabilityId: string;
+	dayId: string;
+	endTime: string;
+	patientId: string;
+	slotId: string;
+	startTime: string;
+}
+
 export interface IConflictResolutionDetails {
 	fieldSelections?: PatientMergeFieldSelections;
 	fieldSnapshots?: IPatientMergeFieldSnapshot[];
@@ -65,7 +75,7 @@ export interface IConflict {
 	actionTaken?: string | null;
 	createdAt: string;
 	description: string;
-	metadata: ISlotReplicationConflictMetadata | IPatientDuplicateConflictMetadata;
+	metadata: ISlotReplicationConflictMetadata | IPatientDuplicateConflictMetadata | IBookingConflictMetadata;
 	resolutionDetails?: IConflictResolutionDetails | null;
 	resolvedAt?: string | null;
 	status: ConflictStatus;

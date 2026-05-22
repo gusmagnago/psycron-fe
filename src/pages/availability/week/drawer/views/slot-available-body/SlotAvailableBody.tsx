@@ -15,6 +15,12 @@ import { Divider } from '@psycron/components/divider/Divider';
 import { ContactsForm } from '@psycron/components/form/components/contacts/ContactsForm';
 import { PreferredContactForm } from '@psycron/components/form/components/preferred-contact/PreferredContactForm';
 import { TimezoneSelect } from '@psycron/components/form/components/timezone/TimezoneSelect';
+import {
+	Account,
+	Appointment,
+	Phone,
+	Send,
+} from '@psycron/components/icons';
 import { externalUrls } from '@psycron/pages/urls';
 
 import { FormWrapper } from '../../AvailabilityWeekDrawer.styles';
@@ -24,6 +30,7 @@ import { SlotRecurrenceSection } from '../slot-recurrence-section/SlotRecurrence
 import { SlotSessionDeliverySection } from '../slot-session-delivery/SlotSessionDeliverySection';
 import { SlotSessionSection } from '../slot-session-section/SlotSessionSection';
 
+import { AvailableSection } from './available-section/AvailableSection';
 import {
 	BookingLinkHeader,
 	BookingLinkHint,
@@ -96,86 +103,115 @@ export const SlotAvailableBody = ({
 		<FormProvider {...methods}>
 			<Box component='form'>
 				<FormWrapper>
-					<SlotSessionSection {...sessionDetails} />
-					{reopenedCancellationNote && (
-						<ReopenedNote>
-							<ReopenedNoteLabel>
-								{t('availability.week.drawer.reopened-note-label')}
-							</ReopenedNoteLabel>
-							<ReopenedNoteText>{reopenedCancellationNote}</ReopenedNoteText>
-						</ReopenedNote>
-					)}
-					<Divider />
-					<BookingLinkSection>
-						<BookingLinkHeader>
-							<BookingLinkLabel>
-								{t('availability.week.drawer.booking-link-label')}
-							</BookingLinkLabel>
-							<ShareButton
-								absoluteUrl={bookingLink}
-								preferNativeShare
-								textKey={shareText}
-								titleKey={shareTitle}
-							/>
-						</BookingLinkHeader>
-						<BookingLinkValueRow>
-							<BookingLinkValue>{bookingLink}</BookingLinkValue>
-						</BookingLinkValueRow>
-						<BookingLinkHint>
-							{t('availability.week.drawer.booking-link-hint')}
-						</BookingLinkHint>
-					</BookingLinkSection>
-					<Divider />
-					<PatientNameAutocomplete
-						methods={methods}
-						onPatientSelect={onPatientSelect}
-						onSelectionClear={onSelectionClear}
-						results={results}
-						searchIsLoading={searchIsLoading}
-						searchQuery={searchQuery}
-						selectedPatient={selectedPatient}
-						setSearchQuery={setSearchQuery}
-					/>
-					<TextField
-						label={t('availability.week.drawer.patient-last-name')}
-						fullWidth
-						placeholder={t('availability.week.drawer.patient-last-name')}
-						{...register('lastName', {
-							required: t('components.form.validation.required', {
-								name: t('availability.week.drawer.patient-last-name'),
-							}),
-						})}
-						error={Boolean(lastNameError)}
-						helperText={
-							typeof lastNameError?.message === 'string'
-								? lastNameError.message
-								: undefined
-						}
-						slotProps={{ inputLabel: { shrink: !!lastNameValue } }}
-						required
-					/>
-					{sessionType === 'BOTH' && <SlotSessionDeliverySection />}
+					<AvailableSection
+						icon={<Appointment />}
+						title={t('availability.week.drawer.section.session')}
+					>
+						<SlotSessionSection {...sessionDetails} />
+						{reopenedCancellationNote && (
+							<ReopenedNote>
+								<ReopenedNoteLabel>
+									{t('availability.week.drawer.reopened-note-label')}
+								</ReopenedNoteLabel>
+								<ReopenedNoteText>{reopenedCancellationNote}</ReopenedNoteText>
+							</ReopenedNote>
+						)}
+					</AvailableSection>
 
-					{(isOnline || selectedPreferredType) && <PreferredContactForm />}
+					<Divider />
 
-					{showContactsForm && (
-						<ContactsForm<ICreatePatientForm>
-							atLeastOneContact={requireContacts}
-							fullWidth
-							fields={{
-								email: 'email',
-								hasWhatsApp: 'hasWhatsApp',
-								isPhoneWpp: 'isPhoneWpp',
-								phone: 'phone',
-								whatsapp: 'whatsapp',
-							}}
-							labelEmail={t('availability.week.drawer.patient-email')}
-							placeholderEmail={t('availability.week.drawer.patient-email')}
+					<AvailableSection
+						icon={<Send />}
+						title={t('availability.week.drawer.section.booking-link')}
+					>
+						<BookingLinkSection>
+							<BookingLinkHeader>
+								<BookingLinkLabel>
+									{t('availability.week.drawer.booking-link-label')}
+								</BookingLinkLabel>
+								<ShareButton
+									absoluteUrl={bookingLink}
+									preferNativeShare
+									textKey={shareText}
+									titleKey={shareTitle}
+								/>
+							</BookingLinkHeader>
+							<BookingLinkValueRow>
+								<BookingLinkValue>{bookingLink}</BookingLinkValue>
+							</BookingLinkValueRow>
+							<BookingLinkHint>
+								{t('availability.week.drawer.booking-link-hint')}
+							</BookingLinkHint>
+						</BookingLinkSection>
+					</AvailableSection>
+
+					<Divider />
+
+					<AvailableSection
+						icon={<Account />}
+						title={t('availability.week.drawer.section.patient')}
+					>
+						<PatientNameAutocomplete
+							methods={methods}
+							onPatientSelect={onPatientSelect}
+							onSelectionClear={onSelectionClear}
+							results={results}
+							searchIsLoading={searchIsLoading}
+							searchQuery={searchQuery}
+							selectedPatient={selectedPatient}
+							setSearchQuery={setSearchQuery}
 						/>
-					)}
-					{isInPerson && <SlotLocationSection {...locationProps} />}
+						<TextField
+							label={t('availability.week.drawer.patient-last-name')}
+							fullWidth
+							placeholder={t('availability.week.drawer.patient-last-name')}
+							{...register('lastName', {
+								required: t('components.form.validation.required', {
+									name: t('availability.week.drawer.patient-last-name'),
+								}),
+							})}
+							error={Boolean(lastNameError)}
+							helperText={
+								typeof lastNameError?.message === 'string'
+									? lastNameError.message
+									: undefined
+							}
+							slotProps={{ inputLabel: { shrink: !!lastNameValue } }}
+							required
+						/>
+					</AvailableSection>
+
+					<Divider />
+
+					<AvailableSection
+						icon={<Phone />}
+						title={t('availability.week.drawer.section.contact-delivery')}
+					>
+						{sessionType === 'BOTH' && <SlotSessionDeliverySection />}
+						{(isOnline || selectedPreferredType) && <PreferredContactForm />}
+						{showContactsForm && (
+							<ContactsForm<ICreatePatientForm>
+								atLeastOneContact={requireContacts}
+								fullWidth
+								fields={{
+									email: 'email',
+									hasWhatsApp: 'hasWhatsApp',
+									isPhoneWpp: 'isPhoneWpp',
+									phone: 'phone',
+									whatsapp: 'whatsapp',
+								}}
+								labelEmail={t('availability.week.drawer.patient-email')}
+								placeholderEmail={t('availability.week.drawer.patient-email')}
+							/>
+						)}
+						{isInPerson && <SlotLocationSection {...locationProps} />}
+					</AvailableSection>
+
+					<Divider />
+
 					<SlotRecurrenceSection />
 					<TimezoneSelect />
+
 					{!selectedPatient ? (
 						<ConsentBox>
 							<Controller

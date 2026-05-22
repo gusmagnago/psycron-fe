@@ -4,6 +4,31 @@ import { Text } from '@psycron/components/text/Text';
 import { hexToRgba, palette } from '@psycron/theme/palette/palette.theme';
 import { spacing } from '@psycron/theme/spacing/spacing.theme';
 
+export const SectionWrapper = styled(Box)`
+	display: flex;
+	flex-direction: column;
+	gap: ${spacing.small};
+`;
+
+export const SectionHeader = styled(Box)`
+	display: flex;
+	align-items: center;
+	gap: ${spacing.xs};
+
+	& svg {
+		width: 14px;
+		height: 14px;
+	}
+`;
+
+export const SectionLabel = styled(Text)`
+	font-size: 12px;
+	font-weight: 600;
+	color: ${palette.gray['05']};
+	text-transform: uppercase;
+	letter-spacing: 0.05em;
+`;
+
 export const BookingLinkSection = styled(Box)`
 	display: flex;
 	flex-direction: column;

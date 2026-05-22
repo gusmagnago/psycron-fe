@@ -1,4 +1,5 @@
 import type {
+	IBookingConflictMetadata,
 	IConflict,
 	IPatientDuplicateConflictMetadata,
 	ISlotReplicationConflictMetadata,
@@ -35,5 +36,10 @@ export interface ConflictResolutionSummaryProps {
 
 export interface SlotReplicationConflictDetailProps {
 	metadata: ISlotReplicationConflictMetadata;
+	t: (key: string) => string;
+}
+
+export interface DayBlockConflictDetailProps {
+	metadata: IBookingConflictMetadata;
 	t: (key: string) => string;
 }
