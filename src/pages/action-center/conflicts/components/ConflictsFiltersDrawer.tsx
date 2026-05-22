@@ -76,6 +76,13 @@ export const ConflictsFiltersDrawer = ({
 					>
 						{t('conflicts.types.slot-replication')}
 					</QueueFilterChip>
+					<QueueFilterChip
+						isActive={typeFilter === 'DAY_BLOCK'}
+						onClick={() => onSetTypeFilter('DAY_BLOCK')}
+						type='button'
+					>
+						{t('conflicts.types.day-block')}
+					</QueueFilterChip>
 				</QueueFiltersRow>
 			</QueueFiltersSection>
 		</QueueFiltersDrawer>

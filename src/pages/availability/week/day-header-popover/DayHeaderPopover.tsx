@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { Button } from '@psycron/components/button/Button';
 import { Modal } from '@psycron/components/modal/Modal';
 
+import { BlockDayConflictModal } from './BlockDayConflictModal';
 import {
 	BookedWarning,
 	PopoverActions,
@@ -29,8 +30,9 @@ export const DayHeaderPopover = ({
 	const [confirmAction, setConfirmAction] = useState<
 		'block-all' | 'unblock-all' | null
 	>(null);
+	const [isConflictModalOpen, setIsConflictModalOpen] = useState(false);
 
-		const summary: IDaySummary = useMemo(() => {
+	const summary: IDaySummary = useMemo(() => {
 			let available = 0;
 			let blocked = 0;
 			let booked = 0;
@@ -56,8 +58,25 @@ export const DayHeaderPopover = ({
 		setConfirmAction(null);
 	};
 
+	const bookedSlots = useMemo(
+		() => slots.filter((s) => s.status === 'booked-jupiter' || s.status === 'booked-google'),
+		[slots]
+	);
+
 	return (
 		<>
+			<BlockDayConflictModal
+				availableCount={summary.available}
+				bookedSlots={bookedSlots}
+				dayLabel={dayLabel}
+				isLoading={isBlockDayPending}
+				onClose={() => setIsConflictModalOpen(false)}
+				onConfirm={() => {
+					setIsConflictModalOpen(false);
+					onBlockAll();
+				}}
+				open={isConflictModalOpen}
+			/>
 			<Modal
 				openModal={open}
 				title={dayLabel}
@@ -95,7 +114,13 @@ export const DayHeaderPopover = ({
 								<Button
 									disabled={isBlockDayPending || isPastDay}
 									loading={isBlockDayPending}
-									onClick={() => setConfirmAction('block-all')}
+									onClick={() => {
+										if (summary.booked > 0) {
+											setIsConflictModalOpen(true);
+										} else {
+											setConfirmAction('block-all');
+										}
+									}}
 									severity='error'
 									small
 							>

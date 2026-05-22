@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import type {
+	IBookingConflictMetadata,
 	IPatientDuplicateConflictMetadata,
 	ISlotReplicationConflictMetadata,
 } from '@psycron/api/user/conflicts/index.types';
@@ -35,6 +36,7 @@ import {
 } from './styles/ConflictDetail.styles';
 import type { ConflictDetailProps } from './types/ConflictDetail.types';
 import { ConflictResolutionSummary } from './ConflictResolutionSummary';
+import { DayBlockConflictDetail } from './DayBlockConflictDetail';
 import { PatientDuplicateConflictDetail } from './PatientDuplicateConflictDetail';
 import { PatientDuplicateMergeReview } from './PatientDuplicateMergeReview';
 import { SlotReplicationConflictDetail } from './SlotReplicationConflictDetail';
@@ -63,6 +65,11 @@ export const ConflictDetail = ({
 		conflict.type === 'SLOT_REPLICATION'
 			? (conflict.metadata as ISlotReplicationConflictMetadata)
 			: null;
+	const dayBlockMetadata =
+		conflict.type === 'DAY_BLOCK'
+			? (conflict.metadata as IBookingConflictMetadata)
+			: null;
+
 	const metadata =
 		conflict.type === 'PATIENT_DUPLICATE' && duplicateMetadata ? (
 			<PatientDuplicateConflictDetail
@@ -70,6 +77,8 @@ export const ConflictDetail = ({
 				shouldFetchCandidates={conflict.status === 'OPEN' && !isUpdating}
 				t={t}
 			/>
+		) : conflict.type === 'DAY_BLOCK' && dayBlockMetadata ? (
+			<DayBlockConflictDetail metadata={dayBlockMetadata} t={t} />
 		) : (
 			<SlotReplicationConflictDetail metadata={slotReplicationMetadata!} t={t} />
 		);
@@ -80,6 +89,48 @@ export const ConflictDetail = ({
 	const actions =
 		conflict.status !== 'OPEN' ? (
 			<ConflictResolutionSummary conflict={conflict} />
+		) : conflict.type === 'DAY_BLOCK' ? (
+			<ConflictActions>
+				<ConflictActionSection>
+					<ConflictActionHeading>
+						{t('conflicts.actions.day-block-title')}
+					</ConflictActionHeading>
+					<ConflictActionHint>
+						{t('conflicts.actions.day-block-hint')}
+					</ConflictActionHint>
+					<Button
+						fullWidth
+						severity='error'
+						variant='contained'
+						disabled={isUpdating}
+						onClick={() =>
+							onUpdateConflict({
+								actionTaken: 'CANCEL_APPOINTMENT',
+								conflictId: conflict._id,
+								status: 'RESOLVED',
+							})
+						}
+					>
+						{t('conflicts.actions.cancel-appointment')}
+					</Button>
+				</ConflictActionSection>
+				<ConflictActionFooter>
+					<Button
+						small
+						tertiary
+						disabled={isUpdating}
+						onClick={() =>
+							onUpdateConflict({
+								actionTaken: 'DISMISSED',
+								conflictId: conflict._id,
+								status: 'DISMISSED',
+							})
+						}
+					>
+						{t('conflicts.actions.dismiss')}
+					</Button>
+				</ConflictActionFooter>
+			</ConflictActions>
 		) : conflict.type === 'PATIENT_DUPLICATE' ? (
 			<ConflictActions>
 				<ConflictActionSection>
