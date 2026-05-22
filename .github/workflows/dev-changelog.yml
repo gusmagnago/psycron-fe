@@ -22,6 +22,14 @@ permissions:
   pull-requests: write
 
 jobs:
+  deploy-preview:
+    name: Deploy dev → Vercel preview
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger Vercel deploy hook
+        run: |
+          curl -s -X POST "${{ secrets.VERCEL_DEV_DEPLOY_HOOK }}" | jq .
+
   changelog:
     name: Generate dev↔main diff
     runs-on: ubuntu-latest
