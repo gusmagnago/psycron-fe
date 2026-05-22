@@ -50,6 +50,7 @@ export const startGoogleOAuth = ({
 	url.searchParams.set('timeZone', getTimeZone());
 	url.searchParams.set('returnTo', `/${returnPath}`);
 	url.searchParams.set('intent', intent);
+	url.searchParams.set('frontendOrigin', window.location.origin);
 
 	if (shouldIncludeStayConnected && typeof stayConnected === 'boolean') {
 		url.searchParams.set('stayConnected', String(stayConnected));
