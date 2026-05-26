@@ -176,8 +176,8 @@ export const IconRow = styled(Box, {
 
 export const ChipsInline = styled(Box)`
 	display: flex;
-	align-items: center;
-	justify-content: center;
+	align-items: flex-start;
+	justify-content: flex-start;
 	flex-direction: column;
 `;
 

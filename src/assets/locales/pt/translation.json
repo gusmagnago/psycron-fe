@@ -1487,6 +1487,7 @@
       "define-hours-fallback": "Entendido! A importação do Google Agenda estará disponível em breve. Por enquanto, vamos definir seus horários manualmente.",
       "importing": "Um momento — estou importando sua agenda do Google Agenda...",
       "imported": "Pronto! Encontrei seus dias e horários de trabalho. Só mais algumas configurações.",
+      "imported-summary": "Pronto! Encontrei sua agenda: {{days}}, das {{hours}}. Só mais algumas configurações.",
       "import-failed": "Não consegui ler sua agenda. Vamos definir seus horários de trabalho manualmente."
     },
     "errors": {

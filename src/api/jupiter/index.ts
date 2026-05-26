@@ -85,6 +85,7 @@ export const generateJupiterAvailability = async (
 
 export interface GoogleCalendarSchedule {
 	endTime: string;
+	recurrencePattern?: 'WEEKLY' | 'MONTHLY';
 	startTime: string;
 	workingDays: string[];
 }

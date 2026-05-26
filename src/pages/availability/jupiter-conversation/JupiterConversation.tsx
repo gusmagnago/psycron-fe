@@ -463,6 +463,7 @@ export const JupiterConversation = () => {
 					<GoogleCalendarPicker
 						calendars={calendarList}
 						onSelect={handleCalendarPicked}
+						onBack={handleGoogleBack}
 					/>
 				);
 
