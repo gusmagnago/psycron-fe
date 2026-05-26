@@ -1468,7 +1468,8 @@
     "calendar-picker": {
       "title": "Which calendar should Psycron use?",
       "primary": "primary",
-      "confirm": "Use this calendar"
+      "confirm": "Use this calendar",
+      "back": "Go back"
     },
     "google-calendar": {
       "permissions-intro": "We’ll securely connect to your Google Calendar to:",

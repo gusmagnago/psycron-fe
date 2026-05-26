@@ -43,7 +43,11 @@ export const GoogleCalendarPicker = ({
 		<PickerCard>
 			<PickerHeader>
 				{onBack && (
-					<BackBtn onClick={onBack} type='button'>
+					<BackBtn
+						onClick={onBack}
+						type='button'
+						aria-label={t('jupiter.calendar-picker.back')}
+					>
 						<ChevronLeft />
 					</BackBtn>
 				)}
