@@ -28,14 +28,18 @@ export const AvailabilityGate = ({ children }: AvailabilityGateProps) => {
 		staleTime: 1000 * 60 * 10,
 	});
 
+	const isOnGeneratePage = location.pathname.includes(AVAILABILITYGENERATE);
+	const hasAvailability = data !== null;
+	const hasDraft = !!localStorage.getItem(STORAGE_KEY);
+	// Once the query resolves, a missing availability (or a pending draft) means
+	// we are about to redirect — we must not render children for that frame, or
+	// the dashboard flashes briefly before the navigation lands.
+	const willRedirect =
+		!isLoading && !isOnGeneratePage && (!hasAvailability || hasDraft);
+
 	useEffect(() => {
 		if (isLoading) return;
-
-		const isOnGeneratePage = location.pathname.includes(AVAILABILITYGENERATE);
 		if (isOnGeneratePage) return;
-
-		const hasDraft = !!localStorage.getItem(STORAGE_KEY);
-		const hasAvailability = data !== null;
 
 		if (!hasAvailability) {
 			if (!hasAlerted.current && !!localStorage.getItem(ONBOARDING_KEY)) {
@@ -52,9 +56,18 @@ export const AvailabilityGate = ({ children }: AvailabilityGateProps) => {
 		if (hasDraft) {
 			navigate(`/${i18n.language}/${AVAILABILITYGENERATE}`, { replace: true });
 		}
-	}, [data, isLoading, location.pathname, navigate, i18n.language, showAlert, t]);
+	}, [
+		hasAvailability,
+		hasDraft,
+		isLoading,
+		isOnGeneratePage,
+		navigate,
+		i18n.language,
+		showAlert,
+		t,
+	]);
 
-	if (isLoading && data === undefined) {
+	if ((isLoading && data === undefined) || willRedirect) {
 		return <Loader />;
 	}
 
