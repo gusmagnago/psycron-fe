@@ -1468,7 +1468,8 @@
     "calendar-picker": {
       "title": "Which calendar should Psycron use?",
       "primary": "primary",
-      "confirm": "Use this calendar"
+      "confirm": "Use this calendar",
+      "back": "Go back"
     },
     "google-calendar": {
       "permissions-intro": "We’ll securely connect to your Google Calendar to:",
@@ -1487,6 +1488,7 @@
       "define-hours-fallback": "Got it! Google Calendar import is coming soon. Let’s set your working hours manually for now.",
       "importing": "Give me a moment — I’m importing your schedule from Google Calendar...",
       "imported": "Done! I found your working days and hours. Just a couple more things to set up.",
+      "imported-summary": "Done! I found your schedule: {{days}}, from {{hours}}. Just a couple more things to set up.",
       "import-failed": "I couldn’t read your calendar schedule. Let’s set your working hours manually."
     },
     "errors": {

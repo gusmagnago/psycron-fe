@@ -408,6 +408,28 @@ export const useJupiterFlow = ({
 		[commit, t]
 	);
 
+	const advanceAfterTimezone = useCallback(() => {
+		// Skip recurrence step if already detected from Google Calendar import
+		setAnswers((prev) => {
+			if (prev.recurrencePattern) {
+				const summaryKey =
+					prev.recurrencePattern === 'WEEKLY'
+						? 'jupiter.recurrence-pattern.summary-weekly'
+						: 'jupiter.recurrence-pattern.summary-monthly';
+				setTimeout(() => {
+					addBotMessage(t(summaryKey));
+					setStep('preview');
+				}, 300);
+			} else {
+				setTimeout(() => {
+					addBotMessage(t('jupiter.recurrence-pattern.response'));
+					setStep('recurrence-pattern');
+				}, 300);
+			}
+			return prev;
+		});
+	}, [addBotMessage, t]);
+
 	const handleTimezone = useCallback(
 		(key: string) => {
 			if (key === 'chip-yes') {
@@ -417,23 +439,23 @@ export const useJupiterFlow = ({
 					timezone: detectedTimezone,
 					timezoneConfirmed: true,
 				}));
-				advance('jupiter.recurrence-pattern.response', 'recurrence-pattern', 300);
+				advanceAfterTimezone();
 			} else {
 				addUserMessage(t('jupiter.timezone.chip-no'));
 				addBotMessage(t('jupiter.timezone.follow-up'));
 				setAnswers((prev) => ({ ...prev, timezoneConfirmed: false }));
 			}
 		},
-		[addBotMessage, addUserMessage, advance, detectedTimezone, t]
+		[addBotMessage, addUserMessage, advanceAfterTimezone, detectedTimezone, t]
 	);
 
 	const handleTimezoneSelect = useCallback(
 		(tz: string) => {
 			addUserMessage(tz);
 			setAnswers((prev) => ({ ...prev, timezone: tz }));
-			advance('jupiter.recurrence-pattern.response', 'recurrence-pattern', 300);
+			advanceAfterTimezone();
 		},
-		[addUserMessage, advance]
+		[addUserMessage, advanceAfterTimezone]
 	);
 
 	const handleRecurrencePattern = useCallback(
@@ -585,13 +607,35 @@ export const useJupiterFlow = ({
 
 					if (schedule && schedule.workingDays.length > 0) {
 						const timeRange = `${schedule.startTime} - ${schedule.endTime}`;
-						setAnswers((prev) => ({
-							...prev,
+
+						const updatedAnswers: Partial<JupiterAnswers> = {
 							workingDays: schedule.workingDays,
 							timeRange,
-						}));
+						};
+
+						// Auto-set recurrence if the calendar had recurring events
+						if (schedule.recurrencePattern) {
+							updatedAnswers.recurrencePattern = schedule.recurrencePattern;
+						}
+
+						setAnswers((prev) => ({ ...prev, ...updatedAnswers }));
+
+						// Show the user what was imported so they can verify
+						const dayLabels = schedule.workingDays
+							.map((d) => {
+								const chipKey = CANONICAL_TO_CHIP[d];
+								return chipKey ? t(`jupiter.working-days.${chipKey}`) : d;
+							})
+							.join(', ');
+
 						setTimeout(() => {
-							addBotMessage(t('jupiter.google-calendar.imported'), false);
+							addBotMessage(
+								t('jupiter.google-calendar.imported-summary', {
+									days: dayLabels,
+									hours: timeRange,
+								}),
+								false
+							);
 							setStep('session-duration');
 						}, 300);
 					} else {

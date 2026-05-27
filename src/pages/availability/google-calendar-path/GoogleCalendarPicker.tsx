@@ -2,26 +2,31 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { CalendarItem } from '@psycron/api/auth';
 import { Button } from '@psycron/components/button/Button';
+import { ChevronLeft } from '@psycron/components/icons';
 
 import {
+	BackBtn,
 	CalendarDot,
 	CalendarList,
 	CalendarName,
 	CalendarOption,
 	ConfirmBtn,
 	PickerCard,
+	PickerHeader,
 	PickerTitle,
 	PrimaryBadge,
 } from './GoogleCalendarPicker.styles';
 
 interface GoogleCalendarPickerProps {
 	calendars: CalendarItem[];
+	onBack?: () => void;
 	onSelect: (calendarId: string) => void;
 }
 
 export const GoogleCalendarPicker = ({
 	calendars,
 	onSelect,
+	onBack,
 }: GoogleCalendarPickerProps) => {
 	const { t } = useTranslation();
 
@@ -36,7 +41,18 @@ export const GoogleCalendarPicker = ({
 
 	return (
 		<PickerCard>
-			<PickerTitle>{t('jupiter.calendar-picker.title')}</PickerTitle>
+			<PickerHeader>
+				{onBack && (
+					<BackBtn
+						onClick={onBack}
+						type='button'
+						aria-label={t('jupiter.calendar-picker.back')}
+					>
+						<ChevronLeft />
+					</BackBtn>
+				)}
+				<PickerTitle>{t('jupiter.calendar-picker.title')}</PickerTitle>
+			</PickerHeader>
 
 			<CalendarList>
 				{calendars.map((cal) => (

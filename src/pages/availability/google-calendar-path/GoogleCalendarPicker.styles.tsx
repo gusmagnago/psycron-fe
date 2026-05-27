@@ -24,11 +24,43 @@ export const PickerCard = styled(Box)`
 	animation: slideIn 300ms ease-out;
 `;
 
+export const PickerHeader = styled(Box)`
+	display: flex;
+	align-items: center;
+	gap: ${spacing.xs};
+	margin-bottom: ${spacing.extraSmall};
+`;
+
+export const BackBtn = styled('button')`
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 28px;
+	height: 28px;
+	border-radius: 8px;
+	border: none;
+	background: ${hexToRgba(palette.brand.purple, 0.08)};
+	cursor: pointer;
+	transition: background 150ms ease;
+	flex-shrink: 0;
+	color: ${palette.brand.purple};
+	padding: 0;
+
+	&:hover {
+		background: ${hexToRgba(palette.brand.purple, 0.16)};
+	}
+
+	& svg {
+		width: 16px;
+		height: 16px;
+	}
+`;
+
 export const PickerTitle = styled(Typography)`
 	font-size: 14px;
 	font-weight: 600;
 	color: ${palette.text.primary};
-	margin-bottom: ${spacing.extraSmall};
+	text-align: left;
 `;
 
 export const CalendarList = styled(Box)`
@@ -55,6 +87,7 @@ export const CalendarOption = styled(Box, {
 		isSelected ? hexToRgba(palette.brand.purple, 0.08) : 'transparent'};
 	cursor: pointer;
 	transition: all 150ms ease;
+	text-align: left;
 
 	&:hover {
 		border-color: ${palette.brand.purple};
@@ -74,16 +107,20 @@ export const CalendarName = styled(Typography)`
 	font-size: 13px;
 	color: ${palette.text.primary};
 	flex: 1;
+	text-align: left;
 `;
 
 export const PrimaryBadge = styled(Typography)`
 	font-size: 11px;
 	color: ${palette.text.secondary};
-	font-style: italic;
+	background-color: ${hexToRgba(palette.brand.purple, 0.06)};
+	padding: 2px 8px;
+	border-radius: 6px;
+	font-weight: 500;
 `;
 
 export const ConfirmBtn = styled(Box)`
 	display: flex;
-	justify-content: flex-end;
+	justify-content: flex-start;
 	margin-top: ${spacing.xs};
 `;
