@@ -1,8 +1,10 @@
+import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import { Box, LinearProgress } from '@mui/material';
 import { Text } from '@psycron/components/text/Text';
 import { isMobileMedia } from '@psycron/theme/media-queries/mediaQueries';
 import { hexToRgba, palette } from '@psycron/theme/palette/palette.theme';
+import { shadowSmall } from '@psycron/theme/shadow/shadow.theme';
 import { spacing } from '@psycron/theme/spacing/spacing.theme';
 
 // ─── Page wrapper ─────────────────────────────────────────────────────────────
@@ -34,7 +36,7 @@ export const JupiterAvailabilityPanel = styled(Box)`
 
 export const ChecklistCard = styled(Box)`
 	border-radius: 16px;
-	border: 1px solid ${hexToRgba(palette.brand.purple, 0.15)};
+	box-shadow: ${shadowSmall};
 	padding: ${spacing.mediumSmall};
 	display: flex;
 	flex-direction: column;
@@ -53,6 +55,24 @@ export const ChecklistHeader = styled(Box)`
 	display: flex;
 	flex-direction: column;
 	gap: 6px;
+`;
+
+export const ChecklistTitleRow = styled(Box)`
+	display: flex;
+	align-items: center;
+	gap: ${spacing.xs};
+	flex-wrap: wrap;
+`;
+
+export const MissingSetupBadge = styled(Text)`
+	display: inline-flex;
+	align-items: center;
+	padding: ${spacing.xxs} ${spacing.xs};
+	border-radius: ${spacing.medium};
+	font-size: 11px;
+	font-weight: 700;
+	background-color: ${palette.alert.main};
+	color: ${palette.alert.dark};
 `;
 
 export const ChecklistTitle = styled(Text)`
@@ -225,7 +245,7 @@ export const TimeRangeSeparator = styled(Text)`
 
 export const StatusCard = styled(Box)`
 	border-radius: 16px;
-	border: 1px solid ${hexToRgba(palette.brand.purple, 0.15)};
+	box-shadow: ${shadowSmall};
 	padding: ${spacing.mediumSmall};
 	display: flex;
 	flex-direction: row;
@@ -305,4 +325,72 @@ export const CalendarActionRow = styled(Box)`
 	display: flex;
 	justify-content: flex-end;
 	margin-top: ${spacing.small};
+`;
+
+// ─── Google Calendar sync state machine ───────────────────────────────────────
+
+export const GcalBanner = styled(Box, {
+	shouldForwardProp: (prop) => prop !== 'tone',
+})<{ tone: 'error' | 'info' | 'success' }>`
+	display: flex;
+	align-items: center;
+	gap: ${spacing.xs};
+	padding: ${spacing.extraSmall} ${spacing.small};
+	border-radius: ${spacing.small};
+	font-size: 13px;
+	font-weight: 600;
+	line-height: 1.4;
+
+	${({ tone }) => {
+		if (tone === 'success')
+			return css`
+				background: ${hexToRgba(palette.success.main, 0.08)};
+				border: 1px solid ${hexToRgba(palette.success.main, 0.25)};
+				color: ${palette.success.dark};
+			`;
+		if (tone === 'error')
+			return css`
+				background: ${hexToRgba(palette.error.main, 0.08)};
+				border: 1px solid ${hexToRgba(palette.error.main, 0.25)};
+				color: ${palette.error.main};
+			`;
+		return css`
+			background: ${hexToRgba(palette.brand.purple, 0.08)};
+			border: 1px solid ${hexToRgba(palette.brand.purple, 0.15)};
+			color: ${palette.brand.purple};
+		`;
+	}}
+
+	& svg {
+		flex-shrink: 0;
+	}
+`;
+
+export const GcalSyncCard = styled(Box)`
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: ${spacing.small};
+	padding: ${spacing.extraSmall} ${spacing.small};
+	border-radius: ${spacing.small};
+	box-shadow: ${shadowSmall};
+	background: ${palette.white};
+`;
+
+export const GcalSyncMeta = styled(Box)`
+	display: flex;
+	flex-direction: column;
+	gap: 2px;
+	min-width: 0;
+`;
+
+export const GcalSyncTitle = styled(Text)`
+	font-size: 13px;
+	font-weight: 600;
+	color: ${palette.text.primary};
+`;
+
+export const GcalSyncSub = styled(Text)`
+	font-size: 12px;
+	color: ${palette.text.secondary};
 `;

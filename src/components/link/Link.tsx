@@ -34,7 +34,11 @@ export const Link = ({
 
 		if (to === 'go-back') {
 			e.preventDefault();
-			navigate(-1);
+			if (window.history.length > 1) {
+				navigate(-1);
+			} else {
+				navigate(`/${locale}`);
+			}
 			return;
 		}
 

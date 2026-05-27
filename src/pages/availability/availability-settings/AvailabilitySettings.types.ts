@@ -77,6 +77,7 @@ export interface UseAvailabilitySettingsReturn {
 	handleSessionDurationSave: () => void;
 	handleSessionTypeSave: () => void;
 	handleSpecialtySave: () => void;
+	handleSyncNow: () => Promise<void>;
 	handleTimezoneSave: () => void;
 	handleToggleCalendarSync: () => Promise<void>;
 	handleWorkingHoursSave: () => void;
@@ -86,7 +87,9 @@ export interface UseAvailabilitySettingsReturn {
 	isJupiterCtaEnabled: boolean;
 	isLoading: boolean;
 	isSaving: boolean;
+	isSyncing: boolean;
 	isTogglingSync: boolean;
+	lastSyncAt: string | undefined;
 	openDrawer: (key: DrawerKey) => void;
 	progress: number;
 	recurrencePatternInput: string;
@@ -110,6 +113,7 @@ export interface UseAvailabilitySettingsReturn {
 	startTimeInput: string;
 	statusStats: AvailabilityStatusStats;
 	syncEnabled: boolean;
+	syncError: boolean;
 	timezoneInput: string;
 	toggleWorkingDay: (day: string) => void;
 	workingDaysInput: string[];
