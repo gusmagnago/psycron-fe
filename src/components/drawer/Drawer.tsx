@@ -32,15 +32,13 @@ export const Drawer = ({
 				</Box>
 				<CloseButton onClick={onClose} />
 			</DrawerHeader>
-			<DrawerContent>
-				{children}
-				{actions && (
-					<DrawerActionsSection>
-						<Divider />
-						<DrawerActions>{actions}</DrawerActions>
-					</DrawerActionsSection>
-				)}
-			</DrawerContent>
+			<DrawerContent>{children}</DrawerContent>
+			{actions && (
+				<DrawerActionsSection>
+					<Divider />
+					<DrawerActions>{actions}</DrawerActions>
+				</DrawerActionsSection>
+			)}
 		</DrawerPanel>
 	</>
 );

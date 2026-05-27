@@ -376,13 +376,13 @@ export const useAvailabilitySettings = (): UseAvailabilitySettingsReturn => {
 
 		let activeHoursPerWeek = 0;
 		if (availability?.timeRange && availability.workingDays?.length) {
-			const parts = availability.timeRange.split(/\s*[-–—]\s*/);
-			if (parts.length === 2) {
-				const [sh, sm] = parts[0].split(':').map(Number);
-				const [eh, em] = parts[1].split(':').map(Number);
-				const hoursPerDay = (eh * 60 + em - (sh * 60 + sm)) / 60;
+			const { end, start } = parseTimeRangeToInputs(availability.timeRange);
+			const [sh, sm] = start.split(':').map(Number);
+			const [eh, em] = end.split(':').map(Number);
+			const minutesPerDay = eh * 60 + em - (sh * 60 + sm);
+			if (Number.isFinite(minutesPerDay) && minutesPerDay > 0) {
 				activeHoursPerWeek = Math.round(
-					hoursPerDay * availability.workingDays.length
+					(minutesPerDay / 60) * availability.workingDays.length
 				);
 			}
 		}
