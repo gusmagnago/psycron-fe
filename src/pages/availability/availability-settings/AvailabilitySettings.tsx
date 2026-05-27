@@ -2,21 +2,23 @@ import { Fragment } from 'react';
 import { FormProvider } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { Navigate, useParams } from 'react-router-dom';
-import { Autocomplete, Switch, TextField, Tooltip, Typography } from '@mui/material';
+import { Autocomplete, Switch, TextField, Tooltip } from '@mui/material';
 import { Button } from '@psycron/components/button/Button';
+import { Drawer } from '@psycron/components/drawer/Drawer';
+import { DrawerBody, DrawerDesc } from '@psycron/components/drawer/Drawer.styles';
 import { SettingsDrawer } from '@psycron/components/drawer/SettingsDrawer';
 import { AddressForm } from '@psycron/components/form/components/address/AddressForm';
-import { CheckSuccess } from '@psycron/components/icons';
+import { CheckSuccess, Error, Lock, Refresh } from '@psycron/components/icons';
 import { JupiterHelpCard } from '@psycron/components/jupiter-help-card/JupiterHelpCard';
 import { JupiterTip } from '@psycron/components/jupiter-tip/JupiterTip';
 import { Modal } from '@psycron/components/modal/Modal';
+import { Select } from '@psycron/components/select/Select';
+import { Text } from '@psycron/components/text/Text';
 import { PageLayout } from '@psycron/layouts/app/pages-layout/PageLayout';
 import { BufferTimeEditor } from '@psycron/pages/availability/components/buffer-time-editor/BufferTimeEditor';
 import { AVAILABILITYGENERATE } from '@psycron/pages/urls';
 
 import {
-	CalendarActionRow,
-	CalendarNameRow,
 	CalendarSyncRow,
 	ChecklistCard,
 	ChecklistDivider,
@@ -31,10 +33,16 @@ import {
 	ChecklistRowTitle,
 	ChecklistSubtitle,
 	ChecklistTitle,
+	ChecklistTitleRow,
 	DrawerFieldGroup,
 	DrawerFieldLabel,
-	GoogleCalendarStatus,
+	GcalBanner,
+	GcalSyncCard,
+	GcalSyncMeta,
+	GcalSyncSub,
+	GcalSyncTitle,
 	JupiterAvailabilityPanel,
+	MissingSetupBadge,
 	OptionChip,
 	OptionChipsRow,
 	OptionDesc,
@@ -110,10 +118,20 @@ const getTimezones = (): string[] => {
 
 const TIMEZONES = getTimezones();
 
+const formatLastSync = (iso: string, locale: string): string => {
+	const minutes = Math.round((Date.now() - new Date(iso).getTime()) / 60000);
+	const rtf = new Intl.RelativeTimeFormat(locale, { numeric: 'auto' });
+	if (minutes < 1) return rtf.format(0, 'minute');
+	if (minutes < 60) return rtf.format(-minutes, 'minute');
+	const hours = Math.round(minutes / 60);
+	if (hours < 24) return rtf.format(-hours, 'hour');
+	return rtf.format(-Math.round(hours / 24), 'day');
+};
+
 // ─── Component ─────────────────────────────────────────────────────────────────
 
 export const AvailabilitySettings = () => {
-	const { t } = useTranslation();
+	const { t, i18n } = useTranslation();
 	const { locale } = useParams<{ locale: string }>();
 
 	const {
@@ -142,13 +160,17 @@ export const AvailabilitySettings = () => {
 		handleRecurrencePatternSave,
 		handleSessionDurationSave,
 		handleSpecialtySave,
+		handleSyncNow,
 		handleToggleCalendarSync,
 		isAddressSaving,
 		isConnecting,
 		isDisconnecting,
+		isSyncing,
 		isTogglingSync,
+		lastSyncAt,
 		selectedCalendarId,
 		syncEnabled,
+		syncError,
 		isJupiterCtaEnabled,
 		handleSessionTypeSave,
 		handleTimezoneSave,
@@ -185,6 +207,10 @@ export const AvailabilitySettings = () => {
 	if (!availability) {
 		return <Navigate replace to={`/${locale}/${AVAILABILITYGENERATE}`} />;
 	}
+
+	const missingRecommendedCount = checklistItems.filter(
+		(item) => item.isRecommended && !item.isConfigured && !item.isDisabled
+	).length;
 
 	const renderChecklist = () =>
 		checklistItems.map((item: ChecklistItem, idx: number) => (
@@ -244,9 +270,18 @@ export const AvailabilitySettings = () => {
 				<SettingsWrapper>
 					<ChecklistCard>
 						<ChecklistHeader>
-							<ChecklistTitle>
-								{t('jupiter.post-publish.checklist-title')}
-							</ChecklistTitle>
+							<ChecklistTitleRow>
+								<ChecklistTitle>
+									{t('jupiter.post-publish.checklist-title')}
+								</ChecklistTitle>
+								{missingRecommendedCount > 0 && (
+									<MissingSetupBadge component='span'>
+										{t('availability.settings.checklist-todo-badge', {
+											count: missingRecommendedCount,
+										})}
+									</MissingSetupBadge>
+								)}
+							</ChecklistTitleRow>
 							<ChecklistSubtitle>
 								{t('jupiter.post-publish.checklist-subtitle')}
 							</ChecklistSubtitle>
@@ -550,76 +585,124 @@ export const AvailabilitySettings = () => {
 
 			{/* ─── Google Calendar drawer ───────────────────────────────────── */}
 				{activeDrawer === 'google-calendar' && (
-					<SettingsDrawer
+					<Drawer
 						ariaLabel={t('availability.settings.google-calendar-drawer-title')}
-						title={t('availability.settings.google-calendar-drawer-title')}
-						desc={
-							availability.googleCalendarConnected
-								? undefined
-								: t('availability.settings.google-calendar-desc')
-						}
-						isSaving={isConnecting}
 						onClose={closeDrawer}
-						onSave={handleGoogleCalendarConnect}
-						saveDisabled={availability.googleCalendarConnected}
-						saveLabel={t('availability.settings.google-calendar-connect-btn')}
-						showCancel
-					>
-						{availability.googleCalendarConnected && (
-							<>
-								<GoogleCalendarStatus>
-									<CheckSuccess />
-									{t('availability.settings.google-calendar-connected')}
-								</GoogleCalendarStatus>
-
-								{calendarList.length > 0 && (
-									<CalendarNameRow>
-										<Typography variant='body2'>
-											{calendarList.find((c) => c.id === selectedCalendarId)?.summary ??
-												t('availability.settings.google-calendar-primary')}
-										</Typography>
-										{calendarList.length > 1 && (
-											<Button
-												size='small'
-												variant='text'
-												onClick={() =>
-													calendarList
-														.filter((c) => c.id !== selectedCalendarId)
-														.forEach((c) => handleChangeCalendar(c.id))
-												}
-											>
-												{t('availability.settings.google-calendar-change')}
-											</Button>
-										)}
-									</CalendarNameRow>
-								)}
-
-								<CalendarSyncRow>
-									<Typography variant='body2'>
-										{t('availability.settings.google-calendar-sync-label')}
-									</Typography>
-									<Switch
-										checked={syncEnabled}
-										disabled={isTogglingSync}
-										onChange={handleToggleCalendarSync}
-										size='small'
-									/>
-								</CalendarSyncRow>
-
-								<CalendarActionRow>
+						title={t('availability.settings.google-calendar-drawer-title')}
+						actions={
+							availability.googleCalendarConnected ? (
+								<>
 									<Button
-										color='error'
-										disabled={isDisconnecting}
-										size='small'
-										variant='outlined'
+										fullWidth
+										loading={isDisconnecting}
 										onClick={handleDisconnectCalendar}
+										secondary
+										severity='error'
 									>
 										{t('availability.settings.google-calendar-disconnect')}
 									</Button>
-								</CalendarActionRow>
-							</>
-						)}
-					</SettingsDrawer>
+									<Button fullWidth onClick={closeDrawer} secondary>
+										{t('common.close')}
+									</Button>
+								</>
+							) : (
+								<>
+									<Button
+										fullWidth
+										loading={isConnecting}
+										onClick={handleGoogleCalendarConnect}
+										tertiary
+									>
+										{t('availability.settings.google-calendar-connect-btn')}
+									</Button>
+									<Button fullWidth onClick={closeDrawer} secondary>
+										{t('common.close')}
+									</Button>
+								</>
+							)
+						}
+					>
+						<DrawerBody>
+							{availability.googleCalendarConnected ? (
+								<>
+									{syncError ? (
+										<GcalBanner tone='error'>
+											<Error />
+											{t('availability.settings.google-calendar-sync-failed')}
+										</GcalBanner>
+									) : (
+										<GcalBanner tone='success'>
+											<CheckSuccess />
+											{t('availability.settings.google-calendar-connected')}
+										</GcalBanner>
+									)}
+
+									{calendarList.length > 0 && (
+										<Select
+											items={calendarList.map((c) => ({
+												name: c.summary,
+												value: c.id,
+											}))}
+											name='gcal-calendar'
+											onChangeSelect={(e) =>
+												handleChangeCalendar(String(e.target.value))
+											}
+											selectLabel={t(
+												'availability.settings.google-calendar-select-label'
+											)}
+											value={selectedCalendarId ?? ''}
+										/>
+									)}
+
+									<GcalSyncCard>
+										<GcalSyncMeta>
+											<GcalSyncTitle>
+												{lastSyncAt
+													? t('availability.settings.google-calendar-last-synced', {
+															time: formatLastSync(lastSyncAt, i18n.language),
+														})
+													: t('availability.settings.google-calendar-not-synced')}
+											</GcalSyncTitle>
+											<GcalSyncSub>
+												{t('availability.settings.google-calendar-sync-hint')}
+											</GcalSyncSub>
+										</GcalSyncMeta>
+										<Button
+											loading={isSyncing}
+											onClick={handleSyncNow}
+											secondary
+											small
+										>
+											<Refresh />
+											{t('availability.settings.google-calendar-sync-now')}
+										</Button>
+									</GcalSyncCard>
+
+									<CalendarSyncRow>
+										<Text>
+											{t('availability.settings.google-calendar-sync-label')}
+										</Text>
+										<Switch
+											checked={syncEnabled}
+											disabled={isTogglingSync}
+											onChange={handleToggleCalendarSync}
+											size='small'
+										/>
+									</CalendarSyncRow>
+								</>
+							) : (
+								<>
+									<DrawerDesc>
+										{t('availability.settings.google-calendar-desc')}
+									</DrawerDesc>
+									<GcalBanner tone='info'>
+										<Lock />
+										{t('availability.settings.google-calendar-privacy')}
+									</GcalBanner>
+								</>
+							)}
+						</DrawerBody>
+					</Drawer>
 				)}
 
 			{/* ─── Session address drawer ───────────────────────────────────── */}

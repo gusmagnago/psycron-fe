@@ -7,10 +7,13 @@ import { capture } from '@psycron/analytics/posthog/events';
 import { PostHogEvent } from '@psycron/analytics/posthog/types';
 import type { CalendarItem } from '@psycron/api/auth';
 import {
+	disconnectGoogleCalendar,
 	getGoogleCalendarConnectUrl,
 	getGoogleCalendarList,
 	getGoogleCalendarStatus,
 	selectGoogleCalendar,
+	syncGoogleCalendar,
+	toggleGoogleCalendarSync,
 } from '@psycron/api/auth';
 import { updateAvailabilitySettings } from '@psycron/api/availability';
 import type { IAvailabilityRecord } from '@psycron/api/availability/index.types';
@@ -184,6 +187,9 @@ export const useAvailabilitySettings = (): UseAvailabilitySettingsReturn => {
 	const [syncEnabled, setSyncEnabled] = useState(false);
 	const [calendarList, setCalendarList] = useState<CalendarItem[]>([]);
 	const [selectedCalendarId, setSelectedCalendarId] = useState<string | undefined>();
+	const [lastSyncAt, setLastSyncAt] = useState<string | undefined>();
+	const [isSyncing, setIsSyncing] = useState(false);
+	const [syncError, setSyncError] = useState(false);
 	const [showTimezoneWarning, setShowTimezoneWarning] = useState(false);
 
 	// Buffer time
@@ -583,19 +589,21 @@ export const useAvailabilitySettings = (): UseAvailabilitySettingsReturn => {
 	// Fetch status + calendar list when Google Calendar drawer opens
 	useEffect(() => {
 		if (activeDrawer !== 'google-calendar') return;
-		if (!availability.googleCalendarConnected) return;
+		if (!availability?.googleCalendarConnected) return;
 
 		getGoogleCalendarStatus()
 			.then((status) => {
 				setSyncEnabled(status.syncEnabled);
 				setSelectedCalendarId(status.calendarId);
+				setLastSyncAt(status.lastSyncAt);
+				setSyncError(false);
 			})
 			.catch((): null => null);
 
 		getGoogleCalendarList()
 			.then(setCalendarList)
 			.catch((): null => null);
-	}, [activeDrawer, availability.googleCalendarConnected]);
+	}, [activeDrawer, availability?.googleCalendarConnected]);
 
 	const handleGoogleCalendarConnect = useCallback(async () => {
 		setIsConnecting(true);
@@ -617,7 +625,7 @@ export const useAvailabilitySettings = (): UseAvailabilitySettingsReturn => {
 	const handleDisconnectCalendar = useCallback(async () => {
 		setIsDisconnecting(true);
 		try {
-			await fetch('/auth/google/calendar', { method: 'DELETE', credentials: 'include' });
+			await disconnectGoogleCalendar();
 			queryClient.invalidateQueries({ queryKey: ['availability'] });
 			showAlert({
 				message: t('availability.settings.google-calendar-disconnected'),
@@ -638,12 +646,7 @@ export const useAvailabilitySettings = (): UseAvailabilitySettingsReturn => {
 		const next = !syncEnabled;
 		setIsTogglingSync(true);
 		try {
-			await fetch('/auth/google/calendar/toggle', {
-				method: 'POST',
-				credentials: 'include',
-				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify({ enabled: next }),
-			});
+			await toggleGoogleCalendarSync(next);
 			setSyncEnabled(next);
 		} catch {
 			showAlert({
@@ -654,6 +657,28 @@ export const useAvailabilitySettings = (): UseAvailabilitySettingsReturn => {
 			setIsTogglingSync(false);
 		}
 	}, [syncEnabled, showAlert, t]);
+
+	const handleSyncNow = useCallback(async () => {
+		setIsSyncing(true);
+		setSyncError(false);
+		try {
+			const status = await syncGoogleCalendar();
+			setLastSyncAt(status.lastSyncAt);
+			setSyncEnabled(status.syncEnabled);
+			showAlert({
+				message: t('availability.settings.google-calendar-synced'),
+				severity: 'success',
+			});
+		} catch {
+			setSyncError(true);
+			showAlert({
+				message: t('availability.settings.google-calendar-sync-error'),
+				severity: 'error',
+			});
+		} finally {
+			setIsSyncing(false);
+		}
+	}, [showAlert, t]);
 
 	const handleChangeCalendar = useCallback(
 		async (calendarId: string) => {
@@ -729,11 +754,15 @@ export const useAvailabilitySettings = (): UseAvailabilitySettingsReturn => {
 		handleDisconnectCalendar,
 		handleGoogleCalendarConnect,
 		handleJupiterCta,
+		handleSyncNow,
 		handleToggleCalendarSync,
 		isDisconnecting,
+		isSyncing,
 		isTogglingSync,
+		lastSyncAt,
 		selectedCalendarId,
 		syncEnabled,
+		syncError,
 		handleRecurrencePatternSave,
 		handleSessionDurationSave,
 		handleSessionTypeSave,

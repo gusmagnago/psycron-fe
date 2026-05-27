@@ -57,6 +57,7 @@ export const CardWrapper = styled(Box)`
 	flex-direction: column;
 	width: 100%;
 	flex: 1;
+	min-height: 0;
 	position: relative;
 
 	padding: ${spacing.small};
@@ -118,6 +119,7 @@ export const ConversationContainer = styled(Box)`
 	display: flex;
 	flex-direction: column;
 	flex: 1;
+	min-height: 0;
 	overflow-y: auto;
 	padding: ${spacing.small};
 	gap: ${spacing.xs};

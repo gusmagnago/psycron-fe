@@ -103,18 +103,20 @@ export const getGoogleCalendarConnectUrl = async (params: {
 	return response.data;
 };
 
-export const getGoogleCalendarStatus = async (): Promise<{
+export type GoogleCalendarStatus = {
 	calendarId?: string;
 	connected: boolean;
+	lastSyncAt?: string;
 	syncEnabled: boolean;
-}> => {
-	const response = await apiClient.get<{
-		calendarId?: string;
-		connected: boolean;
-		syncEnabled: boolean;
-	}>('/auth/google/calendar/status');
-	return response.data;
 };
+
+export const getGoogleCalendarStatus =
+	async (): Promise<GoogleCalendarStatus> => {
+		const response = await apiClient.get<GoogleCalendarStatus>(
+			'/auth/google/calendar/status'
+		);
+		return response.data;
+	};
 
 export type CalendarItem = {
 	backgroundColor?: string;
@@ -134,6 +136,23 @@ export const selectGoogleCalendar = async (
 	calendarId: string
 ): Promise<void> => {
 	await apiClient.patch('/auth/google/calendar/select', { calendarId });
+};
+
+export const disconnectGoogleCalendar = async (): Promise<void> => {
+	await apiClient.delete('/auth/google/calendar');
+};
+
+export const toggleGoogleCalendarSync = async (
+	enabled: boolean
+): Promise<void> => {
+	await apiClient.post('/auth/google/calendar/toggle', { enabled });
+};
+
+export const syncGoogleCalendar = async (): Promise<GoogleCalendarStatus> => {
+	const response = await apiClient.post<{ status: string } & GoogleCalendarStatus>(
+		'/auth/google/calendar/sync'
+	);
+	return response.data;
 };
 
 export type VerifyWhatsAppOtpResponse = {
