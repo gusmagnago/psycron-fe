@@ -74,8 +74,12 @@ export const DrawerActions = styled(Box)`
 `;
 
 export const DrawerActionsSection = styled(Box)`
-	padding-top: ${spacing.medium};
-	padding-bottom: ${spacing.large};
+	flex-shrink: 0;
+	padding: ${spacing.medium} ${spacing.mediumLarge} ${spacing.large};
+
+	${isMobileMedia} {
+		padding: ${spacing.small} ${spacing.medium} ${spacing.medium};
+	}
 `;
 
 // ─── Generic drawer body / description ────────────────────────────────────────
