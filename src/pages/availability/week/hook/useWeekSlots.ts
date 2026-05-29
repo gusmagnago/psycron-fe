@@ -103,11 +103,7 @@ export const useWeekSlots = (
 					triggeredBy: slot.triggeredBy ?? undefined,
 					googleAttendees: slot.googleAttendees ?? null,
 					googleDescription: slot.googleDescription ?? null,
-					googleHtmlLink: slot.googleHtmlLink ?? null,
-					googleMeetLink: slot.googleMeetLink ?? null,
-					googleLocation: slot.googleLocation ?? null,
 					googleOrganizer: slot.googleOrganizer ?? null,
-					googleColorId: slot.googleColorId ?? null,
 					googleRecurringId: slot.googleRecurringId ?? null,
 				};
 			})

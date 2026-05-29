@@ -1908,6 +1908,7 @@
 				"booked-call-aria": "Call {{name}}",
 				"booked-whatsapp-aria": "Message {{name}} on WhatsApp",
 				"booked-email-aria": "Email {{name}}",
+				"source-google": "Google Calendar",
 				"source-manual": "Booked",
 				"unblock-confirm": "Confirm unblock",
 				"unblock-confirm-body": "This slot will become available for booking again.",
