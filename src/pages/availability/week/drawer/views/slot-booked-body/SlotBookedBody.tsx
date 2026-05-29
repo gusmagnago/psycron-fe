@@ -223,8 +223,8 @@ export const SlotBookedBody = ({
 
 			<Divider />
 
-			{/* ─── Patient section ─── */}
-			<BookedSection
+			{/* Patient section — hidden for GCal events (no Psycron patient linked) */}
+			{!isGoogle && <BookedSection
 				icon={<Account color={palette.gray['05']} />}
 				title={t('availability.week.drawer.booked-section-patient')}
 			>
@@ -329,7 +329,7 @@ export const SlotBookedBody = ({
 						</DetailActions>
 					)}
 				</DetailRow>
-			</BookedSection>
+			</BookedSection>}
 
 			{/* ─── Location section ─── */}
 			<BookedSection
