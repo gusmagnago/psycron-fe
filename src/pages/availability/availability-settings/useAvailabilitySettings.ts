@@ -665,6 +665,13 @@ export const useAvailabilitySettings = (): UseAvailabilitySettingsReturn => {
 			const status = await syncGoogleCalendar();
 			setLastSyncAt(status.lastSyncAt);
 			setSyncEnabled(status.syncEnabled);
+			// Auto-update the calendar, week view and settings config without a
+			// manual refresh — the ingestion just rewrote availability slots.
+			queryClient.invalidateQueries({ queryKey: ['therapistAvailability'] });
+			queryClient.invalidateQueries({ queryKey: ['availabilityByDay'] });
+			queryClient.invalidateQueries({
+				queryKey: [JUPITER_AVAILABILITY_CONFIG_KEY],
+			});
 			showAlert({
 				message: t('availability.settings.google-calendar-synced'),
 				severity: 'success',
@@ -678,7 +685,7 @@ export const useAvailabilitySettings = (): UseAvailabilitySettingsReturn => {
 		} finally {
 			setIsSyncing(false);
 		}
-	}, [showAlert, t]);
+	}, [queryClient, showAlert, t]);
 
 	const handleChangeCalendar = useCallback(
 		async (calendarId: string) => {
