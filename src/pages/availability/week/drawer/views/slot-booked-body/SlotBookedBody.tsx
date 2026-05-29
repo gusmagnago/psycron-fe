@@ -430,7 +430,7 @@ export const SlotBookedBody = ({
 				</BookedSection>
 			)}
 
-			{/* ─── Google Calendar attendees + open link ─── */}
+			{/* ─── Google Calendar section: raw event data, no patient assumptions ─── */}
 			{isGoogle && (googleAttendees.length > 0 || googleOrganizer || googleHtmlLink) && (
 				<BookedSection
 					icon={<Google color={palette.brand.google} />}
@@ -449,13 +449,24 @@ export const SlotBookedBody = ({
 					{googleAttendees.map((attendee) => (
 						<DetailRow key={attendee.email}>
 							<DetailRowLeft>
-								<DetailLabel>Guest</DetailLabel>
+								<DetailLabel>
+									{attendee.responseStatus === 'accepted' ? 'Confirmed' : 'Invited'}
+								</DetailLabel>
 								<DetailValue>
 									{attendee.displayName
 										? `${attendee.displayName} (${attendee.email})`
 										: attendee.email}
 								</DetailValue>
 							</DetailRowLeft>
+							<DetailActions>
+								<ContactShortcutButton
+									href={`mailto:${attendee.email}`}
+									aria-label={`Email ${attendee.displayName ?? attendee.email}`}
+									title={attendee.email}
+								>
+									<Mail color={palette.brand.purple} />
+								</ContactShortcutButton>
+							</DetailActions>
 						</DetailRow>
 					))}
 					{googleHtmlLink && (

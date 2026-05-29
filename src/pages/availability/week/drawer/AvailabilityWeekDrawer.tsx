@@ -343,6 +343,8 @@ export const AvailabilityWeekDrawer = ({
 	});
 	const shareText = t('availability.week.drawer.booking-share-text');
 
+	// For GCal slots the identity is the event title (slot.notes = event.summary).
+	// Attendees are shown as raw GCal guest data — not assumed to be Psycron patients.
 	const patientName = appointmentDetailsBySlotId?.appointment?.patient
 		? [
 				appointmentDetailsBySlotId.appointment.patient.firstName,
@@ -442,12 +444,19 @@ export const AvailabilityWeekDrawer = ({
 	const sessionDetails = {
 		date: formattedDate,
 		duration: timeSub,
+		// GCal slots have no linked Psycron patient — hide patient local time row
 		patientTime:
-			isBooked || isAvailable ? (patientTimeStr ?? therapistTimeStr) : null,
+			isBooked && !isGoogle
+				? (patientTimeStr ?? therapistTimeStr)
+				: isAvailable
+					? (patientTimeStr ?? therapistTimeStr)
+					: null,
 		patientTimeZoneName:
-			isBooked || isAvailable
+			isBooked && !isGoogle
 				? (patientTimeZoneName ?? therapistTimeZoneName)
-				: null,
+				: isAvailable
+					? (patientTimeZoneName ?? therapistTimeZoneName)
+					: null,
 		therapistTime: therapistTimeStr,
 		therapistTimeZoneName,
 	};

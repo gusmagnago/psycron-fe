@@ -1784,6 +1784,7 @@
                 "booked-call-aria": "Ligar para {{name}}",
                 "booked-whatsapp-aria": "Enviar mensagem para {{name}} no WhatsApp",
                 "booked-email-aria": "Enviar email para {{name}}",
+                "source-google": "Google Calendar",
                 "source-manual": "Agendado",
                 "unblock-confirm": "Confirmar desbloqueio",
                 "unblock-confirm-body": "Este horário ficará disponível para agendamentos novamente.",
