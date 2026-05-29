@@ -48,11 +48,11 @@ export const getTherapistLatestAvailability = async (therapistId: string): Promi
 
 export const getAvailabilityCalendar = async (
 	therapistId: string,
-	params?: { from?: string; to?: string }
-): Promise<IAvailabilityResponse> => {
-	const response = await apiClient.get<IAvailabilityResponse>(
-		`/users/${therapistId}/availability`,
-		{ params: { latest: 'true', ...params } }
+	params: { from: string; to: string }
+): Promise<Pick<IAvailabilityResponse, 'calendar'>> => {
+	const response = await apiClient.get<Pick<IAvailabilityResponse, 'calendar'>>(
+		`/users/${therapistId}/availability/calendar`,
+		{ params }
 	);
 	return response.data;
 };
