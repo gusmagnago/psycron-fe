@@ -25,11 +25,16 @@ export interface IWeekSlot {
 	duration: number; // minutes
 	// Google-imported event metadata — first-class rendering (real color,
 	// meet link, location) and the edit/delete round-trip need these.
+	googleAttendees?: Array<{ displayName?: string; email: string; responseStatus?: string }> | null;
 	googleColorId?: string | null;
+	googleDescription?: string | null;
 	googleEventId?: string | null;
+	googleEventType?: string | null;
 	googleHtmlLink?: string | null;
 	googleLocation?: string | null;
 	googleMeetLink?: string | null;
+	googleOrganizer?: { displayName?: string, email: string; } | null;
+	googleRecurringId?: string | null;
 	id: string;
 	letPatientChooseAddress?: boolean;
 	notes?: string;
@@ -37,7 +42,8 @@ export interface IWeekSlot {
 	patientName?: string;
 	reasonCode?: number;
 	reopenedAt?: string;
-	startTime: string; // 'HH:mm'
+	startTime: string;
+	// 'HH:mm'
 	status: SlotStatus;
 	therapyType?: string;
 	timezone?: string;

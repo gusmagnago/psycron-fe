@@ -84,6 +84,14 @@ export const SlotBookedBody = ({
 	const firstName = patient?.firstName ?? nameParts[0] ?? '';
 	const lastName = patient?.lastName ?? nameParts.slice(1).join(' ') ?? '';
 
+	// Google enrichment fields from the slot
+	const googleMeetLink = slot.googleMeetLink;
+	const googleDescription = slot.googleDescription;
+	const googleHtmlLink = slot.googleHtmlLink;
+	const googleLocation = slot.googleLocation;
+	const googleAttendees = slot.googleAttendees ?? [];
+	const googleOrganizer = slot.googleOrganizer;
+
 	const sessionCount = appt?.sessionCount ?? 0;
 
 	const isOnline = slot.deliveryMode === 'online' || sessionType === 'ONLINE';
@@ -336,15 +344,28 @@ export const SlotBookedBody = ({
 				icon={<MapPin color={palette.gray['05']} />}
 				title={t('availability.week.drawer.booked-section-location')}
 			>
-				{isOnline ? (
+				{isOnline || googleMeetLink ? (
 					<OnlineSessionRow>
 						<Globe color={palette.brand.purple} />
 						<OnlineSessionLabel>
 							{t('availability.week.drawer.booked-online-session')}
 						</OnlineSessionLabel>
-						<DeliveryBadge isOnline>
-							{t('availability.week.drawer.session-delivery-online')}
-						</DeliveryBadge>
+						{(isOnline || !googleMeetLink) && (
+							<DeliveryBadge isOnline>
+								{t('availability.week.drawer.session-delivery-online')}
+							</DeliveryBadge>
+						)}
+						{googleMeetLink && (
+							<ContactShortcutButton
+								href={googleMeetLink}
+								rel='noopener noreferrer'
+								target='_blank'
+								aria-label='Join Google Meet'
+								title='Join Google Meet'
+							>
+								<Google color={palette.brand.google} />
+							</ContactShortcutButton>
+						)}
 					</OnlineSessionRow>
 				) : (
 					<DetailRow>
@@ -352,8 +373,8 @@ export const SlotBookedBody = ({
 							<DetailLabel>
 								{t('availability.week.drawer.appointment-address')}
 							</DetailLabel>
-							{address ? (
-								<DetailValue>{address}</DetailValue>
+							{(address || googleLocation) ? (
+								<DetailValue>{address ?? googleLocation}</DetailValue>
 							) : appt?.letPatientChooseAddress ? (
 								<>
 									<MissingFieldText>
@@ -377,14 +398,14 @@ export const SlotBookedBody = ({
 								</MissingFieldText>
 							)}
 						</DetailRowLeft>
-						{address && (
+						{(address || googleLocation) && (
 							<DetailActions>
 								<ActionIconButton
 									aria-label={t('availability.week.drawer.booked-copy-aria', {
 										field: 'address',
 									})}
 									isCopied={copiedKey === 'address'}
-									onClick={() => copy(address, 'address')}
+									onClick={() => copy((address ?? googleLocation)!, 'address')}
 									type='button'
 								>
 									{copiedKey === 'address' ? (
@@ -399,13 +420,55 @@ export const SlotBookedBody = ({
 				)}
 			</BookedSection>
 
-			{/* ─── Notes section (conditional) ─── */}
-			{slot.notes && (
+			{/* ─── Notes / description section ─── */}
+			{(slot.notes || googleDescription) && (
 				<BookedSection
 					icon={<Appointment color={palette.gray['05']} />}
 					title={t('availability.week.drawer.booked-section-notes')}
 				>
-					<NotesText>{slot.notes}</NotesText>
+					<NotesText>{slot.notes ?? googleDescription}</NotesText>
+				</BookedSection>
+			)}
+
+			{/* ─── Google Calendar attendees + open link ─── */}
+			{isGoogle && (googleAttendees.length > 0 || googleOrganizer || googleHtmlLink) && (
+				<BookedSection
+					icon={<Google color={palette.brand.google} />}
+					title='Google Calendar'
+				>
+					{googleOrganizer && (
+						<DetailRow>
+							<DetailRowLeft>
+								<DetailLabel>Organizer</DetailLabel>
+								<DetailValue>
+									{googleOrganizer.displayName ?? googleOrganizer.email}
+								</DetailValue>
+							</DetailRowLeft>
+						</DetailRow>
+					)}
+					{googleAttendees.map((attendee) => (
+						<DetailRow key={attendee.email}>
+							<DetailRowLeft>
+								<DetailLabel>Guest</DetailLabel>
+								<DetailValue>
+									{attendee.displayName
+										? `${attendee.displayName} (${attendee.email})`
+										: attendee.email}
+								</DetailValue>
+							</DetailRowLeft>
+						</DetailRow>
+					))}
+					{googleHtmlLink && (
+						<ContactShortcutButton
+							href={googleHtmlLink}
+							rel='noopener noreferrer'
+							target='_blank'
+							aria-label='Open in Google Calendar'
+							title='Open in Google Calendar'
+						>
+							<Google color={palette.brand.google} />
+						</ContactShortcutButton>
+					)}
 				</BookedSection>
 			)}
 		</BookedBodyWrapper>
