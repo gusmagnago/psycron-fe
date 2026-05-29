@@ -139,7 +139,7 @@ export const SlotBookedBody = ({
 				<Avatar firstName={firstName} lastName={lastName || firstName} />
 				<IdentityInfo>
 					<IdentityName>{patientName}</IdentityName>
-					{patientName && (
+					{patientName && !isGoogle && (
 						<SessionCountText>
 							{sessionCount <= 1
 								? t('availability.week.drawer.booked-session-first', {
@@ -420,13 +420,13 @@ export const SlotBookedBody = ({
 				)}
 			</BookedSection>
 
-			{/* ─── Notes / description section ─── */}
-			{(slot.notes || googleDescription) && (
+			{/* Notes: for GCal, slot.notes = event title (already shown as name); show description instead */}
+			{(isGoogle ? googleDescription : slot.notes) && (
 				<BookedSection
 					icon={<Appointment color={palette.gray['05']} />}
 					title={t('availability.week.drawer.booked-section-notes')}
 				>
-					<NotesText>{slot.notes ?? googleDescription}</NotesText>
+					<NotesText>{isGoogle ? googleDescription : slot.notes}</NotesText>
 				</BookedSection>
 			)}
 
