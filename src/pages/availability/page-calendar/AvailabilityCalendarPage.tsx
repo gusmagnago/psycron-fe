@@ -53,8 +53,10 @@ const getOccupancyLevel = (
 	booked: number,
 	available: number
 ): OccupancyLevel => {
-	if (available === 0) return 'empty';
-	const ratio = booked / available;
+	const total = booked + available;
+	if (total === 0) return 'empty';
+	if (available === 0) return 'full';
+	const ratio = booked / total;
 	if (ratio === 0) return 'available';
 	if (ratio < 0.5) return 'partial';
 	if (ratio < 1) return 'busy';
@@ -93,8 +95,16 @@ export const AvailabilityCalendarPage = () => {
 		const key = format(date, 'yyyy-MM-dd');
 		const day = dayMap.get(key);
 		if (!day) return 'empty';
-		const counts = sourceView === 'jupiter' ? day.jupiter : day.google;
-		return getOccupancyLevel(counts.booked, counts.available);
+
+		if (sourceView === 'google') {
+			return getOccupancyLevel(day.google.booked, day.google.available);
+		}
+
+		// Jupiter view: google-blocked slots occupy the practitioner's time even
+		// though they aren't Psycron bookings — include them so the month calendar
+		// reflects the practitioner's actual schedule, not just Psycron bookings.
+		const totalBooked = day.jupiter.booked + day.google.booked;
+		return getOccupancyLevel(totalBooked, day.jupiter.available);
 	};
 
 	const handleDayClick = (day: Date) => {
