@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import type { IPatientSearchResult } from '@psycron/api/user/availability/index.types';
 import { StatusEnum } from '@psycron/api/user/availability/index.types';
 import { Drawer } from '@psycron/components/drawer/Drawer';
-import { Account, Alert, Available, Ban } from '@psycron/components/icons';
+import { Account, Alert, Available, Ban, Google } from '@psycron/components/icons';
 import { Modal } from '@psycron/components/modal/Modal';
 import { useAvailability } from '@psycron/context/appointment/availability/AvailabilityContext';
 import type {
@@ -754,9 +754,15 @@ export const AvailabilityWeekDrawer = ({
 					{bookedDeliveryLabel}
 				</DeliveryBadge>
 				<SourceBadge isGoogle={isGoogle}>
-					<Account color={palette.brand.purple} />
-					<SourceBadgeText isGoogle={false}>
-						{t('availability.week.drawer.source-manual')}
+					{isGoogle
+						? <Google color={palette.brand.google} />
+						: <Account color={palette.brand.purple} />
+					}
+					<SourceBadgeText isGoogle={isGoogle}>
+						{t(isGoogle
+							? 'availability.week.drawer.source-google'
+							: 'availability.week.drawer.source-manual'
+						)}
 					</SourceBadgeText>
 				</SourceBadge>
 			</>
