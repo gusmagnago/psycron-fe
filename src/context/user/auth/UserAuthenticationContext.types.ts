@@ -193,6 +193,16 @@ export interface ISlot {
 	endTime: string;
 	followedUpAt?: ISODateString | null;
 	followedUpBy?: string | null;
+	googleAttendees?: Array<{ displayName?: string; email: string; responseStatus?: string }> | null;
+	googleColorId?: string | null;
+	googleDescription?: string | null;
+	googleEventId?: string | null;
+	googleEventType?: string | null;
+	googleHtmlLink?: string | null;
+	googleLocation?: string | null;
+	googleMeetLink?: string | null;
+	googleOrganizer?: { displayName?: string, email: string; } | null;
+	googleRecurringId?: string | null;
 	letPatientChooseAddress?: boolean;
 	note?: string;
 	patientId?: string;

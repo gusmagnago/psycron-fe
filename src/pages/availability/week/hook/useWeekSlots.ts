@@ -20,10 +20,16 @@ const addMinutes = (time: string, minutes: number): string => {
 	return `${String(newH).padStart(2, '0')}:${String(newM).padStart(2, '0')}`;
 };
 
-const toSlotStatus = (status: string): SlotStatus | null => {
+const toSlotStatus = (
+	status: string,
+	googleEventId?: string | null
+): SlotStatus | null => {
 	if (status === StatusEnum.AVAILABLE) return 'available';
 	if (status === StatusEnum.BLOCKED) return 'blocked';
-	if (status === StatusEnum.BOOKED) return 'booked-jupiter';
+	// Google-sourced sessions (googleEventId set) are booked-google; everything
+	// else booked in-app is booked-jupiter.
+	if (status === StatusEnum.BOOKED)
+		return googleEventId ? 'booked-google' : 'booked-jupiter';
 	if (isCanceledSlotStatus(status)) return 'cancelled';
 	return null;
 };
@@ -53,7 +59,7 @@ export const useWeekSlots = (
 
 		const realSlots = slots
 			.map((slot, j): IWeekSlot | null => {
-				const rawStatus = toSlotStatus(slot.status);
+				const rawStatus = toSlotStatus(slot.status, slot.googleEventId);
 				if (!rawStatus) return null;
 				const status =
 					rawStatus === 'available' && slot.canceledAt && !slot.reopenedAt
@@ -81,6 +87,14 @@ export const useWeekSlots = (
 					startTime: slot.startTime,
 					status,
 					triggeredBy: slot.triggeredBy ?? undefined,
+					googleAttendees: slot.googleAttendees ?? null,
+					googleDescription: slot.googleDescription ?? null,
+					googleHtmlLink: slot.googleHtmlLink ?? null,
+					googleMeetLink: slot.googleMeetLink ?? null,
+					googleLocation: slot.googleLocation ?? null,
+					googleOrganizer: slot.googleOrganizer ?? null,
+					googleColorId: slot.googleColorId ?? null,
+					googleRecurringId: slot.googleRecurringId ?? null,
 				};
 			})
 			.filter((s): s is IWeekSlot => s !== null);

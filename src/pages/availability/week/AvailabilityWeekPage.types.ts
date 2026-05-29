@@ -15,7 +15,17 @@ export interface IWeekSlot {
 	customReason?: string;
 	date: string; // 'YYYY-MM-DD'
 	deliveryMode?: DeliveryMode | null;
-	duration: number; // minutes
+	duration: number; 
+	// Google Calendar enrichment fields
+	googleAttendees?: Array<{ displayName?: string; email: string; responseStatus?: string }> | null;
+	googleColorId?: string | null;
+	googleDescription?: string | null;
+	googleHtmlLink?: string | null;
+	googleLocation?: string | null;
+	googleMeetLink?: string | null;
+	googleOrganizer?: { displayName?: string, email: string; } | null;
+	googleRecurringId?: string | null; 
+	// minutes
 	id: string;
 	letPatientChooseAddress?: boolean;
 	notes?: string;
@@ -23,7 +33,8 @@ export interface IWeekSlot {
 	patientName?: string;
 	reasonCode?: number;
 	reopenedAt?: string;
-	startTime: string; // 'HH:mm'
+	startTime: string;
+	// 'HH:mm'
 	status: SlotStatus;
 	therapyType?: string;
 	timezone?: string;
