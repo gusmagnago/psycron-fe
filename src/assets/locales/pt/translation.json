@@ -1792,6 +1792,7 @@
                 "unblock-slot": "Desbloquear horário",
                 "unblock-success": "Horário desbloqueado com sucesso.",
                 "section": {
+                    "advanced": "Opções avançadas",
                     "booking-link": "Link de agendamento",
                     "contact-delivery": "Contato e modalidade",
                     "patient": "Paciente",

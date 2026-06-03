@@ -9,7 +9,7 @@ import {
 import { hexToRgba, palette } from '@psycron/theme/palette/palette.theme';
 import { shadowMain, shadowSmall } from '@psycron/theme/shadow/shadow.theme';
 import { spacing } from '@psycron/theme/spacing/spacing.theme';
-import { zIndexSticky } from '@psycron/theme/zIndex';
+import { zIndexModal } from '@psycron/theme/zIndex';
 
 // ─── Shared animations ────────────────────────────────────────────────────────
 
@@ -75,23 +75,36 @@ export const CardWrapper = styled(Box)`
 `;
 
 export const PublishingOverlay = styled(Box)`
-	position: absolute;
+	/* Mobile: the conversation card grows to the full (scrollable) message
+	 * height, so an absolute overlay would center its spinner at the midpoint
+	 * of the whole conversation — off-screen from the user's viewport. Pin to
+	 * the viewport instead so the publishing state always covers what's visible. */
+	position: fixed;
 	inset: 0;
-	z-index: ${zIndexSticky};
+	z-index: ${zIndexModal};
 	backdrop-filter: blur(6px);
 	background-color: ${hexToRgba(palette.background.paper, 0.6)};
 	border-radius: inherit;
 	pointer-events: all;
+
+	${isBiggerThanMediumMedia} {
+		/* Desktop: the card is a fixed-size box, so scope the overlay to it. */
+		position: absolute;
+	}
 `;
 
 export const PublishingMessageWrapper = styled(Box)`
-	position: absolute;
+	position: fixed;
 	inset: 0;
-	z-index: ${zIndexSticky + 1};
+	z-index: ${zIndexModal + 1};
 	display: flex;
 	align-items: center;
 	justify-content: center;
 	pointer-events: none;
+
+	${isBiggerThanMediumMedia} {
+		position: absolute;
+	}
 `;
 
 export const CardHeader = styled(Box)`

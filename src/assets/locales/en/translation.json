@@ -1792,6 +1792,7 @@
                 "unblock-slot": "Unblock slot",
                 "unblock-success": "Slot unblocked successfully.",
                 "section": {
+                    "advanced": "Advanced options",
                     "booking-link": "Booking link",
                     "contact-delivery": "Contact & Delivery",
                     "patient": "Patient",

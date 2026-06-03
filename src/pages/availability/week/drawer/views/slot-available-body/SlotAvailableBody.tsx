@@ -20,6 +20,7 @@ import {
 	Appointment,
 	Phone,
 	Send,
+	Settings,
 } from '@psycron/components/icons';
 import { externalUrls } from '@psycron/pages/urls';
 
@@ -31,6 +32,7 @@ import { SlotSessionDeliverySection } from '../slot-session-delivery/SlotSession
 import { SlotSessionSection } from '../slot-session-section/SlotSessionSection';
 
 import { AvailableSection } from './available-section/AvailableSection';
+import { CollapsibleSection } from './collapsible-section/CollapsibleSection';
 import {
 	BookingLinkHeader,
 	BookingLinkHint,
@@ -121,33 +123,6 @@ export const SlotAvailableBody = ({
 					<Divider />
 
 					<AvailableSection
-						icon={<Send />}
-						title={t('availability.week.drawer.section.booking-link')}
-					>
-						<BookingLinkSection>
-							<BookingLinkHeader>
-								<BookingLinkLabel>
-									{t('availability.week.drawer.booking-link-label')}
-								</BookingLinkLabel>
-								<ShareButton
-									absoluteUrl={bookingLink}
-									preferNativeShare
-									textKey={shareText}
-									titleKey={shareTitle}
-								/>
-							</BookingLinkHeader>
-							<BookingLinkValueRow>
-								<BookingLinkValue>{bookingLink}</BookingLinkValue>
-							</BookingLinkValueRow>
-							<BookingLinkHint>
-								{t('availability.week.drawer.booking-link-hint')}
-							</BookingLinkHint>
-						</BookingLinkSection>
-					</AvailableSection>
-
-					<Divider />
-
-					<AvailableSection
 						icon={<Account />}
 						title={t('availability.week.drawer.section.patient')}
 					>
@@ -209,8 +184,40 @@ export const SlotAvailableBody = ({
 
 					<Divider />
 
-					<SlotRecurrenceSection />
-					<TimezoneSelect />
+					<CollapsibleSection
+						icon={<Settings />}
+						title={t('availability.week.drawer.section.advanced')}
+					>
+						<SlotRecurrenceSection />
+						<TimezoneSelect />
+					</CollapsibleSection>
+
+					<Divider />
+
+					<CollapsibleSection
+						icon={<Send />}
+						title={t('availability.week.drawer.section.booking-link')}
+					>
+						<BookingLinkSection>
+							<BookingLinkHeader>
+								<BookingLinkLabel>
+									{t('availability.week.drawer.booking-link-label')}
+								</BookingLinkLabel>
+								<ShareButton
+									absoluteUrl={bookingLink}
+									preferNativeShare
+									textKey={shareText}
+									titleKey={shareTitle}
+								/>
+							</BookingLinkHeader>
+							<BookingLinkValueRow>
+								<BookingLinkValue>{bookingLink}</BookingLinkValue>
+							</BookingLinkValueRow>
+							<BookingLinkHint>
+								{t('availability.week.drawer.booking-link-hint')}
+							</BookingLinkHint>
+						</BookingLinkSection>
+					</CollapsibleSection>
 
 					{!selectedPatient ? (
 						<ConsentBox>
