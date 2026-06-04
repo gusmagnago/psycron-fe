@@ -8,11 +8,7 @@ Never create a git commit without the user explicitly asking for it. Always pres
 
 ## Obsidian Context
 
-Use the Psycron Obsidian vault as product and engineering memory when a task involves product behavior, architecture, compliance, Jira, Confluence, releases, or cross-repo decisions:
-
-```text
-/Users/gusmagnago/Documents/Obsidian Vault
-```
+Use the local Psycron Obsidian vault configured outside this repository as product and engineering memory when a task involves product behavior, architecture, compliance, Jira, Confluence, releases, or cross-repo decisions.
 
 Start with:
 - `10 AI Context/Agent Handoff.md`
