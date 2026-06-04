@@ -1,4 +1,16 @@
 {
+    "practiceImport": {
+        "title": "Júpiter encontrou seus pacientes",
+        "summary": "{{patients}} pacientes · {{sessions}} sessões de {{events}} eventos do calendário. Revise e importe.",
+        "one-off": "avulso",
+        "no-contact": "sem contato",
+        "include": "Incluir",
+        "exclude": "Excluir",
+        "willImport": "{{accepted}} de {{total}} serão importados",
+        "import-cta": "Importar todos os {{count}} pacientes",
+        "imported": "{{created}} pacientes importados ({{skipped}} já existiam).",
+        "error": "Não foi possível importar. Tente novamente."
+    },
     "public": {
         "powered-by": "Desenvolvido por Psycron"
     },
@@ -1882,6 +1894,7 @@
             "first-publish-alert": "A sua disponibilidade está ativa! Complete o checklist abaixo para otimizar a sua configuração.",
             "google-calendar-change": "Alterar",
             "google-calendar-connected": "Seu Google Agenda está conectado.",
+            "import-from-google": "Importar pacientes do Google",
             "google-calendar-desc": "Sincronize seu Google Agenda para importar sua agenda existente, bloquear horários ocupados automaticamente e manter suas sessões no Psycron sincronizadas.",
             "google-calendar-disconnect": "Desconectar",
             "google-calendar-disconnected": "Google Agenda desconectado.",

@@ -1,4 +1,16 @@
 {
+    "practiceImport": {
+        "title": "Júpiter found your patients",
+        "summary": "{{patients}} patients · {{sessions}} sessions from {{events}} calendar events. Review and import.",
+        "one-off": "one-off",
+        "no-contact": "no contact",
+        "include": "Include",
+        "exclude": "Exclude",
+        "willImport": "{{accepted}} of {{total}} will be imported",
+        "import-cta": "Import all {{count}} patients",
+        "imported": "Imported {{created}} patients ({{skipped}} already existed).",
+        "error": "Could not import. Please try again."
+    },
     "public": {
         "powered-by": "Powered by Psycron"
     },
@@ -1882,6 +1894,7 @@
             "first-publish-alert": "Your availability is live! Complete the checklist below to optimize your setup.",
             "google-calendar-change": "Change",
             "google-calendar-connected": "Your Google Calendar is connected.",
+            "import-from-google": "Import patients from Google",
             "google-calendar-desc": "Sync your Google Calendar to import your existing schedule, block busy times automatically, and keep your Psycron sessions in sync.",
             "google-calendar-disconnect": "Disconnect",
             "google-calendar-disconnected": "Google Calendar disconnected.",

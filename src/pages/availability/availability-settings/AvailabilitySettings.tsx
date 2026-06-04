@@ -1,14 +1,14 @@
 import { Fragment } from 'react';
 import { FormProvider } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import { Navigate, useParams } from 'react-router-dom';
+import { Navigate, useNavigate, useParams } from 'react-router-dom';
 import { Autocomplete, Switch, TextField, Tooltip } from '@mui/material';
 import { Button } from '@psycron/components/button/Button';
 import { Drawer } from '@psycron/components/drawer/Drawer';
 import { DrawerBody, DrawerDesc } from '@psycron/components/drawer/Drawer.styles';
 import { SettingsDrawer } from '@psycron/components/drawer/SettingsDrawer';
 import { AddressForm } from '@psycron/components/form/components/address/AddressForm';
-import { CheckSuccess, Error, Lock, Refresh } from '@psycron/components/icons';
+import { Account, CheckSuccess, Error, Lock, Refresh } from '@psycron/components/icons';
 import { JupiterHelpCard } from '@psycron/components/jupiter-help-card/JupiterHelpCard';
 import { JupiterTip } from '@psycron/components/jupiter-tip/JupiterTip';
 import { Modal } from '@psycron/components/modal/Modal';
@@ -16,7 +16,7 @@ import { Select } from '@psycron/components/select/Select';
 import { Text } from '@psycron/components/text/Text';
 import { PageLayout } from '@psycron/layouts/app/pages-layout/PageLayout';
 import { BufferTimeEditor } from '@psycron/pages/availability/components/buffer-time-editor/BufferTimeEditor';
-import { AVAILABILITYGENERATE } from '@psycron/pages/urls';
+import { AVAILABILITYGENERATE, PRACTICEIMPORT } from '@psycron/pages/urls';
 
 import {
 	CalendarSyncRow,
@@ -133,6 +133,7 @@ const formatLastSync = (iso: string, locale: string): string => {
 export const AvailabilitySettings = () => {
 	const { t, i18n } = useTranslation();
 	const { locale } = useParams<{ locale: string }>();
+	const navigate = useNavigate();
 
 	const {
 		activeCount,
@@ -689,6 +690,16 @@ export const AvailabilitySettings = () => {
 											size='small'
 										/>
 									</CalendarSyncRow>
+
+									<Button
+										fullWidth
+										onClick={() => navigate(`/${locale}/${PRACTICEIMPORT}`)}
+										secondary
+										small
+									>
+										<Account />
+										{t('availability.settings.import-from-google')}
+									</Button>
 								</>
 							) : (
 								<>

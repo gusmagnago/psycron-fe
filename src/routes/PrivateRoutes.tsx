@@ -8,6 +8,7 @@ import { Dashboard } from '@psycron/pages/dashboard/Dashboard';
 import { NotificationsPage } from '@psycron/pages/notifications/NotificationsPage';
 import { PatientProfilePage } from '@psycron/pages/patients/patient-details/PatientProfilePage';
 import { PatientListPage } from '@psycron/pages/patients/PatientListPage';
+import { PracticeImportReview } from '@psycron/pages/practice-import/PracticeImportReview';
 import {
 	ACTIONCENTER,
 	AGENDA,
@@ -26,6 +27,7 @@ import {
 	NOTIFICATIONSETTINGS,
 	PATIENTPROFILE,
 	PATIENTS,
+	PRACTICEIMPORT,
 	USERDETAILS,
 } from '@psycron/pages/urls';
 // import { AddPatient } from '@psycron/pages/user/appointment/add-patient/AddPatient';
@@ -56,6 +58,7 @@ const privateRoutes = [
 	{ path: AVAILABILITYWEEK, element: <AvailabilityWeekPage /> },
 	{ path: AVAILABILITYGENERATE, element: <GenerateAvailability /> },
 	{ path: AVAILABILITYSETTINGS, element: <AvailabilitySettings /> },
+	{ path: PRACTICEIMPORT, element: <PracticeImportReview /> },
 	// { path: `${APPOINTMENTS}/cancel/:patientId`, element: <CancelAppointment /> },
 	// { path: ADDPATIENT, element: <AddPatient /> },
 ];
