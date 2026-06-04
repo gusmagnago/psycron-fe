@@ -32,10 +32,13 @@ const computeDuration = (startTime: string, endTime: string): number => {
 	return eh * 60 + em - (sh * 60 + sm);
 };
 
-const toSlotStatus = (status: StatusEnum): SlotStatus => {
+const toSlotStatus = (
+	status: StatusEnum,
+	googleEventId?: string | null
+): SlotStatus => {
 	switch (status) {
 		case StatusEnum.BOOKED:
-			return 'booked-jupiter';
+			return googleEventId ? 'booked-google' : 'booked-jupiter';
 		case StatusEnum.BLOCKED:
 			return 'blocked';
 		case StatusEnum.CANCELED:
@@ -84,7 +87,7 @@ export const useDashboardSlots = (): UseDashboardSlotsReturn => {
 						id: String(slot._id),
 						patientName: slot.patientSummary?.fullName,
 						startTime: slot.startTime,
-						status: toSlotStatus(slot.status),
+						status: toSlotStatus(slot.status, slot.googleEventId),
 					}));
 				return acc;
 			},

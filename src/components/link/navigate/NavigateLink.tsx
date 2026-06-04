@@ -15,7 +15,11 @@ export const NavigateLink = ({ isBack, to, nextPage }: INavigateLinkProps) => {
 
 	return (
 		<Box display='flex' alignItems='center'>
-			<Link to={linkTarget} isHeader>
+			<Link
+				to={linkTarget}
+				isHeader
+				style={{ fontSize: '0.9rem', display: 'flex', alignItems: 'center' }}
+			>
 				{isBack ? <ChevronLeft /> : null}
 				{isBack
 					? t('components.link.navigate.back')

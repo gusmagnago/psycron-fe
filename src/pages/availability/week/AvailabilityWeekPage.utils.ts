@@ -9,6 +9,10 @@ export const LEGEND_STATUSES: { labelKey: string; status: SlotStatus }[] = [
 		status: 'booked-jupiter',
 		labelKey: 'availability.week.legend-booked-jupiter',
 	},
+	{
+		status: 'booked-google',
+		labelKey: 'availability.week.legend-booked-google',
+	},
 	// { status: 'buffer', labelKey: 'availability.week.legend-buffer' },
 	{ status: 'cancelled', labelKey: 'availability.week.legend-cancelled' },
 ];

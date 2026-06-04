@@ -2,10 +2,11 @@ import { useEffect } from 'react';
 import ReactGA from 'react-ga4';
 import { useTranslation } from 'react-i18next';
 import { Box } from '@mui/material';
-import { NavigateLink } from '@psycron/components/link/navigate/NavigateLink';
+import { ChevronLeft } from '@psycron/components/icons/chevron/ChevronLeft';
 import { Text } from '@psycron/components/text/Text';
 
 import {
+	BackHomeLink,
 	ContentBox,
 	ContentWrapper,
 	ImgWrapper,
@@ -48,7 +49,10 @@ export const RootErrorFallback = () => {
 						</StyledPageSub>
 						<Text variant='subtitle2'> {t('page.not-found.note')}</Text>
 						<Box pt={10}>
-							<NavigateLink isBack />
+							<BackHomeLink href='/'>
+								<ChevronLeft />
+								{t('components.link.navigate.back')}
+							</BackHomeLink>
 						</Box>
 					</TextWrapper>
 				</ContentWrapper>

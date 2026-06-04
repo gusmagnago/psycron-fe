@@ -1,3 +1,4 @@
+import { css, keyframes } from '@emotion/react';
 import styled from '@emotion/styled';
 import { Box, ButtonBase } from '@mui/material';
 import { Text } from '@psycron/components/text/Text';
@@ -15,6 +16,24 @@ import {
 	SLOT_COLORS,
 } from '../../AvailabilityWeekPage.styles';
 import type { SlotStatus } from '../../AvailabilityWeekPage.types';
+
+// Google events march their diagonal hatch on hover — reinforces the
+// external, live-synced (removable) feel of a Google block vs an owned booking.
+const marchGoogleStripes = keyframes`
+	from { background-position: 0 0; }
+	to { background-position: 22px 0; }
+`;
+
+const googleHatch = `repeating-linear-gradient(45deg, transparent, transparent 7px, ${hexToRgba(
+	palette.white,
+	0.16
+)} 7px, ${hexToRgba(palette.white, 0.16)} 14px)`;
+
+// Must be wrapped in css() — a keyframes ref interpolated into a plain string
+// gets serialized as raw CSS and breaks Emotion.
+const googleMarch = css`
+	animation: ${marchGoogleStripes} 0.7s linear infinite;
+`;
 
 export const WeekGridWrapper = styled(Box)`
 	flex: 1;
@@ -269,6 +288,8 @@ export const SlotCell = styled(ButtonBase, {
 	text-align: left;
 	background-color: ${({ slotStatus }) =>
 		slotStatus === 'blocked' ? 'transparent' : SLOT_COLORS[slotStatus]};
+	background-image: ${({ slotStatus }) =>
+		slotStatus === 'booked-google' ? googleHatch : 'none'};
 	color: ${({ slotStatus }) => getSlotTextColor(slotStatus)};
 	border: ${({ slotStatus }) => getSlotBorder(slotStatus)};
 	cursor: ${({ slotStatus }) =>
@@ -292,7 +313,7 @@ export const SlotCell = styled(ButtonBase, {
 			isClickableStatus(slotStatus) ? 'translateY(-1px)' : 'none'};
 		background-color: ${({ slotStatus }) =>
 			slotStatus === 'blocked'
-				? hexToRgba(palette.warning.surface.light, 0.58)
+				? hexToRgba(palette.warning.light, 0.58)
 				: slotStatus === 'cancelled'
 					? SLOT_COLORS.cancelled
 					: SLOT_COLORS[slotStatus]};
@@ -300,6 +321,7 @@ export const SlotCell = styled(ButtonBase, {
 			slotStatus === 'blocked'
 				? `1px solid ${palette.error.main}`
 				: getSlotBorder(slotStatus)};
+		${({ slotStatus }) => (slotStatus === 'booked-google' ? googleMarch : '')}
 	}
 
 	${({ slotStatus }) =>

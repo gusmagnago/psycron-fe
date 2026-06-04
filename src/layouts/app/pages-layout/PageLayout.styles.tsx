@@ -22,10 +22,19 @@ export const PageLayoutWrapper = styled(Box)`
 export const PageTitleWrapper = styled(Box)`
 	flex-shrink: 0;
 	height: auto;
+
+	& a {
+		font-size: 0.9rem;
+	}
+
+	& svg {
+		height: 16px;
+		width: 16px;
+	}
 `;
 
 export const PageTitle = styled(Text)`
-	font-size: 1.4rem;
+	font-size: 1rem;
 	font-weight: 600;
 	text-align: left;
 `;
@@ -59,6 +68,8 @@ export const PageChildrenWrapper = styled(Box)`
 	overflow-y: auto;
 	overflow-x: hidden;
 	padding: ${spacing.small};
+
+	padding-top: 0;
 
 	${isMobileMedia} {
 		padding: ${spacing.xs};

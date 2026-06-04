@@ -4,6 +4,7 @@ import {
 	isBiggerThanMediumMedia,
 	isLargeMedia,
 } from '@psycron/theme/media-queries/mediaQueries';
+import { palette } from '@psycron/theme/palette/palette.theme';
 import { spacing } from '@psycron/theme/spacing/spacing.theme';
 
 export const ContentBox = styled(Box)`
@@ -107,5 +108,23 @@ export const StyledPageSub = styled(Text)`
 	${isBiggerThanMediumMedia} {
 		width: 60%;
 		font-size: 1.5rem;
+	}
+`;
+
+// Native anchor on purpose: this fallback can render outside the Router
+// (the Sentry ErrorBoundary wraps BrowserRouter), so any router-aware link
+// would crash with "useNavigate() may be used only in the context of a
+// <Router>". A plain href always works.
+export const BackHomeLink = styled('a')`
+	display: inline-flex;
+	align-items: center;
+	gap: 0.25rem;
+	color: ${palette.brand.purple};
+	font-weight: 600;
+	text-decoration: none;
+	cursor: pointer;
+
+	&:hover {
+		text-decoration: underline;
 	}
 `;
