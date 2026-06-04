@@ -173,7 +173,10 @@ export const PublicBookingForm = ({
 									<ConsentLabel>
 										<Trans
 											i18nKey='consent.dataProcessing'
-											values={{ therapistName }}
+											values={{
+												therapistName:
+													therapistName || t('consent.myProfessional'),
+											}}
 											components={{
 												privacyLink: (
 													<Link to={externalUrls(i18n.language).PRIVACY} />

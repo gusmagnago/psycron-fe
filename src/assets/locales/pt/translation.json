@@ -2268,7 +2268,7 @@
         "deletionRequested": "Sua solicitação de exclusão foi enviada.",
         "noActiveConsents": "Nenhum consentimento ativo.",
         "notGranted": "Não concedido",
-        "yourTherapist": "seu terapeuta",
+        "myProfessional": "meu profissional",
         "deletionModal": {
             "title": "Solicitação de exclusão de dados",
             "body": "Sua solicitação será enviada ao seu terapeuta. Registros de consultas de saúde são mantidos por no mínimo 5 anos conforme a resolução CFP 001/2009. Seus dados serão anonimizados, não excluídos imediatamente.",

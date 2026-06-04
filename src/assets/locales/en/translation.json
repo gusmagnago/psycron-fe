@@ -2268,7 +2268,7 @@
         "deletionRequested": "Your deletion request was sent.",
         "noActiveConsents": "No active consents.",
         "notGranted": "Not granted",
-        "yourTherapist": "your therapist",
+        "myProfessional": "my professional",
         "deletionModal": {
             "title": "Data deletion request",
             "body": "Your request will be sent to your therapist. Health appointment records are retained for a minimum of 5 years under Brazilian CFP resolution 001/2009. Your data will be anonymised, not immediately deleted.",
