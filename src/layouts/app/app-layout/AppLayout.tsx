@@ -3,21 +3,21 @@ import { useTranslation } from 'react-i18next';
 import { Outlet } from 'react-router-dom';
 import { Box, Divider } from '@mui/material';
 import { AppAnalytics } from '@psycron/analytics/posthog/AppAnalytics';
+import { getNotifications } from '@psycron/api/notifications';
 import { getAvailabilityCalendar } from '@psycron/api/user';
 import { getConflictCount } from '@psycron/api/user/conflicts';
 import { EnvironmentBanner } from '@psycron/components/environment-banner/EnvironmentBanner';
 import { AvailabilityGate } from '@psycron/components/guards/AvailabilityGate';
 import {
-	Alert,
+	Bell,
 	Calendar,
 	DashboardIcon,
 	Help,
-	Language,
 	Logout,
 	PatientList,
-	Payment,
-	Send,
-	UserSettings,
+	Settings,
+	TriangleAlert,
+	Wallet,
 } from '@psycron/components/icons';
 import { Localization } from '@psycron/components/localization/Localization';
 import { Navbar } from '@psycron/components/navbar/Navbar';
@@ -36,12 +36,14 @@ import {
 	ACTIONCENTER,
 	AVAILABILITYPATH,
 	DASHBOARD,
+	getHelpUrl,
 	LOGOUT,
 	NOTIFICATIONS,
 	PATIENTS,
 	PAYMENTS,
 } from '@psycron/pages/urls';
 import { useQuery } from '@tanstack/react-query';
+import { format, subDays } from 'date-fns';
 
 import {
 	Content,
@@ -51,7 +53,7 @@ import {
 } from './AppLayout.styles';
 
 export const AppLayout: FC = () => {
-	const { t } = useTranslation();
+	const { t, i18n } = useTranslation();
 	const { isMobile, isTablet } = useViewport();
 	const { isTestingEnv } = useRuntimeEnv();
 
@@ -95,17 +97,34 @@ export const AppLayout: FC = () => {
 		[cancellationRecoveryData?.dates]
 	);
 
+	// Badge the Notifications item with failed deliveries from the last day —
+	// the actionable subset a practitioner needs to retry.
+	const notificationsFrom = useMemo(
+		() => format(subDays(new Date(), 1), 'yyyy-MM-dd'),
+		[]
+	);
+	const { data: failedNotificationsData } = useQuery({
+		queryKey: ['failedNotificationsCount', userDetails?._id, notificationsFrom],
+		queryFn: () =>
+			getNotifications({
+				from: notificationsFrom,
+				limit: 100,
+				status: 'FAILED',
+			}),
+		enabled: Boolean(userDetails?._id),
+		gcTime: 1000 * 60 * 30,
+		staleTime: 1000 * 60 * 5,
+	});
+	const failedNotificationsCount =
+		failedNotificationsData?.total ??
+		failedNotificationsData?.notifications.length ??
+		0;
+
 	const menuItems = [
 		{
 			name: t('components.navbar.dashboard'),
 			icon: <DashboardIcon />,
 			path: DASHBOARD,
-		},
-		{
-			name: t('components.navbar.user-settings'),
-			icon: <UserSettings />,
-			path: `${userDetails?._id}`,
-			onClick: () => toggleUserDetails(),
 		},
 		{
 			name: t('globals.appointments-manager'),
@@ -114,14 +133,15 @@ export const AppLayout: FC = () => {
 		},
 		{
 			name: t('components.navbar.action-center'),
-			icon: <Alert />,
+			icon: <TriangleAlert />,
 			path: ACTIONCENTER,
 			badgeCount: (conflictCountData?.count ?? 0) + cancellationRecoveryCount,
 		},
 		{
 			name: t('components.navbar.notifications'),
-			icon: <Send />,
+			icon: <Bell />,
 			path: NOTIFICATIONS,
+			badgeCount: failedNotificationsCount,
 		},
 		{
 			name: t('globals.patients'),
@@ -130,23 +150,33 @@ export const AppLayout: FC = () => {
 		},
 		{
 			name: t('globals.billing-manager'),
-			icon: <Payment />,
+			icon: <Wallet />,
 			path: PAYMENTS,
 			disabled: true,
+			comingSoon: true,
 		},
 	];
 
 	const footerItems = [
 		{
+			name: t('components.navbar.user-settings'),
+			icon: <Settings />,
+			path: `${userDetails?._id}`,
+			onClick: () => toggleUserDetails(),
+		},
+		{
 			name: t('globals.change-language'),
-			icon: <Language />,
-			component: <Localization />,
+			component: <Localization iconVariant />,
 		},
 		{
 			name: t('globals.help'),
 			icon: <Help />,
-			path: '/help-center',
-			disabled: true,
+			onClick: () =>
+				window.open(
+					getHelpUrl(i18n.language),
+					'_blank',
+					'noopener,noreferrer'
+				),
 		},
 		{ name: t('globals.logout'), icon: <Logout />, path: LOGOUT },
 	];

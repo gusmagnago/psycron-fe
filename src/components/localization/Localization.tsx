@@ -1,16 +1,23 @@
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import {
+	Menu as MuiMenu,
+	MenuItem as MuiMenuItem,
+	Tooltip as MuiTooltip,
+} from '@mui/material';
+import { Globe } from '@psycron/components/icons';
 import { Select } from '@psycron/components/select/Select';
 import Cookies from 'js-cookie';
 
-import { StyledSelectWrapper } from './Localization.styles';
+import { LanguageTrigger, StyledSelectWrapper } from './Localization.styles';
 import type { ILocalization } from './Localization.types';
 
 export const LANGKEY = 'i18nextLng';
 
-export const Localization = ({ hasMargin }: ILocalization) => {
-	const { i18n } = useTranslation();
+export const Localization = ({ hasMargin, iconVariant }: ILocalization) => {
+	const { i18n, t } = useTranslation();
+	const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
 	const { locale } = useParams<{ locale: string }>();
 	const navigate = useNavigate();
 	const location = useLocation();
@@ -63,11 +70,54 @@ export const Localization = ({ hasMargin }: ILocalization) => {
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [i18n, locale]);
 
+	const currentLang = defaultLang.split('-')[0];
+
+	if (iconVariant) {
+		return (
+			<>
+				<MuiTooltip
+					arrow
+					placement='right'
+					title={t('globals.change-language')}
+				>
+					<LanguageTrigger
+						aria-label={t('globals.change-language')}
+						onClick={(e) => {
+							e.stopPropagation();
+							setAnchorEl(e.currentTarget);
+						}}
+					>
+						<Globe />
+					</LanguageTrigger>
+				</MuiTooltip>
+				<MuiMenu
+					anchorEl={anchorEl}
+					open={Boolean(anchorEl)}
+					onClose={() => setAnchorEl(null)}
+				>
+					{availableLanguages.map((lang) => (
+						<MuiMenuItem
+							key={lang.value}
+							selected={currentLang === lang.value}
+							onClick={(e) => {
+								e.stopPropagation();
+								changeLanguage(lang.value);
+								setAnchorEl(null);
+							}}
+						>
+							{lang.name}
+						</MuiMenuItem>
+					))}
+				</MuiMenu>
+			</>
+		);
+	}
+
 	return (
 		<StyledSelectWrapper hasMargin={hasMargin}>
 			<Select
 				name='language-select'
-				value={defaultLang.split('-')[0]}
+				value={currentLang}
 				onChangeSelect={(e) => changeLanguage(e.target.value as string)}
 				items={availableLanguages}
 			/>
