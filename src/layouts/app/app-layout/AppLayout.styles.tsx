@@ -42,11 +42,11 @@ export const LayoutWrapper = styled(Box)`
 	height: 100vh;
 	justify-content: flex-start;
 	padding: ${spacing.small};
+
 	overflow: hidden;
 
 	${isBiggerThanMediumMedia} {
 		flex-direction: row;
-		padding: ${spacing.medium} ${spacing.small};
 	}
 
 	${isMobileMedia} {

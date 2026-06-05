@@ -86,7 +86,9 @@ import { Security as IconSecurity } from './Security';
 import { SendInvoice as IconSendInvoice } from './SendInvoice';
 import { Settings as IconSettings } from './Settings';
 import { Subscription as IconSubscription } from './Subscription';
+import { TriangleAlert as IconTriangleAlert } from './TriangleAlert';
 import { Visible as IconVisible } from './Visible';
+import { Wallet as IconWallet } from './Wallet';
 import { Watch as IconWatch } from './Watch';
 import { WhatsApp as IconWhatsApp } from './Whatsapp';
 
@@ -176,3 +178,5 @@ export const Month = withIconColor(IconMonth);
 export const Plus = withIconColor(IconPlus);
 export const Jupiter = withIconColor(IconJupiter);
 export const Settings = withIconColor(IconSettings);
+export const TriangleAlert = withIconColor(IconTriangleAlert);
+export const Wallet = withIconColor(IconWallet);

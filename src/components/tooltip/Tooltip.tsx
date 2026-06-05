@@ -11,6 +11,7 @@ export const Tooltip = ({
 	title,
 	open,
 	disabled = false,
+	plainHover = false,
 	'aria-label': ariaLabel,
 }: PsycronTooltipProps) => {
 	const Title =
@@ -48,6 +49,7 @@ export const Tooltip = ({
 							: undefined)
 					}
 					disabled={disabled}
+					$plainHover={plainHover}
 					onClick={onClick}
 				>
 					{children}

@@ -9,13 +9,62 @@ export const MobileMenuIconWrapper = styled(Box)`
 	border-radius: 100%;
 `;
 
-export const MenuIconWrap = styled('span')`
+export const MenuIconWrap = styled('span', {
+	shouldForwardProp: (prop) => prop !== '$active' && prop !== '$disabled',
+})<{ $active?: boolean; $disabled?: boolean }>`
 	display: inline-flex;
 	align-items: center;
 	justify-content: center;
 	position: relative;
-	padding: ${spacing.xs};
-	border-radius: 100%;
+	width: 48px;
+	height: 48px;
+	border-radius: ${spacing.small};
+	color: ${palette.gray['07']};
+	transition:
+		background-color 0.18s ease,
+		color 0.18s ease;
+
+	&:hover {
+		background-color: ${palette.gray['00']};
+		color: ${palette.text.primary};
+	}
+
+	${({ $active }) =>
+		$active
+			? css`
+					background-color: ${palette.brand.light};
+					color: ${palette.brand.purple};
+
+					&:hover {
+						background-color: ${palette.brand.light};
+						color: ${palette.brand.purple};
+					}
+
+					&::before {
+						content: '';
+						position: absolute;
+						left: -10px;
+						top: 10px;
+						bottom: 10px;
+						width: 3px;
+						border-radius: 3px;
+						background-color: ${palette.brand.purple};
+					}
+				`
+			: css``}
+
+	${({ $disabled }) =>
+		$disabled
+			? css`
+					color: ${palette.gray['03']};
+					cursor: not-allowed;
+
+					&:hover {
+						background-color: transparent;
+						color: ${palette.gray['03']};
+					}
+				`
+			: css``}
 `;
 
 export const MenuBadge = styled('span')`
@@ -55,8 +104,8 @@ export const StyledMenuItem = styled(Tooltip, {
 `;
 
 export const MobileMenuItem = styled(Box, {
-	shouldForwardProp: (props) => props !== 'disabled',
-})<{ disabled?: boolean }>`
+	shouldForwardProp: (props) => props !== 'disabled' && props !== '$active',
+})<{ $active?: boolean; disabled?: boolean }>`
 	display: flex;
 	flex-direction: row;
 	align-items: center;
@@ -71,6 +120,13 @@ export const MobileMenuItem = styled(Box, {
 		color: ${palette.brand.purple};
 		font-weight: 500;
 	}
+
+	${({ $active }) =>
+		$active
+			? css`
+					background-color: ${palette.brand.light};
+				`
+			: css``}
 
 	${({ disabled }) =>
 		disabled

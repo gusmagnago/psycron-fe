@@ -3,6 +3,8 @@ export const DOMAIN = 'https://psycron.app';
 export const HOMEPAGE = '';
 export const LOCALISATION = ':locale';
 export const BASE_API_URL = 'https://api.psycron.app/api/v1/';
+// Public help/support page served from the marketing site (locale-prefixed).
+export const getHelpUrl = (locale: string) => `${DOMAIN}/${locale}/help`;
 
 // ID
 export const USERID = ':userId';

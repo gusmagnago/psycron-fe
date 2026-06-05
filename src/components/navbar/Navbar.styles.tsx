@@ -15,7 +15,7 @@ export const NavbarWrapper = styled(Box)`
 	display: flex;
 	flex-direction: column;
 	align-items: center;
-	padding: ${spacing.small};
+	padding-right: ${spacing.xs};
 	height: 100%;
 	justify-content: space-between;
 `;
@@ -30,14 +30,16 @@ export const MobileNavbarWrapper = styled(Box)`
 
 export const MobileNavbarMenu = styled(Box)`
 	svg {
-		height: auto;
 		width: 30px;
+		height: auto;
 	}
 `;
 
 export const ColoredLogo = styled(Box)`
+	padding: ${spacing.xs} 0;
 	svg {
-		width: 45px;
+		width: 32px;
+		height: auto;
 	}
 `;
 
@@ -45,7 +47,7 @@ export const NavbarFooterIcons = styled(Box)`
 	display: flex;
 	flex-direction: column;
 	align-items: center;
-	gap: ${spacing.small};
+	gap: 0;
 `;
 
 const dropdownAnimation = keyframes`
@@ -126,7 +128,7 @@ export const DesktopkMenuWrapper = styled(Box)`
 	display: flex;
 	flex-direction: column;
 	justify-content: flex-start;
-	gap: ${spacing.small};
+	gap: ${spacing.xs};
 `;
 
 export const MobileMenuWrapper = styled(Box)`
