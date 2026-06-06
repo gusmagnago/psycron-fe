@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Skeleton } from '@mui/material';
-import { useBentoTileChrome } from '@psycron/components/dashboard/bento-tile/BentoTile.context';
+import { WidgetLayout } from '@psycron/components/dashboard/widget-layout/WidgetLayout';
 import { Jupiter } from '@psycron/components/icons';
 
 import { InsightActions, InsightSlide } from './insight-slide/InsightSlide';
@@ -87,33 +87,17 @@ export const JupiterInsightsWidget = ({
 		[current, idx]
 	);
 
-	useBentoTileChrome({
-		actions,
-		expandedContent,
-		footer,
-		icon: hasInsights ? <Jupiter aria-hidden='true' /> : undefined,
-		title,
-	});
-
-	if (isLoading) {
-		return (
-			<LoadingWrapper>
-				<Skeleton height={20} width='50%' />
-				<RoundedSkeleton height={80} variant='rectangular' />
-				<RoundedSkeleton height={36} width='70%' variant='rectangular' />
-			</LoadingWrapper>
-		);
-	}
-
-	if (insights.length === 0) {
-		return (
-			<EmptyState>
-				{t('page.dashboard.widgets.jupiter-insights.empty')}
-			</EmptyState>
-		);
-	}
-
-	return (
+	const body = isLoading ? (
+		<LoadingWrapper>
+			<Skeleton height={20} width='50%' />
+			<RoundedSkeleton height={80} variant='rectangular' />
+			<RoundedSkeleton height={36} width='70%' variant='rectangular' />
+		</LoadingWrapper>
+	) : insights.length === 0 ? (
+		<EmptyState>
+			{t('page.dashboard.widgets.jupiter-insights.empty')}
+		</EmptyState>
+	) : (
 		<CarouselRoot>
 			<CarouselViewport
 				aria-label={t('page.dashboard.widgets.jupiter-insights.aria-label')}
@@ -125,5 +109,16 @@ export const JupiterInsightsWidget = ({
 				<InsightSlide current={current} direction={direction} idx={idx} />
 			</CarouselViewport>
 		</CarouselRoot>
+	);
+
+	return (
+		<WidgetLayout
+			actions={actions}
+			body={body}
+			expandedContent={expandedContent}
+			footer={footer}
+			icon={hasInsights ? <Jupiter aria-hidden='true' /> : undefined}
+			title={title}
+		/>
 	);
 };
