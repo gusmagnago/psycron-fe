@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Box, Skeleton } from '@mui/material';
-import { useBentoTileChrome } from '@psycron/components/dashboard/bento-tile/BentoTile.context';
+import { WidgetLayout } from '@psycron/components/dashboard/widget-layout/WidgetLayout';
 import { Calendar, CalendarRange } from '@psycron/components/icons';
 import { palette } from '@psycron/theme/palette/palette.theme';
 
@@ -85,12 +85,6 @@ export const WeeklyChartWidget = ({
 		[t]
 	);
 
-	useBentoTileChrome({
-		footer,
-		headerActions,
-		title: t('page.dashboard.widgets.weekly-chart.title'),
-	});
-
 	const maxTotal = useMemo(
 		() =>
 			Math.max(
@@ -100,22 +94,18 @@ export const WeeklyChartWidget = ({
 		[displayData]
 	);
 
-	if (isLoading) {
-		return (
-			<Box display='flex' gap={1} alignItems='flex-end' flex={1} minHeight={80}>
-				{[...Array(7)].map((_, i) => (
-					<Skeleton
-						height={`${30 + i * 8}%`}
-						key={`chart-skeleton-${i}`}
-						variant='rectangular'
-						sx={{ flex: 1, borderRadius: 1 }}
-					/>
-				))}
-			</Box>
-		);
-	}
-
-	return (
+	const body = isLoading ? (
+		<Box display='flex' gap={1} alignItems='flex-end' flex={1} minHeight={80}>
+			{[...Array(7)].map((_, i) => (
+				<Skeleton
+					height={`${30 + i * 8}%`}
+					key={`chart-skeleton-${i}`}
+					variant='rectangular'
+					sx={{ flex: 1, borderRadius: 1 }}
+				/>
+			))}
+		</Box>
+	) : (
 		<ChartRoot>
 			<ChartCanvas role='img' aria-label={t('page.dashboard.widgets.weekly-chart.aria-label')}>
 				{displayData.map((day) => {
@@ -154,5 +144,14 @@ export const WeeklyChartWidget = ({
 				})}
 			</ChartCanvas>
 		</ChartRoot>
+	);
+
+	return (
+		<WidgetLayout
+			body={body}
+			footer={footer}
+			headerActions={headerActions}
+			title={t('page.dashboard.widgets.weekly-chart.title')}
+		/>
 	);
 };
