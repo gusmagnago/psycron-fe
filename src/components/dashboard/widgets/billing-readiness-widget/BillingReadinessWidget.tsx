@@ -1,8 +1,8 @@
 import { useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Skeleton } from '@mui/material';
-import { useBentoTileChrome } from '@psycron/components/dashboard/bento-tile/BentoTile.context';
 import { StatusChip } from '@psycron/components/dashboard/status-chip/StatusChip';
+import { WidgetLayout } from '@psycron/components/dashboard/widget-layout/WidgetLayout';
 import { Payment } from '@psycron/components/icons';
 import { DonutProgressGlass } from '@psycron/components/progress/donut/DonutProgressGlass';
 import { useCountUp } from '@psycron/hooks/useCountUp';
@@ -62,11 +62,6 @@ export const BillingReadinessWidget = ({
 		[status, t]
 	);
 
-	useBentoTileChrome({
-		headerActions,
-		title: t('page.dashboard.widgets.billing-readiness.label'),
-	});
-
 	const handleKeyDown = useCallback(
 		(event: React.KeyboardEvent) => {
 			if (event.key === 'Enter' || event.key === ' ') {
@@ -77,44 +72,36 @@ export const BillingReadinessWidget = ({
 		[onClick]
 	);
 
-	if (isLoading) {
-		return (
-			<BillingRoot>
-				<Skeleton height={44} width='55%' />
-				<Skeleton height={16} width='60%' />
-				<Skeleton height={4} width='100%' />
-			</BillingRoot>
-		);
-	}
-
-	if (status === 'empty') {
-		return (
-			<BillingRoot
-				isInteractive
-				onClick={onClick}
-				onKeyDown={handleKeyDown}
-				role='button'
-				tabIndex={0}
-			>
-				<BillingTeaser>
-					<BillingTeaserIconWrap>
-						<Payment />
-					</BillingTeaserIconWrap>
-					<BillingTeaserTitle>
-						{t('page.dashboard.widgets.billing-readiness.teaser.title')}
-					</BillingTeaserTitle>
-					<BillingTeaserSubText>
-						{t('page.dashboard.widgets.billing-readiness.teaser.subtitle')}
-					</BillingTeaserSubText>
-					<BillingTeaserSubText>
-						{t('page.dashboard.widgets.billing-readiness.teaser.coming-soon')}
-					</BillingTeaserSubText>
-				</BillingTeaser>
-			</BillingRoot>
-		);
-	}
-
-	return (
+	const body = isLoading ? (
+		<BillingRoot>
+			<Skeleton height={44} width='55%' />
+			<Skeleton height={16} width='60%' />
+			<Skeleton height={4} width='100%' />
+		</BillingRoot>
+	) : status === 'empty' ? (
+		<BillingRoot
+			isInteractive
+			onClick={onClick}
+			onKeyDown={handleKeyDown}
+			role='button'
+			tabIndex={0}
+		>
+			<BillingTeaser>
+				<BillingTeaserIconWrap>
+					<Payment />
+				</BillingTeaserIconWrap>
+				<BillingTeaserTitle>
+					{t('page.dashboard.widgets.billing-readiness.teaser.title')}
+				</BillingTeaserTitle>
+				<BillingTeaserSubText>
+					{t('page.dashboard.widgets.billing-readiness.teaser.subtitle')}
+				</BillingTeaserSubText>
+				<BillingTeaserSubText>
+					{t('page.dashboard.widgets.billing-readiness.teaser.coming-soon')}
+				</BillingTeaserSubText>
+			</BillingTeaser>
+		</BillingRoot>
+	) : (
 		<BillingRoot
 			isInteractive
 			onClick={onClick}
@@ -147,5 +134,13 @@ export const BillingReadinessWidget = ({
 				</BillingCopy>
 			</BillingContent>
 		</BillingRoot>
+	);
+
+	return (
+		<WidgetLayout
+			body={body}
+			headerActions={headerActions}
+			title={t('page.dashboard.widgets.billing-readiness.label')}
+		/>
 	);
 };
