@@ -1,8 +1,8 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-import { useBentoTileChrome } from '@psycron/components/dashboard/bento-tile/BentoTile.context';
 import { RangeToggle } from '@psycron/components/dashboard/range-toggle/RangeToggle';
+import { WidgetLayout } from '@psycron/components/dashboard/widget-layout/WidgetLayout';
 import { Calendar, CalendarRange } from '@psycron/components/icons';
 import { Tooltip } from '@psycron/components/tooltip/Tooltip';
 import { parseISO } from 'date-fns';
@@ -138,25 +138,17 @@ export const ScheduleWidget = ({
 		[navigate, t, viewMode, weekHref]
 	);
 
-	useBentoTileChrome({ headerActions, title });
-
-	if (isLoading) {
-		return (
-			<SkeletonList>
-				{Array.from({ length: 5 }, (_, i) => (
-					<SlotSkeleton height={48} key={i} variant='rectangular' />
-				))}
-			</SkeletonList>
-		);
-	}
-
-	return (
+	const body = isLoading ? (
+		<SkeletonList>
+			{Array.from({ length: 5 }, (_, i) => (
+				<SlotSkeleton height={48} key={i} variant='rectangular' />
+			))}
+		</SkeletonList>
+	) : (
 		<ScheduleRoot>
 			<CountBadge>
 				<CountHighlight>{displaySlots.length}</CountHighlight>
-				{viewMode === 'today' && (
-					<>{' / '}{sessionCount}</>
-				)}
+				{viewMode === 'today' && <>{' / '}{sessionCount}</>}
 				{' '}{sessionLabel}
 			</CountBadge>
 
@@ -177,5 +169,13 @@ export const ScheduleWidget = ({
 				</ScheduleScrollBox>
 			)}
 		</ScheduleRoot>
+	);
+
+	return (
+		<WidgetLayout
+			body={body}
+			headerActions={headerActions}
+			title={title}
+		/>
 	);
 };
