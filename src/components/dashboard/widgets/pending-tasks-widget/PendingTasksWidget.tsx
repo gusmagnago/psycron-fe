@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next';
-import { useBentoTileChrome } from '@psycron/components/dashboard/bento-tile/BentoTile.context';
 import { StatusChip } from '@psycron/components/dashboard/status-chip/StatusChip';
+import { WidgetLayout } from '@psycron/components/dashboard/widget-layout/WidgetLayout';
 import { CheckSuccess } from '@psycron/components/icons';
 
 import {
@@ -35,64 +35,59 @@ export const PendingTasksWidget = ({
 	const isWide = (colSpan ?? 0) >= 6;
 	const { t } = useTranslation();
 
-	useBentoTileChrome({
-		title: t('page.dashboard.widgets.pending-tasks.title'),
-	});
-
-	if (isLoading) {
-		return (
-			<TasksList isWide={isWide}>
-				{[...Array(3)].map((_, i) => (
-					<TaskSkeleton
-						height={52}
-						key={`task-skeleton-${i}`}
-						variant='rectangular'
-					/>
-				))}
-			</TasksList>
-		);
-	}
+	const body = isLoading ? (
+		<TasksList isWide={isWide}>
+			{[...Array(3)].map((_, i) => (
+				<TaskSkeleton
+					height={52}
+					key={`task-skeleton-${i}`}
+					variant='rectangular'
+				/>
+			))}
+		</TasksList>
+	) : tasks.length === 0 ? (
+		<EmptyTasksState>
+			<EmptyTasksIcon>
+				<CheckSuccess />
+			</EmptyTasksIcon>
+			<EmptyTasksHeading>
+				{t('page.dashboard.widgets.pending-tasks.empty-heading')}
+			</EmptyTasksHeading>
+			<EmptyTasksSubText>
+				{t('page.dashboard.widgets.pending-tasks.empty')}
+			</EmptyTasksSubText>
+		</EmptyTasksState>
+	) : (
+		<TasksList isWide={isWide}>
+			{tasks.map((task, i) => (
+				<TaskRow
+					animate='visible'
+					aria-label={`${task.label}: ${task.count}`}
+					custom={i}
+					initial='hidden'
+					key={task.type}
+					onClick={task.onClick}
+					type='button'
+					variants={rowVariants}
+				>
+					<TaskText>
+						<TaskLabel>{task.label}</TaskLabel>
+						{task.description ? (
+							<TaskDescription>{task.description}</TaskDescription>
+						) : null}
+					</TaskText>
+					<StatusChip tone={getPendingTaskTone(task.type)}>
+						{task.count}
+					</StatusChip>
+				</TaskRow>
+			))}
+		</TasksList>
+	);
 
 	return (
-		<>
-			{tasks.length === 0 ? (
-				<EmptyTasksState>
-					<EmptyTasksIcon>
-						<CheckSuccess />
-					</EmptyTasksIcon>
-					<EmptyTasksHeading>
-						{t('page.dashboard.widgets.pending-tasks.empty-heading')}
-					</EmptyTasksHeading>
-					<EmptyTasksSubText>
-						{t('page.dashboard.widgets.pending-tasks.empty')}
-					</EmptyTasksSubText>
-				</EmptyTasksState>
-			) : (
-				<TasksList isWide={isWide}>
-					{tasks.map((task, i) => (
-						<TaskRow
-							animate='visible'
-							aria-label={`${task.label}: ${task.count}`}
-							custom={i}
-							initial='hidden'
-							key={task.type}
-							onClick={task.onClick}
-							type='button'
-							variants={rowVariants}
-						>
-							<TaskText>
-								<TaskLabel>{task.label}</TaskLabel>
-								{task.description ? (
-									<TaskDescription>{task.description}</TaskDescription>
-								) : null}
-							</TaskText>
-							<StatusChip tone={getPendingTaskTone(task.type)}>
-								{task.count}
-							</StatusChip>
-						</TaskRow>
-					))}
-				</TasksList>
-			)}
-		</>
+		<WidgetLayout
+			body={body}
+			title={t('page.dashboard.widgets.pending-tasks.title')}
+		/>
 	);
 };
