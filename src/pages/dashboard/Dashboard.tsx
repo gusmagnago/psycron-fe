@@ -305,8 +305,14 @@ export const Dashboard = () => {
 		switch (tileId) {
 			case 'greeting':
 				return (
-					<BentoTile {...commonProps} key={tileId}>
-						<GreetingWidget band={band} name={userDetails?.firstName ?? ''} />
+					<BentoTile {...commonProps} key={tileId} variant='greeting'>
+						<GreetingWidget
+							band={band}
+							insights={jupiterInsights}
+							isLoading={isLoading || isJupiterInsightsLoading}
+							name={userDetails?.firstName ?? ''}
+							sessionCount={todaySlots?.length}
+						/>
 					</BentoTile>
 				);
 

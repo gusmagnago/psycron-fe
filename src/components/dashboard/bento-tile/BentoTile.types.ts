@@ -5,7 +5,7 @@ import type {
 	DashboardTileOrientation,
 } from '@psycron/pages/dashboard/Dashboard.types';
 
-export type BentoTileVariant = 'default' | 'jupiter';
+export type BentoTileVariant = 'default' | 'greeting' | 'jupiter';
 
 export interface BentoTileProps {
 	ariaLabel: string;

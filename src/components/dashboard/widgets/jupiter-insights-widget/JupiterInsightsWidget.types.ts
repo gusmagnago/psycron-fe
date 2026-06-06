@@ -34,6 +34,7 @@ export interface JupiterInsight {
 }
 
 export interface JupiterInsightsWidgetProps {
+	compact?: boolean;
 	insights: JupiterInsight[];
 	isLoading?: boolean;
 }

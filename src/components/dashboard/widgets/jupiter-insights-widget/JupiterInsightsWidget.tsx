@@ -16,7 +16,6 @@ import {
 	ExpandedInsightText,
 	JupiterBadgeRow,
 	JupiterCategory,
-	JupiterDot,
 	JupiterSubtitle,
 	LoadingWrapper,
 	RoundedSkeleton,
@@ -24,6 +23,7 @@ import {
 import type { JupiterInsightsWidgetProps } from './JupiterInsightsWidget.types';
 
 export const JupiterInsightsWidget = ({
+	compact,
 	insights,
 	isLoading,
 }: JupiterInsightsWidgetProps) => {
@@ -63,17 +63,18 @@ export const JupiterInsightsWidget = ({
 			current ? (
 				<JupiterBadgeRow>
 					<JupiterCategory>
-						<JupiterDot />
 						Júpiter ·{' '}
 						{current.category ??
 							t('page.dashboard.widgets.jupiter-insights.default-category')}
 					</JupiterCategory>
-					<JupiterSubtitle>
-						{t('page.dashboard.widgets.jupiter-insights.subtitle')}
-					</JupiterSubtitle>
+					{!compact && (
+						<JupiterSubtitle>
+							{t('page.dashboard.widgets.jupiter-insights.subtitle')}
+						</JupiterSubtitle>
+					)}
 				</JupiterBadgeRow>
 			) : undefined,
-		[current, t]
+		[compact, current, t]
 	);
 
 	const expandedContent = useMemo(
