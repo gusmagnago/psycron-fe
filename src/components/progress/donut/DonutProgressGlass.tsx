@@ -1,4 +1,4 @@
-import { useCallback, useRef } from 'react';
+import { type CSSProperties, useCallback, useRef } from 'react';
 import { useCountUp } from '@psycron/hooks/useCountUp';
 
 import {
@@ -7,6 +7,7 @@ import {
 	DonutMeta,
 	DonutPercent,
 	DonutProgress,
+	DonutRoot,
 } from './DonutProgressGlass.styles';
 import type { DonutFrameStyle, DonutProgressGlassProps } from './DonutProgressGlass.types';
 import { PROGRESS_STOPS, sampleStops, toThickness } from './donutSpectrum';
@@ -24,10 +25,15 @@ export const DonutProgressGlass = ({
 	const animated = useCountUp({ end: value });
 	const frameRef = useRef<HTMLDivElement>(null);
 
-	const frameStyle: DonutFrameStyle = {
+	// Font tokens and the progress colour are hoisted to the wrapper so the meta
+	// label, now rendered below the ring, inherits them too.
+	const rootStyle: DonutFrameStyle = {
 		'--donut-label-font': `${Math.round(size * 0.2)}px`,
 		'--donut-meta-font': `${Math.round(size * 0.115)}px`,
 		'--donut-progress-color': sampleStops(PROGRESS_STOPS, animated / 100),
+	};
+
+	const frameStyle: CSSProperties = {
 		height: size,
 		width: size,
 	};
@@ -54,26 +60,28 @@ export const DonutProgressGlass = ({
 	}, []);
 
 	return (
-		<DonutGlassFrame
-			aria-label={`${Math.round(animated)}%`}
-			onMouseLeave={handleLeave}
-			onMouseMove={handleMove}
-			ref={frameRef}
-			role='img'
-			style={frameStyle}
-		>
-			<DonutProgress
-				enableTrackSlot
-				size={size}
-				thickness={toThickness(stroke, size)}
-				value={animated}
-				variant='determinate'
-			/>
+		<DonutRoot style={rootStyle}>
+			<DonutGlassFrame
+				aria-label={`${Math.round(animated)}%`}
+				onMouseLeave={handleLeave}
+				onMouseMove={handleMove}
+				ref={frameRef}
+				role='img'
+				style={frameStyle}
+			>
+				<DonutProgress
+					enableTrackSlot
+					size={size}
+					thickness={toThickness(stroke, size)}
+					value={animated}
+					variant='determinate'
+				/>
 
-			<DonutCenter>
-				<DonutPercent>{label ?? `${Math.round(animated)}%`}</DonutPercent>
-				{meta ? <DonutMeta>{meta}</DonutMeta> : null}
-			</DonutCenter>
-		</DonutGlassFrame>
+				<DonutCenter>
+					<DonutPercent>{label ?? `${Math.round(animated)}%`}</DonutPercent>
+				</DonutCenter>
+			</DonutGlassFrame>
+			{meta ? <DonutMeta>{meta}</DonutMeta> : null}
+		</DonutRoot>
 	);
 };
