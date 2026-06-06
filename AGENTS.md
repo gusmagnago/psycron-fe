@@ -9,7 +9,7 @@ Psycron is the admin operating system for independent care professionals. It is 
 Local Obsidian vault:
 
 ```text
-/Users/gusmagnago/Documents/Obsidian Vault
+/Users/gusmagnago/Documents/Obsidian Vault/Psycron
 ```
 
 Always check the Obsidian vault before starting Psycron work so product, engineering, compliance, and release context stay aligned across agents and sessions.
