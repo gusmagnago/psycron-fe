@@ -1,8 +1,8 @@
 import { useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Skeleton } from '@mui/material';
-import { useBentoTileChrome } from '@psycron/components/dashboard/bento-tile/BentoTile.context';
 import { RangeToggle } from '@psycron/components/dashboard/range-toggle/RangeToggle';
+import { WidgetLayout } from '@psycron/components/dashboard/widget-layout/WidgetLayout';
 import { Calendar, CalendarRange } from '@psycron/components/icons';
 
 import { SessionAnalyticsChart } from './SessionAnalyticsChart';
@@ -99,13 +99,7 @@ export const SessionAnalyticsWidget = ({
 		[t]
 	);
 
-	useBentoTileChrome({
-		footer,
-		headerActions,
-		title: t(k('title')),
-	});
-
-	return (
+	const body = (
 		<AnalyticsRoot>
 			<GlassPanel layout={effectiveLayout}>
 				{isLoading ? (
@@ -138,5 +132,14 @@ export const SessionAnalyticsWidget = ({
 				)}
 			</GlassPanel>
 		</AnalyticsRoot>
+	);
+
+	return (
+		<WidgetLayout
+			body={body}
+			footer={footer}
+			headerActions={headerActions}
+			title={t(k('title'))}
+		/>
 	);
 };
