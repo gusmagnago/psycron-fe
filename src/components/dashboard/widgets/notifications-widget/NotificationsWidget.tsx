@@ -1,5 +1,6 @@
 import { useTranslation } from 'react-i18next';
-import { useBentoTileChrome } from '@psycron/components/dashboard/bento-tile/BentoTile.context';
+import { Button } from '@psycron/components/button/Button';
+import { WidgetLayout } from '@psycron/components/dashboard/widget-layout/WidgetLayout';
 import {
 	Calendar,
 	ChevronRight,
@@ -17,7 +18,6 @@ import {
 	NotificationStatLabel,
 	NotificationStatsGrid,
 	NotificationStatValue,
-	ViewFeedButton,
 } from './NotificationsWidget.styles';
 import type { NotificationsWidgetProps } from './NotificationsWidget.types';
 
@@ -31,13 +31,28 @@ export const NotificationsWidget = ({
 	const isWide = (colSpan ?? 0) >= 6;
 	const { t } = useTranslation();
 
-	useBentoTileChrome({
-		actions: '',
-		title: t('page.dashboard.widgets.notifications.title'),
-	});
+	const stats = summary
+		? [
+				{
+					label: t('page.dashboard.widgets.notifications.sent'),
+					onClick: () => onStatusClick('SENT'),
+					value: summary.sent,
+				},
+				{
+					label: t('page.dashboard.widgets.notifications.failed'),
+					onClick: () => onStatusClick('FAILED'),
+					value: summary.failed,
+				},
+				{
+					label: t('page.dashboard.widgets.notifications.queued'),
+					onClick: () => onStatusClick('PENDING'),
+					value: summary.queued,
+				},
+			]
+		: [];
 
-	if (isLoading || !summary) {
-		return (
+	const body =
+		isLoading || !summary ? (
 			<NotificationsRoot isWide={isWide}>
 				<NotificationStatsGrid>
 					{Array.from({ length: 3 }, (_, index) => (
@@ -50,42 +65,25 @@ export const NotificationsWidget = ({
 				</NotificationStatsGrid>
 				<NotificationSkeleton height={24} variant='rectangular' width='70%' />
 			</NotificationsRoot>
+		) : (
+			<NotificationsRoot>
+				<NotificationStatsGrid>
+					{stats.map((stat) => (
+						<NotificationStatButton
+							key={stat.label}
+							onClick={stat.onClick}
+							type='button'
+						>
+							<NotificationStatLabel>{stat.label}</NotificationStatLabel>
+							<NotificationStatValue>{stat.value}</NotificationStatValue>
+						</NotificationStatButton>
+					))}
+				</NotificationStatsGrid>
+			</NotificationsRoot>
 		);
-	}
 
-	const stats = [
-		{
-			label: t('page.dashboard.widgets.notifications.sent'),
-			onClick: () => onStatusClick('SENT'),
-			value: summary.sent,
-		},
-		{
-			label: t('page.dashboard.widgets.notifications.failed'),
-			onClick: () => onStatusClick('FAILED'),
-			value: summary.failed,
-		},
-		{
-			label: t('page.dashboard.widgets.notifications.queued'),
-			onClick: () => onStatusClick('PENDING'),
-			value: summary.queued,
-		},
-	];
-
-	return (
-		<NotificationsRoot>
-			<NotificationStatsGrid>
-				{stats.map((stat) => (
-					<NotificationStatButton
-						key={stat.label}
-						onClick={stat.onClick}
-						type='button'
-					>
-						<NotificationStatLabel>{stat.label}</NotificationStatLabel>
-						<NotificationStatValue>{stat.value}</NotificationStatValue>
-					</NotificationStatButton>
-				))}
-			</NotificationStatsGrid>
-
+	const footer =
+		!isLoading && summary ? (
 			<NotificationFooter>
 				<ChannelCounters>
 					<ChannelCounter>
@@ -101,11 +99,18 @@ export const NotificationsWidget = ({
 						{summary.channels.ICALENDAR}
 					</ChannelCounter>
 				</ChannelCounters>
-				<ViewFeedButton onClick={onViewFeed} type='button'>
+				<Button small tertiary onClick={onViewFeed}>
 					{t('page.dashboard.widgets.notifications.view-feed')}
 					<ChevronRight />
-				</ViewFeedButton>
+				</Button>
 			</NotificationFooter>
-		</NotificationsRoot>
+		) : undefined;
+
+	return (
+		<WidgetLayout
+			body={body}
+			footer={footer}
+			title={t('page.dashboard.widgets.notifications.title')}
+		/>
 	);
 };

@@ -92,29 +92,6 @@ export const ChannelCounter = styled(Text)`
 	}
 `;
 
-export const ViewFeedButton = styled('button')`
-	align-items: center;
-	background: transparent;
-	border: 0;
-	color: ${palette.text.secondary};
-	cursor: pointer;
-	display: inline-flex;
-	font: inherit;
-	font-size: 0.8125rem;
-	font-weight: 800;
-	gap: ${spacing.space};
-	padding: ${spacing.space};
-
-	&:hover {
-		color: ${palette.text.primary};
-	}
-
-	&:focus-visible {
-		border-radius: ${spacing.xs};
-		outline: 2px solid ${dashboardAccents.info.main};
-		outline-offset: 2px;
-	}
-`;
 
 export const NotificationSkeleton = styled(Skeleton)`
 	border-radius: ${spacing.xs};
