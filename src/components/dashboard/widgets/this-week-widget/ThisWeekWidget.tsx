@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Box, Skeleton } from '@mui/material';
-import { useBentoTileChrome } from '@psycron/components/dashboard/bento-tile/BentoTile.context';
+import { WidgetLayout } from '@psycron/components/dashboard/widget-layout/WidgetLayout';
 import { Calendar, CalendarRange, ChevronUp } from '@psycron/components/icons';
 
 import { DeltaChip } from '../metric-card-widget/MetricCardWidget.styles';
@@ -62,11 +62,6 @@ export const ThisWeekWidget = ({
 		[t, viewMode]
 	);
 
-	useBentoTileChrome({
-		headerActions,
-		title: t('page.dashboard.widgets.this-week.title'),
-	});
-
 	const total = useMemo(
 		() =>
 			displayData.completed +
@@ -76,25 +71,19 @@ export const ThisWeekWidget = ({
 		[displayData]
 	);
 
-	if (isLoading) {
-		return (
-			<Box display='flex' gap={2} alignItems='center'>
-				<Skeleton height={100} width={100} variant='circular' />
-				<Box display='flex' flexDirection='column' gap={1} flex={1}>
-					<Skeleton height={16} />
-					<Skeleton height={16} />
-					<Skeleton height={16} />
-				</Box>
+	const body = isLoading ? (
+		<Box display='flex' gap={2} alignItems='center'>
+			<Skeleton height={100} width={100} variant='circular' />
+			<Box display='flex' flexDirection='column' gap={1} flex={1}>
+				<Skeleton height={16} />
+				<Skeleton height={16} />
+				<Skeleton height={16} />
 			</Box>
-		);
-	}
-
-	const isDeltaPositive = (displayData.delta ?? 0) >= 0;
-
-	return (
+		</Box>
+	) : (
 		<ThisWeekRoot>
 			{displayData.delta !== undefined && (
-				<DeltaChip isPositive={isDeltaPositive}>
+				<DeltaChip isPositive={(displayData.delta ?? 0) >= 0}>
 					<ChevronUp />+{displayData.delta}
 				</DeltaChip>
 			)}
@@ -148,5 +137,13 @@ export const ThisWeekWidget = ({
 				</LegendList>
 			</DonutRow>
 		</ThisWeekRoot>
+	);
+
+	return (
+		<WidgetLayout
+			body={body}
+			headerActions={headerActions}
+			title={t('page.dashboard.widgets.this-week.title')}
+		/>
 	);
 };
