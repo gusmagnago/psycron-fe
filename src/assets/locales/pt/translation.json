@@ -958,7 +958,7 @@
                 "notifications": "Notificações",
                 "quick-actions": "Ações rápidas",
                 "active-patients": "Pacientes ativos",
-                "billing-readiness": "Cobrança configurada",
+                "billing-readiness": "Preparação da prática",
                 "revenue": "Receita estimada",
                 "session-analytics": "Análise de sessões",
                 "pending-tasks": "Tarefas pendentes",
@@ -1126,6 +1126,34 @@
                         "title": "Prontidão de cobrança",
                         "description": "Adicione o valor de cada sessão do paciente agora para que a Psycron possa criar fluxos de pagamento e faturamento alinhados à forma como sua prática já funciona.",
                         "future": "Em seguida, a Psycron avançará para pagamentos criando um sistema automatizado adaptado à forma como você cobra cada paciente."
+                    }
+                },
+                "practice-readiness": {
+                    "label": "Preparação da prática",
+                    "overall": "pronto",
+                    "status-chip": {
+                        "empty": "Ação necessária",
+                        "partial": "Em andamento",
+                        "ready": "Pronto"
+                    },
+                    "contacts": {
+                        "title": "Adicionar contatos dos pacientes",
+                        "sub": "{{configured}} de {{total}} têm dados de contato",
+                        "empty": "Adicione pacientes para começar a enviar lembretes"
+                    },
+                    "availability": {
+                        "title": "Defina sua disponibilidade",
+                        "todo": "Sem horários semanais ainda · agendamento desativado",
+                        "done": "Horários semanais definidos · agendamento ativo"
+                    },
+                    "billing": {
+                        "title": "Dados de cobrança",
+                        "sub": "{{configured}} de {{total}} prontos para faturar"
+                    },
+                    "cta": {
+                        "availability": "Definir disponibilidade",
+                        "billing": "Adicionar dados de cobrança",
+                        "contacts": "Adicionar contatos"
                     }
                 },
                 "revenue": {

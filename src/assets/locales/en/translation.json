@@ -958,7 +958,7 @@
                 "notifications": "Notifications",
                 "quick-actions": "Quick actions",
                 "active-patients": "Active patients",
-                "billing-readiness": "Billing readiness",
+                "billing-readiness": "Practice readiness",
                 "revenue": "Revenue estimate",
                 "session-analytics": "Session Analytics",
                 "pending-tasks": "Pending tasks",
@@ -1126,6 +1126,34 @@
                         "title": "Billing readiness",
                         "description": "Add each patient's session cost now so Psycron can design payment and invoicing flows that match how your practice already works.",
                         "future": "Next, Psycron will move into payments by creating an automated payment system tailored to how you charge each patient."
+                    }
+                },
+                "practice-readiness": {
+                    "label": "Practice readiness",
+                    "overall": "ready",
+                    "status-chip": {
+                        "empty": "Action needed",
+                        "partial": "In progress",
+                        "ready": "Ready"
+                    },
+                    "contacts": {
+                        "title": "Add patient contacts",
+                        "sub": "{{configured}} of {{total}} have contact details",
+                        "empty": "Add patients to start sending reminders"
+                    },
+                    "availability": {
+                        "title": "Set your availability",
+                        "todo": "No weekly hours yet · booking stays off",
+                        "done": "Weekly hours set · booking on"
+                    },
+                    "billing": {
+                        "title": "Billing details",
+                        "sub": "{{configured}} of {{total}} ready to invoice"
+                    },
+                    "cta": {
+                        "availability": "Set availability",
+                        "billing": "Add billing details",
+                        "contacts": "Add patient contacts"
                     }
                 },
                 "revenue": {

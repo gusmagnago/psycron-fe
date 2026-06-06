@@ -22,12 +22,12 @@ import type { DashboardActionTarget } from '@psycron/api/dashboard/index.types';
 import { BentoTile } from '@psycron/components/dashboard/bento-tile/BentoTile';
 import { CustomizeControl } from '@psycron/components/dashboard/customize-control/CustomizeControl';
 import { ActionCenterWidget } from '@psycron/components/dashboard/widgets/action-center-widget/ActionCenterWidget';
-import { BillingReadinessWidget } from '@psycron/components/dashboard/widgets/billing-readiness-widget/BillingReadinessWidget';
 import { GreetingWidget } from '@psycron/components/dashboard/widgets/greeting-widget/GreetingWidget';
 import { JupiterInsightsWidget } from '@psycron/components/dashboard/widgets/jupiter-insights-widget/JupiterInsightsWidget';
 import { NotificationsWidget } from '@psycron/components/dashboard/widgets/notifications-widget/NotificationsWidget';
 import { PendingTasksWidget } from '@psycron/components/dashboard/widgets/pending-tasks-widget/PendingTasksWidget';
 import type { PendingTask } from '@psycron/components/dashboard/widgets/pending-tasks-widget/PendingTasksWidget.types';
+import { PracticeReadinessWidget } from '@psycron/components/dashboard/widgets/practice-readiness-widget/PracticeReadinessWidget';
 import { QuickActionsWidget } from '@psycron/components/dashboard/widgets/quick-actions-widget/QuickActionsWidget';
 import { getActionTone } from '@psycron/components/dashboard/widgets/quick-actions-widget/QuickActionsWidget.utils';
 import { RecentPatientsWidget } from '@psycron/components/dashboard/widgets/recent-patients-widget/RecentPatientsWidget';
@@ -354,29 +354,43 @@ export const Dashboard = () => {
 					</BentoTile>
 				);
 
-			case 'billing-readiness':
+			case 'billing-readiness': {
+				const missingContactCount =
+					summary?.pendingTasks?.find(
+						(task) => task.type === 'missing-contact'
+					)?.count ?? 0;
+				const contactsConfigured = Math.max(
+					0,
+					patientCount - missingContactCount
+				);
 				return (
 					<BentoTile {...commonProps} key={tileId}>
-						<BillingReadinessWidget
+						<PracticeReadinessWidget
+							billingConfigured={billingReadiness?.configuredCount ?? 0}
+							billingPercentage={billingReadiness?.percentage ?? 0}
+							billingTotal={billingReadiness?.totalCount ?? 0}
 							colSpan={col}
-							configuredCount={billingReadiness?.configuredCount ?? 0}
+							contactsConfigured={contactsConfigured}
+							contactsTotal={patientCount}
+							hasAvailability={hasAvailability}
 							isLoading={isSummaryLoading}
-							missingCount={billingReadiness?.missingCount ?? 0}
-							onClick={() => {
+							onSegmentAction={(segment) => {
 								capture(PostHogEvent.DashboardBillingReadinessClicked, {
 									percentage: billingReadiness?.percentage ?? 0,
 									source: 'dashboard-summary',
 									tier: summary?.tier ?? 'unknown',
 									tile_id: 'billing-readiness',
 								});
-								navigate(`../${PATIENTS}`);
+								if (segment === 'availability') {
+									navigateToDashboardTarget({ type: 'availability-settings' });
+								} else {
+									navigate(`../${PATIENTS}`);
+								}
 							}}
-							percentage={billingReadiness?.percentage ?? 0}
-							status={billingReadiness?.status ?? 'empty'}
-							totalCount={billingReadiness?.totalCount ?? 0}
 						/>
 					</BentoTile>
 				);
+			}
 
 			case 'revenue':
 				return (
