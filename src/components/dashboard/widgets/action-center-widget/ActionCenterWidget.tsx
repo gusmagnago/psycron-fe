@@ -1,23 +1,22 @@
 import { useTranslation } from 'react-i18next';
 import { WidgetLayout } from '@psycron/components/dashboard/widget-layout/WidgetLayout';
+import { TriangleAlert } from '@psycron/components/icons';
 
 import {
-	ActionCenterBreakdown,
-	ActionCenterBreakdownItem,
 	ActionCenterEmpty,
+	ActionCenterEmptyBody,
+	ActionCenterEmptyIcon,
+	ActionCenterEmptyTitle,
+	ActionCenterHeaderChip,
 	ActionCenterItemButton,
 	ActionCenterItemCard,
 	ActionCenterItemList,
 	ActionCenterItemMeta,
 	ActionCenterItemText,
 	ActionCenterItemTitle,
+	ActionCenterItemTone,
 	ActionCenterRoot,
 	ActionCenterSkeleton,
-	ActionCenterSummaryBody,
-	ActionCenterSummaryCount,
-	ActionCenterSummaryPanel,
-	ActionCenterSummaryText,
-	ActionCenterSummaryTitle,
 } from './ActionCenterWidget.styles';
 import type { ActionCenterWidgetProps } from './ActionCenterWidget.types';
 
@@ -33,43 +32,30 @@ export const ActionCenterWidget = ({
 	const body =
 		isLoading || !summary ? (
 			<ActionCenterRoot>
+				<ActionCenterSkeleton height={84} variant='rectangular' />
 				<ActionCenterSkeleton height={72} variant='rectangular' />
-				<ActionCenterSkeleton height={36} variant='rectangular' />
+				<ActionCenterSkeleton height={72} variant='rectangular' />
 			</ActionCenterRoot>
 		) : total === 0 ? (
 			<ActionCenterRoot>
 				<ActionCenterEmpty>
-					{t('page.dashboard.widgets.action-center.empty')}
+					<ActionCenterEmptyIcon>
+						<TriangleAlert />
+					</ActionCenterEmptyIcon>
+					<ActionCenterEmptyTitle>
+						{t('page.dashboard.widgets.action-center.empty-heading')}
+					</ActionCenterEmptyTitle>
+					<ActionCenterEmptyBody>
+						{t('page.dashboard.widgets.action-center.empty')}
+					</ActionCenterEmptyBody>
 				</ActionCenterEmpty>
 			</ActionCenterRoot>
 		) : (
 			<ActionCenterRoot>
-				<ActionCenterSummaryPanel>
-					<ActionCenterSummaryCount>{total}</ActionCenterSummaryCount>
-					<ActionCenterSummaryText>
-						<ActionCenterSummaryTitle>
-							{t('page.dashboard.widgets.action-center.summary-title', {
-								count: total,
-							})}
-						</ActionCenterSummaryTitle>
-						<ActionCenterSummaryBody>
-							{t('page.dashboard.widgets.action-center.summary-body')}
-						</ActionCenterSummaryBody>
-					</ActionCenterSummaryText>
-				</ActionCenterSummaryPanel>
-				<ActionCenterBreakdown
-					aria-label={t('page.dashboard.widgets.action-center.breakdown-label')}
-				>
-					{items.map((item) => (
-						<ActionCenterBreakdownItem key={item.type} tone={item.tone}>
-							<span>{t(item.labelKey)}</span>
-							<strong>{item.count}</strong>
-						</ActionCenterBreakdownItem>
-					))}
-				</ActionCenterBreakdown>
 				<ActionCenterItemList>
 					{items.slice(0, 3).map((item) => (
 						<ActionCenterItemCard key={item.type} tone={item.tone}>
+							<ActionCenterItemTone tone={item.tone} />
 							<ActionCenterItemText>
 								<ActionCenterItemTitle>{t(item.labelKey)}</ActionCenterItemTitle>
 								<ActionCenterItemMeta>
@@ -99,6 +85,17 @@ export const ActionCenterWidget = ({
 
 	return (
 		<WidgetLayout
+			headerActions={
+				!isLoading && summary ? (
+					<ActionCenterHeaderChip>
+						{total > 0
+							? t('page.dashboard.widgets.action-center.header-count', {
+									count: total,
+								})
+							: t('page.dashboard.widgets.action-center.header-empty')}
+					</ActionCenterHeaderChip>
+				) : undefined
+			}
 			body={body}
 			title={t('page.dashboard.widgets.action-center.title')}
 		/>
