@@ -22,6 +22,7 @@ import {
 	JupiterPanelFooter,
 	JupiterPanelHeader,
 	JupiterPanelIdentity,
+	WeatherMeta,
 } from './GreetingWidget.styles';
 import type { GreetingWidgetProps } from './GreetingWidget.types';
 
@@ -62,32 +63,85 @@ export const GreetingWidget = ({
 	const [jupChrome, setJupChrome] = useState<BentoTileChromeState>({});
 	const jupCtx = useMemo(() => ({ setChrome: setJupChrome }), []);
 
-	const hasJupHeader = Boolean(jupChrome.icon || jupChrome.title || jupChrome.headerActions);
+	const hasJupHeader = Boolean(
+		jupChrome.icon || jupChrome.title || jupChrome.headerActions
+	);
 	const hasJupFooter = Boolean(jupChrome.footer || jupChrome.actions);
 
 	return (
-		<GreetingWidgetRoot>
-			<GreetingHead>
-				<LummiHero band={band} size={72} weather={weather} />
-				<GreetingCopy animate='visible' initial='hidden' variants={textVariants}>
-					<GreetingEyebrow>
+		<GreetingWidgetRoot
+			aria-labelledby='dashboard-greeting-name'
+			role='region'
+			data-testid='dashboard-greeting-card'
+			id='dashboard-greeting-card'
+		>
+			<GreetingHead
+				data-testid='dashboard-greeting-head'
+				id='dashboard-greeting-head'
+			>
+				<LummiHero
+					band={band}
+					size={72}
+					status={weather.status}
+					weatherIconBaseUri={weather.iconBaseUri}
+					weather={weather.type}
+				/>
+				<GreetingCopy
+					animate='visible'
+					data-testid='dashboard-greeting-copy'
+					id='dashboard-greeting-copy'
+					initial='hidden'
+					variants={textVariants}
+				>
+					<GreetingEyebrow
+						data-testid='dashboard-greeting-band'
+						id='dashboard-greeting-band'
+					>
 						{t(`page.dashboard.greeting.band.${band}`)},
 					</GreetingEyebrow>
-					<GreetingHeadline>{name}</GreetingHeadline>
-					<GreetingSubtext>
+					<GreetingHeadline
+						data-testid='dashboard-greeting-name'
+						id='dashboard-greeting-name'
+					>
+						{name}
+					</GreetingHeadline>
+					<GreetingSubtext
+						data-testid='dashboard-greeting-subtext'
+						id='dashboard-greeting-subtext'
+					>
 						{dateLabel} · {subtext}
 					</GreetingSubtext>
+					<WeatherMeta
+						aria-live='polite'
+						data-testid='dashboard-greeting-weather-meta'
+						id='dashboard-greeting-weather-meta'
+					>
+						{t(`page.dashboard.greeting.weather.${weather.type}`)}
+						{' · '}
+						{t(`page.dashboard.greeting.weather-source.${weather.provider}`)}
+					</WeatherMeta>
 				</GreetingCopy>
 			</GreetingHead>
 
-			<JupiterPanel>
+			<JupiterPanel
+				data-testid='dashboard-greeting-jupiter-panel'
+				id='dashboard-greeting-jupiter-panel'
+			>
 				<BentoTileChromeContext.Provider value={jupCtx}>
 					{hasJupHeader && (
-						<JupiterPanelHeader>
-							<JupiterPanelIdentity>
+						<JupiterPanelHeader
+							data-testid='dashboard-greeting-jupiter-header'
+							id='dashboard-greeting-jupiter-header'
+						>
+							<JupiterPanelIdentity
+								data-testid='dashboard-greeting-jupiter-identity'
+								id='dashboard-greeting-jupiter-identity'
+							>
 								{jupChrome.icon && (
 									<JupiterIconBox
 										animate={iconFloatAnimate}
+										data-testid='dashboard-greeting-jupiter-icon'
+										id='dashboard-greeting-jupiter-icon'
 										transition={iconFloatTransition}
 									>
 										{jupChrome.icon}
@@ -98,7 +152,11 @@ export const GreetingWidget = ({
 							{jupChrome.headerActions}
 						</JupiterPanelHeader>
 					)}
-					<JupiterInsightsWidget compact insights={insights} isLoading={isLoading} />
+					<JupiterInsightsWidget
+						compact
+						insights={insights}
+						isLoading={isLoading}
+					/>
 					{hasJupFooter && (
 						<JupiterPanelFooter>
 							{jupChrome.footer}

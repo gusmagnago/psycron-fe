@@ -1,5 +1,4 @@
 import type { CSSProperties, ReactNode } from 'react';
-import type { WidgetInfoId } from '@psycron/components/dashboard/widget-info-modal/WidgetInfoModal.types';
 import type {
 	DashboardTileId,
 	DashboardTileOrientation,
@@ -27,5 +26,4 @@ export interface BentoTileProps {
 	style?: CSSProperties;
 	tier?: string;
 	variant?: BentoTileVariant;
-	widgetInfoId?: WidgetInfoId;
 }

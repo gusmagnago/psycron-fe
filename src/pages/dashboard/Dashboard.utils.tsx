@@ -2,7 +2,6 @@ import type {
 	DashboardActionTarget,
 	DashboardQuickActionId,
 } from '@psycron/api/dashboard/index.types';
-import type { WidgetInfoId } from '@psycron/components/dashboard/widget-info-modal/WidgetInfoModal.types';
 import {
 	AddPatient,
 	AlarmClockMinus,
@@ -29,8 +28,7 @@ import type { DashboardTileId, TileSpan } from './Dashboard.types';
 export const TILE_DESKTOP: Record<DashboardTileId, TileSpan> = {
 	'action-center': { col: 3, row: 2 },
 	'billing-readiness': { col: 3, row: 2 },
-	greeting: { col: 6, row: 2 },
-	'jupiter-insights': { col: 12, minCol: 6, minRow: 2, row: 2 },
+	greeting: { col: 7, minRow: 4, row: 4 },
 	notifications: { col: 3, row: 2 },
 	'pending-tasks': { col: 3, row: 2 },
 	'quick-actions': { col: 3, row: 2 },
@@ -43,8 +41,7 @@ export const TILE_DESKTOP: Record<DashboardTileId, TileSpan> = {
 export const TILE_TABLET: Record<DashboardTileId, TileSpan> = {
 	'action-center': { col: 3, row: 2 },
 	'billing-readiness': { col: 3, row: 2 },
-	greeting: { col: 6, row: 1 },
-	'jupiter-insights': { col: 6, minCol: 6, minRow: 2, row: 2 },
+	greeting: { col: 6, minRow: 4, row: 4 },
 	notifications: { col: 6, row: 2 },
 	'pending-tasks': { col: 3, row: 2 },
 	'quick-actions': { col: 3, row: 2 },
@@ -58,12 +55,17 @@ export const MIN_TILE_ROW_SPAN = 1;
 export const MAX_TILE_ROW_SPAN = 6;
 export const COL_RESIZE_STEP = 3;
 export const MAX_TILE_COL_SPAN = 12;
+export const MAX_TILE_COL_SPAN_BY_ID: Partial<Record<DashboardTileId, number>> = {
+	greeting: 7,
+};
+export const MAX_TILE_ROW_SPAN_BY_ID: Partial<Record<DashboardTileId, number>> = {
+	greeting: 4,
+};
 
 export const TILE_MIN_HEIGHT: Record<DashboardTileId, number> = {
 	'action-center': 220,
 	'billing-readiness': 180,
-	greeting: 120,
-	'jupiter-insights': 240,
+	greeting: 480,
 	notifications: 220,
 	'pending-tasks': 220,
 	'quick-actions': 260,
@@ -72,6 +74,8 @@ export const TILE_MIN_HEIGHT: Record<DashboardTileId, number> = {
 	schedule: 400,
 	'session-analytics': 220,
 };
+
+export const getFixedTileSpan = (id: DashboardTileId): TileSpan => TILE_DESKTOP[id];
 
 export const getTargetNav = (
 	target: DashboardActionTarget
@@ -123,7 +127,3 @@ export const getQuickActionIcon = (
 			return <CalendarRange />;
 	}
 };
-
-export const getWidgetInfoId = (
-	tileId: DashboardTileId
-): WidgetInfoId | undefined => (tileId === 'greeting' ? undefined : tileId);

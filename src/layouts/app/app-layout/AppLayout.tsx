@@ -1,4 +1,4 @@
-import { type FC, useMemo } from 'react';
+import { type FC, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Outlet } from 'react-router-dom';
 import { Box, Divider } from '@mui/material';
@@ -20,6 +20,7 @@ import {
 	Wallet,
 } from '@psycron/components/icons';
 import { Localization } from '@psycron/components/localization/Localization';
+import { Modal } from '@psycron/components/modal/Modal';
 import { Navbar } from '@psycron/components/navbar/Navbar';
 import { UserDetailsCard } from '@psycron/components/user/components/user-details-card/UserDetailsCard';
 import { useRuntimeEnv } from '@psycron/context/runtime/RuntimeEnvContext';
@@ -46,6 +47,14 @@ import { useQuery } from '@tanstack/react-query';
 import { format, subDays } from 'date-fns';
 
 import {
+	HelpCenterBody,
+	HelpCenterIntro,
+	HelpCenterOption,
+	HelpCenterOptionBody,
+	HelpCenterOptionList,
+	HelpCenterOptionTitle,
+} from './AppHelpCenter.styles';
+import {
 	Content,
 	DividerWrapper,
 	LayoutWrapper,
@@ -56,6 +65,7 @@ export const AppLayout: FC = () => {
 	const { t, i18n } = useTranslation();
 	const { isMobile, isTablet } = useViewport();
 	const { isTestingEnv } = useRuntimeEnv();
+	const [isHelpCenterOpen, setIsHelpCenterOpen] = useState(false);
 
 	const { isAuthenticated } = useAuth();
 
@@ -120,6 +130,10 @@ export const AppLayout: FC = () => {
 		failedNotificationsData?.notifications.length ??
 		0;
 
+	const openExternalHelp = () => {
+		window.open(getHelpUrl(i18n.language), '_blank', 'noopener,noreferrer');
+	};
+
 	const menuItems = [
 		{
 			name: t('components.navbar.dashboard'),
@@ -171,12 +185,7 @@ export const AppLayout: FC = () => {
 		{
 			name: t('globals.help'),
 			icon: <Help />,
-			onClick: () =>
-				window.open(
-					getHelpUrl(i18n.language),
-					'_blank',
-					'noopener,noreferrer'
-				),
+			onClick: () => setIsHelpCenterOpen(true),
 		},
 		{ name: t('globals.logout'), icon: <Logout />, path: LOGOUT },
 	];
@@ -208,6 +217,50 @@ export const AppLayout: FC = () => {
 					<UserDetailsCard user={userDetails} />
 				)}
 			</Content>
+			<Modal
+				openModal={isHelpCenterOpen}
+				title={t('components.help-center.title')}
+				onClose={() => setIsHelpCenterOpen(false)}
+				cardActionsProps={{
+					actionName: t('components.help-center.open-help'),
+					hasSecondAction: true,
+					onClick: openExternalHelp,
+					secondAction: () => setIsHelpCenterOpen(false),
+					secondActionName: t('common.close'),
+				}}
+			>
+				<HelpCenterBody>
+					<HelpCenterIntro>
+						{t('components.help-center.description')}
+					</HelpCenterIntro>
+					<HelpCenterOptionList>
+						<HelpCenterOption>
+							<HelpCenterOptionTitle>
+								{t('components.help-center.options.support.title')}
+							</HelpCenterOptionTitle>
+							<HelpCenterOptionBody>
+								{t('components.help-center.options.support.body')}
+							</HelpCenterOptionBody>
+						</HelpCenterOption>
+						<HelpCenterOption>
+							<HelpCenterOptionTitle>
+								{t('components.help-center.options.feedback.title')}
+							</HelpCenterOptionTitle>
+							<HelpCenterOptionBody>
+								{t('components.help-center.options.feedback.body')}
+							</HelpCenterOptionBody>
+						</HelpCenterOption>
+						<HelpCenterOption>
+							<HelpCenterOptionTitle>
+								{t('components.help-center.options.future.title')}
+							</HelpCenterOptionTitle>
+							<HelpCenterOptionBody>
+								{t('components.help-center.options.future.body')}
+							</HelpCenterOptionBody>
+						</HelpCenterOption>
+					</HelpCenterOptionList>
+				</HelpCenterBody>
+			</Modal>
 		</LayoutWrapper>
 	);
 };

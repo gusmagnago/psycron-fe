@@ -20,10 +20,8 @@ import { capture } from '@psycron/analytics/posthog/events';
 import { PostHogEvent } from '@psycron/analytics/posthog/types';
 import type { DashboardActionTarget } from '@psycron/api/dashboard/index.types';
 import { BentoTile } from '@psycron/components/dashboard/bento-tile/BentoTile';
-import { CustomizeControl } from '@psycron/components/dashboard/customize-control/CustomizeControl';
 import { ActionCenterWidget } from '@psycron/components/dashboard/widgets/action-center-widget/ActionCenterWidget';
 import { GreetingWidget } from '@psycron/components/dashboard/widgets/greeting-widget/GreetingWidget';
-import { JupiterInsightsWidget } from '@psycron/components/dashboard/widgets/jupiter-insights-widget/JupiterInsightsWidget';
 import { NotificationsWidget } from '@psycron/components/dashboard/widgets/notifications-widget/NotificationsWidget';
 import { PendingTasksWidget } from '@psycron/components/dashboard/widgets/pending-tasks-widget/PendingTasksWidget';
 import type { PendingTask } from '@psycron/components/dashboard/widgets/pending-tasks-widget/PendingTasksWidget.types';
@@ -55,21 +53,38 @@ import {
 	BentoGrid,
 	BentoGridWrapper,
 	DashboardRoot,
-	DashboardTopBar,
+	DashboardSection,
+	DashboardSectionLabel,
+	DashboardSections,
 	DragOverlayCard,
 } from './Dashboard.styles';
 import type { DashboardTileId } from './Dashboard.types';
 import {
+	getFixedTileSpan,
 	getQuickActionIcon,
 	getTargetNav,
-	getWidgetInfoId,
 	MAX_TILE_COL_SPAN,
+	MAX_TILE_COL_SPAN_BY_ID,
 	MAX_TILE_ROW_SPAN,
+	MAX_TILE_ROW_SPAN_BY_ID,
 	MIN_TILE_ROW_SPAN,
-	TILE_DESKTOP,
 	TILE_MIN_HEIGHT,
 	TILE_TABLET,
 } from './Dashboard.utils';
+
+const HERO_TILE_IDS = ['greeting', 'quick-actions'] as const satisfies readonly DashboardTileId[];
+const NEEDS_TILE_IDS = [
+	'billing-readiness',
+	'action-center',
+	'pending-tasks',
+	'notifications',
+] as const satisfies readonly DashboardTileId[];
+const DAY_TILE_IDS = ['schedule'] as const satisfies readonly DashboardTileId[];
+const PRACTICE_TILE_IDS = [
+	'revenue',
+	'session-analytics',
+	'recent-patients',
+] as const satisfies readonly DashboardTileId[];
 
 export const Dashboard = () => {
 	const { t } = useTranslation();
@@ -89,14 +104,10 @@ export const Dashboard = () => {
 	const { isLoading: isSummaryLoading, summary } = useDashboardSummary();
 	const billingReadiness = summary?.billingReadiness;
 	const {
-		isCustomizing,
 		layout,
-		organizeLayout,
 		reorderLayout,
 		resizeTile,
 		resizeTileWidth,
-		resetLayout,
-		setCustomizing,
 		toggleTileOrientation,
 		toggleVisibility,
 	} = useDashboardLayout();
@@ -261,19 +272,23 @@ export const Dashboard = () => {
 
 	const getSpan = (id: DashboardTileId) => {
 		if (isMobile) return { col: 1, row: 1 };
-		const baseSpan = isBiggerThanTablet ? TILE_DESKTOP[id] : TILE_TABLET[id];
-		const tile = layout.find((t) => t.id === id);
+		const baseSpan = isBiggerThanTablet ? getFixedTileSpan(id) : TILE_TABLET[id];
+		const tile = layout.find((item) => item.id === id);
 		const minRow = baseSpan.minRow ?? MIN_TILE_ROW_SPAN;
 		const minCol = baseSpan.minCol ?? 1;
-		const row = Math.min(
-			Math.max(baseSpan.row + (tile?.heightDelta ?? 0), minRow),
-			MAX_TILE_ROW_SPAN
-		);
-		const col = Math.min(
-			Math.max(baseSpan.col + (tile?.colDelta ?? 0), minCol),
-			MAX_TILE_COL_SPAN
-		);
-		return { ...baseSpan, col, row };
+		const maxCol = MAX_TILE_COL_SPAN_BY_ID[id] ?? MAX_TILE_COL_SPAN;
+		const maxRow = MAX_TILE_ROW_SPAN_BY_ID[id] ?? MAX_TILE_ROW_SPAN;
+		return {
+			...baseSpan,
+			col: Math.min(
+				Math.max(baseSpan.col + (tile?.colDelta ?? 0), minCol),
+				maxCol
+			),
+			row: Math.min(
+				Math.max(baseSpan.row + (tile?.heightDelta ?? 0), minRow),
+				maxRow
+			),
+		};
 	};
 
 	const renderTile = (tileId: DashboardTileId, index: number) => {
@@ -281,7 +296,9 @@ export const Dashboard = () => {
 		const { col, row } = getSpan(tileId);
 		const orientation =
 			tileId === 'session-analytics'
-				? (tile?.orientation ?? (row >= 4 ? 'column' : 'row'))
+				? row >= 4
+					? 'column'
+					: 'row'
 				: tile?.orientation;
 
 		const commonProps = {
@@ -289,17 +306,15 @@ export const Dashboard = () => {
 			colSpan: col,
 			id: tileId,
 			index,
-			isEditMode: isCustomizing,
+			isEditMode: false,
 			isHidden: !(tile?.visible ?? true),
-			onToggleOrientation:
-				tileId === 'session-analytics' ? toggleTileOrientation : undefined,
 			onResize: resizeTile,
 			onResizeWidth: resizeTileWidth,
+			onToggleOrientation: toggleTileOrientation,
 			onToggleVisibility: toggleVisibility,
 			orientation,
 			rowSpan: row,
 			tier: summary?.tier,
-			widgetInfoId: getWidgetInfoId(tileId),
 		};
 
 		switch (tileId) {
@@ -335,16 +350,6 @@ export const Dashboard = () => {
 							weekHref={`${AVAILABILITYWEEK_BASE}/${weekStart}`}
 							weekSlotsByDay={weekSlotsByDay}
 							weekStart={weekStart}
-						/>
-					</BentoTile>
-				);
-
-			case 'jupiter-insights':
-				return (
-					<BentoTile {...commonProps} key={tileId} variant='jupiter'>
-						<JupiterInsightsWidget
-							insights={jupiterInsights}
-							isLoading={isLoading || isJupiterInsightsLoading}
 						/>
 					</BentoTile>
 				);
@@ -406,6 +411,22 @@ export const Dashboard = () => {
 							estimate={summary?.revenueEstimate}
 							isLoading={isSummaryLoading}
 							onClick={() => navigate(`../${PATIENTS}`)}
+							weekEstimate={{
+								amount:
+									summary?.revenueEstimate &&
+									summary.revenueEstimate.completedSessionCount > 0
+										? (summary.revenueEstimate.amount /
+												summary.revenueEstimate.completedSessionCount) *
+											(summary?.week.completedCount ??
+												metrics.weekCompletedCount)
+										: 0,
+								cancelledCount:
+									summary?.week.cancelledCount ?? metrics.weekCancelledCount,
+								completedCount:
+									summary?.week.completedCount ?? metrics.weekCompletedCount,
+								upcomingCount:
+									summary?.week.upcomingCount ?? metrics.weekUpcomingCount,
+							}}
 						/>
 					</BentoTile>
 				);
@@ -498,6 +519,14 @@ export const Dashboard = () => {
 					<BentoTile {...commonProps} key={tileId}>
 						<ActionCenterWidget
 							isLoading={isSummaryLoading}
+							onItemClick={(item) => {
+								capture(PostHogEvent.DashboardActionCenterItemClicked, {
+									count: item.count,
+									item_type: item.type,
+									tier: summary?.tier ?? 'unknown',
+								});
+								navigateToDashboardTarget(item.target);
+							}}
 							summary={summary?.actionCenter}
 						/>
 					</BentoTile>
@@ -520,20 +549,29 @@ export const Dashboard = () => {
 		}
 	};
 
+	const renderSectionTiles = (
+		tileIds: readonly DashboardTileId[],
+		indexOffset = 0
+	) =>
+		tileIds.map((tileId, index) => renderTile(tileId, indexOffset + index));
+
+	const getOrderedSectionTileIds = (tileIds: readonly DashboardTileId[]) => {
+		const sectionTileIds = new Set<DashboardTileId>(tileIds);
+		return sortedLayout
+			.filter((tile) => sectionTileIds.has(tile.id))
+			.map((tile) => tile.id);
+	};
+
+	const heroTileIds = getOrderedSectionTileIds(HERO_TILE_IDS);
+	const needsTileIds = getOrderedSectionTileIds(NEEDS_TILE_IDS);
+	const dayTileIds = getOrderedSectionTileIds(DAY_TILE_IDS);
+	const practiceTileIds = getOrderedSectionTileIds(PRACTICE_TILE_IDS);
+
 	const activeSpan = activeId ? getSpan(activeId) : null;
 
 	return (
 		<>
 			<DashboardRoot>
-				<DashboardTopBar>
-					<CustomizeControl
-						isCustomizing={isCustomizing}
-						onOrganize={organizeLayout}
-						onReset={resetLayout}
-						onToggle={setCustomizing}
-					/>
-				</DashboardTopBar>
-
 				<DndContext
 					collisionDetection={closestCenter}
 					onDragEnd={handleDragEnd}
@@ -542,9 +580,44 @@ export const Dashboard = () => {
 				>
 					<SortableContext items={sortedIds} strategy={rectSortingStrategy}>
 						<BentoGridWrapper>
-							<BentoGrid>
-								{sortedLayout.map((tile, index) => renderTile(tile.id, index))}
-							</BentoGrid>
+							<DashboardSections>
+								<DashboardSection>
+									<BentoGrid>{renderSectionTiles(heroTileIds)}</BentoGrid>
+								</DashboardSection>
+
+								<DashboardSection aria-labelledby='dashboard-zone-needs'>
+									<DashboardSectionLabel id='dashboard-zone-needs'>
+										{t('page.dashboard.zones.needs')}
+									</DashboardSectionLabel>
+									<BentoGrid>
+										{renderSectionTiles(needsTileIds, heroTileIds.length)}
+									</BentoGrid>
+								</DashboardSection>
+
+								<DashboardSection aria-labelledby='dashboard-zone-day'>
+									<DashboardSectionLabel id='dashboard-zone-day'>
+										{t('page.dashboard.zones.day')}
+									</DashboardSectionLabel>
+									<BentoGrid>
+										{renderSectionTiles(
+											dayTileIds,
+											heroTileIds.length + needsTileIds.length
+										)}
+									</BentoGrid>
+								</DashboardSection>
+
+								<DashboardSection aria-labelledby='dashboard-zone-practice'>
+									<DashboardSectionLabel id='dashboard-zone-practice'>
+										{t('page.dashboard.zones.practice')}
+									</DashboardSectionLabel>
+									<BentoGrid>
+										{renderSectionTiles(
+											practiceTileIds,
+											heroTileIds.length + needsTileIds.length + dayTileIds.length
+										)}
+									</BentoGrid>
+								</DashboardSection>
+							</DashboardSections>
 						</BentoGridWrapper>
 					</SortableContext>
 

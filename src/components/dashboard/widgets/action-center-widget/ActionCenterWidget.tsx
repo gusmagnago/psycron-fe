@@ -5,6 +5,12 @@ import {
 	ActionCenterBreakdown,
 	ActionCenterBreakdownItem,
 	ActionCenterEmpty,
+	ActionCenterItemButton,
+	ActionCenterItemCard,
+	ActionCenterItemList,
+	ActionCenterItemMeta,
+	ActionCenterItemText,
+	ActionCenterItemTitle,
 	ActionCenterRoot,
 	ActionCenterSkeleton,
 	ActionCenterSummaryBody,
@@ -17,6 +23,7 @@ import type { ActionCenterWidgetProps } from './ActionCenterWidget.types';
 
 export const ActionCenterWidget = ({
 	isLoading,
+	onItemClick,
 	summary,
 }: ActionCenterWidgetProps) => {
 	const { t } = useTranslation();
@@ -60,6 +67,33 @@ export const ActionCenterWidget = ({
 						</ActionCenterBreakdownItem>
 					))}
 				</ActionCenterBreakdown>
+				<ActionCenterItemList>
+					{items.slice(0, 3).map((item) => (
+						<ActionCenterItemCard key={item.type} tone={item.tone}>
+							<ActionCenterItemText>
+								<ActionCenterItemTitle>{t(item.labelKey)}</ActionCenterItemTitle>
+								<ActionCenterItemMeta>
+									{t('page.dashboard.widgets.action-center.item-count', {
+										count: item.count,
+									})}
+								</ActionCenterItemMeta>
+							</ActionCenterItemText>
+							<ActionCenterItemButton
+								aria-label={t(
+									'page.dashboard.widgets.action-center.action-aria',
+									{
+										item: t(item.labelKey),
+									}
+								)}
+								onClick={() => onItemClick?.(item)}
+								tone={item.tone}
+								type='button'
+							>
+								{t(`page.dashboard.widgets.action-center.actions.${item.type}`)}
+							</ActionCenterItemButton>
+						</ActionCenterItemCard>
+					))}
+				</ActionCenterItemList>
 			</ActionCenterRoot>
 		);
 

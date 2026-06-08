@@ -1,47 +1,158 @@
 import { useEffect, useState } from 'react';
+import { capture } from '@psycron/analytics/posthog/events';
+import { PostHogEvent } from '@psycron/analytics/posthog/types';
+import { getCurrentWeather } from '@psycron/api/utils';
+import type { WeatherProvider } from '@psycron/api/utils/index.types';
 import type { WeatherType } from '@psycron/components/dashboard/lummi-hero/LummiHero.types';
+import { useAuth } from '@psycron/context/user/auth/UserAuthenticationContext';
+import type { IClinicAddress } from '@psycron/context/user/auth/UserAuthenticationContext.types';
 
-// WMO weather codes → our three display states
-// 0–1: clear sky / mainly clear
-// 2–3, 45, 48: partly/overcast, fog
-// 51+: drizzle, rain, showers, thunderstorm, snow
-const toWeatherType = (code: number): WeatherType => {
-	if (code <= 1) return 'clear';
-	if (code <= 3 || code === 45 || code === 48) return 'cloudy';
-	return 'rain';
-};
+export type WeatherStatus = 'fallback' | 'loading' | 'ready';
 
-interface OpenMeteoResponse {
-	current_weather: {
-		weathercode: number;
-	};
+interface WeatherState {
+	description?: string;
+	iconBaseUri?: string;
+	provider: WeatherProvider;
+	status: WeatherStatus;
+	temperatureCelsius?: number;
+	type: WeatherType;
 }
 
-export const useWeather = (): WeatherType => {
-	const [weather, setWeather] = useState<WeatherType>('clear');
+const DEFAULT_WEATHER: WeatherState = {
+	provider: 'fallback',
+	status: 'fallback',
+	type: 'clear',
+};
+
+const hasClinicAddress = (address?: IClinicAddress): address is IClinicAddress => {
+	if (!address) return false;
+
+	return Boolean(
+		address.street.trim() ||
+			address.city.trim() ||
+			address.postcode.trim() ||
+			address.country.trim()
+	);
+};
+
+export const useWeather = (): WeatherState => {
+	const { user } = useAuth();
+	const [weather, setWeather] = useState<WeatherState>({
+		...DEFAULT_WEATHER,
+		status: 'loading',
+	});
 
 	useEffect(() => {
-		if (!navigator.geolocation) return;
+		let isActive = true;
+		const clinicAddress = user?.clinicAddress;
 
-		navigator.geolocation.getCurrentPosition(
-			async ({ coords }) => {
+		const applyWeather = (
+			nextWeather: WeatherState,
+			eventPayload: {
+				provider: WeatherProvider;
+				source: string;
+				status: WeatherStatus;
+				weather_type: WeatherType;
+			}
+		): void => {
+			if (!isActive) return;
+			setWeather(nextWeather);
+			capture(PostHogEvent.DashboardWeatherResolved, eventPayload);
+		};
+
+		const resolveFromGeolocation = (): void => {
+			if (!navigator.geolocation) {
+				applyWeather(DEFAULT_WEATHER, {
+					provider: 'fallback',
+					source: 'geolocation-unavailable',
+					status: 'fallback',
+					weather_type: 'clear',
+				});
+				return;
+			}
+
+			navigator.geolocation.getCurrentPosition(
+				async ({ coords }) => {
+					try {
+						const data = await getCurrentWeather({
+							lat: coords.latitude,
+							lng: coords.longitude,
+						});
+
+						const nextWeather = {
+							description: data.description,
+							iconBaseUri: data.iconBaseUri,
+							provider: data.provider,
+							status: data.provider === 'fallback' ? 'fallback' : 'ready',
+							temperatureCelsius: data.temperatureCelsius,
+							type: data.type,
+						} satisfies WeatherState;
+
+						applyWeather(nextWeather, {
+							provider: data.provider,
+							source: 'browser-geolocation',
+							status: nextWeather.status,
+							weather_type: data.type,
+						});
+					} catch {
+						applyWeather(DEFAULT_WEATHER, {
+							provider: 'fallback',
+							source: 'request-failed',
+							status: 'fallback',
+							weather_type: 'clear',
+						});
+					}
+				},
+				() => {
+					applyWeather(DEFAULT_WEATHER, {
+						provider: 'fallback',
+						source: 'geolocation-denied',
+						status: 'fallback',
+						weather_type: 'clear',
+					});
+				},
+				{ maximumAge: 5 * 60 * 1000, timeout: 5000 }
+			);
+		};
+
+		const resolveWeather = async (): Promise<void> => {
+			if (hasClinicAddress(clinicAddress)) {
 				try {
-					const res = await fetch(
-						`https://api.open-meteo.com/v1/forecast?latitude=${coords.latitude}&longitude=${coords.longitude}&current_weather=true`
-					);
-					if (!res.ok) return;
-					const data: OpenMeteoResponse = await res.json();
-					setWeather(toWeatherType(data.current_weather.weathercode));
+					const data = await getCurrentWeather({
+						address: clinicAddress,
+					});
+
+					const nextWeather = {
+						description: data.description,
+						iconBaseUri: data.iconBaseUri,
+						provider: data.provider,
+						status: data.provider === 'fallback' ? 'fallback' : 'ready',
+						temperatureCelsius: data.temperatureCelsius,
+						type: data.type,
+					} satisfies WeatherState;
+
+					applyWeather(nextWeather, {
+						provider: data.provider,
+						source: 'clinic-address',
+						status: nextWeather.status,
+						weather_type: data.type,
+					});
+					return;
 				} catch {
-					// network failure — keep default 'clear'
+					resolveFromGeolocation();
+					return;
 				}
-			},
-			() => {
-				// geolocation denied — keep default 'clear'
-			},
-			{ maximumAge: 5 * 60 * 1000, timeout: 5000 }
-		);
-	}, []);
+			}
+
+			resolveFromGeolocation();
+		};
+
+		void resolveWeather();
+
+		return () => {
+			isActive = false;
+		};
+	}, [user?.clinicAddress]);
 
 	return weather;
 };

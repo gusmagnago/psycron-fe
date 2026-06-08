@@ -97,23 +97,7 @@ export const jupiterTile = css`
 `;
 
 export const greetingTile = css`
-	background: linear-gradient(135deg, #fff 0%, #f7f4ff 45%, #f1ecff 100%);
-	background-size: 180% 180%;
-	animation: greetDrift 16s ease-in-out infinite;
-
-	@keyframes greetDrift {
-		0%,
-		100% {
-			background-position: 0% 50%;
-		}
-		50% {
-			background-position: 100% 50%;
-		}
-	}
-
-	@media (prefers-reduced-motion: reduce) {
-		animation: none;
-	}
+	background: ${palette.white};
 `;
 
 export const BentoTileMotionBox = styled(motion.div, {

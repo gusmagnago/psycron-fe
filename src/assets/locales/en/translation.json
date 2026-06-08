@@ -496,6 +496,25 @@
     "next": "Next"
   },
   "components": {
+    "help-center": {
+      "description": "Use this single place for help, product feedback, and notes about upcoming dashboard capabilities.",
+      "open-help": "Open help center",
+      "options": {
+        "feedback": {
+          "body": "Send dashboard feedback through the help center so context stays in one support thread.",
+          "title": "Share product feedback"
+        },
+        "future": {
+          "body": "Billing collection, revenue tracking, and Júpiter automation will keep shipping as dedicated workflows.",
+          "title": "What's coming"
+        },
+        "support": {
+          "body": "Find setup guidance for availability, patients, reminders, and billing readiness.",
+          "title": "Get support"
+        }
+      },
+      "title": "Help center"
+    },
     "form": {
       "confirm-password": "Confirm password",
       "keep-loggedin": "Keep me logged in",
@@ -952,7 +971,19 @@
           "label": "Júpiter · {{category}}"
         },
         "subtext": "let's get your practice ready",
-        "subtext-sessions": "{{count}} sessions today"
+        "subtext-sessions": "{{count}} sessions today",
+        "weather": {
+          "clear": "Clear",
+          "cloudy": "Cloudy",
+          "rain": "Rain",
+          "snow": "Snow",
+          "storm": "Storm"
+        },
+        "weather-source": {
+          "fallback": "local fallback",
+          "google-weather": "Google Weather",
+          "open-meteo": "Open-Meteo"
+        }
       },
       "tiles": {
         "action-center": "Action center",
@@ -967,6 +998,12 @@
         "session-analytics": "Session Analytics",
         "pending-tasks": "Pending tasks",
         "recent-patients": "Recent patients"
+      },
+      "zones": {
+        "hero": "Dashboard overview",
+        "needs": "Needs you now",
+        "day": "Your day",
+        "practice": "Your practice"
       },
       "tile": {
         "close": "Close",
@@ -1162,11 +1199,19 @@
         },
         "revenue": {
           "title": "Revenue",
+          "title-week": "Revenue · Week",
           "title-with-month": "Revenue · {{month}}",
           "estimate-chip": "Est.",
+          "range-aria-label": "Choose revenue range",
+          "view-week": "Week",
+          "view-month": "Month",
           "completed": "Completed",
           "configured": "Billing setup",
+          "empty-title": "No paid sessions yet",
+          "empty-body": "Revenue appears here once completed sessions have billing details.",
           "sessions": "{{count}} session(s)",
+          "week-pipeline": "This week",
+          "week-pipeline-value": "{{upcoming}} upcoming · {{cancelled}} cancelled",
           "patients-ready": "{{configured}} ready · {{missing}} missing",
           "info": {
             "title": "Revenue estimate",
@@ -1199,6 +1244,13 @@
           "breakdown-label": "Action center summary",
           "view-all": "Open action center",
           "view-all-meta": "Conflicts and recovery queue",
+          "action-aria": "Open {{item}}",
+          "actions": {
+            "notification-failed": "Fix",
+            "patient-duplicate": "Review",
+            "recovery-needed": "Rebook",
+            "schedule-conflict": "Resolve"
+          },
           "items": {
             "notification-failed": "Notification failed",
             "patient-duplicate": "Patient duplicate",

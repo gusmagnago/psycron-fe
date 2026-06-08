@@ -48,6 +48,47 @@ const RainIcon = () => (
 	</svg>
 );
 
+const SnowIcon = () => (
+	<svg aria-hidden='true' height={64} viewBox='0 0 64 64' width={64}>
+		<g css={cloudDriftCss}>
+			<path
+				d={RAIN_CLOUD_PATH}
+				fill='none'
+				stroke='#979C9E'
+				strokeLinecap='round'
+				strokeLinejoin='round'
+				strokeWidth={2}
+			/>
+		</g>
+		<circle cx={27} cy={49} fill='#9C7CFD' r={2} />
+		<circle cx={34} cy={53} fill='#9C7CFD' r={2} />
+		<circle cx={41} cy={49} fill='#9C7CFD' r={2} />
+	</svg>
+);
+
+const StormIcon = () => (
+	<svg aria-hidden='true' height={64} viewBox='0 0 64 64' width={64}>
+		<g css={cloudDriftCss}>
+			<path
+				d={RAIN_CLOUD_PATH}
+				fill='none'
+				stroke='#5A5F61'
+				strokeLinecap='round'
+				strokeLinejoin='round'
+				strokeWidth={2}
+			/>
+		</g>
+		<path
+			d='M35 35 29 48h7l-5 11'
+			fill='none'
+			stroke='#FBE442'
+			strokeLinecap='round'
+			strokeLinejoin='round'
+			strokeWidth={2.6}
+		/>
+	</svg>
+);
+
 /* ── band icons (clear weather, custom animated SVGs) ────────────── */
 const MorningIcon = () => (
 	<svg aria-hidden='true' fill='none' height={64} strokeLinecap='round' strokeLinejoin='round' viewBox='0 0 64 64' width={64}>
@@ -103,6 +144,8 @@ const BAND_ICONS: Record<TimeOfDayBand, React.ReactElement> = {
 const WEATHER_ICONS: Record<Exclude<WeatherType, 'clear'>, React.ReactElement> = {
 	cloudy: <CloudyIcon />,
 	rain: <RainIcon />,
+	snow: <SnowIcon />,
+	storm: <StormIcon />,
 };
 
 /* ── glow colours ────────────────────────────────────────────────── */
@@ -115,6 +158,8 @@ const BAND_GLOW: Record<TimeOfDayBand, string> = {
 const WEATHER_GLOW: Record<Exclude<WeatherType, 'clear'>, string> = {
 	cloudy: 'rgba(151,156,158,.35)',
 	rain: 'rgba(156,124,253,.4)',
+	snow: 'rgba(169,222,249,.45)',
+	storm: 'rgba(251,228,66,.45)',
 };
 
 /* ── framer variants ─────────────────────────────────────────────── */
@@ -143,8 +188,16 @@ const glowVariants = {
 	},
 };
 
-export const LummiHero = ({ band, imageConfig, size = 120, weather = 'clear' }: LummiHeroProps) => {
+export const LummiHero = ({
+	band,
+	imageConfig,
+	weatherIconBaseUri,
+	size = 120,
+	status = 'ready',
+	weather = 'clear',
+}: LummiHeroProps) => {
 	const imageUrl = imageConfig?.[band];
+	const weatherIconUrl = weatherIconBaseUri ? `${weatherIconBaseUri}.svg` : null;
 	const fallbackIcon = weather === 'clear' ? BAND_ICONS[band] : WEATHER_ICONS[weather];
 	const glowColor = weather === 'clear' ? BAND_GLOW[band] : WEATHER_GLOW[weather as Exclude<WeatherType, 'clear'>];
 
@@ -152,11 +205,17 @@ export const LummiHero = ({ band, imageConfig, size = 120, weather = 'clear' }: 
 		<LummiHeroWrapper
 			animate='animate'
 			aria-hidden='true'
+			data-testid='dashboard-greeting-weather-icon'
+			id='dashboard-greeting-weather-icon'
+			data-weather-provider-state={status}
+			data-weather-type={weather}
 			size={size}
 			variants={weather === 'clear' ? floatVariants : undefined}
 		>
 			<GlowRing animate='animate' glowColor={glowColor} variants={glowVariants} />
-			{imageUrl ? (
+			{weatherIconUrl ? (
+				<LummiImage alt='' src={weatherIconUrl} />
+			) : imageUrl ? (
 				<LummiImage alt='' src={imageUrl} />
 			) : (
 				<FallbackIconWrapper size={size}>

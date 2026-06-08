@@ -1,13 +1,19 @@
-import { useCallback, useMemo } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { RangeToggle } from '@psycron/components/dashboard/range-toggle/RangeToggle';
 import { StatusChip } from '@psycron/components/dashboard/status-chip/StatusChip';
 import { WidgetLayout } from '@psycron/components/dashboard/widget-layout/WidgetLayout';
+import { Calendar, CalendarRange } from '@psycron/components/icons';
 
 import {
 	RevenueDetailGrid,
 	RevenueDetailLabel,
 	RevenueDetailRow,
 	RevenueDetailValue,
+	RevenueEmpty,
+	RevenueEmptyBody,
+	RevenueEmptyIcon,
+	RevenueEmptyTitle,
 	RevenueRoot,
 	RevenueSkeleton,
 	RevenueValue,
@@ -25,24 +31,56 @@ export const RevenueWidget = ({
 	estimate,
 	isLoading,
 	onClick,
+	weekEstimate,
 }: RevenueWidgetProps) => {
 	const isWide = (colSpan ?? 0) >= 6;
 	const { i18n, t } = useTranslation();
+	const [range, setRange] = useState<'month' | 'week'>('month');
+	const isWeekRange = range === 'week';
+	const displayAmount = isWeekRange
+		? (weekEstimate?.amount ?? 0)
+		: (estimate?.amount ?? 0);
+	const completedCount = isWeekRange
+		? (weekEstimate?.completedCount ?? 0)
+		: (estimate?.completedSessionCount ?? 0);
+	const cancelledCount = weekEstimate?.cancelledCount ?? 0;
+	const upcomingCount = weekEstimate?.upcomingCount ?? 0;
+	const hasRevenueData = displayAmount > 0 || completedCount > 0;
 
 	const headerActions = useMemo(
 		() => (
-			<StatusChip tone='neutral'>
-				{t('page.dashboard.widgets.revenue.estimate-chip')}
-			</StatusChip>
+			<RangeToggle<'month' | 'week'>
+				ariaLabel={t('page.dashboard.widgets.revenue.range-aria-label')}
+				onChange={setRange}
+				options={[
+					{
+						ariaLabel: t('page.dashboard.widgets.revenue.view-week'),
+						icon: <CalendarRange />,
+						label: t('page.dashboard.widgets.revenue.view-week'),
+						value: 'week',
+					},
+					{
+						ariaLabel: t('page.dashboard.widgets.revenue.view-month'),
+						icon: <Calendar />,
+						label: t('page.dashboard.widgets.revenue.view-month'),
+						value: 'month',
+					},
+				]}
+				value={range}
+			/>
 		),
-		[t]
+		[range, t]
 	);
 
-	const title = estimate
+	const title = estimate && !isWeekRange
 		? t('page.dashboard.widgets.revenue.title-with-month', {
 				month: estimate.monthLabel,
 			})
-		: t('page.dashboard.widgets.revenue.title');
+		: t(
+				isWeekRange
+					? 'page.dashboard.widgets.revenue.title-week'
+					: 'page.dashboard.widgets.revenue.title'
+			);
 
 	const delta = formatRevenueDelta(estimate?.deltaPercent);
 
@@ -64,6 +102,16 @@ export const RevenueWidget = ({
 				<RevenueSkeleton height={16} variant='rectangular' width='100%' />
 				<RevenueSkeleton height={16} variant='rectangular' width='82%' />
 			</RevenueRoot>
+		) : !hasRevenueData ? (
+			<RevenueEmpty>
+				<RevenueEmptyIcon>{estimate.currency}</RevenueEmptyIcon>
+				<RevenueEmptyTitle>
+					{t('page.dashboard.widgets.revenue.empty-title')}
+				</RevenueEmptyTitle>
+				<RevenueEmptyBody>
+					{t('page.dashboard.widgets.revenue.empty-body')}
+				</RevenueEmptyBody>
+			</RevenueEmpty>
 		) : (
 			<RevenueRoot
 				isInteractive={Boolean(onClick)}
@@ -76,12 +124,15 @@ export const RevenueWidget = ({
 				<RevenueValueRow>
 					<RevenueValue>
 						{formatRevenueCurrency(
-							estimate.amount,
+							displayAmount,
 							estimate.currency,
 							i18n.language
 						)}
 					</RevenueValue>
-					{delta ? (
+					<StatusChip tone='neutral'>
+						{t('page.dashboard.widgets.revenue.estimate-chip')}
+					</StatusChip>
+					{!isWeekRange && delta ? (
 						<StatusChip tone={getRevenueDeltaTone(estimate.deltaPercent)}>
 							{delta}
 						</StatusChip>
@@ -95,10 +146,23 @@ export const RevenueWidget = ({
 						</RevenueDetailLabel>
 						<RevenueDetailValue>
 							{t('page.dashboard.widgets.revenue.sessions', {
-								count: estimate.completedSessionCount,
+								count: completedCount,
 							})}
 						</RevenueDetailValue>
 					</RevenueDetailRow>
+					{isWeekRange ? (
+						<RevenueDetailRow>
+							<RevenueDetailLabel>
+								{t('page.dashboard.widgets.revenue.week-pipeline')}
+							</RevenueDetailLabel>
+							<RevenueDetailValue>
+								{t('page.dashboard.widgets.revenue.week-pipeline-value', {
+									cancelled: cancelledCount,
+									upcoming: upcomingCount,
+								})}
+							</RevenueDetailValue>
+						</RevenueDetailRow>
+					) : null}
 					<RevenueDetailRow>
 						<RevenueDetailLabel>
 							{t('page.dashboard.widgets.revenue.configured')}

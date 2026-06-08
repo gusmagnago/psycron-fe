@@ -2,5 +2,8 @@ import type { DashboardActionCenterSummary } from '@psycron/api/dashboard/index.
 
 export interface ActionCenterWidgetProps {
 	isLoading?: boolean;
+	onItemClick?: (
+		item: DashboardActionCenterSummary['items'][number]
+	) => void;
 	summary?: DashboardActionCenterSummary;
 }

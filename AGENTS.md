@@ -14,6 +14,9 @@ Local Obsidian vault:
 
 Always check the Obsidian vault before starting Psycron work so product, engineering, compliance, and release context stay aligned across agents and sessions.
 
+**Active UX revamp handoff (read first for any UI/UX/copy/availability work):**
+`04 Engineering/UX Revamp/Claude Code Handoff - React Bits Revamp.md` — covers core product direction, mandatory PWA/a11y/copy rules, React Bits / FluidGlass / Magic Bento usage guidance, current Availability design state (preview at `availability-page-high-fidelity.html`), and FE implementation notes (theme files to read, source boundaries, IDs/ARIA, performance/PWA, testing lens). This is the active spec to implement against — also linked from `UX Revamp Project.md` and `UX Business Decisions.md` in the same folder.
+
 Before product, UX, architecture, compliance, analytics, AI, scheduling, booking, reminders, payments, or patient/practitioner data work, read the relevant notes:
 
 - `10 AI Context/Psycron Brief.md`

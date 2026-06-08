@@ -10,17 +10,30 @@ import { motion } from 'framer-motion';
 export const GreetingWidgetRoot = styled(Box)`
 	display: flex;
 	flex-direction: column;
+	align-items: stretch;
 	gap: ${spacing.small};
 	height: 100%;
 	min-width: 0;
+	padding-bottom: ${spacing.xs};
+`;
+
+export const WeatherMeta = styled.span`
+	color: ${palette.text.secondary};
+	font-size: 0.7rem;
+	font-weight: 700;
+	line-height: 1.2;
 `;
 
 /* ── Greeting head: icon | copy ──────────────────────────────────── */
 export const GreetingHead = styled(Box)`
 	align-items: center;
 	display: flex;
+	flex: none;
+	max-height: fit-content;
 	gap: 18px;
 	min-width: 0;
+	width: 100%;
+	justify-content: flex-start;
 `;
 
 export const GreetingCopy = styled(motion.div)`
@@ -66,7 +79,9 @@ export const JupiterPanel = styled(Box)`
 	box-shadow: ${shadowSmall};
 	display: flex;
 	flex-direction: column;
+	flex: 1;
 	gap: ${spacing.xs};
+	min-height: 0;
 	overflow: hidden;
 	padding: 12px 14px;
 `;
@@ -100,7 +115,7 @@ export const JupiterPanelIdentity = styled(Box)`
 `;
 
 export const JupiterPanelFooter = styled(Box)`
-	align-items: center;
+	align-items: flex-end;
 	display: flex;
 	justify-content: space-between;
 `;

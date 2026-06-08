@@ -17,11 +17,10 @@ const MAX_HEIGHT_DELTA = 4;
 const MIN_HEIGHT_DELTA = -1;
 
 // Order produces a gap-free 12-col grid:
-// Rows 1-2: greeting(6) + schedule(6)
-// Rows 3-4: billing(3) + revenue(3) + pending(3) + quick(3)
-// Rows 5-6: notifications(3) + action(3) + recent-patients(6)
-// Rows 7-8: jupiter-insights(12)
-// Rows 9-11: session-analytics(12)
+// Rows 1-5: greeting(6) + schedule(6)
+// Rows 6-7: billing(3) + revenue(3) + pending(3) + quick(3)
+// Rows 8-9: notifications(3) + action(3) + recent-patients(6)
+// Rows 10-12: session-analytics(12)
 const DEFAULT_LAYOUT: DashboardLayoutState = [
 	{ id: 'greeting', order: 0, visible: true },
 	{ id: 'schedule', order: 1, visible: true },
@@ -32,8 +31,7 @@ const DEFAULT_LAYOUT: DashboardLayoutState = [
 	{ id: 'notifications', order: 6, visible: true },
 	{ id: 'action-center', order: 7, visible: true },
 	{ id: 'recent-patients', order: 8, visible: true },
-	{ id: 'jupiter-insights', order: 9, visible: true },
-	{ id: 'session-analytics', order: 10, visible: true },
+	{ id: 'session-analytics', order: 9, visible: true },
 ];
 
 interface StoredDashboardLayout {

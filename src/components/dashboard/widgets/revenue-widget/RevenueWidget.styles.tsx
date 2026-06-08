@@ -2,7 +2,8 @@ import styled from '@emotion/styled';
 import { Box, Skeleton } from '@mui/material';
 import { Text } from '@psycron/components/text/Text';
 import { dashboardAccents } from '@psycron/theme/palette/dashboardAccents';
-import { palette } from '@psycron/theme/palette/palette.theme';
+import { hexToRgba, palette } from '@psycron/theme/palette/palette.theme';
+import { shadowDashboardTile } from '@psycron/theme/shadow/shadow.theme';
 import { spacing } from '@psycron/theme/spacing/spacing.theme';
 
 export const RevenueRoot = styled(Box, {
@@ -29,6 +30,49 @@ export const RevenueValueRow = styled(Box)`
 	display: flex;
 	flex-wrap: wrap;
 	gap: ${spacing.xs};
+`;
+
+export const RevenueEmpty = styled(Box)`
+	align-items: center;
+	background: ${hexToRgba(palette.brand.purple, 0.06)};
+	border: 1px solid ${hexToRgba(palette.brand.purple, 0.14)};
+	border-radius: ${spacing.medium};
+	box-shadow: ${shadowDashboardTile};
+	display: flex;
+	flex: 1;
+	flex-direction: column;
+	gap: ${spacing.xs};
+	justify-content: center;
+	min-height: 0;
+	padding: ${spacing.mediumSmall};
+	text-align: center;
+`;
+
+export const RevenueEmptyIcon = styled(Box)`
+	align-items: center;
+	background: ${palette.white};
+	border-radius: 999px;
+	box-shadow: ${shadowDashboardTile};
+	color: ${palette.brand.purple};
+	display: inline-flex;
+	font-size: 1rem;
+	font-weight: 900;
+	height: 2.25rem;
+	justify-content: center;
+	width: 2.25rem;
+`;
+
+export const RevenueEmptyTitle = styled(Text)`
+	color: ${palette.text.primary};
+	font-size: 0.9rem;
+	font-weight: 850;
+`;
+
+export const RevenueEmptyBody = styled(Text)`
+	color: ${palette.text.secondary};
+	font-size: 0.78rem;
+	font-weight: 650;
+	line-height: 1.4;
 `;
 
 export const RevenueValue = styled(Text)`

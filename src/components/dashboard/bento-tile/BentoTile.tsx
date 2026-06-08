@@ -2,8 +2,6 @@ import { useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import { WidgetInfoButton } from '@psycron/components/dashboard/widget-info-modal/WidgetInfoButton';
-import { WidgetInfoModal } from '@psycron/components/dashboard/widget-info-modal/WidgetInfoModal';
 import { COL_RESIZE_STEP } from '@psycron/pages/dashboard/Dashboard.utils';
 
 import { BentoTileEditControls } from './components/bento-tile-edit-controls/BentoTileEditControls';
@@ -40,14 +38,11 @@ export const BentoTile = ({
 	orientation,
 	rowSpan,
 	style,
-	tier,
 	variant = 'default',
-	widgetInfoId,
 }: BentoTileProps) => {
 	const { t } = useTranslation();
 	const [chrome, setChrome] = useState<BentoTileChromeState>({});
 	const [isExpanded, setIsExpanded] = useState(false);
-	const [isInfoOpen, setIsInfoOpen] = useState(false);
 	const {
 		attributes,
 		isDragging,
@@ -76,7 +71,7 @@ export const BentoTile = ({
 		: undefined;
 	const chromeContext = useMemo(() => ({ setChrome }), []);
 	const hasFooterChrome = Boolean(footer || actions || expandedContent);
-	const hasHeaderChrome = Boolean(title || icon || headerActions || widgetInfoId);
+	const hasHeaderChrome = Boolean(title || icon || headerActions);
 	const editControlLabels = useMemo(
 		() => ({
 			drag: t('page.dashboard.tile.drag'),
@@ -103,8 +98,6 @@ export const BentoTile = ({
 
 	const handleExpand = useCallback(() => setIsExpanded(true), []);
 	const handleClose = useCallback(() => setIsExpanded(false), []);
-	const handleInfoOpen = useCallback(() => setIsInfoOpen(true), []);
-	const handleInfoClose = useCallback(() => setIsInfoOpen(false), []);
 	const handleResizeDown = useCallback(() => {
 		onResize?.(id, -1);
 	}, [id, onResize]);
@@ -127,6 +120,8 @@ export const BentoTile = ({
 	return (
 		<BentoTileRoot
 			colSpan={colSpan}
+			data-testid={`dashboard-tile-${id}`}
+			id={`dashboard-tile-${id}`}
 			isEditMode={isEditMode}
 			isHidden={isHidden}
 			ref={setNodeRef}
@@ -137,6 +132,7 @@ export const BentoTile = ({
 			<BentoTileMotionBox
 				aria-label={ariaLabel}
 				custom={index}
+				id={`${id}-region`}
 				initial='hidden'
 				isEditMode={isEditMode}
 				role='region'
@@ -182,11 +178,6 @@ export const BentoTile = ({
 							<BentoTileHeaderChrome
 								headerActions={headerActions}
 								icon={icon}
-								infoButton={
-									widgetInfoId ? (
-										<WidgetInfoButton onClick={handleInfoOpen} />
-									) : undefined
-								}
 								title={title}
 							/>
 							<BentoTileBody>{children}</BentoTileBody>
@@ -209,14 +200,6 @@ export const BentoTile = ({
 					open={isExpanded && Boolean(expandedContent)}
 					title={title}
 				/>
-				{widgetInfoId ? (
-					<WidgetInfoModal
-						isOpen={isInfoOpen}
-						onClose={handleInfoClose}
-						tier={tier}
-						widgetId={widgetInfoId}
-					/>
-				) : null}
 			</BentoTileMotionBox>
 		</BentoTileRoot>
 	);

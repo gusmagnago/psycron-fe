@@ -496,6 +496,25 @@
     "next": "Próximo"
   },
   "components": {
+    "help-center": {
+      "description": "Use este único lugar para suporte, feedback de produto e notas sobre as próximas capacidades do dashboard.",
+      "open-help": "Abrir central de ajuda",
+      "options": {
+        "feedback": {
+          "body": "Envie feedback sobre o dashboard pela central de ajuda para manter o contexto em uma única conversa de suporte.",
+          "title": "Compartilhar feedback"
+        },
+        "future": {
+          "body": "Cobrança, acompanhamento de receita e automações da Júpiter continuarão chegando como fluxos dedicados.",
+          "title": "O que vem por aí"
+        },
+        "support": {
+          "body": "Encontre orientações sobre disponibilidade, pacientes, lembretes e preparação de cobrança.",
+          "title": "Receber suporte"
+        }
+      },
+      "title": "Central de ajuda"
+    },
     "form": {
       "confirm-password": "Confirmar senha",
       "keep-loggedin": "Mantenha-me online",
@@ -952,7 +971,19 @@
           "label": "Júpiter · {{category}}"
         },
         "subtext": "vamos preparar sua prática",
-        "subtext-sessions": "{{count}} sessões hoje"
+        "subtext-sessions": "{{count}} sessões hoje",
+        "weather": {
+          "clear": "Céu limpo",
+          "cloudy": "Nublado",
+          "rain": "Chuva",
+          "snow": "Neve",
+          "storm": "Tempestade"
+        },
+        "weather-source": {
+          "fallback": "fallback local",
+          "google-weather": "Google Weather",
+          "open-meteo": "Open-Meteo"
+        }
       },
       "tiles": {
         "action-center": "Central de ações",
@@ -967,6 +998,12 @@
         "session-analytics": "Análise de sessões",
         "pending-tasks": "Tarefas pendentes",
         "recent-patients": "Pacientes recentes"
+      },
+      "zones": {
+        "hero": "Visão geral do dashboard",
+        "needs": "Precisa da sua atenção",
+        "day": "Seu dia",
+        "practice": "Sua prática"
       },
       "tile": {
         "close": "Fechar",
@@ -1162,11 +1199,19 @@
         },
         "revenue": {
           "title": "Receita",
+          "title-week": "Receita · Semana",
           "title-with-month": "Receita · {{month}}",
           "estimate-chip": "Est.",
+          "range-aria-label": "Escolher período da receita",
+          "view-week": "Semana",
+          "view-month": "Mês",
           "completed": "Concluídas",
           "configured": "Cobrança",
+          "empty-title": "Ainda não há sessões pagas",
+          "empty-body": "A receita aparece aqui quando sessões concluídas tiverem dados de cobrança.",
           "sessions": "{{count}} sessão(ões)",
+          "week-pipeline": "Esta semana",
+          "week-pipeline-value": "{{upcoming}} próximas · {{cancelled}} canceladas",
           "patients-ready": "{{configured}} prontos · {{missing}} pendentes",
           "info": {
             "title": "Estimativa de receita",
@@ -1199,6 +1244,13 @@
           "breakdown-label": "Resumo da central de ações",
           "view-all": "Abrir central de ações",
           "view-all-meta": "Conflitos e fila de recuperação",
+          "action-aria": "Abrir {{item}}",
+          "actions": {
+            "notification-failed": "Corrigir",
+            "patient-duplicate": "Revisar",
+            "recovery-needed": "Reagendar",
+            "schedule-conflict": "Resolver"
+          },
           "items": {
             "notification-failed": "Notificação falhou",
             "patient-duplicate": "Paciente duplicado",

@@ -101,11 +101,9 @@ export const JupiterInsightsWidget = ({
 	) : (
 		<CarouselRoot>
 			<CarouselViewport
-				aria-label={t('page.dashboard.widgets.jupiter-insights.aria-label')}
 				aria-live='polite'
 				onTouchEnd={onTouchEnd}
 				onTouchStart={onTouchStart}
-				role='region'
 			>
 				<InsightSlide current={current} direction={direction} idx={idx} />
 			</CarouselViewport>

@@ -75,6 +75,77 @@ export const ActionCenterBreakdown = styled(Box)`
 	min-width: 0;
 `;
 
+export const ActionCenterItemList = styled(Box)`
+	display: flex;
+	flex-direction: column;
+	gap: ${spacing.xs};
+	min-width: 0;
+`;
+
+export const ActionCenterItemCard = styled(Box, {
+	shouldForwardProp: (prop) => prop !== 'tone',
+})<{ tone: Exclude<ActionCenterTone, 'success'> }>`
+	align-items: center;
+	background: ${({ tone }) => hexToRgba(getToneColor(tone), 0.08)};
+	border: 1px solid ${({ tone }) => hexToRgba(getToneColor(tone), 0.18)};
+	border-radius: ${spacing.extraSmall};
+	display: grid;
+	gap: ${spacing.xs};
+	grid-template-columns: minmax(0, 1fr) auto;
+	min-width: 0;
+	padding: ${spacing.xs};
+`;
+
+export const ActionCenterItemText = styled(Box)`
+	display: flex;
+	flex-direction: column;
+	gap: ${spacing.space};
+	min-width: 0;
+`;
+
+export const ActionCenterItemTitle = styled(Text)`
+	color: ${palette.text.primary};
+	font-size: 0.78rem;
+	font-weight: 800;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+`;
+
+export const ActionCenterItemMeta = styled(Text)`
+	color: ${palette.text.secondary};
+	font-size: 0.72rem;
+	font-weight: 700;
+`;
+
+export const ActionCenterItemButton = styled('button', {
+	shouldForwardProp: (prop) => prop !== 'tone',
+})<{ tone: Exclude<ActionCenterTone, 'success'> }>`
+	align-items: center;
+	background: ${palette.white};
+	border: 1px solid ${({ tone }) => hexToRgba(getToneColor(tone), 0.34)};
+	border-radius: 999px;
+	color: ${({ tone }) => getToneColor(tone)};
+	cursor: pointer;
+	display: inline-flex;
+	font: inherit;
+	font-size: 0.72rem;
+	font-weight: 850;
+	justify-content: center;
+	min-height: 2rem;
+	padding: ${spacing.space} ${spacing.xs};
+	white-space: nowrap;
+
+	&:hover {
+		background: ${({ tone }) => hexToRgba(getToneColor(tone), 0.08)};
+	}
+
+	&:focus-visible {
+		outline: 2px solid ${({ tone }) => getToneColor(tone)};
+		outline-offset: 2px;
+	}
+`;
+
 export const ActionCenterBreakdownItem = styled('span', {
 	shouldForwardProp: (prop) => prop !== 'tone',
 })<{ tone: Exclude<ActionCenterTone, 'success'> }>`
