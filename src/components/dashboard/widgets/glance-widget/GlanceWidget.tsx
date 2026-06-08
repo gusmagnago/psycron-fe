@@ -36,6 +36,10 @@ export const GlanceWidget = ({ isLoading, stats }: GlanceWidgetProps) => {
 					data-testid={`dashboard-glance-stat-${stat.id}`}
 					id={`dashboard-glance-stat-${stat.id}`}
 					key={stat.id}
+					onClick={stat.onClick}
+					aria-label={stat.ariaLabel}
+					type='button'
+					whileTap={{ scale: 0.98 }}
 				>
 					<GlanceIconBox tone={stat.tone}>{stat.icon}</GlanceIconBox>
 					<GlanceCopy>

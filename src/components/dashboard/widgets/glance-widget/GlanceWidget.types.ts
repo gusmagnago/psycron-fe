@@ -4,9 +4,11 @@ import type { DashboardAccentTone } from '@psycron/theme/palette/dashboardAccent
 export type GlanceStatId = 'attention' | 'next-session' | 'sessions-today';
 
 export interface GlanceStat {
+	ariaLabel: string;
 	icon: ReactNode;
 	id: GlanceStatId;
 	label: string;
+	onClick: () => void;
 	tone: DashboardAccentTone;
 	value: string;
 }

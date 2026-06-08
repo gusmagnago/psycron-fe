@@ -6,6 +6,7 @@ import { dashboardAccents } from '@psycron/theme/palette/dashboardAccents';
 import { palette } from '@psycron/theme/palette/palette.theme';
 import { shadowDashboardTile, shadowSmall } from '@psycron/theme/shadow/shadow.theme';
 import { spacing } from '@psycron/theme/spacing/spacing.theme';
+import { motion } from 'framer-motion';
 
 export const GlanceRoot = styled(Box)`
 	display: flex;
@@ -15,7 +16,8 @@ export const GlanceRoot = styled(Box)`
 	min-height: 0;
 `;
 
-export const GlanceStatCard = styled(Box)`
+export const GlanceStatCard = styled(motion.button)`
+	all: unset;
 	align-items: center;
 	background: ${palette.white};
 	border-radius: ${spacing.mediumSmall};
@@ -23,15 +25,24 @@ export const GlanceStatCard = styled(Box)`
 	display: flex;
 	flex: 1;
 	gap: ${spacing.small};
+	min-width: 0;
 	min-height: 0;
 	padding: ${spacing.small} ${spacing.mediumSmall};
+	width: 100%;
 	transition:
 		box-shadow 0.22s ease,
 		transform 0.22s ease;
+	cursor: pointer;
+	text-align: left;
 
 	&:hover {
 		box-shadow: ${shadowSmall};
 		transform: translateY(-3px);
+	}
+
+	&:focus-visible {
+		outline: 2px solid ${palette.tertiary.main};
+		outline-offset: 2px;
 	}
 `;
 

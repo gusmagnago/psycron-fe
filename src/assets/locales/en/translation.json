@@ -1035,6 +1035,9 @@
       },
       "widgets": {
         "glance": {
+          "next-session-aria": "Open next session at {{value}}",
+          "sessions-today-aria": "Open today’s schedule with {{value}} sessions",
+          "needs-attention-aria": "Open action center with {{value}} items",
           "next-session": "Next session",
           "sessions-today": "Sessions today",
           "needs-attention": "Need your attention",

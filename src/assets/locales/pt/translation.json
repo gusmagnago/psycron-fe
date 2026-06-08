@@ -1035,6 +1035,9 @@
       },
       "widgets": {
         "glance": {
+          "next-session-aria": "Abrir próxima sessão às {{value}}",
+          "sessions-today-aria": "Abrir a agenda de hoje com {{value}} sessões",
+          "needs-attention-aria": "Abrir a central de ações com {{value}} itens",
           "next-session": "Próxima sessão",
           "sessions-today": "Sessões hoje",
           "needs-attention": "Precisam de atenção",

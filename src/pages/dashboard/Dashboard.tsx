@@ -206,6 +206,7 @@ export const Dashboard = () => {
 		() => getNextBookedSlot(todaySlots),
 		[todaySlots]
 	);
+	const todayKey = format(new Date(), 'yyyy-MM-dd');
 
 	const attentionCount =
 		summary?.actionCenter.total ??
@@ -214,9 +215,22 @@ export const Dashboard = () => {
 	const glanceStats = useMemo<GlanceStat[]>(
 		() => [
 			{
+				ariaLabel: t('page.dashboard.widgets.glance.next-session-aria', {
+					value: nextBookedSlot
+						? format(
+								parseISO(`${nextBookedSlot.date}T${nextBookedSlot.startTime}`),
+								'HH:mm'
+							)
+						: t('page.dashboard.widgets.glance.none'),
+				}),
 				icon: <AlarmClock />,
 				id: 'next-session',
 				label: t('page.dashboard.widgets.glance.next-session'),
+				onClick: () =>
+					navigateToDashboardTarget({
+						date: nextBookedSlot?.date ?? todayKey,
+						type: 'availability-week',
+					}),
 				tone: 'brand',
 				value: nextBookedSlot
 					? format(
@@ -226,21 +240,41 @@ export const Dashboard = () => {
 					: t('page.dashboard.widgets.glance.none'),
 			},
 			{
+				ariaLabel: t('page.dashboard.widgets.glance.sessions-today-aria', {
+					value: String(metrics.todayBookedCount),
+				}),
 				icon: <GlanceCalendarIcon />,
 				id: 'sessions-today',
 				label: t('page.dashboard.widgets.glance.sessions-today'),
+				onClick: () =>
+					navigateToDashboardTarget({
+						date: todayKey,
+						type: 'availability-week',
+					}),
 				tone: 'success',
 				value: String(metrics.todayBookedCount),
 			},
 			{
+				ariaLabel: t('page.dashboard.widgets.glance.needs-attention-aria', {
+					value: String(attentionCount),
+				}),
 				icon: <TriangleAlert />,
 				id: 'attention',
 				label: t('page.dashboard.widgets.glance.needs-attention'),
+				onClick: () =>
+					navigateToDashboardTarget({ type: 'action-center' }),
 				tone: attentionCount > 0 ? 'danger' : 'neutral',
 				value: String(attentionCount),
 			},
 		],
-		[attentionCount, metrics.todayBookedCount, nextBookedSlot, t]
+		[
+			attentionCount,
+			metrics.todayBookedCount,
+			nextBookedSlot,
+			navigateToDashboardTarget,
+			t,
+			todayKey,
+		]
 	);
 
 	const quickActions = useMemo(
