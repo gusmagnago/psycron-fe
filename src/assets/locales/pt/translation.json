@@ -988,6 +988,7 @@
       "tiles": {
         "action-center": "Central de ações",
         "schedule": "Agenda de hoje",
+        "glance": "Resumo rápido",
         "greeting": "Saudação",
         "jupiter-insights": "Insights da Júpiter",
         "notifications": "Notificações",
@@ -1033,6 +1034,12 @@
         "reset": "Redefinir layout"
       },
       "widgets": {
+        "glance": {
+          "next-session": "Próxima sessão",
+          "sessions-today": "Sessões hoje",
+          "needs-attention": "Precisam de atenção",
+          "none": "Nenhuma"
+        },
         "schedule": {
           "title": "Hoje",
           "title-week": "Semana",

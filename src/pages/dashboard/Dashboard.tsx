@@ -21,6 +21,10 @@ import { PostHogEvent } from '@psycron/analytics/posthog/types';
 import type { DashboardActionTarget } from '@psycron/api/dashboard/index.types';
 import { BentoTile } from '@psycron/components/dashboard/bento-tile/BentoTile';
 import { ActionCenterWidget } from '@psycron/components/dashboard/widgets/action-center-widget/ActionCenterWidget';
+import { GlanceCalendarIcon } from '@psycron/components/dashboard/widgets/glance-widget/GlanceCalendarIcon';
+import { GlanceWidget } from '@psycron/components/dashboard/widgets/glance-widget/GlanceWidget';
+import type { GlanceStat } from '@psycron/components/dashboard/widgets/glance-widget/GlanceWidget.types';
+import { getNextBookedSlot } from '@psycron/components/dashboard/widgets/glance-widget/GlanceWidget.utils';
 import { GreetingWidget } from '@psycron/components/dashboard/widgets/greeting-widget/GreetingWidget';
 import { NotificationsWidget } from '@psycron/components/dashboard/widgets/notifications-widget/NotificationsWidget';
 import { PendingTasksWidget } from '@psycron/components/dashboard/widgets/pending-tasks-widget/PendingTasksWidget';
@@ -34,6 +38,7 @@ import { RevenueWidget } from '@psycron/components/dashboard/widgets/revenue-wid
 import { ScheduleWidget } from '@psycron/components/dashboard/widgets/schedule-widget/ScheduleWidget';
 import { SessionAnalyticsWidget } from '@psycron/components/dashboard/widgets/session-analytics-widget/SessionAnalyticsWidget';
 import type { WeeklyBarData } from '@psycron/components/dashboard/widgets/weekly-chart-widget/WeeklyChartWidget.types';
+import { AlarmClock, TriangleAlert } from '@psycron/components/icons';
 import { useUserDetails } from '@psycron/context/user/details/UserDetailsContext';
 import { useTimeOfDay } from '@psycron/hooks/useTimeOfDay';
 import useViewport from '@psycron/hooks/useViewport';
@@ -44,6 +49,7 @@ import {
 	PATIENTPROFILE,
 	PATIENTS,
 } from '@psycron/pages/urls';
+import { format, parseISO } from 'date-fns';
 
 import { useDashboardLayout } from './hooks/useDashboardLayout';
 import { useDashboardSlots } from './hooks/useDashboardSlots';
@@ -72,8 +78,9 @@ import {
 	TILE_TABLET,
 } from './Dashboard.utils';
 
-const HERO_TILE_IDS = ['greeting', 'quick-actions'] as const satisfies readonly DashboardTileId[];
+const HERO_TILE_IDS = ['greeting', 'glance'] as const satisfies readonly DashboardTileId[];
 const NEEDS_TILE_IDS = [
+	'quick-actions',
 	'billing-readiness',
 	'action-center',
 	'pending-tasks',
@@ -194,6 +201,47 @@ export const Dashboard = () => {
 			weekStart,
 			whatsappRemindersEnabled,
 		});
+
+	const nextBookedSlot = useMemo(
+		() => getNextBookedSlot(todaySlots),
+		[todaySlots]
+	);
+
+	const attentionCount =
+		summary?.actionCenter.total ??
+		(summary?.pendingTasks ?? []).reduce((total, task) => total + task.count, 0);
+
+	const glanceStats = useMemo<GlanceStat[]>(
+		() => [
+			{
+				icon: <AlarmClock />,
+				id: 'next-session',
+				label: t('page.dashboard.widgets.glance.next-session'),
+				tone: 'brand',
+				value: nextBookedSlot
+					? format(
+							parseISO(`${nextBookedSlot.date}T${nextBookedSlot.startTime}`),
+							'HH:mm'
+						)
+					: t('page.dashboard.widgets.glance.none'),
+			},
+			{
+				icon: <GlanceCalendarIcon />,
+				id: 'sessions-today',
+				label: t('page.dashboard.widgets.glance.sessions-today'),
+				tone: 'success',
+				value: String(metrics.todayBookedCount),
+			},
+			{
+				icon: <TriangleAlert />,
+				id: 'attention',
+				label: t('page.dashboard.widgets.glance.needs-attention'),
+				tone: attentionCount > 0 ? 'danger' : 'neutral',
+				value: String(attentionCount),
+			},
+		],
+		[attentionCount, metrics.todayBookedCount, nextBookedSlot, t]
+	);
 
 	const quickActions = useMemo(
 		() =>
@@ -327,6 +375,16 @@ export const Dashboard = () => {
 							isLoading={isLoading || isJupiterInsightsLoading}
 							name={userDetails?.firstName ?? ''}
 							sessionCount={todaySlots?.length}
+						/>
+					</BentoTile>
+				);
+
+			case 'glance':
+				return (
+					<BentoTile {...commonProps} key={tileId} variant='glance'>
+						<GlanceWidget
+							isLoading={isLoading || isSummaryLoading}
+							stats={glanceStats}
 						/>
 					</BentoTile>
 				);

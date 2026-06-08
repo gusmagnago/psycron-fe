@@ -100,10 +100,21 @@ export const greetingTile = css`
 	background: ${palette.white};
 `;
 
+export const glanceTile = css`
+	background: transparent;
+	box-shadow: none;
+	overflow: visible;
+
+	&:hover {
+		box-shadow: none;
+	}
+`;
+
 export const BentoTileMotionBox = styled(motion.div, {
 	shouldForwardProp: (prop) => prop !== 'isEditMode' && prop !== 'variant',
 })<{ isEditMode?: boolean; variant?: string }>`
 	${glassTile}
+	${({ variant }) => variant === 'glance' && glanceTile}
 	${({ variant }) => variant === 'jupiter' && jupiterTile}
 	${({ variant }) => variant === 'greeting' && greetingTile}
 	${({ isEditMode }) => isEditMode && editModeStyles}

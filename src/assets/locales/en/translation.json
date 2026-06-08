@@ -988,6 +988,7 @@
       "tiles": {
         "action-center": "Action center",
         "schedule": "Today's schedule",
+        "glance": "At a glance",
         "greeting": "Greeting",
         "jupiter-insights": "Júpiter insights",
         "notifications": "Notifications",
@@ -1033,6 +1034,12 @@
         "reset": "Reset layout"
       },
       "widgets": {
+        "glance": {
+          "next-session": "Next session",
+          "sessions-today": "Sessions today",
+          "needs-attention": "Need your attention",
+          "none": "None"
+        },
         "schedule": {
           "title": "Today",
           "title-week": "Week",

@@ -1,6 +1,7 @@
 export type DashboardTileId =
 	| 'action-center'
 	| 'billing-readiness'
+	| 'glance'
 	| 'greeting'
 	| 'notifications'
 	| 'pending-tasks'
