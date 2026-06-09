@@ -33,7 +33,7 @@ export const TILE_DESKTOP: Record<DashboardTileId, TileSpan> = {
 	revenue: { col: 3, row: 2 },
 	schedule: { col: 12, row: 4 },
 	'practice-readiness': { col: 6, row: 2 },
-	'session-analytics': { col: 12, row: 3 },
+	'session-analytics': { col: 6, row: 3 },
 };
 
 export const TILE_TABLET: Record<DashboardTileId, TileSpan> = {

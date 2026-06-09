@@ -15,18 +15,28 @@ const STORAGE_KEY = '_psy_dashboard_layout';
 const STORAGE_VERSION = 5;
 const MAX_HEIGHT_DELTA = 4;
 const MIN_HEIGHT_DELTA = -1;
+const LEGACY_DEFAULT_LAYOUT_ORDER: DashboardTileId[] = [
+	'greeting',
+	'glance',
+	'practice-readiness',
+	'action-center',
+	'schedule',
+	'revenue',
+	'recent-patients',
+	'session-analytics',
+];
 
-// Order keeps the hero section aligned with the dashboard v4 preview:
-// greeting(6) + glance(6), then operational tiles below.
+// Order keeps the hero section aligned with the dashboard v4 preview and
+// keeps recent patients paired with session analytics in the practice row.
 const DEFAULT_LAYOUT: DashboardLayoutState = [
 	{ id: 'greeting', order: 0, visible: true },
 	{ id: 'glance', order: 1, visible: true },
 	{ id: 'practice-readiness', order: 2, visible: true },
 	{ id: 'action-center', order: 3, visible: true },
 	{ id: 'schedule', order: 4, visible: true },
-	{ id: 'revenue', order: 5, visible: true },
-	{ id: 'recent-patients', order: 6, visible: true },
-	{ id: 'session-analytics', order: 7, visible: true },
+	{ id: 'recent-patients', order: 5, visible: true },
+	{ id: 'session-analytics', order: 6, visible: true },
+	{ id: 'revenue', order: 7, visible: true },
 ];
 
 interface StoredDashboardLayout {
@@ -75,6 +85,16 @@ const normalizeTiles = (tiles: DashboardLayoutState): DashboardLayoutState =>
 		return acc;
 	}, []);
 
+const hasLegacyDefaultOrder = (tiles: DashboardLayoutState): boolean => {
+	const normalized = normalizeTiles(tiles);
+	return (
+		normalized.length === LEGACY_DEFAULT_LAYOUT_ORDER.length &&
+		normalized.every(
+			(tile, index) => tile.id === LEGACY_DEFAULT_LAYOUT_ORDER[index]
+		)
+	);
+};
+
 const mergeWithDefaults = (
 	tiles: DashboardLayoutState,
 	useDefaultOrder: boolean
@@ -111,7 +131,10 @@ const loadLayout = (): DashboardLayoutState => {
 		const raw = localStorage.getItem(STORAGE_KEY);
 		if (!raw) return DEFAULT_LAYOUT;
 		const stored = getStoredLayout(JSON.parse(raw));
-		return mergeWithDefaults(stored.tiles, stored.version !== STORAGE_VERSION);
+		return mergeWithDefaults(
+			stored.tiles,
+			stored.version !== STORAGE_VERSION || hasLegacyDefaultOrder(stored.tiles)
+		);
 	} catch {
 		return DEFAULT_LAYOUT;
 	}

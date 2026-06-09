@@ -1,9 +1,8 @@
 import { useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Skeleton } from '@mui/material';
-import { RangeToggle } from '@psycron/components/dashboard/range-toggle/RangeToggle';
 import { WidgetLayout } from '@psycron/components/dashboard/widget-layout/WidgetLayout';
-import { Calendar, CalendarRange } from '@psycron/components/icons';
+import { RangeGroup } from '@psycron/components/range-group/RangeGroup';
 
 import { SessionAnalyticsChart } from './SessionAnalyticsChart';
 import { SessionAnalyticsKpi } from './SessionAnalyticsKpi';
@@ -26,6 +25,7 @@ import type {
 } from './SessionAnalyticsWidget.types';
 
 const k = (key: string) => `page.dashboard.widgets.session-analytics.${key}`;
+const SESSION_ANALYTICS_WIDGET_ID_PREFIX = 'dashboard-session-analytics';
 
 const LEGEND_KEYS = ['upcoming', 'completed', 'cancelled', 'blocked'] as const;
 
@@ -59,29 +59,27 @@ export const SessionAnalyticsWidget = ({
 	);
 
 	const headerActions = useMemo(
-		() => (
-			<>
-				<RangeToggle<SessionAnalyticsViewMode>
-					ariaLabel={t(k('range-aria-label'))}
+			() => (
+				<RangeGroup<SessionAnalyticsViewMode>
+					ariaLabel={t(k('range-aria-label-sessions'))}
+					idPrefix={`${SESSION_ANALYTICS_WIDGET_ID_PREFIX}-range`}
+					size='small'
 					onChange={handleViewModeChange}
 					options={[
 						{
 							ariaLabel: t(k('view-week')),
-							icon: <CalendarRange />,
 							label: t(k('view-week')),
 							value: 'week',
 						},
 						{
 							ariaLabel: t(k('view-month')),
-							icon: <Calendar />,
 							label: t(k('view-month')),
 							value: 'month',
 						},
 					]}
 					value={viewMode}
 				/>
-			</>
-		),
+			),
 		[handleViewModeChange, t, viewMode]
 	);
 
@@ -100,7 +98,10 @@ export const SessionAnalyticsWidget = ({
 	);
 
 	const body = (
-		<AnalyticsRoot>
+		<AnalyticsRoot
+			aria-labelledby={`${SESSION_ANALYTICS_WIDGET_ID_PREFIX}-title`}
+			id={`${SESSION_ANALYTICS_WIDGET_ID_PREFIX}-root`}
+		>
 			<GlassPanel layout={effectiveLayout}>
 				{isLoading ? (
 					<LoadingPanel>
@@ -139,6 +140,7 @@ export const SessionAnalyticsWidget = ({
 			body={body}
 			footer={footer}
 			headerActions={headerActions}
+			titleId={`${SESSION_ANALYTICS_WIDGET_ID_PREFIX}-title`}
 			title={t(k('title'))}
 		/>
 	);

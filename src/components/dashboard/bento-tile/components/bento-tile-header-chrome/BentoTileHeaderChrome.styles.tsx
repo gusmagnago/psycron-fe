@@ -9,6 +9,7 @@ export const BentoTileHeader = styled(Box)`
 	gap: ${spacing.xs};
 	justify-content: space-between;
 	min-width: 0;
+	padding-bottom: ${spacing.xs};
 `;
 
 export const BentoTileHeaderActions = styled(Box)`

@@ -1275,6 +1275,7 @@
         "session-analytics": {
           "title": "Session Analytics",
           "range-aria-label": "Choose analytics range",
+          "range-aria-label-sessions": "Sessions range",
           "completion-rate": "Completion rate",
           "blocked": "Admin blocks",
           "blocked-hours": "{{hours}}h blocked",

@@ -20,7 +20,9 @@ export const BentoTileHeaderChrome = ({
 	if (!title && !icon && !headerActions && !infoButton) return null;
 
 	return (
-		<BentoTileHeader>
+		<BentoTileHeader
+			id={titleId ? `${titleId}-header` : undefined}
+		>
 			<BentoTileHeaderIdentity>
 				{icon && <BentoTileHeaderIcon>{icon}</BentoTileHeaderIcon>}
 				{title && (

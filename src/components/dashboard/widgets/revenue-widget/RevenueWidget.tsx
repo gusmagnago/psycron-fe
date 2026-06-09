@@ -1,9 +1,8 @@
 import { useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { RangeToggle } from '@psycron/components/dashboard/range-toggle/RangeToggle';
 import { StatusChip } from '@psycron/components/dashboard/status-chip/StatusChip';
 import { WidgetLayout } from '@psycron/components/dashboard/widget-layout/WidgetLayout';
-import { Calendar, CalendarRange } from '@psycron/components/icons';
+import { RangeGroup } from '@psycron/components/range-group/RangeGroup';
 
 import {
 	RevenueDetailGrid,
@@ -49,19 +48,19 @@ export const RevenueWidget = ({
 
 	const headerActions = useMemo(
 		() => (
-			<RangeToggle<'month' | 'week'>
+			<RangeGroup<'month' | 'week'>
 				ariaLabel={t('page.dashboard.widgets.revenue.range-aria-label')}
+				idPrefix='dashboard-revenue-range'
+				size='small'
 				onChange={setRange}
 				options={[
 					{
 						ariaLabel: t('page.dashboard.widgets.revenue.view-week'),
-						icon: <CalendarRange />,
 						label: t('page.dashboard.widgets.revenue.view-week'),
 						value: 'week',
 					},
 					{
 						ariaLabel: t('page.dashboard.widgets.revenue.view-month'),
-						icon: <Calendar />,
 						label: t('page.dashboard.widgets.revenue.view-month'),
 						value: 'month',
 					},

@@ -1275,6 +1275,7 @@
         "session-analytics": {
           "title": "Análise de sessões",
           "range-aria-label": "Escolher período da análise",
+          "range-aria-label-sessions": "Período de sessões",
           "completion-rate": "Taxa de conclusão",
           "blocked": "Bloqueios admin",
           "blocked-hours": "{{hours}}h bloqueadas",
