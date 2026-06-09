@@ -59,6 +59,10 @@ export const DashboardSection = styled('section')`
 	min-width: 0;
 `;
 
+export const DashboardPracticeSection = styled(DashboardSection)`
+	padding-bottom: ${spacing.xxs};
+`;
+
 export const DashboardSectionLabel = styled('h2')`
 	align-items: center;
 	color: ${palette.gray['05']};

@@ -68,6 +68,11 @@ export const RangeGroupButton = styled(Button, {
 		box-shadow: ${({ isActive }) => (isActive ? shadowMediumPurple : 'none')};
 	}
 
+	&.Mui-disabled {
+		cursor: not-allowed;
+		opacity: 0.55;
+	}
+
 	&:hover {
 		color: ${({ isActive }) => (isActive ? palette.white : palette.text.primary)};
 	}

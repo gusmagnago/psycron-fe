@@ -1,29 +1,26 @@
-import { useCallback, useMemo, useState } from 'react';
+import { type KeyboardEvent, useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { StatusChip } from '@psycron/components/dashboard/status-chip/StatusChip';
 import { WidgetLayout } from '@psycron/components/dashboard/widget-layout/WidgetLayout';
+import { Wallet } from '@psycron/components/icons';
 import { RangeGroup } from '@psycron/components/range-group/RangeGroup';
 
 import {
-	RevenueDetailGrid,
-	RevenueDetailLabel,
-	RevenueDetailRow,
-	RevenueDetailValue,
+	RevenueAmount,
+	RevenueDataState,
 	RevenueEmpty,
 	RevenueEmptyBody,
+	RevenueEmptyButton,
 	RevenueEmptyIcon,
+	RevenueEmptyIconGlyph,
 	RevenueEmptyTitle,
 	RevenueRoot,
 	RevenueSkeleton,
-	RevenueValue,
-	RevenueValueRow,
+	RevenueSubline,
 } from './RevenueWidget.styles';
 import type { RevenueWidgetProps } from './RevenueWidget.types';
-import {
-	formatRevenueCurrency,
-	formatRevenueDelta,
-	getRevenueDeltaTone,
-} from './RevenueWidget.utils';
+import { formatRevenueCurrency } from './RevenueWidget.utils';
+
+const REVENUE_WIDGET_ID_PREFIX = 'dashboard-revenue-widget';
 
 export const RevenueWidget = ({
 	colSpan,
@@ -40,17 +37,24 @@ export const RevenueWidget = ({
 		? (weekEstimate?.amount ?? 0)
 		: (estimate?.amount ?? 0);
 	const completedCount = isWeekRange
-		? (weekEstimate?.completedCount ?? 0)
+		? (weekEstimate?.completedSessionCount ?? 0)
 		: (estimate?.completedSessionCount ?? 0);
-	const cancelledCount = weekEstimate?.cancelledCount ?? 0;
-	const upcomingCount = weekEstimate?.upcomingCount ?? 0;
-	const hasRevenueData = displayAmount > 0 || completedCount > 0;
+	const hasMonthRevenueData =
+		(estimate?.amount ?? 0) > 0 || (estimate?.completedSessionCount ?? 0) > 0;
+	const hasWeekRevenueData =
+		(weekEstimate?.amount ?? 0) > 0 ||
+		(weekEstimate?.completedSessionCount ?? 0) > 0;
+	const hasRevenueData = isWeekRange
+		? hasWeekRevenueData
+		: hasMonthRevenueData;
+	const isRangeDisabled = !hasMonthRevenueData && !hasWeekRevenueData;
 
 	const headerActions = useMemo(
 		() => (
 			<RangeGroup<'month' | 'week'>
 				ariaLabel={t('page.dashboard.widgets.revenue.range-aria-label')}
-				idPrefix='dashboard-revenue-range'
+				disabled={isRangeDisabled}
+				idPrefix={`${REVENUE_WIDGET_ID_PREFIX}-range`}
 				size='small'
 				onChange={setRange}
 				options={[
@@ -66,25 +70,26 @@ export const RevenueWidget = ({
 					},
 				]}
 				value={range}
-			/>
+				/>
 		),
-		[range, t]
+		[isRangeDisabled, range, t]
 	);
 
-	const title = estimate && !isWeekRange
-		? t('page.dashboard.widgets.revenue.title-with-month', {
-				month: estimate.monthLabel,
-			})
-		: t(
-				isWeekRange
-					? 'page.dashboard.widgets.revenue.title-week'
-					: 'page.dashboard.widgets.revenue.title'
-			);
-
-	const delta = formatRevenueDelta(estimate?.deltaPercent);
+	const title =
+		!hasMonthRevenueData && !hasWeekRevenueData
+			? t('page.dashboard.widgets.revenue.title')
+			: estimate && !isWeekRange
+			? t('page.dashboard.widgets.revenue.title-with-month', {
+					month: estimate.monthLabel,
+				})
+			: t(
+					isWeekRange
+						? 'page.dashboard.widgets.revenue.title-week'
+						: 'page.dashboard.widgets.revenue.title'
+				);
 
 	const handleKeyDown = useCallback(
-		(event: React.KeyboardEvent) => {
+		(event: KeyboardEvent<HTMLDivElement>) => {
 			if (!onClick) return;
 			if (event.key === 'Enter' || event.key === ' ') {
 				event.preventDefault();
@@ -94,93 +99,103 @@ export const RevenueWidget = ({
 		[onClick]
 	);
 
-	const body =
-		isLoading || !estimate ? (
-			<RevenueRoot>
-				<RevenueSkeleton height={52} variant='rectangular' width='70%' />
-				<RevenueSkeleton height={16} variant='rectangular' width='100%' />
-				<RevenueSkeleton height={16} variant='rectangular' width='82%' />
-			</RevenueRoot>
-		) : !hasRevenueData ? (
-			<RevenueEmpty>
-				<RevenueEmptyIcon>{estimate.currency}</RevenueEmptyIcon>
-				<RevenueEmptyTitle>
+	const body = isLoading ? (
+		<RevenueRoot
+			aria-labelledby={`${REVENUE_WIDGET_ID_PREFIX}-title`}
+			data-testid={`${REVENUE_WIDGET_ID_PREFIX}-loading`}
+			id={`${REVENUE_WIDGET_ID_PREFIX}-loading`}
+		>
+			<RevenueSkeleton height={52} variant='rectangular' width='68%' />
+			<RevenueSkeleton height={16} variant='rectangular' width='100%' />
+			<RevenueSkeleton height={16} variant='rectangular' width='82%' />
+		</RevenueRoot>
+	) : !hasRevenueData ? (
+		<RevenueRoot
+			aria-labelledby={`${REVENUE_WIDGET_ID_PREFIX}-title`}
+			data-testid={`${REVENUE_WIDGET_ID_PREFIX}-empty`}
+			id={`${REVENUE_WIDGET_ID_PREFIX}-empty`}
+		>
+			<RevenueEmpty
+				aria-labelledby={`${REVENUE_WIDGET_ID_PREFIX}-empty-title`}
+				data-testid={`${REVENUE_WIDGET_ID_PREFIX}-empty-shell`}
+				id={`${REVENUE_WIDGET_ID_PREFIX}-empty-shell`}
+			>
+				<RevenueEmptyIcon
+					aria-hidden='true'
+					data-testid={`${REVENUE_WIDGET_ID_PREFIX}-empty-icon`}
+					id={`${REVENUE_WIDGET_ID_PREFIX}-empty-icon`}
+				>
+					<RevenueEmptyIconGlyph>
+						<Wallet />
+					</RevenueEmptyIconGlyph>
+				</RevenueEmptyIcon>
+				<RevenueEmptyTitle
+					data-testid={`${REVENUE_WIDGET_ID_PREFIX}-empty-title`}
+					id={`${REVENUE_WIDGET_ID_PREFIX}-empty-title`}
+				>
 					{t('page.dashboard.widgets.revenue.empty-title')}
 				</RevenueEmptyTitle>
-				<RevenueEmptyBody>
+				<RevenueEmptyBody
+					data-testid={`${REVENUE_WIDGET_ID_PREFIX}-empty-body`}
+					id={`${REVENUE_WIDGET_ID_PREFIX}-empty-body`}
+				>
 					{t('page.dashboard.widgets.revenue.empty-body')}
 				</RevenueEmptyBody>
+				<RevenueEmptyButton
+					data-testid={`${REVENUE_WIDGET_ID_PREFIX}-empty-action`}
+					id={`${REVENUE_WIDGET_ID_PREFIX}-empty-action`}
+					onClick={onClick}
+					small
+					tertiary
+					type='button'
+				>
+					{t('page.dashboard.widgets.revenue.empty-action')}
+				</RevenueEmptyButton>
 			</RevenueEmpty>
-		) : (
-			<RevenueRoot
-				isInteractive={Boolean(onClick)}
-				isWide={isWide}
-				onClick={onClick}
-				onKeyDown={handleKeyDown}
-				role={onClick ? 'button' : undefined}
-				tabIndex={onClick ? 0 : undefined}
+		</RevenueRoot>
+	) : (
+		<RevenueRoot
+			aria-labelledby={`${REVENUE_WIDGET_ID_PREFIX}-title`}
+			data-testid={`${REVENUE_WIDGET_ID_PREFIX}-root`}
+			id={`${REVENUE_WIDGET_ID_PREFIX}-root`}
+			isInteractive={Boolean(onClick)}
+			isWide={isWide}
+			onClick={onClick}
+			onKeyDown={handleKeyDown}
+			role={onClick ? 'button' : undefined}
+			tabIndex={onClick ? 0 : undefined}
+		>
+			<RevenueDataState
+				data-testid={`${REVENUE_WIDGET_ID_PREFIX}-data`}
+				id={`${REVENUE_WIDGET_ID_PREFIX}-data`}
 			>
-				<RevenueValueRow>
-					<RevenueValue>
-						{formatRevenueCurrency(
-							displayAmount,
-							estimate.currency,
-							i18n.language
-						)}
-					</RevenueValue>
-					<StatusChip tone='neutral'>
-						{t('page.dashboard.widgets.revenue.estimate-chip')}
-					</StatusChip>
-					{!isWeekRange && delta ? (
-						<StatusChip tone={getRevenueDeltaTone(estimate.deltaPercent)}>
-							{delta}
-						</StatusChip>
-					) : null}
-				</RevenueValueRow>
-
-				<RevenueDetailGrid>
-					<RevenueDetailRow>
-						<RevenueDetailLabel>
-							{t('page.dashboard.widgets.revenue.completed')}
-						</RevenueDetailLabel>
-						<RevenueDetailValue>
-							{t('page.dashboard.widgets.revenue.sessions', {
-								count: completedCount,
-							})}
-						</RevenueDetailValue>
-					</RevenueDetailRow>
-					{isWeekRange ? (
-						<RevenueDetailRow>
-							<RevenueDetailLabel>
-								{t('page.dashboard.widgets.revenue.week-pipeline')}
-							</RevenueDetailLabel>
-							<RevenueDetailValue>
-								{t('page.dashboard.widgets.revenue.week-pipeline-value', {
-									cancelled: cancelledCount,
-									upcoming: upcomingCount,
-								})}
-							</RevenueDetailValue>
-						</RevenueDetailRow>
-					) : null}
-					<RevenueDetailRow>
-						<RevenueDetailLabel>
-							{t('page.dashboard.widgets.revenue.configured')}
-						</RevenueDetailLabel>
-						<RevenueDetailValue>
-							{t('page.dashboard.widgets.revenue.patients-ready', {
-								configured: estimate.configuredBillingCount,
-								missing: estimate.missingBillingCount,
-							})}
-						</RevenueDetailValue>
-					</RevenueDetailRow>
-				</RevenueDetailGrid>
-			</RevenueRoot>
-		);
+				<RevenueAmount
+					data-testid={`${REVENUE_WIDGET_ID_PREFIX}-amount`}
+					id={`${REVENUE_WIDGET_ID_PREFIX}-amount`}
+				>
+					{formatRevenueCurrency(
+						displayAmount,
+						estimate.currency,
+						i18n.language
+					)}
+				</RevenueAmount>
+				<RevenueSubline
+					data-testid={`${REVENUE_WIDGET_ID_PREFIX}-subline`}
+					id={`${REVENUE_WIDGET_ID_PREFIX}-subline`}
+				>
+					{t('page.dashboard.widgets.revenue.sessions-billed', {
+						count: completedCount,
+					})}
+				</RevenueSubline>
+			</RevenueDataState>
+		</RevenueRoot>
+	);
 
 	return (
 		<WidgetLayout
 			body={body}
 			headerActions={headerActions}
+			titleId={`${REVENUE_WIDGET_ID_PREFIX}-title`}
 			title={title}
 		/>
 	);

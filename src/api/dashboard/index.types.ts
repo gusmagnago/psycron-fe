@@ -104,6 +104,13 @@ export interface DashboardRevenueEstimate {
 	previousAmount: number;
 }
 
+export interface DashboardRevenueWeekEstimate {
+	amount: number;
+	completedSessionCount: number;
+	currency: string;
+	isEstimated: true;
+}
+
 export type DashboardActionCenterItemType =
 	| 'notification-failed'
 	| 'patient-duplicate'
@@ -170,5 +177,6 @@ export interface DashboardSummaryResponse {
 	};
 	tier: DashboardTier;
 	week: DashboardWeekMetrics;
+	weekRevenueEstimate: DashboardRevenueWeekEstimate;
 	weeklySeries: DashboardWeekSeriesDay[];
 }

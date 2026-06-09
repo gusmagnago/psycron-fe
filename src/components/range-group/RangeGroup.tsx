@@ -8,6 +8,7 @@ import type { RangeGroupProps } from './RangeGroup.types';
 
 export const RangeGroup = <Value extends string,>({
 	ariaLabel,
+	disabled = false,
 	idPrefix,
 	onChange,
 	options,
@@ -16,6 +17,7 @@ export const RangeGroup = <Value extends string,>({
 }: RangeGroupProps<Value>): ReactElement => (
 	<RangeGroupRoot
 		aria-label={ariaLabel}
+		aria-disabled={disabled}
 		groupSize={size}
 		id={`${idPrefix}-group`}
 		role='group'
@@ -30,8 +32,9 @@ export const RangeGroup = <Value extends string,>({
 					groupSize={size}
 					id={`${idPrefix}-${option.value}`}
 					isActive={isActive}
+					disabled={disabled}
 					key={option.value}
-					onClick={() => onChange(option.value)}
+					onClick={disabled ? undefined : () => onChange(option.value)}
 					small={size === 'small'}
 					tertiary
 					type='button'

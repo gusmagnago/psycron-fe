@@ -13,20 +13,3 @@ export const formatRevenueCurrency = (
 		return `${amount.toLocaleString(locale)} ${currency}`;
 	}
 };
-
-export const getRevenueDeltaTone = (
-	deltaPercent: number | null | undefined
-): 'neutral' | 'success' | 'warning' => {
-	if (deltaPercent === undefined || deltaPercent === null || deltaPercent === 0) {
-		return 'neutral';
-	}
-	return deltaPercent > 0 ? 'success' : 'warning';
-};
-
-export const formatRevenueDelta = (
-	deltaPercent: number | null | undefined
-): string | undefined => {
-	if (deltaPercent === undefined || deltaPercent === null) return undefined;
-	const sign = deltaPercent > 0 ? '+' : '';
-	return `${sign}${deltaPercent}%`;
-};

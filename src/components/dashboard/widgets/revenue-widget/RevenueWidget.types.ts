@@ -1,16 +1,12 @@
-import type { DashboardRevenueEstimate } from '@psycron/api/dashboard/index.types';
-
-export interface RevenueWeekEstimate {
-	amount: number;
-	cancelledCount: number;
-	completedCount: number;
-	upcomingCount: number;
-}
+import type {
+	DashboardRevenueEstimate,
+	DashboardRevenueWeekEstimate,
+} from '@psycron/api/dashboard/index.types';
 
 export interface RevenueWidgetProps {
 	colSpan?: number;
 	estimate?: DashboardRevenueEstimate;
 	isLoading?: boolean;
 	onClick?: () => void;
-	weekEstimate?: RevenueWeekEstimate;
+	weekEstimate?: DashboardRevenueWeekEstimate;
 }

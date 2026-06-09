@@ -56,6 +56,7 @@ import { useJupiterInsights } from './hooks/useJupiterInsights';
 import {
 	BentoGrid,
 	BentoGridWrapper,
+	DashboardPracticeSection,
 	DashboardRoot,
 	DashboardSection,
 	DashboardSectionLabel,
@@ -535,22 +536,7 @@ export const Dashboard = () => {
 							estimate={summary?.revenueEstimate}
 							isLoading={isSummaryLoading}
 							onClick={() => navigate(`../${PATIENTS}`)}
-							weekEstimate={{
-								amount:
-									summary?.revenueEstimate &&
-									summary.revenueEstimate.completedSessionCount > 0
-										? (summary.revenueEstimate.amount /
-												summary.revenueEstimate.completedSessionCount) *
-											(summary?.week.completedCount ??
-												metrics.weekCompletedCount)
-										: 0,
-								cancelledCount:
-									summary?.week.cancelledCount ?? metrics.weekCancelledCount,
-								completedCount:
-									summary?.week.completedCount ?? metrics.weekCompletedCount,
-								upcomingCount:
-									summary?.week.upcomingCount ?? metrics.weekUpcomingCount,
-							}}
+							weekEstimate={summary?.weekRevenueEstimate}
 						/>
 					</BentoTile>
 				);
@@ -677,7 +663,10 @@ export const Dashboard = () => {
 									</BentoGrid>
 								</DashboardSection>
 
-								<DashboardSection aria-labelledby='dashboard-zone-practice'>
+								<DashboardPracticeSection
+									aria-labelledby='dashboard-zone-practice'
+									id='dashboard-zone-practice-section'
+								>
 									<DashboardSectionLabel id='dashboard-zone-practice'>
 										{t('page.dashboard.zones.practice')}
 									</DashboardSectionLabel>
@@ -689,7 +678,7 @@ export const Dashboard = () => {
 												dayTileIds.length
 										)}
 									</BentoGrid>
-								</DashboardSection>
+								</DashboardPracticeSection>
 							</DashboardSections>
 						</BentoGridWrapper>
 					</SortableContext>

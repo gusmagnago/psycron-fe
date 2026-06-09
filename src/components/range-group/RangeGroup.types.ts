@@ -8,6 +8,7 @@ export interface RangeGroupOption<Value extends string = string> {
 
 export interface RangeGroupProps<Value extends string = string> {
 	ariaLabel: string;
+	disabled?: boolean;
 	idPrefix: string;
 	onChange: (value: Value) => void;
 	options: RangeGroupOption<Value>[];
