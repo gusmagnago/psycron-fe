@@ -4,7 +4,6 @@ export type DashboardTileId =
 	| 'greeting'
 	| 'notifications'
 	| 'pending-tasks'
-	| 'quick-actions'
 	| 'recent-patients'
 	| 'revenue'
 	| 'schedule'

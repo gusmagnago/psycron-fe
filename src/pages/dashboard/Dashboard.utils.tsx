@@ -26,12 +26,11 @@ import {
 import type { DashboardTileId, TileSpan } from './Dashboard.types';
 
 export const TILE_DESKTOP: Record<DashboardTileId, TileSpan> = {
-	'action-center': { col: 3, row: 2 },
+	'action-center': { col: 6, row: 4 },
 	glance: { col: 5, minRow: 4, row: 4 },
 	greeting: { col: 7, minRow: 4, row: 4 },
 	notifications: { col: 3, row: 2 },
 	'pending-tasks': { col: 3, row: 2 },
-	'quick-actions': { col: 3, row: 2 },
 	'recent-patients': { col: 6, row: 2 },
 	revenue: { col: 3, row: 2 },
 	schedule: { col: 6, row: 2 },
@@ -40,12 +39,11 @@ export const TILE_DESKTOP: Record<DashboardTileId, TileSpan> = {
 };
 
 export const TILE_TABLET: Record<DashboardTileId, TileSpan> = {
-	'action-center': { col: 3, row: 2 },
+	'action-center': { col: 6, row: 4 },
 	glance: { col: 6, minRow: 4, row: 4 },
 	greeting: { col: 6, minRow: 4, row: 4 },
 	notifications: { col: 6, row: 2 },
 	'pending-tasks': { col: 3, row: 2 },
-	'quick-actions': { col: 3, row: 2 },
 	'recent-patients': { col: 3, row: 2 },
 	revenue: { col: 3, row: 2 },
 	schedule: { col: 6, row: 2 },
@@ -70,7 +68,6 @@ export const TILE_MIN_HEIGHT: Record<DashboardTileId, number> = {
 	greeting: 480,
 	notifications: 220,
 	'pending-tasks': 220,
-	'quick-actions': 260,
 	'recent-patients': 260,
 	revenue: 220,
 	schedule: 400,

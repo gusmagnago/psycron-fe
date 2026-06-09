@@ -1263,7 +1263,8 @@
             "notification-failed": "Corrigir",
             "patient-duplicate": "Revisar",
             "recovery-needed": "Reagendar",
-            "schedule-conflict": "Resolver"
+            "schedule-conflict": "Resolver",
+            "open": "Abrir"
           },
           "items": {
             "notification-failed": "Notificação falhou",

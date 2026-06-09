@@ -20,7 +20,8 @@ import { capture } from '@psycron/analytics/posthog/events';
 import { PostHogEvent } from '@psycron/analytics/posthog/types';
 import type { DashboardActionTarget } from '@psycron/api/dashboard/index.types';
 import { BentoTile } from '@psycron/components/dashboard/bento-tile/BentoTile';
-// import { ActionCenterWidget } from '@psycron/components/dashboard/widgets/action-center-widget/ActionCenterWidget';
+import { ActionCenterWidget } from '@psycron/components/dashboard/widgets/action-center-widget/ActionCenterWidget';
+import type { ActionCenterWidgetRow } from '@psycron/components/dashboard/widgets/action-center-widget/ActionCenterWidget.types';
 import { GlanceCalendarIcon } from '@psycron/components/dashboard/widgets/glance-widget/GlanceCalendarIcon';
 import { GlanceWidget } from '@psycron/components/dashboard/widgets/glance-widget/GlanceWidget';
 import type { GlanceStat } from '@psycron/components/dashboard/widgets/glance-widget/GlanceWidget.types';
@@ -30,8 +31,7 @@ import { NotificationsWidget } from '@psycron/components/dashboard/widgets/notif
 import { PendingTasksWidget } from '@psycron/components/dashboard/widgets/pending-tasks-widget/PendingTasksWidget';
 import type { PendingTask } from '@psycron/components/dashboard/widgets/pending-tasks-widget/PendingTasksWidget.types';
 import { PracticeReadinessWidget } from '@psycron/components/dashboard/widgets/practice-readiness-widget/PracticeReadinessWidget';
-// import { QuickActionsWidget } from '@psycron/components/dashboard/widgets/quick-actions-widget/QuickActionsWidget';
-// import { getActionTone } from '@psycron/components/dashboard/widgets/quick-actions-widget/QuickActionsWidget.utils';
+import { getActionTone } from '@psycron/components/dashboard/widgets/quick-actions-widget/QuickActionsWidget.utils';
 import { RecentPatientsWidget } from '@psycron/components/dashboard/widgets/recent-patients-widget/RecentPatientsWidget';
 import type { RecentPatient } from '@psycron/components/dashboard/widgets/recent-patients-widget/RecentPatientsWidget.types';
 import { RevenueWidget } from '@psycron/components/dashboard/widgets/revenue-widget/RevenueWidget';
@@ -45,10 +45,10 @@ import useViewport from '@psycron/hooks/useViewport';
 import type { IWeekSlot } from '@psycron/pages/availability/week/AvailabilityWeekPage.types';
 import { AvailabilityWeekDrawer } from '@psycron/pages/availability/week/drawer/AvailabilityWeekDrawer';
 import {
+	AVAILABILITYSETTINGS,
 	AVAILABILITYWEEK_BASE,
 	PATIENTPROFILE,
 	PATIENTS,
-	AVAILABILITYSETTINGS,
 } from '@psycron/pages/urls';
 import { format, parseISO } from 'date-fns';
 
@@ -68,7 +68,7 @@ import {
 import type { DashboardTileId } from './Dashboard.types';
 import {
 	getFixedTileSpan,
-	// getQuickActionIcon,
+	getQuickActionIcon,
 	getTargetNav,
 	MAX_TILE_COL_SPAN,
 	MAX_TILE_COL_SPAN_BY_ID,
@@ -84,13 +84,14 @@ const HERO_TILE_IDS = [
 	'glance',
 ] as const satisfies readonly DashboardTileId[];
 const NEEDS_TILE_IDS = [
-	'quick-actions',
 	'practice-readiness',
 	'action-center',
-	'pending-tasks',
-	'notifications',
 ] as const satisfies readonly DashboardTileId[];
-const DAY_TILE_IDS = ['schedule'] as const satisfies readonly DashboardTileId[];
+const DAY_TILE_IDS = [
+	'schedule',
+	'notifications',
+	'pending-tasks',
+] as const satisfies readonly DashboardTileId[];
 const PRACTICE_TILE_IDS = [
 	'revenue',
 	'session-analytics',
@@ -283,30 +284,79 @@ export const Dashboard = () => {
 		]
 	);
 
-	// const quickActions = useMemo(
-	// 	() =>
-	// 		(summary?.quickActions ?? []).map((action) => ({
-	// 			ariaLabel: t(action.labelKey),
-	// 			icon: getQuickActionIcon(action.id),
-	// 			id: action.id,
-	// 			label: t(action.labelKey),
-	// 			description: action.descriptionKey
-	// 				? t(action.descriptionKey, action.descriptionValues)
-	// 				: undefined,
-	// 			onClick: () => {
-	// 				capture(PostHogEvent.DashboardQuickActionClicked, {
-	// 					action_id: action.id,
-	// 					source: 'dashboard-summary',
-	// 					tier: summary?.tier ?? 'unknown',
-	// 					tile_id: 'quick-actions',
-	// 				});
-	// 				navigateToDashboardTarget(action.target);
-	// 			},
-	// 			tier: summary?.tier ?? 'onboarding',
-	// 			tone: getActionTone(action.id),
-	// 		})),
-	// 	[navigateToDashboardTarget, summary?.quickActions, summary?.tier, t]
-	// );
+	const actionCenterItems = useMemo<ActionCenterWidgetRow[]>(
+		() => [
+			...(summary?.actionCenter.items ?? [])
+				.slice()
+				.sort((a, b) => a.rank - b.rank)
+					.map((item) => ({
+						actionLabel: t(
+							`page.dashboard.widgets.action-center.actions.${item.type}`
+						),
+					ariaLabel: `${t(
+						'page.dashboard.widgets.action-center.action-aria',
+						{
+							item: t(item.labelKey),
+						}
+					)}. ${t('page.dashboard.widgets.action-center.item-count', {
+						count: item.count,
+					})}`,
+					id: `alert-${item.type}`,
+					icon: <TriangleAlert />,
+					label: t(item.labelKey),
+					meta: t('page.dashboard.widgets.action-center.item-count', {
+						count: item.count,
+					}),
+					onClick: () => {
+						capture(PostHogEvent.DashboardActionCenterItemClicked, {
+							count: item.count,
+							item_type: item.type,
+							source: 'dashboard-summary',
+							tier: summary?.tier ?? 'unknown',
+							tile_id: 'action-center',
+						});
+						navigateToDashboardTarget(item.target);
+					},
+					tone: item.tone,
+					variant: 'alert' as const,
+				})),
+			...(summary?.quickActions ?? [])
+				.slice()
+				.sort((a, b) => a.rank - b.rank)
+					.map((action) => ({
+					actionLabel: t(
+						'page.dashboard.widgets.action-center.actions.open'
+					),
+					ariaLabel: action.descriptionKey
+						? `${t(action.labelKey)}. ${t(action.descriptionKey, action.descriptionValues)}`
+						: t(action.labelKey),
+					id: `quick-${action.id}`,
+					icon: getQuickActionIcon(action.id),
+					label: t(action.labelKey),
+					meta: action.descriptionKey
+						? t(action.descriptionKey, action.descriptionValues)
+						: undefined,
+					onClick: () => {
+						capture(PostHogEvent.DashboardQuickActionClicked, {
+							action_id: action.id,
+							source: 'dashboard-summary',
+							tier: summary?.tier ?? 'unknown',
+							tile_id: 'action-center',
+						});
+						navigateToDashboardTarget(action.target);
+					},
+					tone: getActionTone(action.id),
+					variant: 'quick' as const,
+				})),
+		],
+		[
+			navigateToDashboardTarget,
+			summary?.actionCenter.items,
+			summary?.quickActions,
+			summary?.tier,
+			t,
+		]
+	);
 
 	const pendingTasks = useMemo<PendingTask[]>(
 		() =>
@@ -454,17 +504,16 @@ export const Dashboard = () => {
 					</BentoTile>
 				);
 
-			// TODO: file:///Users/gusmagnago/Documents/Obsidian%20Vault/Psycron/04%20Engineering/UX%20Revamp/dashboard-v4-preview.html CHECK THAT IT BECOMES ONLY ACTION CENTER
-			// case 'quick-actions':
-			// 	return (
-			// 		<BentoTile {...commonProps} key={tileId}>
-			// 			<QuickActionsWidget
-			// 				actions={quickActions}
-			// 				colSpan={col}
-			// 				isLoading={isSummaryLoading}
-			// 			/>
-			// 		</BentoTile>
-			// 	);
+			case 'action-center':
+				return (
+					<BentoTile {...commonProps} key={tileId}>
+						<ActionCenterWidget
+							isLoading={isSummaryLoading}
+							items={actionCenterItems}
+							summary={summary?.actionCenter}
+						/>
+					</BentoTile>
+				);
 
 			case 'practice-readiness': {
 				const missingContactCount =
@@ -613,24 +662,6 @@ export const Dashboard = () => {
 						/>
 					</BentoTile>
 				);
-			// TODO: file:///Users/gusmagnago/Documents/Obsidian%20Vault/Psycron/04%20Engineering/UX%20Revamp/dashboard-v4-preview.html CHECK THAT IT BECOMES ONLY ACTION CENTER
-			// case 'action-center':
-			// 	return (
-			// 		<BentoTile {...commonProps} key={tileId}>
-			// 			<ActionCenterWidget
-			// 				isLoading={isSummaryLoading}
-			// 				onItemClick={(item) => {
-			// 					capture(PostHogEvent.DashboardActionCenterItemClicked, {
-			// 						count: item.count,
-			// 						item_type: item.type,
-			// 						tier: summary?.tier ?? 'unknown',
-			// 					});
-			// 					navigateToDashboardTarget(item.target);
-			// 				}}
-			// 				summary={summary?.actionCenter}
-			// 			/>
-			// 		</BentoTile>
-			// 	);
 
 			case 'recent-patients':
 				return (

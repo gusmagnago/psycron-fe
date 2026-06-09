@@ -12,7 +12,7 @@ import type {
 import type { UseDashboardLayoutReturn } from './useDashboardLayout.types';
 
 const STORAGE_KEY = '_psy_dashboard_layout';
-const STORAGE_VERSION = 4;
+const STORAGE_VERSION = 5;
 const MAX_HEIGHT_DELTA = 4;
 const MIN_HEIGHT_DELTA = -1;
 
@@ -21,15 +21,14 @@ const MIN_HEIGHT_DELTA = -1;
 const DEFAULT_LAYOUT: DashboardLayoutState = [
 	{ id: 'greeting', order: 0, visible: true },
 	{ id: 'glance', order: 1, visible: true },
-	{ id: 'quick-actions', order: 2, visible: true },
-	{ id: 'schedule', order: 3, visible: true },
-	{ id: 'practice-readiness', order: 4, visible: true },
-	{ id: 'revenue', order: 5, visible: true },
+	{ id: 'practice-readiness', order: 2, visible: true },
+	{ id: 'action-center', order: 3, visible: true },
+	{ id: 'schedule', order: 4, visible: true },
+	{ id: 'notifications', order: 5, visible: true },
 	{ id: 'pending-tasks', order: 6, visible: true },
-	{ id: 'notifications', order: 7, visible: true },
-	{ id: 'action-center', order: 8, visible: true },
-	{ id: 'recent-patients', order: 9, visible: true },
-	{ id: 'session-analytics', order: 10, visible: true },
+	{ id: 'revenue', order: 7, visible: true },
+	{ id: 'recent-patients', order: 8, visible: true },
+	{ id: 'session-analytics', order: 9, visible: true },
 ];
 
 interface StoredDashboardLayout {

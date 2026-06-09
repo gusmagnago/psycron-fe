@@ -523,7 +523,9 @@ export type PostHogEventProps = {
 	[PostHogEvent.DashboardActionCenterItemClicked]: {
 		count: number;
 		item_type: string;
+		source: 'dashboard-summary';
 		tier: string;
+		tile_id: string;
 	};
 	[PostHogEvent.DashboardScheduleSlotClicked]: {
 		date: string;
