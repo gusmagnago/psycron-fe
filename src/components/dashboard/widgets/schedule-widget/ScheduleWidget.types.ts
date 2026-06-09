@@ -2,15 +2,14 @@ import type { IWeekSlot } from '@psycron/pages/availability/week/AvailabilityWee
 
 export interface ScheduleWidgetProps {
 	isLoading: boolean;
+	onEmptyStateClick: () => void;
 	onSlotClick: (slot: IWeekSlot) => void;
+	onWeekDayClick: (date: string) => void;
 	slots: IWeekSlot[];
 	timezone?: string;
 	weekEnd?: string;
-	weekHref?: string;
 	weekSlotsByDay?: Record<string, IWeekSlot[]>;
 	weekStart?: string;
 }
 
-export type SlotStatusChip = 'confirmed' | 'done' | 'live' | 'pending';
-
-export type ViewMode = 'today' | 'week';
+export type ScheduleSlotStatus = 'cancelled' | 'confirmed';

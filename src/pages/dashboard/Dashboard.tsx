@@ -27,9 +27,6 @@ import { GlanceWidget } from '@psycron/components/dashboard/widgets/glance-widge
 import type { GlanceStat } from '@psycron/components/dashboard/widgets/glance-widget/GlanceWidget.types';
 import { getNextBookedSlot } from '@psycron/components/dashboard/widgets/glance-widget/GlanceWidget.utils';
 import { GreetingWidget } from '@psycron/components/dashboard/widgets/greeting-widget/GreetingWidget';
-import { NotificationsWidget } from '@psycron/components/dashboard/widgets/notifications-widget/NotificationsWidget';
-import { PendingTasksWidget } from '@psycron/components/dashboard/widgets/pending-tasks-widget/PendingTasksWidget';
-import type { PendingTask } from '@psycron/components/dashboard/widgets/pending-tasks-widget/PendingTasksWidget.types';
 import { PracticeReadinessWidget } from '@psycron/components/dashboard/widgets/practice-readiness-widget/PracticeReadinessWidget';
 import { getActionTone } from '@psycron/components/dashboard/widgets/quick-actions-widget/QuickActionsWidget.utils';
 import { RecentPatientsWidget } from '@psycron/components/dashboard/widgets/recent-patients-widget/RecentPatientsWidget';
@@ -83,14 +80,13 @@ const HERO_TILE_IDS = [
 	'greeting',
 	'glance',
 ] as const satisfies readonly DashboardTileId[];
+// TODO: revisit the dashboard notifications tile later; keep it hidden for now.
 const NEEDS_TILE_IDS = [
 	'practice-readiness',
 	'action-center',
 ] as const satisfies readonly DashboardTileId[];
 const DAY_TILE_IDS = [
 	'schedule',
-	'notifications',
-	'pending-tasks',
 ] as const satisfies readonly DashboardTileId[];
 const PRACTICE_TILE_IDS = [
 	'revenue',
@@ -358,30 +354,6 @@ export const Dashboard = () => {
 		]
 	);
 
-	const pendingTasks = useMemo<PendingTask[]>(
-		() =>
-			(summary?.pendingTasks ?? []).map((task) => ({
-				count: task.count,
-				description: task.descriptionKey
-					? t(task.descriptionKey, task.descriptionValues)
-					: undefined,
-				label: t(task.labelKey),
-				onClick: () => {
-					capture(PostHogEvent.DashboardPendingTaskClicked, {
-						count: task.count,
-						source: 'dashboard-summary',
-						task_type: task.type,
-						tier: summary?.tier ?? 'unknown',
-						tile_id: 'pending-tasks',
-					});
-					navigateToDashboardTarget(task.target);
-				},
-				tier: summary?.tier ?? 'onboarding',
-				type: task.type,
-			})),
-		[navigateToDashboardTarget, summary?.pendingTasks, summary?.tier, t]
-	);
-
 	const recentPatients = useMemo<RecentPatient[]>(
 		() =>
 			(summary?.recentPatients ?? []).map((patient) => ({
@@ -486,6 +458,7 @@ export const Dashboard = () => {
 					<BentoTile {...commonProps} key={tileId}>
 						<ScheduleWidget
 							isLoading={isLoading}
+							onEmptyStateClick={() => navigate(`../${AVAILABILITYSETTINGS}`)}
 							onSlotClick={(slot) => {
 								capture(PostHogEvent.DashboardScheduleSlotClicked, {
 									date: slot.date,
@@ -494,10 +467,12 @@ export const Dashboard = () => {
 								});
 								setSelectedSlot(slot);
 							}}
+							onWeekDayClick={(date) => {
+								navigate(`../${AVAILABILITYWEEK_BASE}/${date}`);
+							}}
 							slots={todaySlots}
 							timezone={timezone}
 							weekEnd={weekEnd}
-							weekHref={`${AVAILABILITYWEEK_BASE}/${weekStart}`}
 							weekSlotsByDay={weekSlotsByDay}
 							weekStart={weekStart}
 						/>
@@ -580,29 +555,6 @@ export const Dashboard = () => {
 					</BentoTile>
 				);
 
-			case 'notifications':
-				return (
-					<BentoTile {...commonProps} key={tileId}>
-						<NotificationsWidget
-							colSpan={col}
-							isLoading={isSummaryLoading}
-							onStatusClick={(status) => {
-								if (status) {
-									capture(PostHogEvent.DashboardNotificationStatusClicked, {
-										status: status as 'FAILED' | 'PENDING' | 'SENT',
-										tier: summary?.tier ?? 'unknown',
-									});
-								}
-								navigateToDashboardTarget({ status, type: 'notifications' });
-							}}
-							onViewFeed={() =>
-								navigateToDashboardTarget({ type: 'notifications' })
-							}
-							summary={summary?.notifications24h}
-						/>
-					</BentoTile>
-				);
-
 			case 'session-analytics': {
 				const { row: sessionAnalyticsRowSpan } = getSpan('session-analytics');
 				return (
@@ -651,17 +603,6 @@ export const Dashboard = () => {
 					</BentoTile>
 				);
 			}
-
-			case 'pending-tasks':
-				return (
-					<BentoTile {...commonProps} key={tileId}>
-						<PendingTasksWidget
-							colSpan={col}
-							isLoading={isSummaryLoading}
-							tasks={pendingTasks}
-						/>
-					</BentoTile>
-				);
 
 			case 'recent-patients':
 				return (

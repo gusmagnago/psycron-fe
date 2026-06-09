@@ -52,7 +52,9 @@ export const ActivePatientsWidget = ({
 	return (
 		<>
 			<WidgetHeader>
-				<WidgetTitle>{t('page.dashboard.widgets.active-patients.title')}</WidgetTitle>
+				<WidgetTitle component='h2'>
+					{t('page.dashboard.widgets.active-patients.title')}
+				</WidgetTitle>
 			</WidgetHeader>
 
 			{patients.length === 0 ? (

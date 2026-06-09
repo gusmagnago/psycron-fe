@@ -1,6 +1,7 @@
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 import { Box } from '@mui/material';
+import { Text } from '@psycron/components/text/Text';
 import { bentoTileTheme } from '@psycron/theme/dashboard/bentoTile.theme';
 import { palette } from '@psycron/theme/palette/palette.theme';
 import {
@@ -154,12 +155,13 @@ export const BentoTileHeaderIcon = styled(Box)`
 	justify-content: center;
 `;
 
-export const BentoTileHeaderTitle = styled(Box)`
+export const BentoTileHeaderTitle = styled(Text)`
 	color: ${palette.text.primary};
 	font-size: ${bentoTileTheme.size.headerTitleFont};
 	font-weight: 700;
 	line-height: 1.2;
 	min-width: 0;
+  padding: 0;
 `;
 
 export const BentoTileEditFloat = styled(motion.div)`

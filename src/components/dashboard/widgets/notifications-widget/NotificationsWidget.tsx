@@ -110,6 +110,8 @@ export const NotificationsWidget = ({
 		<WidgetLayout
 			body={body}
 			footer={footer}
+			// Review later: keep the 24h title until we decide whether this surface
+			// should be renamed to Communications in the dashboard shell.
 			title={t('page.dashboard.widgets.notifications.title')}
 		/>
 	);

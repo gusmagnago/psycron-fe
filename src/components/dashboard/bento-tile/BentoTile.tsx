@@ -52,7 +52,7 @@ export const BentoTile = ({
 		transition,
 	} = useSortable({ id, disabled: !isEditMode });
 
-	const { actions, expandedContent, footer, headerActions, icon, title } =
+	const { actions, expandedContent, footer, headerActions, icon, title, titleId } =
 		chrome;
 
 	const sortableStyle = useMemo(
@@ -178,6 +178,7 @@ export const BentoTile = ({
 							<BentoTileHeaderChrome
 								headerActions={headerActions}
 								icon={icon}
+								titleId={titleId}
 								title={title}
 							/>
 							<BentoTileBody>{children}</BentoTileBody>

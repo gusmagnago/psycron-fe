@@ -14,6 +14,7 @@ export interface BentoTileChromeState {
 	headerActions?: ReactNode;
 	icon?: ReactNode;
 	title?: ReactNode;
+	titleId?: string;
 }
 
 interface BentoTileChromeContextValue {
@@ -29,6 +30,7 @@ export const useBentoTileChrome = ({
 	footer,
 	headerActions,
 	icon,
+	titleId,
 	title,
 }: BentoTileChromeState): void => {
 	const context = useContext(BentoTileChromeContext);
@@ -42,11 +44,12 @@ export const useBentoTileChrome = ({
 			footer,
 			headerActions,
 			icon,
+			titleId,
 			title,
 		});
 
 		return () => {
 			context.setChrome({});
 		};
-	}, [actions, context, expandedContent, footer, headerActions, icon, title]);
+	}, [actions, context, expandedContent, footer, headerActions, icon, titleId, title]);
 };

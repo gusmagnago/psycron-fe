@@ -991,13 +991,11 @@
         "glance": "At a glance",
         "greeting": "Greeting",
         "jupiter-insights": "Júpiter insights",
-        "notifications": "Notifications",
         "quick-actions": "Quick actions",
         "active-patients": "Active patients",
         "practice-readiness": "Practice readiness",
         "revenue": "Revenue estimate",
         "session-analytics": "Session Analytics",
-        "pending-tasks": "Pending tasks",
         "recent-patients": "Recent patients"
       },
       "zones": {
@@ -1044,30 +1042,26 @@
           "none": "None"
         },
         "schedule": {
-          "title": "Today",
-          "title-week": "Week",
           "title-label": "Today's schedule",
-          "title-week-label": "This week's schedule",
-          "range-aria-label": "Choose schedule range",
-          "count": "{{count}} sessions",
-          "empty": "No sessions scheduled for today",
+          "empty-title": "No sessions scheduled today",
+          "empty-body": "Open your availability so booked sessions can appear here.",
+          "empty-action": "Set availability",
           "unknown-patient": "Unknown patient",
-          "sessions-today": "sessions today",
-          "sessions-week": "sessions this week",
-          "view-week": "View week",
+          "today-summary_one": "{{count}} booked today",
+          "today-summary_other": "{{count}} booked today",
+          "week-summary_one": "{{count}} booked this week",
+          "week-summary_other": "{{count}} booked this week",
           "online": "Online",
           "in-person": "In-person",
           "min": "min",
+          "rows-aria": "Today's booked sessions",
+          "week-strip-aria": "Bookable days in the current week",
+          "slot-aria": "{{time}} · {{name}} · {{mode}}",
+          "weekday-chip-aria_one": "{{day}}, {{count}} booked session",
+          "weekday-chip-aria_other": "{{day}}, {{count}} booked sessions",
           "status": {
-            "live": "LIVE",
-            "done": "Done",
             "confirmed": "Confirmed",
-            "pending": "Pending"
-          },
-          "info": {
-            "title": "Today's schedule",
-            "description": "Shows your booked sessions for today and this week, with live status tracking so you always know what's coming next.",
-            "future": "We'll surface prep notes per patient, smart conflict alerts, and one-tap rescheduling suggestions."
+            "cancelled": "Cancelled"
           }
         },
         "jupiter-insights": {
@@ -1311,28 +1305,6 @@
             "title": "Session analytics",
             "description": "Tracks your session completion rate, cancellations, and session volume over time — your practice health at a glance.",
             "future": "Trend analysis, no-show prediction, and session pace benchmarks compared to similar practices."
-          }
-        },
-        "pending-tasks": {
-          "title": "Pending Tasks",
-          "cancellation-followups": "Cancellation follow-ups",
-          "descriptions": {
-            "cancellation-followups": "{{count}} need recovery",
-            "missing-billing": "{{count}} patient(s) to configure",
-            "missing-contact": "{{count}} patient(s) to update",
-            "reminder-delivery": "{{count}} need review",
-            "setup-availability": "Required before bookings"
-          },
-          "empty": "Nothing requires your attention right now.",
-          "missing-billing": "Patients missing billing",
-          "missing-contact": "Patients missing contact info",
-          "reminder-delivery": "Reminder delivery issues",
-          "setup-availability": "Finish schedule setup",
-          "empty-heading": "All clear",
-          "info": {
-            "title": "Pending tasks",
-            "description": "Surfaces admin items that need your attention to keep your practice running smoothly — from missing billing to unresolved cancellations.",
-            "future": "Priority scoring, task delegation for group practices, and completion streaks to keep your admin momentum."
           }
         },
         "recent-patients": {

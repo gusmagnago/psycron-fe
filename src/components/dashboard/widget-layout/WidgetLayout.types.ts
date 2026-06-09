@@ -8,4 +8,5 @@ export interface WidgetLayoutProps {
 	headerActions?: ReactNode;
 	icon?: ReactNode;
 	title?: ReactNode;
+	titleId?: string;
 }

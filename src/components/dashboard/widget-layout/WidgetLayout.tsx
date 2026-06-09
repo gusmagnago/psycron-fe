@@ -11,9 +11,18 @@ export const WidgetLayout = ({
 	footer,
 	headerActions,
 	icon,
+	titleId,
 	title,
 }: WidgetLayoutProps): ReactElement => {
-	useBentoTileChrome({ actions, expandedContent, footer, headerActions, icon, title });
+	useBentoTileChrome({
+		actions,
+		expandedContent,
+		footer,
+		headerActions,
+		icon,
+		title,
+		titleId,
+	});
 
 	return <WidgetLayoutRoot>{body}</WidgetLayoutRoot>;
 };

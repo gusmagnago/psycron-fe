@@ -991,13 +991,11 @@
         "glance": "Resumo rápido",
         "greeting": "Saudação",
         "jupiter-insights": "Insights da Júpiter",
-        "notifications": "Notificações",
         "quick-actions": "Ações rápidas",
         "active-patients": "Pacientes ativos",
         "practice-readiness": "Preparação da prática",
         "revenue": "Receita estimada",
         "session-analytics": "Análise de sessões",
-        "pending-tasks": "Tarefas pendentes",
         "recent-patients": "Pacientes recentes"
       },
       "zones": {
@@ -1044,30 +1042,26 @@
           "none": "Nenhuma"
         },
         "schedule": {
-          "title": "Hoje",
-          "title-week": "Semana",
           "title-label": "Agenda de hoje",
-          "title-week-label": "Agenda desta semana",
-          "range-aria-label": "Escolher período da agenda",
-          "count": "{{count}} sessões",
-          "empty": "Nenhuma sessão agendada para hoje",
+          "empty-title": "Nenhuma sessão agendada hoje",
+          "empty-body": "Abra sua disponibilidade para que as sessões agendadas apareçam aqui.",
+          "empty-action": "Configurar agenda",
           "unknown-patient": "Paciente desconhecido",
-          "sessions-today": "sessões hoje",
-          "sessions-week": "sessões esta semana",
-          "view-week": "Ver semana",
+          "today-summary_one": "{{count}} sessão agendada hoje",
+          "today-summary_other": "{{count}} sessões agendadas hoje",
+          "week-summary_one": "{{count}} sessão agendada esta semana",
+          "week-summary_other": "{{count}} sessões agendadas esta semana",
           "online": "Online",
           "in-person": "Presencial",
           "min": "min",
+          "rows-aria": "Sessões agendadas de hoje",
+          "week-strip-aria": "Dias reserváveis na semana atual",
+          "slot-aria": "{{time}} · {{name}} · {{mode}}",
+          "weekday-chip-aria_one": "{{day}}, {{count}} sessão agendada",
+          "weekday-chip-aria_other": "{{day}}, {{count}} sessões agendadas",
           "status": {
-            "live": "AO VIVO",
-            "done": "Concluído",
             "confirmed": "Confirmado",
-            "pending": "Pendente"
-          },
-          "info": {
-            "title": "Agenda de hoje",
-            "description": "Mostra suas sessões agendadas para hoje e esta semana, com rastreamento de status em tempo real.",
-            "future": "Notas de preparação por paciente, alertas de conflito inteligentes e sugestões de reagendamento em um toque."
+            "cancelled": "Cancelado"
           }
         },
         "jupiter-insights": {
@@ -1311,28 +1305,6 @@
             "title": "Análise de sessões",
             "description": "Acompanha sua taxa de conclusão de sessões, cancelamentos e volume ao longo do tempo — a saúde da sua prática em tempo real.",
             "future": "Análise de tendências, previsão de faltas e benchmarks de ritmo comparados a práticas semelhantes."
-          }
-        },
-        "pending-tasks": {
-          "title": "Tarefas Pendentes",
-          "cancellation-followups": "Acompanhar cancelamentos",
-          "descriptions": {
-            "cancellation-followups": "{{count}} precisam de recuperação",
-            "missing-billing": "{{count}} paciente(s) para configurar",
-            "missing-contact": "{{count}} paciente(s) para atualizar",
-            "reminder-delivery": "{{count}} exigem revisão",
-            "setup-availability": "Obrigatório antes das reservas"
-          },
-          "empty": "Nenhuma tarefa pendente no momento.",
-          "missing-billing": "Pacientes sem cobrança",
-          "missing-contact": "Pacientes sem contato",
-          "reminder-delivery": "Problemas nos lembretes",
-          "setup-availability": "Concluir agenda",
-          "empty-heading": "Tudo certo",
-          "info": {
-            "title": "Tarefas pendentes",
-            "description": "Exibe itens administrativos que precisam de atenção para manter sua prática funcionando — desde cobrança faltante até cancelamentos não resolvidos.",
-            "future": "Pontuação de prioridade, delegação de tarefas para práticas em grupo e sequências de conclusão para manter o ritmo."
           }
         },
         "recent-patients": {

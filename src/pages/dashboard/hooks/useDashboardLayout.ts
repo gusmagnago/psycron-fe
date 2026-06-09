@@ -24,11 +24,9 @@ const DEFAULT_LAYOUT: DashboardLayoutState = [
 	{ id: 'practice-readiness', order: 2, visible: true },
 	{ id: 'action-center', order: 3, visible: true },
 	{ id: 'schedule', order: 4, visible: true },
-	{ id: 'notifications', order: 5, visible: true },
-	{ id: 'pending-tasks', order: 6, visible: true },
-	{ id: 'revenue', order: 7, visible: true },
-	{ id: 'recent-patients', order: 8, visible: true },
-	{ id: 'session-analytics', order: 9, visible: true },
+	{ id: 'revenue', order: 5, visible: true },
+	{ id: 'recent-patients', order: 6, visible: true },
+	{ id: 'session-analytics', order: 7, visible: true },
 ];
 
 interface StoredDashboardLayout {

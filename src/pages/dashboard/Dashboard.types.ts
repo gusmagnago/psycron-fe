@@ -2,8 +2,6 @@ export type DashboardTileId =
 	| 'action-center'
 	| 'glance'
 	| 'greeting'
-	| 'notifications'
-	| 'pending-tasks'
 	| 'recent-patients'
 	| 'revenue'
 	| 'schedule'
