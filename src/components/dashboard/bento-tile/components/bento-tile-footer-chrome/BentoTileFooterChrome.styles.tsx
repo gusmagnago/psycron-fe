@@ -21,6 +21,7 @@ export const BentoTileFooterSlot = styled(Box)`
 export const BentoTileActionsSlot = styled(Box)`
 	align-items: center;
 	display: flex;
+	flex: 1;
 	flex-wrap: wrap;
 	gap: ${spacing.xs};
 	justify-content: flex-end;

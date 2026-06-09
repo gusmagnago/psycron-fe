@@ -144,18 +144,27 @@ export const PracticeReadinessWidget = ({
 	);
 
 	const body = isLoading ? (
-		<ReadinessRoot>
+		<ReadinessRoot
+			data-testid='dashboard-practice-readiness-actions'
+			id='dashboard-practice-readiness-actions'
+		>
 			<Skeleton height={56} width='100%' />
 			<Skeleton height={56} width='100%' />
 			<Skeleton height={56} width='100%' />
 		</ReadinessRoot>
 	) : (
-		<ReadinessRoot>
+		<ReadinessRoot
+			data-testid='dashboard-practice-readiness-actions'
+			id='dashboard-practice-readiness-actions'
+		>
 			<ReadinessSegments>
 				{segments.map((segment) => {
 					const tone = getSegmentTone(segment.percentage);
 					return (
 						<ReadinessRow
+							aria-label={segment.title}
+							data-testid={`dashboard-practice-readiness-segment-${segment.id}`}
+							id={`dashboard-practice-readiness-segment-${segment.id}`}
 							key={segment.id}
 							onClick={() => onSegmentAction(segment.id)}
 							type='button'
@@ -181,7 +190,11 @@ export const PracticeReadinessWidget = ({
 		<WidgetLayout
 			actions={
 				!isLoading && primary ? (
-					<Button fullWidth tertiary variant='contained' onClick={() => onSegmentAction(primary)}>
+					<Button
+						tertiary
+						variant='contained'
+						onClick={() => onSegmentAction(primary)}
+					>
 						{`${t(`page.dashboard.widgets.practice-readiness.cta.${primary}`)} →`}
 					</Button>
 				) : undefined

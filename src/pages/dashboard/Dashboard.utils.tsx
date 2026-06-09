@@ -27,7 +27,6 @@ import type { DashboardTileId, TileSpan } from './Dashboard.types';
 
 export const TILE_DESKTOP: Record<DashboardTileId, TileSpan> = {
 	'action-center': { col: 3, row: 2 },
-	'billing-readiness': { col: 3, row: 2 },
 	glance: { col: 5, minRow: 4, row: 4 },
 	greeting: { col: 7, minRow: 4, row: 4 },
 	notifications: { col: 3, row: 2 },
@@ -36,12 +35,12 @@ export const TILE_DESKTOP: Record<DashboardTileId, TileSpan> = {
 	'recent-patients': { col: 6, row: 2 },
 	revenue: { col: 3, row: 2 },
 	schedule: { col: 6, row: 2 },
+	'practice-readiness': { col: 6, row: 2 },
 	'session-analytics': { col: 12, row: 3 },
 };
 
 export const TILE_TABLET: Record<DashboardTileId, TileSpan> = {
 	'action-center': { col: 3, row: 2 },
-	'billing-readiness': { col: 3, row: 2 },
 	glance: { col: 6, minRow: 4, row: 4 },
 	greeting: { col: 6, minRow: 4, row: 4 },
 	notifications: { col: 6, row: 2 },
@@ -50,6 +49,7 @@ export const TILE_TABLET: Record<DashboardTileId, TileSpan> = {
 	'recent-patients': { col: 3, row: 2 },
 	revenue: { col: 3, row: 2 },
 	schedule: { col: 6, row: 2 },
+	'practice-readiness': { col: 3, row: 2 },
 	'session-analytics': { col: 6, row: 2 },
 };
 
@@ -66,7 +66,6 @@ export const MAX_TILE_ROW_SPAN_BY_ID: Partial<Record<DashboardTileId, number>> =
 
 export const TILE_MIN_HEIGHT: Record<DashboardTileId, number> = {
 	'action-center': 220,
-	'billing-readiness': 180,
 	glance: 480,
 	greeting: 480,
 	notifications: 220,
@@ -75,6 +74,7 @@ export const TILE_MIN_HEIGHT: Record<DashboardTileId, number> = {
 	'recent-patients': 260,
 	revenue: 220,
 	schedule: 400,
+	'practice-readiness': 180,
 	'session-analytics': 220,
 };
 

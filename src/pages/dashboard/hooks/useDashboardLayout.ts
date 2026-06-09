@@ -23,7 +23,7 @@ const DEFAULT_LAYOUT: DashboardLayoutState = [
 	{ id: 'glance', order: 1, visible: true },
 	{ id: 'quick-actions', order: 2, visible: true },
 	{ id: 'schedule', order: 3, visible: true },
-	{ id: 'billing-readiness', order: 4, visible: true },
+	{ id: 'practice-readiness', order: 4, visible: true },
 	{ id: 'revenue', order: 5, visible: true },
 	{ id: 'pending-tasks', order: 6, visible: true },
 	{ id: 'notifications', order: 7, visible: true },
@@ -38,7 +38,8 @@ interface StoredDashboardLayout {
 }
 
 const LEGACY_TILE_IDS: Record<string, DashboardTileId> = {
-	'revenue-mtd': 'billing-readiness',
+	'billing-readiness': 'practice-readiness',
+	'revenue-mtd': 'practice-readiness',
 	'this-week': 'session-analytics',
 	'weekly-chart': 'session-analytics',
 };

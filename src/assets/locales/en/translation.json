@@ -994,7 +994,7 @@
         "notifications": "Notifications",
         "quick-actions": "Quick actions",
         "active-patients": "Active patients",
-        "billing-readiness": "Practice readiness",
+        "practice-readiness": "Practice readiness",
         "revenue": "Revenue estimate",
         "session-analytics": "Session Analytics",
         "pending-tasks": "Pending tasks",

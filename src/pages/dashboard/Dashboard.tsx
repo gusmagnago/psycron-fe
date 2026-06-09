@@ -20,7 +20,7 @@ import { capture } from '@psycron/analytics/posthog/events';
 import { PostHogEvent } from '@psycron/analytics/posthog/types';
 import type { DashboardActionTarget } from '@psycron/api/dashboard/index.types';
 import { BentoTile } from '@psycron/components/dashboard/bento-tile/BentoTile';
-import { ActionCenterWidget } from '@psycron/components/dashboard/widgets/action-center-widget/ActionCenterWidget';
+// import { ActionCenterWidget } from '@psycron/components/dashboard/widgets/action-center-widget/ActionCenterWidget';
 import { GlanceCalendarIcon } from '@psycron/components/dashboard/widgets/glance-widget/GlanceCalendarIcon';
 import { GlanceWidget } from '@psycron/components/dashboard/widgets/glance-widget/GlanceWidget';
 import type { GlanceStat } from '@psycron/components/dashboard/widgets/glance-widget/GlanceWidget.types';
@@ -30,8 +30,8 @@ import { NotificationsWidget } from '@psycron/components/dashboard/widgets/notif
 import { PendingTasksWidget } from '@psycron/components/dashboard/widgets/pending-tasks-widget/PendingTasksWidget';
 import type { PendingTask } from '@psycron/components/dashboard/widgets/pending-tasks-widget/PendingTasksWidget.types';
 import { PracticeReadinessWidget } from '@psycron/components/dashboard/widgets/practice-readiness-widget/PracticeReadinessWidget';
-import { QuickActionsWidget } from '@psycron/components/dashboard/widgets/quick-actions-widget/QuickActionsWidget';
-import { getActionTone } from '@psycron/components/dashboard/widgets/quick-actions-widget/QuickActionsWidget.utils';
+// import { QuickActionsWidget } from '@psycron/components/dashboard/widgets/quick-actions-widget/QuickActionsWidget';
+// import { getActionTone } from '@psycron/components/dashboard/widgets/quick-actions-widget/QuickActionsWidget.utils';
 import { RecentPatientsWidget } from '@psycron/components/dashboard/widgets/recent-patients-widget/RecentPatientsWidget';
 import type { RecentPatient } from '@psycron/components/dashboard/widgets/recent-patients-widget/RecentPatientsWidget.types';
 import { RevenueWidget } from '@psycron/components/dashboard/widgets/revenue-widget/RevenueWidget';
@@ -48,6 +48,7 @@ import {
 	AVAILABILITYWEEK_BASE,
 	PATIENTPROFILE,
 	PATIENTS,
+	AVAILABILITYSETTINGS,
 } from '@psycron/pages/urls';
 import { format, parseISO } from 'date-fns';
 
@@ -67,7 +68,7 @@ import {
 import type { DashboardTileId } from './Dashboard.types';
 import {
 	getFixedTileSpan,
-	getQuickActionIcon,
+	// getQuickActionIcon,
 	getTargetNav,
 	MAX_TILE_COL_SPAN,
 	MAX_TILE_COL_SPAN_BY_ID,
@@ -78,10 +79,13 @@ import {
 	TILE_TABLET,
 } from './Dashboard.utils';
 
-const HERO_TILE_IDS = ['greeting', 'glance'] as const satisfies readonly DashboardTileId[];
+const HERO_TILE_IDS = [
+	'greeting',
+	'glance',
+] as const satisfies readonly DashboardTileId[];
 const NEEDS_TILE_IDS = [
 	'quick-actions',
-	'billing-readiness',
+	'practice-readiness',
 	'action-center',
 	'pending-tasks',
 	'notifications',
@@ -210,7 +214,10 @@ export const Dashboard = () => {
 
 	const attentionCount =
 		summary?.actionCenter.total ??
-		(summary?.pendingTasks ?? []).reduce((total, task) => total + task.count, 0);
+		(summary?.pendingTasks ?? []).reduce(
+			(total, task) => total + task.count,
+			0
+		);
 
 	const glanceStats = useMemo<GlanceStat[]>(
 		() => [
@@ -261,8 +268,7 @@ export const Dashboard = () => {
 				icon: <TriangleAlert />,
 				id: 'attention',
 				label: t('page.dashboard.widgets.glance.needs-attention'),
-				onClick: () =>
-					navigateToDashboardTarget({ type: 'action-center' }),
+				onClick: () => navigateToDashboardTarget({ type: 'action-center' }),
 				tone: attentionCount > 0 ? 'danger' : 'neutral',
 				value: String(attentionCount),
 			},
@@ -277,30 +283,30 @@ export const Dashboard = () => {
 		]
 	);
 
-	const quickActions = useMemo(
-		() =>
-			(summary?.quickActions ?? []).map((action) => ({
-				ariaLabel: t(action.labelKey),
-				icon: getQuickActionIcon(action.id),
-				id: action.id,
-				label: t(action.labelKey),
-				description: action.descriptionKey
-					? t(action.descriptionKey, action.descriptionValues)
-					: undefined,
-				onClick: () => {
-					capture(PostHogEvent.DashboardQuickActionClicked, {
-						action_id: action.id,
-						source: 'dashboard-summary',
-						tier: summary?.tier ?? 'unknown',
-						tile_id: 'quick-actions',
-					});
-					navigateToDashboardTarget(action.target);
-				},
-				tier: summary?.tier ?? 'onboarding',
-				tone: getActionTone(action.id),
-			})),
-		[navigateToDashboardTarget, summary?.quickActions, summary?.tier, t]
-	);
+	// const quickActions = useMemo(
+	// 	() =>
+	// 		(summary?.quickActions ?? []).map((action) => ({
+	// 			ariaLabel: t(action.labelKey),
+	// 			icon: getQuickActionIcon(action.id),
+	// 			id: action.id,
+	// 			label: t(action.labelKey),
+	// 			description: action.descriptionKey
+	// 				? t(action.descriptionKey, action.descriptionValues)
+	// 				: undefined,
+	// 			onClick: () => {
+	// 				capture(PostHogEvent.DashboardQuickActionClicked, {
+	// 					action_id: action.id,
+	// 					source: 'dashboard-summary',
+	// 					tier: summary?.tier ?? 'unknown',
+	// 					tile_id: 'quick-actions',
+	// 				});
+	// 				navigateToDashboardTarget(action.target);
+	// 			},
+	// 			tier: summary?.tier ?? 'onboarding',
+	// 			tone: getActionTone(action.id),
+	// 		})),
+	// 	[navigateToDashboardTarget, summary?.quickActions, summary?.tier, t]
+	// );
 
 	const pendingTasks = useMemo<PendingTask[]>(
 		() =>
@@ -354,7 +360,9 @@ export const Dashboard = () => {
 
 	const getSpan = (id: DashboardTileId) => {
 		if (isMobile) return { col: 1, row: 1 };
-		const baseSpan = isBiggerThanTablet ? getFixedTileSpan(id) : TILE_TABLET[id];
+		const baseSpan = isBiggerThanTablet
+			? getFixedTileSpan(id)
+			: TILE_TABLET[id];
 		const tile = layout.find((item) => item.id === id);
 		const minRow = baseSpan.minRow ?? MIN_TILE_ROW_SPAN;
 		const minCol = baseSpan.minCol ?? 1;
@@ -446,22 +454,22 @@ export const Dashboard = () => {
 					</BentoTile>
 				);
 
-			case 'quick-actions':
-				return (
-					<BentoTile {...commonProps} key={tileId}>
-						<QuickActionsWidget
-							actions={quickActions}
-							colSpan={col}
-							isLoading={isSummaryLoading}
-						/>
-					</BentoTile>
-				);
+			// TODO: file:///Users/gusmagnago/Documents/Obsidian%20Vault/Psycron/04%20Engineering/UX%20Revamp/dashboard-v4-preview.html CHECK THAT IT BECOMES ONLY ACTION CENTER
+			// case 'quick-actions':
+			// 	return (
+			// 		<BentoTile {...commonProps} key={tileId}>
+			// 			<QuickActionsWidget
+			// 				actions={quickActions}
+			// 				colSpan={col}
+			// 				isLoading={isSummaryLoading}
+			// 			/>
+			// 		</BentoTile>
+			// 	);
 
-			case 'billing-readiness': {
+			case 'practice-readiness': {
 				const missingContactCount =
-					summary?.pendingTasks?.find(
-						(task) => task.type === 'missing-contact'
-					)?.count ?? 0;
+					summary?.pendingTasks?.find((task) => task.type === 'missing-contact')
+						?.count ?? 0;
 				const contactsConfigured = Math.max(
 					0,
 					patientCount - missingContactCount
@@ -482,13 +490,13 @@ export const Dashboard = () => {
 									percentage: billingReadiness?.percentage ?? 0,
 									source: 'dashboard-summary',
 									tier: summary?.tier ?? 'unknown',
-									tile_id: 'billing-readiness',
+									tile_id: 'practice-readiness',
 								});
 								if (segment === 'availability') {
-									navigateToDashboardTarget({ type: 'availability-settings' });
-								} else {
-									navigate(`../${PATIENTS}`);
+									navigate(`../${AVAILABILITYSETTINGS}`);
+									return;
 								}
+								navigate(`../${PATIENTS}`);
 							}}
 						/>
 					</BentoTile>
@@ -605,24 +613,24 @@ export const Dashboard = () => {
 						/>
 					</BentoTile>
 				);
-
-			case 'action-center':
-				return (
-					<BentoTile {...commonProps} key={tileId}>
-						<ActionCenterWidget
-							isLoading={isSummaryLoading}
-							onItemClick={(item) => {
-								capture(PostHogEvent.DashboardActionCenterItemClicked, {
-									count: item.count,
-									item_type: item.type,
-									tier: summary?.tier ?? 'unknown',
-								});
-								navigateToDashboardTarget(item.target);
-							}}
-							summary={summary?.actionCenter}
-						/>
-					</BentoTile>
-				);
+			// TODO: file:///Users/gusmagnago/Documents/Obsidian%20Vault/Psycron/04%20Engineering/UX%20Revamp/dashboard-v4-preview.html CHECK THAT IT BECOMES ONLY ACTION CENTER
+			// case 'action-center':
+			// 	return (
+			// 		<BentoTile {...commonProps} key={tileId}>
+			// 			<ActionCenterWidget
+			// 				isLoading={isSummaryLoading}
+			// 				onItemClick={(item) => {
+			// 					capture(PostHogEvent.DashboardActionCenterItemClicked, {
+			// 						count: item.count,
+			// 						item_type: item.type,
+			// 						tier: summary?.tier ?? 'unknown',
+			// 					});
+			// 					navigateToDashboardTarget(item.target);
+			// 				}}
+			// 				summary={summary?.actionCenter}
+			// 			/>
+			// 		</BentoTile>
+			// 	);
 
 			case 'recent-patients':
 				return (
@@ -644,8 +652,7 @@ export const Dashboard = () => {
 	const renderSectionTiles = (
 		tileIds: readonly DashboardTileId[],
 		indexOffset = 0
-	) =>
-		tileIds.map((tileId, index) => renderTile(tileId, indexOffset + index));
+	) => tileIds.map((tileId, index) => renderTile(tileId, indexOffset + index));
 
 	const getOrderedSectionTileIds = (tileIds: readonly DashboardTileId[]) => {
 		const sectionTileIds = new Set<DashboardTileId>(tileIds);
@@ -705,7 +712,9 @@ export const Dashboard = () => {
 									<BentoGrid>
 										{renderSectionTiles(
 											practiceTileIds,
-											heroTileIds.length + needsTileIds.length + dayTileIds.length
+											heroTileIds.length +
+												needsTileIds.length +
+												dayTileIds.length
 										)}
 									</BentoGrid>
 								</DashboardSection>
