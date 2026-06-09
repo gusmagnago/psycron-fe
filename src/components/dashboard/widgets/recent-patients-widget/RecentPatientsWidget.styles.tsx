@@ -1,6 +1,5 @@
 import styled from '@emotion/styled';
 import { Box } from '@mui/material';
-import { Avatar } from '@psycron/components/avatar/Avatar';
 import { palette } from '@psycron/theme/palette/palette.theme';
 import { spacing } from '@psycron/theme/spacing/spacing.theme';
 import { motion } from 'framer-motion';
@@ -25,7 +24,7 @@ export const PatientRow = styled(motion.div)`
 	border-bottom: 1px solid ${palette.gray['01']};
 	cursor: pointer;
 	display: flex;
-	gap: ${spacing.small};
+	gap: ${spacing.xs};
 	padding: ${spacing.xs} 0;
 	text-align: left;
 	transition: background 0.15s ease;
@@ -42,26 +41,31 @@ export const PatientRow = styled(motion.div)`
 	}
 `;
 
-export const PatientAvatar = styled(Avatar)`
-	font-size: 13px !important;
-	font-weight: 700 !important;
-`;
-
 export const PatientInfo = styled(Box)`
+	align-items: center;
+	display: flex;
 	flex: 1;
+	gap: ${spacing.xs};
+	justify-content: space-between;
 	min-width: 0;
 `;
 
 export const PatientName = styled.span`
 	color: ${palette.text.primary};
-	display: block;
+	flex: 1;
 	font-size: 14px;
 	font-weight: 600;
+	min-width: 0;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
 `;
 
 export const PatientMeta = styled.span`
 	color: ${palette.text.secondary};
 	font-size: 12px;
+	flex-shrink: 0;
+	white-space: nowrap;
 `;
 
 export const MessageButton = styled.button`

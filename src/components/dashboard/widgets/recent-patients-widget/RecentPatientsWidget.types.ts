@@ -1,6 +1,7 @@
 import type { DashboardRecentPatientActivityType, DashboardTier } from '@psycron/api/dashboard/index.types';
 
 export interface RecentPatient {
+	createdAt: string;
 	firstName: string;
 	id: string;
 	lastActivityAt: string | null;
@@ -14,6 +15,5 @@ export interface RecentPatient {
 export interface RecentPatientsWidgetProps {
 	colSpan?: number;
 	isLoading?: boolean;
-	onViewAll?: () => void;
 	patients: RecentPatient[];
 }

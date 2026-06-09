@@ -1,8 +1,5 @@
-import { formatDistanceToNow, parseISO } from 'date-fns';
+import { parseISO } from 'date-fns';
 import type { Variants } from 'framer-motion';
-import type { TFunction } from 'i18next';
-
-import type { RecentPatient } from './RecentPatientsWidget.types';
 
 export const rowVariants: Variants = {
 	hidden: { opacity: 0, x: -8 },
@@ -13,12 +10,10 @@ export const rowVariants: Variants = {
 	}),
 };
 
-export const getActivityLabel = (patient: RecentPatient, t: TFunction): string => {
-	const activity = t(
-		`page.dashboard.widgets.recent-patients.activity.${patient.lastActivityType}`
+export const getCreatedAtLabel = (
+	createdAt: string,
+	locale: string
+): string =>
+	new Intl.DateTimeFormat(locale, { dateStyle: 'medium' }).format(
+		parseISO(createdAt)
 	);
-	if (!patient.lastActivityAt) return activity;
-	return `${activity} · ${formatDistanceToNow(parseISO(patient.lastActivityAt), {
-		addSuffix: true,
-	})}`;
-};

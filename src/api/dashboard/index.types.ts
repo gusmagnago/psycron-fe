@@ -54,6 +54,7 @@ export type DashboardRecentPatientActivityType =
 	| 'updated';
 
 export interface DashboardRecentPatient {
+	createdAt: string;
 	firstName: string;
 	hasMessageContact: boolean;
 	id: string;

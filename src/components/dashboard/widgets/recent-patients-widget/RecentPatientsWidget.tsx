@@ -1,14 +1,12 @@
-import { useMemo } from 'react';
+import { type KeyboardEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Box, Skeleton } from '@mui/material';
 import { WidgetLayout } from '@psycron/components/dashboard/widget-layout/WidgetLayout';
-import { Messenger, Patients } from '@psycron/components/icons';
-import { Tooltip } from '@psycron/components/tooltip/Tooltip';
+import { Messenger } from '@psycron/components/icons';
 
 import {
 	EmptyPatientsState,
 	MessageButton,
-	PatientAvatar,
 	PatientInfo,
 	PatientMeta,
 	PatientName,
@@ -16,77 +14,120 @@ import {
 	PatientsList,
 } from './RecentPatientsWidget.styles';
 import type { RecentPatientsWidgetProps } from './RecentPatientsWidget.types';
-import { getActivityLabel, rowVariants } from './RecentPatientsWidget.utils';
+import { getCreatedAtLabel, rowVariants } from './RecentPatientsWidget.utils';
+
+const RECENT_PATIENTS_WIDGET_ID_PREFIX = 'dashboard-recent-patients-widget';
 
 export const RecentPatientsWidget = ({
 	colSpan,
 	isLoading,
-	onViewAll,
 	patients,
 }: RecentPatientsWidgetProps) => {
 	const isWide = (colSpan ?? 0) >= 6;
-	const { t } = useTranslation();
-
-	const headerActions = useMemo(
-		() => (
-			<>
-				{onViewAll && (
-					<Tooltip
-						aria-label={t('page.dashboard.widgets.recent-patients.view-all')}
-						onClick={onViewAll}
-						placement='bottom'
-						title={t('page.dashboard.widgets.recent-patients.view-all')}
-					>
-						<Patients />
-					</Tooltip>
-				)}
-			</>
-		),
-		[onViewAll, t]
-	);
+	const { i18n, t } = useTranslation();
 
 	const body = isLoading ? (
-		<Box display='flex' flexDirection='column' gap={1}>
+		<Box
+			data-testid={`${RECENT_PATIENTS_WIDGET_ID_PREFIX}-loading`}
+			display='flex'
+			flexDirection='column'
+			gap={1}
+			id={`${RECENT_PATIENTS_WIDGET_ID_PREFIX}-loading`}
+		>
 			{[...Array(4)].map((_, i) => (
 				<Box
 					alignItems='center'
 					display='flex'
 					gap={1.5}
+					data-testid={`${RECENT_PATIENTS_WIDGET_ID_PREFIX}-loading-row-${i}`}
+					id={`${RECENT_PATIENTS_WIDGET_ID_PREFIX}-loading-row-${i}`}
 					key={`rp-skeleton-${i}`}
 				>
-					<Skeleton height={36} variant='circular' width={36} />
-					<Box flex={1}>
-						<Skeleton height={16} width='50%' />
-						<Skeleton height={13} width='35%' />
+					<Skeleton
+						data-testid={`${RECENT_PATIENTS_WIDGET_ID_PREFIX}-loading-avatar-${i}`}
+						height={36}
+						id={`${RECENT_PATIENTS_WIDGET_ID_PREFIX}-loading-avatar-${i}`}
+						variant='circular'
+						width={36}
+					/>
+					<Box
+						data-testid={`${RECENT_PATIENTS_WIDGET_ID_PREFIX}-loading-copy-${i}`}
+						flex={1}
+						id={`${RECENT_PATIENTS_WIDGET_ID_PREFIX}-loading-copy-${i}`}
+					>
+						<Skeleton
+							data-testid={`${RECENT_PATIENTS_WIDGET_ID_PREFIX}-loading-name-${i}`}
+							height={16}
+							id={`${RECENT_PATIENTS_WIDGET_ID_PREFIX}-loading-name-${i}`}
+							width='50%'
+						/>
+						<Skeleton
+							data-testid={`${RECENT_PATIENTS_WIDGET_ID_PREFIX}-loading-meta-${i}`}
+							height={13}
+							id={`${RECENT_PATIENTS_WIDGET_ID_PREFIX}-loading-meta-${i}`}
+							width='35%'
+						/>
 					</Box>
 				</Box>
 			))}
 		</Box>
 	) : patients.length === 0 ? (
-		<EmptyPatientsState>
+		<EmptyPatientsState
+			data-testid={`${RECENT_PATIENTS_WIDGET_ID_PREFIX}-empty`}
+			id={`${RECENT_PATIENTS_WIDGET_ID_PREFIX}-empty`}
+		>
 			{t('page.dashboard.widgets.recent-patients.empty')}
 		</EmptyPatientsState>
 	) : (
-		<PatientsList isWide={isWide}>
+		<PatientsList
+			data-testid={`${RECENT_PATIENTS_WIDGET_ID_PREFIX}-list`}
+			id={`${RECENT_PATIENTS_WIDGET_ID_PREFIX}-list`}
+			isWide={isWide}
+		>
 			{patients.map((patient, i) => {
 				const name = `${patient.firstName} ${patient.lastName}`;
+				const rowId = `${RECENT_PATIENTS_WIDGET_ID_PREFIX}-row-${patient.id}`;
+				const createdAtLabel = getCreatedAtLabel(patient.createdAt, i18n.language);
 				return (
 					<PatientRow
 						animate='visible'
+						aria-label={name}
 						custom={i}
+						data-testid={rowId}
 						initial='hidden'
+						id={rowId}
 						key={patient.id}
 						onClick={patient.onOpen}
+						onKeyDown={
+							patient.onOpen
+								? (event: KeyboardEvent<HTMLDivElement>) => {
+										if (event.key === 'Enter' || event.key === ' ') {
+											event.preventDefault();
+											patient.onOpen?.();
+										}
+									}
+								: undefined
+						}
 						variants={rowVariants}
+						role={patient.onOpen ? 'button' : undefined}
+						tabIndex={patient.onOpen ? 0 : undefined}
 					>
-						<PatientAvatar
-							firstName={patient.firstName}
-							lastName={patient.lastName}
-							size={36}
-						/>
-						<PatientInfo>
-							<PatientName>{name}</PatientName>
-							<PatientMeta>{getActivityLabel(patient, t)}</PatientMeta>
+						<PatientInfo
+							data-testid={`${rowId}-info`}
+							id={`${rowId}-info`}
+						>
+							<PatientName
+								data-testid={`${rowId}-name`}
+								id={`${rowId}-name`}
+							>
+								{name}
+							</PatientName>
+							<PatientMeta
+								data-testid={`${rowId}-meta`}
+								id={`${rowId}-meta`}
+							>
+								{createdAtLabel}
+							</PatientMeta>
 						</PatientInfo>
 						{patient.onMessage && (
 							<MessageButton
@@ -94,6 +135,8 @@ export const RecentPatientsWidget = ({
 									'page.dashboard.widgets.recent-patients.message-aria',
 									{ name }
 								)}
+								data-testid={`${rowId}-message`}
+								id={`${rowId}-message`}
 								onClick={(e) => {
 									e.stopPropagation();
 									patient.onMessage?.();
@@ -111,7 +154,7 @@ export const RecentPatientsWidget = ({
 	return (
 		<WidgetLayout
 			body={body}
-			headerActions={headerActions}
+			titleId={`${RECENT_PATIENTS_WIDGET_ID_PREFIX}-title`}
 			title={t('page.dashboard.widgets.recent-patients.title')}
 		/>
 	);

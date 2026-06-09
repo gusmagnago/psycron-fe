@@ -359,6 +359,7 @@ export const Dashboard = () => {
 		() =>
 			(summary?.recentPatients ?? []).map((patient) => ({
 				firstName: patient.firstName,
+				createdAt: patient.createdAt,
 				id: patient.id,
 				lastActivityAt: patient.lastActivityAt,
 				lastActivityType: patient.lastActivityType,
@@ -596,7 +597,6 @@ export const Dashboard = () => {
 						<RecentPatientsWidget
 							colSpan={col}
 							isLoading={isSummaryLoading && recentPatients.length === 0}
-							onViewAll={() => navigate(`../${PATIENTS}`)}
 							patients={recentPatients}
 						/>
 					</BentoTile>
