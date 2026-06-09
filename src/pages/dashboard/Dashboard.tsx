@@ -89,8 +89,8 @@ const DAY_TILE_IDS = [
 	'schedule',
 ] as const satisfies readonly DashboardTileId[];
 const PRACTICE_TILE_IDS = [
-	'revenue',
 	'session-analytics',
+	'revenue',
 	'recent-patients',
 ] as const satisfies readonly DashboardTileId[];
 

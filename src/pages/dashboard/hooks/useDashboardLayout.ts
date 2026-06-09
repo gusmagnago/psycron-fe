@@ -21,22 +21,22 @@ const LEGACY_DEFAULT_LAYOUT_ORDER: DashboardTileId[] = [
 	'practice-readiness',
 	'action-center',
 	'schedule',
+	'session-analytics',
 	'revenue',
 	'recent-patients',
-	'session-analytics',
 ];
 
 // Order keeps the hero section aligned with the dashboard v4 preview and
-// keeps recent patients paired with session analytics in the practice row.
+// keeps the practice tiles in their intended sequence.
 const DEFAULT_LAYOUT: DashboardLayoutState = [
 	{ id: 'greeting', order: 0, visible: true },
 	{ id: 'glance', order: 1, visible: true },
 	{ id: 'practice-readiness', order: 2, visible: true },
 	{ id: 'action-center', order: 3, visible: true },
 	{ id: 'schedule', order: 4, visible: true },
-	{ id: 'recent-patients', order: 5, visible: true },
-	{ id: 'session-analytics', order: 6, visible: true },
-	{ id: 'revenue', order: 7, visible: true },
+	{ id: 'session-analytics', order: 5, visible: true },
+	{ id: 'revenue', order: 6, visible: true },
+	{ id: 'recent-patients', order: 7, visible: true },
 ];
 
 interface StoredDashboardLayout {
