@@ -2,7 +2,8 @@ import { useEffect } from 'react';
 import ReactGA from 'react-ga4';
 import { useTranslation } from 'react-i18next';
 import { Box } from '@mui/material';
-import { NavigateLink } from '@psycron/components/link/navigate/NavigateLink';
+import { Button } from '@psycron/components/button/Button';
+import { ChevronLeft } from '@psycron/components/icons';
 import { Text } from '@psycron/components/text/Text';
 
 import {
@@ -18,6 +19,8 @@ import {
 
 export const RootErrorFallback = () => {
 	const { t } = useTranslation();
+	const locale =
+		window.location.pathname.split('/').filter(Boolean)[0] || 'en';
 
 	useEffect(() => {
 		const previousPath = document.referrer;
@@ -30,6 +33,15 @@ export const RootErrorFallback = () => {
 		});
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [location]);
+
+	const handleGoBack = (): void => {
+		if (window.history.length > 1) {
+			window.history.back();
+			return;
+		}
+
+		window.location.assign(`/${locale}`);
+	};
 
 	return (
 		<Box height={'100%'}>
@@ -48,7 +60,10 @@ export const RootErrorFallback = () => {
 						</StyledPageSub>
 						<Text variant='subtitle2'> {t('page.not-found.note')}</Text>
 						<Box pt={10}>
-							<NavigateLink isBack />
+							<Button tertiary variant='outlined' onClick={handleGoBack}>
+								<ChevronLeft />
+								{t('components.link.navigate.back')}
+							</Button>
 						</Box>
 					</TextWrapper>
 				</ContentWrapper>

@@ -2,7 +2,6 @@ import { Navigate } from 'react-router-dom';
 import { ActionCenterPage } from '@psycron/pages/action-center/ActionCenterPage';
 import { AvailabilitySettings } from '@psycron/pages/availability/availability-settings/AvailabilitySettings';
 import { GenerateAvailability } from '@psycron/pages/availability/GenerateAvailability';
-import { AvailabilityCalendarPage } from '@psycron/pages/availability/page-calendar/AvailabilityCalendarPage';
 import { AvailabilityWeekPage } from '@psycron/pages/availability/week/AvailabilityWeekPage';
 import { Dashboard } from '@psycron/pages/dashboard/Dashboard';
 import { NotificationsPage } from '@psycron/pages/notifications/NotificationsPage';
@@ -17,6 +16,7 @@ import {
 	AVAILABILITYRECOVERY,
 	AVAILABILITYSETTINGS,
 	AVAILABILITYWEEK,
+	AVAILABILITYWORKFLOW,
 	CHANGEPASSWORD,
 	CONFLICTS,
 	DASHBOARD,
@@ -51,7 +51,8 @@ const privateRoutes = [
 	{ path: EDITUSER, element: <EditUser /> },
 	{ path: EDITUSERBYSESSION, element: <EditUser /> },
 	{ path: CHANGEPASSWORD, element: <EditPassword /> },
-	{ path: AVAILABILITYPATH, element: <AvailabilityCalendarPage /> },
+	{ path: AVAILABILITYPATH, element: <AvailabilityWeekPage /> },
+	{ path: AVAILABILITYWORKFLOW, element: <AvailabilityWeekPage /> },
 	{ path: AVAILABILITYRECOVERY, element: <ActionCenterPage initialTab='recovery' /> },
 	{ path: AVAILABILITYWEEK, element: <AvailabilityWeekPage /> },
 	{ path: AVAILABILITYGENERATE, element: <GenerateAvailability /> },

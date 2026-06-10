@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useParams, useSearchParams } from 'react-router-dom';
 import { getAppointmentDetailsBySlotId } from '@psycron/api/user/availability';
@@ -8,18 +8,27 @@ import { AvailabilityTodayButton } from '@psycron/components/availability/Availa
 import { Button } from '@psycron/components/button/Button';
 import {
 	Calendar,
+	CheckSuccess,
 	ChevronLeft,
 	ChevronRight,
 	Filter,
 	FilterFull,
+	Google,
+	Refresh,
+	Settings,
+	TriangleAlert,
 } from '@psycron/components/icons';
 import { useJupiterAvailabilityConfig } from '@psycron/hooks/useJupiterAvailabilityConfig';
 import { useTherapistId } from '@psycron/hooks/useTherapistId';
 import useViewport from '@psycron/hooks/useViewport';
-import { PageLayout } from '@psycron/layouts/app/pages-layout/PageLayout';
 import { useQueryClient } from '@tanstack/react-query';
 import { format, isPast, isToday, parseISO } from 'date-fns';
-import { Settings } from 'lucide-react';
+
+import { AvailabilityControlsPanel } from '../workspace/AvailabilityControlsPanel';
+import { AvailabilityReadinessPanel } from '../workspace/AvailabilityReadinessPanel';
+import { AvailabilityViewToggle } from '../workspace/AvailabilityViewToggle';
+import type { AvailabilityViewMode } from '../workspace/AvailabilityViewToggle.types';
+import { AvailabilityWorkspaceShell } from '../workspace/AvailabilityWorkspaceShell';
 
 import { DayHeaderPopover } from './day-header-popover/DayHeaderPopover';
 import { AvailabilityWeekDrawer } from './drawer/AvailabilityWeekDrawer';
@@ -32,16 +41,14 @@ import { AvailabilityWeekDesktopGrid } from './views/desktop-view/AvailabilityWe
 import { AvailabilityWeekMobileList } from './views/mobile-view/AvailabilityWeekMobileList';
 import {
 	FilterButton,
-	WeekCard,
-	WeekFeaturesActions,
-	WeekFeaturesWrapper,
+	WeekCalendarScroll,
 	WeekFooter,
-	WeekFooterActions,
-	WeekHeader,
-	WeekNavRow,
-	WeekSubtitle,
-	WeekTitle,
-	WeekTitleBlock,
+	WeekWorkspaceControls,
+	WeekWorkspaceSubtitle,
+	WeekWorkspaceTitle,
+	WeekWorkspaceTitleCopy,
+	WeekWorkspaceTitleGroup,
+	WeekWorkspaceViewbar,
 } from './AvailabilityWeekPage.styles';
 import type { IWeekSlot } from './AvailabilityWeekPage.types';
 import { parseDebugNowMinutes } from './AvailabilityWeekPage.utils';
@@ -60,7 +67,6 @@ export const AvailabilityWeekPage = () => {
 		clearFilters,
 		getDaySlots,
 		getVisibleDaySlots,
-		goToMonth,
 		goToNextWeek,
 		goToPrevWeek,
 		goToSettings,
@@ -80,6 +86,7 @@ export const AvailabilityWeekPage = () => {
 		weekRange,
 	} = useAvailabilityWeekViewModel({ date });
 	const { availability } = useJupiterAvailabilityConfig();
+	const [viewMode, setViewMode] = useState<AvailabilityViewMode>('week');
 
 	const [selectedSlot, setSelectedSlot] = useState<IWeekSlot | null>(null);
 	const [filterAnchorEl, setFilterAnchorEl] = useState<HTMLElement | null>(
@@ -89,6 +96,15 @@ export const AvailabilityWeekPage = () => {
 	const [shouldScrollToToday, setShouldScrollToToday] = useState(false);
 	const debugNowMinutes = parseDebugNowMinutes(searchParams.get('debugNow'));
 	const slotIdParam = searchParams.get('slotId');
+	const activeDate = useMemo(() => (date ? parseISO(date) : new Date()), [date]);
+	const activeDateStr = format(activeDate, 'yyyy-MM-dd');
+	const visibleMobileDays = useMemo(
+		() =>
+			viewMode === 'day'
+				? mobileDays.filter((day) => day.dateStr === activeDateStr)
+				: mobileDays,
+		[activeDateStr, mobileDays, viewMode]
+	);
 
 	const queryClient = useQueryClient();
 	const therapistId = useTherapistId();
@@ -152,22 +168,29 @@ export const AvailabilityWeekPage = () => {
 		</FilterButton>
 	);
 
-	const navButtons = (
-		<>
-			<Button small tertiary onClick={goToMonth}>
-				<Calendar />
-				{!isMobile ? t('components.agenda.month') : null}
-			</Button>
-			<Button
-				small
-				tertiary
-				aria-label={t('availability.week.settings')}
-				onClick={goToSettings}
-			>
-				<Settings />
-				{!isMobile ? t('availability.week.settings') : null}
-			</Button>
-		</>
+	const settingsButton = (
+		<Button
+			small
+			tertiary
+			aria-label={t('availability.week.settings')}
+			onClick={goToSettings}
+		>
+			<Settings />
+			{!isMobile ? t('availability.week.settings') : null}
+		</Button>
+	);
+
+	const syncButton = (
+		<Button
+			small
+			tertiary
+			aria-label={t('availability.workspace.sync-google')}
+			onClick={goToSettings}
+			variant='outlined'
+		>
+			<Refresh />
+			{!isMobile ? t('availability.workspace.sync-google') : null}
+		</Button>
 	);
 
 	const prevButton = (
@@ -204,7 +227,7 @@ export const AvailabilityWeekPage = () => {
 		});
 
 		return () => window.cancelAnimationFrame(frameId);
-	}, [isMobile, mobileDays, shouldScrollToToday]);
+	}, [isMobile, shouldScrollToToday, visibleMobileDays]);
 
 	useEffect(() => {
 		if (!slotIdParam || selectedSlot?._id === slotIdParam) return;
@@ -223,58 +246,216 @@ export const AvailabilityWeekPage = () => {
 		/>
 	);
 
-	return (
-		<PageLayout
-			title={t('availability.week.page-title')}
-			isLoading={isLoading}
-			backButton
+	const weekSlots = useMemo(() => Object.values(weekData).flat(), [weekData]);
+	const slotStats = useMemo(
+		() =>
+			weekSlots.reduce(
+				(acc, slot) => ({
+					...acc,
+					[slot.status]: acc[slot.status] + 1,
+				}),
+				{
+					available: 0,
+					blocked: 0,
+					'booked-google': 0,
+					'booked-jupiter': 0,
+					buffer: 0,
+					cancelled: 0,
+				} satisfies Record<IWeekSlot['status'], number>
+			),
+		[weekSlots]
+	);
+	const googleConnected = Boolean(availability?.googleCalendarConnected);
+	const hasSlots = slotStats.available > 0;
+
+	const statusItems = [
+		{
+			badge: String(slotStats.available),
+			description: hasSlots
+				? t('availability.workspace.status-bookable-ready')
+				: t('availability.workspace.status-bookable-empty'),
+			icon: <CheckSuccess />,
+			id: 'bookable',
+			title: t('availability.workspace.status-bookable-title', {
+				count: slotStats.available,
+			}),
+			tone: hasSlots ? 'success' as const : 'warn' as const,
+		},
+		{
+			badge: '0',
+			description: t('availability.workspace.status-conflicts-clear'),
+			icon: <TriangleAlert />,
+			id: 'conflicts',
+			title: t('availability.workspace.status-conflicts-title', { count: 0 }),
+			tone: 'success' as const,
+		},
+		{
+			badge: googleConnected
+				? t('availability.workspace.badge-live')
+				: t('availability.workspace.badge-off'),
+			description: googleConnected
+				? t('availability.workspace.status-google-connected-desc')
+				: t('availability.workspace.status-google-disconnected-desc'),
+			icon: <Calendar />,
+			id: 'google',
+			title: googleConnected
+				? t('availability.workspace.status-google-connected')
+				: t('availability.workspace.status-google-disconnected'),
+			tone: 'google' as const,
+		},
+	];
+
+	const sourceItems = [
+		{
+			badge: t('availability.workspace.badge-on'),
+			description: t('availability.workspace.source-psycron-desc'),
+			icon: <Calendar />,
+			id: 'psycron',
+			title: t('availability.workspace.source-psycron-title'),
+			tone: 'default' as const,
+		},
+		{
+			badge: googleConnected
+				? t('availability.workspace.badge-live')
+				: t('availability.workspace.badge-off'),
+			description: googleConnected
+				? t('availability.workspace.source-google-desc')
+				: t('availability.workspace.source-google-disconnected-desc'),
+			icon: <Google />,
+			id: 'google',
+			title: t('availability.workspace.source-google-title'),
+			tone: 'google' as const,
+		},
+	];
+
+	const workspaceActions = (
+		<>
+			{filterButton}
+			{todayButton}
+			{syncButton}
+			{settingsButton}
+		</>
+	);
+
+	const viewbarTitle =
+		viewMode === 'day'
+			? format(activeDate, 'EEEE, MMMM d, yyyy')
+			: weekRange;
+
+	const viewbar = (
+		<WeekWorkspaceViewbar
+			data-testid='availability-calendar-viewbar'
+			id='availability-calendar-viewbar'
 		>
-			<WeekCard>
-				<WeekHeader>
-					<WeekFeaturesWrapper>
-						<WeekNavRow>
-							{prevButton}
-							<WeekTitleBlock>
-								<WeekTitle>{t('availability.week.title')}</WeekTitle>
-								<WeekSubtitle>{weekRange}</WeekSubtitle>
-							</WeekTitleBlock>
-							{nextButton}
-						</WeekNavRow>
-						<WeekFeaturesActions>
-							{filterButton}
-							{todayButton}
-							{isMobile && navButtons}
-						</WeekFeaturesActions>
-					</WeekFeaturesWrapper>
-				</WeekHeader>
+			<WeekWorkspaceTitleGroup>
+				{prevButton}
+				<WeekWorkspaceTitleCopy>
+					<WeekWorkspaceTitle id='availability-week-title'>
+						{viewbarTitle}
+					</WeekWorkspaceTitle>
+					<WeekWorkspaceSubtitle>
+						{t('availability.workspace.viewbar-helper')}
+					</WeekWorkspaceSubtitle>
+				</WeekWorkspaceTitleCopy>
+				{nextButton}
+			</WeekWorkspaceTitleGroup>
+			<WeekWorkspaceControls>
+				<AvailabilityViewToggle
+					dayLabel={t('availability.workspace.view-day')}
+					value={viewMode}
+					viewModeLabel={t('availability.workspace.view-mode-label')}
+					weekLabel={t('availability.workspace.view-week')}
+					onChange={setViewMode}
+				/>
+			</WeekWorkspaceControls>
+		</WeekWorkspaceViewbar>
+	);
 
-				{isMobile ? (
-					<AvailabilityWeekMobileList
-						days={mobileDays}
-						todayCardId={todayCardId}
-						onDayHeaderClick={handleDayHeaderClick}
-						onSlotClick={handleSlotClick}
-						onSlotPointerDown={handleSlotPointerDown}
-						onToggleDayExpanded={toggleDayExpanded}
+	return (
+		<>
+			<AvailabilityWorkspaceShell
+				actions={workspaceActions}
+				footer={
+					<WeekFooter>
+						<AvailabilityLegend items={legendItems} />
+					</WeekFooter>
+				}
+				isLoading={isLoading}
+				leftPanel={
+					<AvailabilityControlsPanel
+						activeDate={activeDate}
+						jupiterDescription={t(
+							'availability.workspace.jupiter-description'
+						)}
+						jupiterLabel={t('availability.workspace.jupiter-label')}
+						jupiterSuggestion={t('availability.workspace.jupiter-suggestion')}
+						jupiterToggleLabel={t(
+							'availability.workspace.jupiter-toggle-label'
+						)}
+						sourceItems={sourceItems}
+						sourcesTitle={t('availability.workspace.sources-title')}
+						statusItems={statusItems}
+						statusTitle={t('availability.workspace.status-title')}
 					/>
-				) : (
-					<AvailabilityWeekDesktopGrid
-						debugNowMinutes={debugNowMinutes}
-						getDaySlots={getDaySlots}
-						getVisibleDaySlots={getVisibleDaySlots}
-						onDayHeaderClick={handleDayHeaderClick}
-						onSlotClick={handleSlotClick}
-						onSlotPointerDown={handleSlotPointerDown}
-						weekData={weekData}
-						weekDays={weekDays}
+				}
+				rightPanel={
+					<AvailabilityReadinessPanel
+						askJupiterLabel={t('availability.workspace.ask-jupiter')}
+						checklistTitle={t('availability.workspace.checklist-title')}
+						googleChecklistLabel={
+							googleConnected
+								? t('availability.workspace.checklist-google-connected')
+								: t('availability.workspace.checklist-google-missing')
+						}
+						hasGoogleConnected={googleConnected}
+						hasSlots={hasSlots}
+						jupiterAnswer={t('availability.workspace.jupiter-answer')}
+						jupiterLabel={t('availability.workspace.jupiter-label')}
+						pwaNote={t('availability.workspace.pwa-note')}
+						resolveLabel={t('availability.workspace.resolve-readiness')}
+						slotChecklistLabel={
+							hasSlots
+								? t('availability.workspace.checklist-slots-ready', {
+										count: slotStats.available,
+									})
+								: t('availability.workspace.checklist-slots-empty')
+						}
 					/>
-				)}
-
-				<WeekFooter>
-					<AvailabilityLegend items={legendItems} />
-					{!isMobile && <WeekFooterActions>{navButtons}</WeekFooterActions>}
-				</WeekFooter>
-			</WeekCard>
+				}
+				subtitle={t('availability.workspace.subtitle')}
+				title={t('availability.workspace.page-title')}
+				viewbar={viewbar}
+			>
+				<WeekCalendarScroll
+					aria-label={t('availability.workspace.calendar-scroll-label')}
+					data-testid='availability-calendar-scroll'
+					id='availability-calendar-scroll'
+				>
+					{isMobile ? (
+						<AvailabilityWeekMobileList
+							days={visibleMobileDays}
+							todayCardId={todayCardId}
+							onDayHeaderClick={handleDayHeaderClick}
+							onSlotClick={handleSlotClick}
+							onSlotPointerDown={handleSlotPointerDown}
+							onToggleDayExpanded={toggleDayExpanded}
+						/>
+					) : (
+						<AvailabilityWeekDesktopGrid
+							activeDate={activeDate}
+							debugNowMinutes={debugNowMinutes}
+							getDaySlots={getDaySlots}
+							getVisibleDaySlots={getVisibleDaySlots}
+							onDayHeaderClick={handleDayHeaderClick}
+							onSlotClick={handleSlotClick}
+							onSlotPointerDown={handleSlotPointerDown}
+							viewMode={viewMode}
+							weekData={weekData}
+							weekDays={weekDays}
+						/>
+					)}
+				</WeekCalendarScroll>
+			</AvailabilityWorkspaceShell>
 
 			<AvailabilityWeekFilters
 				activeFilterCount={activeFilterCount}
@@ -350,6 +531,6 @@ export const AvailabilityWeekPage = () => {
 					onClose={() => setSelectedSlot(null)}
 				/>
 			)}
-		</PageLayout>
+		</>
 	);
 };

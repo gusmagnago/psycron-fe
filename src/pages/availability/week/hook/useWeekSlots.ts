@@ -6,6 +6,12 @@ import { format, isWithinInterval, parseISO } from 'date-fns';
 
 import type { IWeekSlot, SlotStatus } from '../AvailabilityWeekPage.types';
 
+type WeekSlotSource = 'google' | 'jupiter';
+
+type SlotWithSource = {
+	source?: WeekSlotSource;
+};
+
 const computeDuration = (startTime: string, endTime: string): number => {
 	const [sh, sm] = startTime.split(':').map(Number);
 	const [eh, em] = endTime.split(':').map(Number);
@@ -20,10 +26,14 @@ const addMinutes = (time: string, minutes: number): string => {
 	return `${String(newH).padStart(2, '0')}:${String(newM).padStart(2, '0')}`;
 };
 
-const toSlotStatus = (status: string): SlotStatus | null => {
+const toSlotStatus = (
+	status: string,
+	source?: WeekSlotSource
+): SlotStatus | null => {
 	if (status === StatusEnum.AVAILABLE) return 'available';
 	if (status === StatusEnum.BLOCKED) return 'blocked';
-	if (status === StatusEnum.BOOKED) return 'booked-jupiter';
+	if (status === StatusEnum.BOOKED)
+		return source === 'google' ? 'booked-google' : 'booked-jupiter';
 	if (isCanceledSlotStatus(status)) return 'cancelled';
 	return null;
 };
@@ -53,7 +63,8 @@ export const useWeekSlots = (
 
 		const realSlots = slots
 			.map((slot, j): IWeekSlot | null => {
-				const rawStatus = toSlotStatus(slot.status);
+				const slotSource = (slot as SlotWithSource).source;
+				const rawStatus = toSlotStatus(slot.status, slotSource);
 				if (!rawStatus) return null;
 				const status =
 					rawStatus === 'available' && slot.canceledAt && !slot.reopenedAt

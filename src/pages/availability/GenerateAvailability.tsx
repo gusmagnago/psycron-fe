@@ -1,9 +1,10 @@
 import { useState } from 'react';
-import { PageLayout } from '@psycron/layouts/app/pages-layout/PageLayout';
+import { useTranslation } from 'react-i18next';
 
 import { JupiterConversation } from './jupiter-conversation/JupiterConversation';
 import { STORAGE_KEY } from './jupiter-conversation/useJupiterFlow';
 import { JupiterWelcome } from './jupiter-welcome/JupiterWelcome';
+import { AvailabilityWorkspaceRouteFrame } from './workspace/AvailabilityWorkspaceRouteFrame';
 import { GenerateAvailabilityContentWrapper } from './GenerateAvailability.styles';
 
 type JupiterPhase = 'welcome' | 'conversation';
@@ -17,6 +18,7 @@ const hasSavedFlow = (): boolean => {
 };
 
 export const GenerateAvailability = () => {
+	const { t } = useTranslation();
 	const [phase, setPhase] = useState<JupiterPhase>(
 		hasSavedFlow() ? 'conversation' : 'welcome'
 	);
@@ -27,17 +29,23 @@ export const GenerateAvailability = () => {
 
 	if (phase === 'welcome') {
 		return (
-			<PageLayout title='' isLoading={false}>
+			<AvailabilityWorkspaceRouteFrame
+				subtitle={t('availability.generate.workspace-subtitle')}
+				title={t('availability.generate.workspace-title')}
+			>
 				<JupiterWelcome onStart={handleStart} />
-			</PageLayout>
+			</AvailabilityWorkspaceRouteFrame>
 		);
 	}
 
 	return (
-		<PageLayout title='' isLoading={false}>
+		<AvailabilityWorkspaceRouteFrame
+			subtitle={t('availability.generate.workspace-subtitle')}
+			title={t('availability.generate.workspace-title')}
+		>
 			<GenerateAvailabilityContentWrapper>
 				<JupiterConversation />
 			</GenerateAvailabilityContentWrapper>
-		</PageLayout>
+		</AvailabilityWorkspaceRouteFrame>
 	);
 };
