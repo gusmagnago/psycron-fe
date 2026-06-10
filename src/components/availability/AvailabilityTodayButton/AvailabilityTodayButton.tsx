@@ -9,12 +9,16 @@ import { format } from 'date-fns';
 
 interface AvailabilityTodayButtonProps {
 	iconOnly?: boolean;
+	id?: string;
 	onClick?: () => void;
+	testId?: string;
 }
 
 export const AvailabilityTodayButton = ({
 	iconOnly = false,
+	id = 'availability-today-button',
 	onClick,
+	testId = 'availability-today-button',
 }: AvailabilityTodayButtonProps) => {
 	const { t } = useTranslation();
 	const navigate = useNavigate();
@@ -33,7 +37,13 @@ export const AvailabilityTodayButton = ({
 		return (
 			<Tooltip title={t('common.today')} arrow placement='top'>
 				<span>
-					<Button secondary small onClick={handleClick}>
+					<Button
+						secondary
+						small
+						data-testid={testId}
+						id={id}
+						onClick={handleClick}
+					>
 						<Today />
 					</Button>
 				</span>
@@ -42,7 +52,7 @@ export const AvailabilityTodayButton = ({
 	}
 
 	return (
-		<Button secondary small onClick={handleClick}>
+		<Button secondary small data-testid={testId} id={id} onClick={handleClick}>
 			<Today />
 			{t('common.today')}
 		</Button>

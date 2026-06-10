@@ -22,7 +22,12 @@ export const AvailabilityViewToggle = ({
 	};
 
 	return (
-		<ViewToggleGroup aria-label={viewModeLabel} role='group'>
+		<ViewToggleGroup
+			aria-label={viewModeLabel}
+			data-testid='availability-view-toggle'
+			id='availability-view-toggle'
+			role='group'
+		>
 			{VIEW_MODES.map((viewMode) => (
 				<ViewToggleButton
 					aria-pressed={value === viewMode}

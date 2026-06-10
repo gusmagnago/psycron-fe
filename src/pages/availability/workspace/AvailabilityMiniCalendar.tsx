@@ -110,7 +110,11 @@ export const AvailabilityMiniCalendar = ({
 					</MiniCalendarNavButton>
 				</MiniCalendarNav>
 			</MiniCalendarHead>
-			<MiniWeekdayGrid aria-hidden='true'>
+			<MiniWeekdayGrid
+				aria-hidden='true'
+				data-testid='availability-month-weekday-grid'
+				id='availability-month-weekday-grid'
+			>
 				{WEEKDAYS.map((weekday, index) => (
 					<MiniWeekdayLabel key={`${weekday}-${index}`}>
 						{weekday}
@@ -121,6 +125,8 @@ export const AvailabilityMiniCalendar = ({
 				aria-label={t('availability.workspace.month-grid-label', {
 					month: format(currentDate, 'MMMM yyyy'),
 				})}
+				data-testid='availability-month-day-grid'
+				id='availability-month-day-grid'
 				role='grid'
 			>
 				{calendarDays.map((day) => {
@@ -138,7 +144,9 @@ export const AvailabilityMiniCalendar = ({
 											? t('availability.workspace.month-day-selected')
 											: '',
 							})}
+							data-testid={`availability-month-day-${key}`}
 							dayState={dayState}
+							id={`availability-month-day-${key}`}
 							key={key}
 							onClick={() => handleDaySelect(day)}
 							role='gridcell'

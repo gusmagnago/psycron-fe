@@ -38,26 +38,45 @@ export const Navbar = ({ items, footerItems }: NavbarProps) => {
 		<>
 			{isMobile || isTablet ? (
 				<>
-					<MobileNavbarWrapper>
-						<ColoredLogo>
+					<MobileNavbarWrapper
+						data-testid='app-navbar-mobile'
+						id='app-navbar-mobile'
+					>
+						<ColoredLogo
+							data-testid='app-navbar-logo'
+							id='app-navbar-logo'
+						>
 							<LogoColor />
 						</ColoredLogo>
-						<MobileNavbarMenu>
+						<MobileNavbarMenu
+							data-testid='app-navbar-mobile-menu-toggle'
+							id='app-navbar-mobile-menu-toggle'
+						>
 							<IconButton onMouseDown={handleMenuClick}>
 								<MenuIcon />
 							</IconButton>
 						</MobileNavbarMenu>
 					</MobileNavbarWrapper>
 					{isMenuOpen && (
-						<FloatingMobileNavbar ref={dropdownRef}>
-							<MobileMenuWrapper>
+						<FloatingMobileNavbar
+							data-testid='app-navbar-mobile-dropdown'
+							id='app-navbar-mobile-dropdown'
+							ref={dropdownRef}
+						>
+							<MobileMenuWrapper
+								data-testid='app-navbar-mobile-menu-list'
+								id='app-navbar-mobile-menu-list'
+							>
 								<Menu
 									items={items}
 									closeMenu={() => setIsMenuOpen(false)}
 									isFullList
 								/>
 							</MobileMenuWrapper>
-							<MobileNavbarFooter>
+							<MobileNavbarFooter
+								data-testid='app-navbar-mobile-footer'
+								id='app-navbar-mobile-footer'
+							>
 								<Menu
 									items={footerItems}
 									closeMenu={() => setIsMenuOpen(false)}
@@ -69,14 +88,26 @@ export const Navbar = ({ items, footerItems }: NavbarProps) => {
 					)}
 				</>
 			) : (
-				<NavbarWrapper>
-					<ColoredLogo>
+				<NavbarWrapper
+					data-testid='app-navbar-rail'
+					id='app-navbar-rail'
+				>
+					<ColoredLogo
+						data-testid='app-navbar-logo'
+						id='app-navbar-logo'
+					>
 						<LogoColor />
 					</ColoredLogo>
-					<DesktopkMenuWrapper>
+					<DesktopkMenuWrapper
+						data-testid='app-navbar-menu'
+						id='app-navbar-menu'
+					>
 						<Menu items={items} />
 					</DesktopkMenuWrapper>
-					<NavbarFooterIcons>
+					<NavbarFooterIcons
+						data-testid='app-navbar-footer-icons'
+						id='app-navbar-footer-icons'
+					>
 						<Menu items={footerItems} isFooterIcon />
 					</NavbarFooterIcons>
 				</NavbarWrapper>

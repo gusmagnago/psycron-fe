@@ -162,6 +162,8 @@ export const AvailabilityWeekPage = () => {
 			onClick={(e) => setFilterAnchorEl(e.currentTarget as HTMLElement)}
 			small
 			variant='outlined'
+			data-testid='availability-filter-button'
+			id='availability-filter-button'
 		>
 			{activeFilterCount > 0 ? <FilterFull /> : <Filter />}
 			{!isMobile ? t('availability.week.filters') : null}
@@ -173,6 +175,8 @@ export const AvailabilityWeekPage = () => {
 			small
 			tertiary
 			aria-label={t('availability.week.settings')}
+			data-testid='availability-settings-button'
+			id='availability-settings-button'
 			onClick={goToSettings}
 		>
 			<Settings />
@@ -185,6 +189,8 @@ export const AvailabilityWeekPage = () => {
 			small
 			tertiary
 			aria-label={t('availability.workspace.sync-google')}
+			data-testid='availability-sync-google-button'
+			id='availability-sync-google-button'
 			onClick={goToSettings}
 			variant='outlined'
 		>
@@ -198,6 +204,8 @@ export const AvailabilityWeekPage = () => {
 			disabled={!canGoPrev}
 			onClick={goToPrevWeek}
 			aria-label={t('availability.week.prev-week')}
+			data-testid='availability-week-prev-button'
+			id='availability-week-prev-button'
 		>
 			<ChevronLeft />
 		</NavButton>
@@ -207,6 +215,8 @@ export const AvailabilityWeekPage = () => {
 			disabled={!canGoNext}
 			onClick={goToNextWeek}
 			aria-label={t('availability.week.next-week')}
+			data-testid='availability-week-next-button'
+			id='availability-week-next-button'
 		>
 			<ChevronRight />
 		</NavButton>
@@ -347,19 +357,28 @@ export const AvailabilityWeekPage = () => {
 			data-testid='availability-calendar-viewbar'
 			id='availability-calendar-viewbar'
 		>
-			<WeekWorkspaceTitleGroup>
+			<WeekWorkspaceTitleGroup
+				data-testid='availability-week-title-group'
+				id='availability-week-title-group'
+			>
 				{prevButton}
 				<WeekWorkspaceTitleCopy>
 					<WeekWorkspaceTitle id='availability-week-title'>
 						{viewbarTitle}
 					</WeekWorkspaceTitle>
-					<WeekWorkspaceSubtitle>
+					<WeekWorkspaceSubtitle
+						data-testid='availability-week-subtitle'
+						id='availability-week-subtitle'
+					>
 						{t('availability.workspace.viewbar-helper')}
 					</WeekWorkspaceSubtitle>
 				</WeekWorkspaceTitleCopy>
 				{nextButton}
 			</WeekWorkspaceTitleGroup>
-			<WeekWorkspaceControls>
+			<WeekWorkspaceControls
+				data-testid='availability-week-controls'
+				id='availability-week-controls'
+			>
 				<AvailabilityViewToggle
 					dayLabel={t('availability.workspace.view-day')}
 					value={viewMode}

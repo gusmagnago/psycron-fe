@@ -23,6 +23,10 @@ export const WorkspaceHeaderRoot = styled(Box)`
 	}
 `;
 
+export const WorkspaceHeaderTitleGroup = styled(Box)`
+	padding-left: ${spacing.small};
+`;
+
 export const WorkspaceHeaderTitle = styled((props) => (
 	<Text component='h1' {...props} />
 ))`
@@ -56,6 +60,7 @@ export const WorkspaceHeaderActions = styled(Box)`
 	justify-content: flex-end;
 	gap: ${spacing.extraSmall};
 	flex-wrap: wrap;
+	padding-right: ${spacing.small};
 
 	${isMobileMedia} {
 		justify-content: flex-start;

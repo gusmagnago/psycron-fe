@@ -73,7 +73,13 @@ export const AvailabilityReadinessPanel = ({
 						<ReadinessBody>{jupiterAnswer}</ReadinessBody>
 					</ReadinessJupiterAnswer>
 				) : null}
-				<Button fullWidth tertiary variant='contained'>
+				<Button
+					fullWidth
+					tertiary
+					data-testid='availability-resolve-readiness-button'
+					id='availability-resolve-readiness-button'
+					variant='contained'
+				>
 					<TriangleAlert />
 					{resolveLabel}
 				</Button>

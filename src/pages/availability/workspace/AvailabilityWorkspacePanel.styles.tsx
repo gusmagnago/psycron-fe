@@ -4,7 +4,10 @@ import { Box, ButtonBase } from '@mui/material';
 import { Text } from '@psycron/components/text/Text';
 import { isSmallerThanTabletMedia } from '@psycron/theme/media-queries/mediaQueries';
 import { hexToRgba, palette } from '@psycron/theme/palette/palette.theme';
-import { shadowDashboardTile } from '@psycron/theme/shadow/shadow.theme';
+import {
+	shadowDashboardTile,
+	shadowSmall,
+} from '@psycron/theme/shadow/shadow.theme';
 import { spacing } from '@psycron/theme/spacing/spacing.theme';
 import { zIndexDrawer } from '@psycron/theme/zIndex';
 
@@ -39,11 +42,7 @@ export const WorkspacePanelRoot = styled('aside', {
 	border: 1px solid ${hexToRgba(palette.white, 0.58)};
 	backdrop-filter: blur(18px) saturate(1.24);
 	-webkit-backdrop-filter: blur(18px) saturate(1.24);
-	box-shadow:
-		inset 0 1px 0 ${hexToRgba(palette.white, 0.8)},
-		inset 0 -1px 0 ${hexToRgba(palette.brand.purple, 0.06)},
-		0 18px 50px -28px ${hexToRgba(palette.black, 0.3)},
-		${shadowDashboardTile};
+	box-shadow: ${shadowSmall};
 	transition:
 		width 0.18s cubic-bezier(0.2, 0.8, 0.2, 1),
 		margin 0.18s cubic-bezier(0.2, 0.8, 0.2, 1),
@@ -81,8 +80,8 @@ export const WorkspacePanelRoot = styled('aside', {
 		css`
 			width: ${side === 'left' ? '320px' : '420px'};
 			${side === 'left'
-				? `margin-right: ${spacing.medium};`
-				: `margin-left: ${spacing.medium};`}
+				? `margin-right: ${spacing.small}; margin-left: 0;`
+				: `margin-left: ${spacing.small}; margin-right: 0;`}
 			opacity: 1;
 			pointer-events: auto;
 		`}

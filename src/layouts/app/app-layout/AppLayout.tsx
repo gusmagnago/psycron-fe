@@ -196,19 +196,19 @@ export const AppLayout: FC = () => {
 	if (sessionStatus) return sessionStatus;
 
 	return (
-		<LayoutWrapper>
+		<LayoutWrapper data-testid='app-layout-wrapper' id='app-layout-wrapper'>
 			<AppAnalytics isAuthenticated={isAuthenticated} distinctId={distinctId} />
-			<NavBarWrapper>
+			<NavBarWrapper data-testid='app-navbar-wrapper' id='app-navbar-wrapper'>
 				<Box>
 					<Navbar items={menuItems} footerItems={footerItems} />
 				</Box>
-				<DividerWrapper>
+				<DividerWrapper data-testid='app-navbar-divider' id='app-navbar-divider'>
 					<Divider
 						orientation={isMobile || isTablet ? 'horizontal' : 'vertical'}
 					/>
 				</DividerWrapper>
 			</NavBarWrapper>
-			<Content>
+			<Content data-testid='app-layout-content' id='app-layout-content'>
 				<EnvironmentBanner isVisible={isTestingEnv} />
 				<AvailabilityGate>
 					<Outlet />

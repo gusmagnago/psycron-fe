@@ -9,6 +9,7 @@ import { hexToRgba, palette } from '@psycron/theme/palette/palette.theme';
 import {
 	shadowDashboardTile,
 	shadowMedium,
+	shadowSmall,
 } from '@psycron/theme/shadow/shadow.theme';
 import { spacing } from '@psycron/theme/spacing/spacing.theme';
 import { zIndexDrawer, zIndexSticky } from '@psycron/theme/zIndex';
@@ -21,17 +22,11 @@ import type {
 export const WorkspaceRoot = styled(Box)`
 	height: 100%;
 	min-height: 0;
-	padding: max(${spacing.medium}, env(safe-area-inset-top))
-		max(${spacing.medium}, env(safe-area-inset-right))
-		max(${spacing.medium}, env(safe-area-inset-bottom))
-		max(${spacing.medium}, env(safe-area-inset-left));
-	position: relative;
+	padding: max(${spacing.xs}, env(safe-area-inset-top))
+		max(${spacing.xs}, env(safe-area-inset-right))
+		max(${spacing.xs}, env(safe-area-inset-bottom))
+		max(${spacing.xs}, env(safe-area-inset-left));
 	background: ${palette.background.default};
-
-	${isMobileMedia} {
-		padding: ${spacing.small} ${spacing.extraSmall}
-			max(${spacing.small}, env(safe-area-inset-bottom));
-	}
 `;
 
 export const SkipLink = styled('a')`
@@ -82,11 +77,7 @@ export const WorkspaceMain = styled(Box)`
 	border: 1px solid ${hexToRgba(palette.white, 0.58)};
 	backdrop-filter: blur(18px) saturate(1.24);
 	-webkit-backdrop-filter: blur(18px) saturate(1.24);
-	box-shadow:
-		inset 0 1px 0 ${hexToRgba(palette.white, 0.8)},
-		inset 0 -1px 0 ${hexToRgba(palette.brand.purple, 0.06)},
-		0 18px 50px -28px ${hexToRgba(palette.black, 0.3)},
-		${shadowDashboardTile};
+	box-shadow: ${shadowSmall};
 `;
 
 export const WorkspaceMainContent = styled(Box, {
@@ -163,15 +154,15 @@ export const WorkspaceEdgeToggle = styled(ButtonBase, {
 		opacity 0.1s ease,
 		color 0.12s ease;
 
+	border-radius: 0;
+
 	${({ panelSide }) =>
 		panelSide === 'left'
 			? css`
 					left: 0;
-					border-radius: 0 ${spacing.small} ${spacing.small} 0;
 				`
 			: css`
 					right: 0;
-					border-radius: ${spacing.small} 0 0 ${spacing.small};
 				`}
 
 	${({ isAnyPanelOpen, panelSide }) =>
