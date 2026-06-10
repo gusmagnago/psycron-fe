@@ -5,4 +5,5 @@ export interface BentoTileHeaderChromeProps {
 	icon?: ReactNode;
 	infoButton?: ReactNode;
 	title?: ReactNode;
+	titleId?: string;
 }

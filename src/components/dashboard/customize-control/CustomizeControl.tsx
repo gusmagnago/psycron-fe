@@ -1,12 +1,12 @@
 import { useTranslation } from 'react-i18next';
+import { Settings } from '@psycron/components/icons';
 import { Tooltip } from '@psycron/components/tooltip/Tooltip';
 import { AnimatePresence } from 'framer-motion';
-import { Brush, Check } from 'lucide-react';
 
 import {
 	BannerRow,
 	ControlsBar,
-	CustomizeIconWrap,
+	CustomizeToggle,
 	EditModeBanner,
 	OrganizeButton,
 	ResetButton,
@@ -19,7 +19,7 @@ const bannerVariants = {
 		height: 'auto',
 		opacity: 1,
 		y: 0,
-		transition: { duration: 0.25, ease: 'easeOut' },
+		transition: { bounce: 0.12, duration: 0.42, type: 'spring' },
 	},
 	exit: { height: 0, opacity: 0, y: -8, transition: { duration: 0.2 } },
 };
@@ -32,22 +32,28 @@ export const CustomizeControl = ({
 }: CustomizeControlProps) => {
 	const { t } = useTranslation();
 
-	const label = isCustomizing
+	const ariaLabel = isCustomizing
 		? t('page.dashboard.customize.done')
 		: t('page.dashboard.customize.open');
+	const label = t('page.dashboard.customize.open');
 
 	return (
 		<>
 			<ControlsBar>
 				<Tooltip
-					aria-label={label}
-					onClick={() => onToggle(!isCustomizing)}
+					aria-label={ariaLabel}
 					placement='bottom'
-					title={label}
+					title={ariaLabel}
 				>
-					<CustomizeIconWrap isActive={isCustomizing}>
-						{isCustomizing ? <Check size={16} /> : <Brush size={16} />}
-					</CustomizeIconWrap>
+					<CustomizeToggle
+						aria-pressed={isCustomizing}
+						className='customize'
+						onClick={() => onToggle(!isCustomizing)}
+						type='button'
+					>
+						<Settings className='ic' />
+						{label}
+					</CustomizeToggle>
 				</Tooltip>
 			</ControlsBar>
 

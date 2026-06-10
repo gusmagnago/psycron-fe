@@ -17,7 +17,8 @@ export const SlideRoot = styled(motion.div)`
 export const SlideText = styled(Text)`
 	color: ${palette.text.primary};
 	font-size: 0.875rem;
-	line-height: 1.65;
+	font-weight: 600;
+	line-height: 1.45;
 	margin: 0;
 	text-align: left;
 `;

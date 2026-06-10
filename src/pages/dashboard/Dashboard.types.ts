@@ -1,14 +1,11 @@
 export type DashboardTileId =
 	| 'action-center'
-	| 'billing-readiness'
+	| 'glance'
 	| 'greeting'
-	| 'jupiter-insights'
-	| 'notifications'
-	| 'pending-tasks'
-	| 'quick-actions'
 	| 'recent-patients'
 	| 'revenue'
 	| 'schedule'
+	| 'practice-readiness'
 	| 'session-analytics';
 
 export type DashboardTileOrientation = 'column' | 'row';

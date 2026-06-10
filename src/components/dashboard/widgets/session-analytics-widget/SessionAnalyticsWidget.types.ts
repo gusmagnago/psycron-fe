@@ -1,4 +1,4 @@
-import type { WeeklyBarData } from '../weekly-chart-widget/WeeklyChartWidget.types';
+import type { DashboardWeekSeriesDay } from '@psycron/api/dashboard/index.types';
 
 export type SessionAnalyticsViewMode = 'month' | 'week';
 export type SessionAnalyticsLayout = 'column' | 'row';
@@ -14,12 +14,12 @@ export interface SessionAnalyticsPeriodData {
 }
 
 export interface SessionAnalyticsWidgetProps {
-	chartData: WeeklyBarData[];
+	chartData: DashboardWeekSeriesDay[];
 	isLoading?: boolean;
 	layout?: SessionAnalyticsLayout;
-	monthChartData: WeeklyBarData[];
+	monthChartData: DashboardWeekSeriesDay[];
 	monthData: SessionAnalyticsPeriodData;
-	onDayClick?: (day: WeeklyBarData) => void;
+	onDayClick?: (day: DashboardWeekSeriesDay) => void;
 	onViewModeChange?: (mode: SessionAnalyticsViewMode) => void;
 	rowSpan?: number;
 	weekData: SessionAnalyticsPeriodData;

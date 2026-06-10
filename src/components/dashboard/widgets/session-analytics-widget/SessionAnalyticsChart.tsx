@@ -1,8 +1,7 @@
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Box } from '@mui/material';
-
-import type { WeeklyBarData } from '../weekly-chart-widget/WeeklyChartWidget.types';
+import type { DashboardWeekSeriesDay } from '@psycron/api/dashboard/index.types';
 
 import {
 	BarGroup,
@@ -16,8 +15,8 @@ import {
 const k = (key: string) => `page.dashboard.widgets.session-analytics.${key}`;
 
 interface SessionAnalyticsChartProps {
-	data: WeeklyBarData[];
-	onDayClick?: (day: WeeklyBarData) => void;
+	data: DashboardWeekSeriesDay[];
+	onDayClick?: (day: DashboardWeekSeriesDay) => void;
 }
 
 export const SessionAnalyticsChart = ({ data, onDayClick }: SessionAnalyticsChartProps) => {

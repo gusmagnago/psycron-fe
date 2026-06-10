@@ -52,8 +52,7 @@ export const enum PostHogEvent {
 	DashboardTileOrientationToggled = 'dashboard tile orientation toggled',
 	DashboardTileReordered = 'dashboard tile reordered',
 	DashboardTileRestored = 'dashboard tile restored',
-	DashboardWidgetFeedbackSubmitted = 'dashboard widget feedback submitted',
-	DashboardWidgetInfoOpened = 'dashboard widget info opened',
+	DashboardWeatherResolved = 'dashboard weather resolved',
 	DeletionRequested = 'deletion requested',
 	EditUserSubmitted = 'edit user submitted',
 
@@ -492,6 +491,12 @@ export type PostHogEventProps = {
 		to_index: number;
 	};
 	[PostHogEvent.DashboardTileRestored]: { tile_id: string };
+	[PostHogEvent.DashboardWeatherResolved]: {
+		provider: 'fallback' | 'google-weather' | 'open-meteo';
+		source: 'clinic-address' | 'no-clinic-address' | 'request-failed';
+		status: 'fallback' | 'loading' | 'ready';
+		weather_type: 'clear' | 'cloudy' | 'rain' | 'snow' | 'storm';
+	};
 
 	[PostHogEvent.JupiterInsightActionClicked]: {
 		action_target?: string;
@@ -507,16 +512,6 @@ export type PostHogEventProps = {
 	[PostHogEvent.JupiterInsightsFallbackUsed]: {
 		tier: string;
 	};
-	[PostHogEvent.DashboardWidgetInfoOpened]: {
-		tier: string;
-		widget_id: string;
-	};
-	[PostHogEvent.DashboardWidgetFeedbackSubmitted]: {
-		feedback: string;
-		feedback_id?: string;
-		tier: string;
-		widget_id: string;
-	};
 	[PostHogEvent.DashboardNotificationStatusClicked]: {
 		status: 'FAILED' | 'PENDING' | 'SENT';
 		tier: string;
@@ -524,7 +519,9 @@ export type PostHogEventProps = {
 	[PostHogEvent.DashboardActionCenterItemClicked]: {
 		count: number;
 		item_type: string;
+		source: 'dashboard-summary';
 		tier: string;
+		tile_id: string;
 	};
 	[PostHogEvent.DashboardScheduleSlotClicked]: {
 		date: string;

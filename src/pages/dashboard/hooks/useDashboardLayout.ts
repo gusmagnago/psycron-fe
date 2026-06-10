@@ -12,28 +12,31 @@ import type {
 import type { UseDashboardLayoutReturn } from './useDashboardLayout.types';
 
 const STORAGE_KEY = '_psy_dashboard_layout';
-const STORAGE_VERSION = 3;
+const STORAGE_VERSION = 5;
 const MAX_HEIGHT_DELTA = 4;
 const MIN_HEIGHT_DELTA = -1;
+const LEGACY_DEFAULT_LAYOUT_ORDER: DashboardTileId[] = [
+	'greeting',
+	'glance',
+	'practice-readiness',
+	'action-center',
+	'schedule',
+	'session-analytics',
+	'revenue',
+	'recent-patients',
+];
 
-// Order produces a gap-free 12-col grid:
-// Rows 1-2: greeting(6) + schedule(6)
-// Rows 3-4: billing(3) + revenue(3) + pending(3) + quick(3)
-// Rows 5-6: notifications(3) + action(3) + recent-patients(6)
-// Rows 7-8: jupiter-insights(12)
-// Rows 9-11: session-analytics(12)
+// Order keeps the hero section aligned with the dashboard v4 preview and
+// keeps the practice tiles in their intended sequence.
 const DEFAULT_LAYOUT: DashboardLayoutState = [
 	{ id: 'greeting', order: 0, visible: true },
-	{ id: 'schedule', order: 1, visible: true },
-	{ id: 'billing-readiness', order: 2, visible: true },
-	{ id: 'revenue', order: 3, visible: true },
-	{ id: 'pending-tasks', order: 4, visible: true },
-	{ id: 'quick-actions', order: 5, visible: true },
-	{ id: 'notifications', order: 6, visible: true },
-	{ id: 'action-center', order: 7, visible: true },
-	{ id: 'recent-patients', order: 8, visible: true },
-	{ id: 'jupiter-insights', order: 9, visible: true },
-	{ id: 'session-analytics', order: 10, visible: true },
+	{ id: 'glance', order: 1, visible: true },
+	{ id: 'practice-readiness', order: 2, visible: true },
+	{ id: 'action-center', order: 3, visible: true },
+	{ id: 'schedule', order: 4, visible: true },
+	{ id: 'session-analytics', order: 5, visible: true },
+	{ id: 'revenue', order: 6, visible: true },
+	{ id: 'recent-patients', order: 7, visible: true },
 ];
 
 interface StoredDashboardLayout {
@@ -42,7 +45,8 @@ interface StoredDashboardLayout {
 }
 
 const LEGACY_TILE_IDS: Record<string, DashboardTileId> = {
-	'revenue-mtd': 'billing-readiness',
+	'billing-readiness': 'practice-readiness',
+	'revenue-mtd': 'practice-readiness',
 	'this-week': 'session-analytics',
 	'weekly-chart': 'session-analytics',
 };
@@ -81,6 +85,16 @@ const normalizeTiles = (tiles: DashboardLayoutState): DashboardLayoutState =>
 		return acc;
 	}, []);
 
+const hasLegacyDefaultOrder = (tiles: DashboardLayoutState): boolean => {
+	const normalized = normalizeTiles(tiles);
+	return (
+		normalized.length === LEGACY_DEFAULT_LAYOUT_ORDER.length &&
+		normalized.every(
+			(tile, index) => tile.id === LEGACY_DEFAULT_LAYOUT_ORDER[index]
+		)
+	);
+};
+
 const mergeWithDefaults = (
 	tiles: DashboardLayoutState,
 	useDefaultOrder: boolean
@@ -117,7 +131,10 @@ const loadLayout = (): DashboardLayoutState => {
 		const raw = localStorage.getItem(STORAGE_KEY);
 		if (!raw) return DEFAULT_LAYOUT;
 		const stored = getStoredLayout(JSON.parse(raw));
-		return mergeWithDefaults(stored.tiles, stored.version !== STORAGE_VERSION);
+		return mergeWithDefaults(
+			stored.tiles,
+			stored.version !== STORAGE_VERSION || hasLegacyDefaultOrder(stored.tiles)
+		);
 	} catch {
 		return DEFAULT_LAYOUT;
 	}

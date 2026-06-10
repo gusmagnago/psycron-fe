@@ -11,7 +11,7 @@ Never create a git commit without the user explicitly asking for it. Always pres
 Use the Psycron Obsidian vault as product and engineering memory when a task involves product behavior, architecture, compliance, Jira, Confluence, releases, or cross-repo decisions:
 
 ```text
-/Users/gusmagnago/Documents/Obsidian Vault
+/Users/gusmagnago/Documents/Obsidian Vault/Psycron
 ```
 
 Start with:

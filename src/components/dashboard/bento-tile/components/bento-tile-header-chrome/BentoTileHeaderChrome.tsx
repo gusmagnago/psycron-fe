@@ -14,15 +14,26 @@ export const BentoTileHeaderChrome = ({
 	headerActions,
 	icon,
 	infoButton,
+	titleId,
 	title,
 }: BentoTileHeaderChromeProps) => {
 	if (!title && !icon && !headerActions && !infoButton) return null;
 
 	return (
-		<BentoTileHeader>
+		<BentoTileHeader
+			id={titleId ? `${titleId}-header` : undefined}
+		>
 			<BentoTileHeaderIdentity>
 				{icon && <BentoTileHeaderIcon>{icon}</BentoTileHeaderIcon>}
-				{title && <BentoTileHeaderTitle>{title}</BentoTileHeaderTitle>}
+				{title && (
+					<BentoTileHeaderTitle
+						component='h2'
+						id={titleId}
+						variant='subtitle1'
+					>
+						{title}
+					</BentoTileHeaderTitle>
+				)}
 			</BentoTileHeaderIdentity>
 			<BentoTileHeaderActions>
 				{headerActions}

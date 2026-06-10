@@ -2,7 +2,6 @@ import type {
 	DashboardActionTarget,
 	DashboardQuickActionId,
 } from '@psycron/api/dashboard/index.types';
-import type { WidgetInfoId } from '@psycron/components/dashboard/widget-info-modal/WidgetInfoModal.types';
 import {
 	AddPatient,
 	AlarmClockMinus,
@@ -23,34 +22,29 @@ import {
 	NOTIFICATIONS,
 	PATIENTS,
 } from '@psycron/pages/urls';
+import type { DashboardAccentTone } from '@psycron/theme/palette/dashboardAccents';
 
 import type { DashboardTileId, TileSpan } from './Dashboard.types';
 
 export const TILE_DESKTOP: Record<DashboardTileId, TileSpan> = {
-	'action-center': { col: 3, row: 2 },
-	'billing-readiness': { col: 3, row: 2 },
-	greeting: { col: 6, row: 2 },
-	'jupiter-insights': { col: 12, minCol: 6, minRow: 2, row: 2 },
-	notifications: { col: 3, row: 2 },
-	'pending-tasks': { col: 3, row: 2 },
-	'quick-actions': { col: 3, row: 2 },
-	'recent-patients': { col: 6, row: 2 },
-	revenue: { col: 3, row: 2 },
-	schedule: { col: 6, row: 2 },
-	'session-analytics': { col: 12, row: 3 },
+	'action-center': { col: 6, row: 4 },
+	glance: { col: 5, minRow: 4, row: 4 },
+	greeting: { col: 7, minRow: 4, row: 4 },
+	'recent-patients': { col: 3, row: 3 },
+	revenue: { col: 3, row: 3 },
+	schedule: { col: 12, row: 4 },
+	'practice-readiness': { col: 6, row: 2 },
+	'session-analytics': { col: 6, row: 3 },
 };
 
 export const TILE_TABLET: Record<DashboardTileId, TileSpan> = {
-	'action-center': { col: 3, row: 2 },
-	'billing-readiness': { col: 3, row: 2 },
-	greeting: { col: 6, row: 1 },
-	'jupiter-insights': { col: 6, minCol: 6, minRow: 2, row: 2 },
-	notifications: { col: 6, row: 2 },
-	'pending-tasks': { col: 3, row: 2 },
-	'quick-actions': { col: 3, row: 2 },
+	'action-center': { col: 6, row: 4 },
+	glance: { col: 6, minRow: 4, row: 4 },
+	greeting: { col: 6, minRow: 4, row: 4 },
 	'recent-patients': { col: 3, row: 2 },
 	revenue: { col: 3, row: 2 },
-	schedule: { col: 6, row: 2 },
+	schedule: { col: 6, row: 4 },
+	'practice-readiness': { col: 3, row: 2 },
 	'session-analytics': { col: 6, row: 2 },
 };
 
@@ -58,20 +52,25 @@ export const MIN_TILE_ROW_SPAN = 1;
 export const MAX_TILE_ROW_SPAN = 6;
 export const COL_RESIZE_STEP = 3;
 export const MAX_TILE_COL_SPAN = 12;
+export const MAX_TILE_COL_SPAN_BY_ID: Partial<Record<DashboardTileId, number>> = {
+	greeting: 7,
+};
+export const MAX_TILE_ROW_SPAN_BY_ID: Partial<Record<DashboardTileId, number>> = {
+	greeting: 4,
+};
 
 export const TILE_MIN_HEIGHT: Record<DashboardTileId, number> = {
 	'action-center': 220,
-	'billing-readiness': 180,
-	greeting: 120,
-	'jupiter-insights': 240,
-	notifications: 220,
-	'pending-tasks': 220,
-	'quick-actions': 260,
+	glance: 480,
+	greeting: 480,
 	'recent-patients': 260,
 	revenue: 220,
 	schedule: 400,
+	'practice-readiness': 180,
 	'session-analytics': 220,
 };
+
+export const getFixedTileSpan = (id: DashboardTileId): TileSpan => TILE_DESKTOP[id];
 
 export const getTargetNav = (
 	target: DashboardActionTarget
@@ -103,6 +102,27 @@ export const getTargetNav = (
 	}
 };
 
+export const getActionTone = (
+	id: DashboardQuickActionId
+): DashboardAccentTone => {
+	switch (id) {
+		case 'add-patient':
+			return 'success';
+		case 'availability-settings':
+			return 'brand';
+		case 'fix-reminders':
+			return 'warning';
+		case 'follow-up-cancellations':
+			return 'today';
+		case 'patients':
+			return 'info';
+		case 'setup-availability':
+			return 'brand';
+		case 'view-week':
+			return 'info';
+	}
+};
+
 export const getQuickActionIcon = (
 	id: DashboardQuickActionId
 ): React.ReactElement => {
@@ -123,7 +143,3 @@ export const getQuickActionIcon = (
 			return <CalendarRange />;
 	}
 };
-
-export const getWidgetInfoId = (
-	tileId: DashboardTileId
-): WidgetInfoId | undefined => (tileId === 'greeting' ? undefined : tileId);

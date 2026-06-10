@@ -2,19 +2,6 @@ import type { NotificationStatus } from '@psycron/api/notifications/index.types'
 
 export type DashboardTier = 'active' | 'growing' | 'onboarding';
 
-export type DashboardWidgetInfoId =
-	| 'action-center'
-	| 'billing-readiness'
-	| 'jupiter-insights'
-	| 'latest-patients'
-	| 'notifications'
-	| 'pending-tasks'
-	| 'quick-actions'
-	| 'recent-patients'
-	| 'revenue'
-	| 'schedule'
-	| 'session-analytics';
-
 export type DashboardQuickActionId =
 	| 'add-patient'
 	| 'availability-settings'
@@ -67,6 +54,7 @@ export type DashboardRecentPatientActivityType =
 	| 'updated';
 
 export interface DashboardRecentPatient {
+	createdAt: string;
 	firstName: string;
 	hasMessageContact: boolean;
 	id: string;
@@ -115,6 +103,13 @@ export interface DashboardRevenueEstimate {
 	missingBillingCount: number;
 	monthLabel: string;
 	previousAmount: number;
+}
+
+export interface DashboardRevenueWeekEstimate {
+	amount: number;
+	completedSessionCount: number;
+	currency: string;
+	isEstimated: true;
 }
 
 export type DashboardActionCenterItemType =
@@ -183,17 +178,6 @@ export interface DashboardSummaryResponse {
 	};
 	tier: DashboardTier;
 	week: DashboardWeekMetrics;
+	weekRevenueEstimate: DashboardRevenueWeekEstimate;
 	weeklySeries: DashboardWeekSeriesDay[];
-}
-
-export interface SubmitDashboardWidgetFeedbackPayload {
-	feedback: string;
-	tier?: DashboardTier;
-	widgetId: DashboardWidgetInfoId;
-}
-
-export interface SubmitDashboardWidgetFeedbackResponse {
-	createdAt: string;
-	id: string;
-	success: true;
 }

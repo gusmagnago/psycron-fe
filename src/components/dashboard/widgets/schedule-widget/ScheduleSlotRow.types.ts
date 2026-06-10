@@ -3,7 +3,6 @@ import type { IWeekSlot } from '@psycron/pages/availability/week/AvailabilityWee
 export interface ScheduleSlotRowProps {
 	index: number;
 	onClick: (slot: IWeekSlot) => void;
-	showDate?: boolean;
 	slot: IWeekSlot;
 	timezone?: string;
 }

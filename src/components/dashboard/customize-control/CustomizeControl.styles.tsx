@@ -1,6 +1,5 @@
 import styled from '@emotion/styled';
 import { Box } from '@mui/material';
-import { Button } from '@psycron/components/button/Button';
 import {
 	isBiggerThanTabletMedia,
 	isMobileMedia,
@@ -18,22 +17,40 @@ export const ControlsBar = styled(motion.div)`
 	z-index: ${zIndexAlert};
 `;
 
-export const CustomizeIconWrap = styled('span', {
-	shouldForwardProp: (prop: string) => prop !== 'isActive',
-})<{ isActive: boolean }>`
+export const CustomizeToggle = styled.button`
+	all: unset;
 	display: inline-flex;
 	align-items: center;
-	justify-content: center;
-	color: ${({ isActive }) => (isActive ? palette.brand.purple : 'inherit')};
-	background-color: ${({ isActive }) => (isActive ? palette.white : 'inherit')};
-	transition: color 0.15s ease;
-	border-radius: 100%;
-	padding: ${spacing.xs};
-	border: ${({ isActive }) =>
-		isActive ? `2px solid ${palette.brand.purple}` : 'inherit'};
+	gap: ${spacing.xxs};
+	padding: ${spacing.xs} ${spacing.sm};
+	border-radius: 999px;
+	color: ${palette.text.secondary};
+	cursor: pointer;
+	user-select: none;
+	transition:
+		color 0.15s ease,
+		background-color 0.15s ease,
+		box-shadow 0.15s ease;
+
+	&:hover {
+		color: ${palette.text.primary};
+		background-color: ${palette.white};
+		box-shadow: ${shadowSmall};
+	}
+
+	&:focus-visible {
+		outline: 2px solid ${palette.brand.purple};
+		outline-offset: 2px;
+	}
+
+	svg.ic {
+		width: 18px;
+		height: 18px;
+		flex-shrink: 0;
+	}
 `;
 
-export const ResetButton = styled(Button)`
+export const ResetButton = styled.button`
 	all: unset;
 	font-size: 12px;
 	color: ${palette.text.disabled};
@@ -52,7 +69,7 @@ export const ResetButton = styled(Button)`
 	}
 `;
 
-export const OrganizeButton = styled(Button)`
+export const OrganizeButton = styled.button`
 	all: unset;
 	font-size: 12px;
 	color: ${palette.brand.purple};

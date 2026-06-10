@@ -52,3 +52,6 @@ test-results/
 playwright-report/
 blob-report/
 .last-run.json
+
+# Auto-generated component inventory (regenerate with: npm run components:index)
+docs/COMPONENTS.md

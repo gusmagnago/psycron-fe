@@ -1,11 +1,10 @@
 import type { CSSProperties, ReactNode } from 'react';
-import type { WidgetInfoId } from '@psycron/components/dashboard/widget-info-modal/WidgetInfoModal.types';
 import type {
 	DashboardTileId,
 	DashboardTileOrientation,
 } from '@psycron/pages/dashboard/Dashboard.types';
 
-export type BentoTileVariant = 'default' | 'jupiter';
+export type BentoTileVariant = 'default' | 'glance' | 'greeting' | 'jupiter';
 
 export interface BentoTileProps {
 	ariaLabel: string;
@@ -27,5 +26,4 @@ export interface BentoTileProps {
 	style?: CSSProperties;
 	tier?: string;
 	variant?: BentoTileVariant;
-	widgetInfoId?: WidgetInfoId;
 }
