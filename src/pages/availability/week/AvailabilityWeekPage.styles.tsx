@@ -1,6 +1,5 @@
 import styled from '@emotion/styled';
-import { Box } from '@mui/material';
-import { Button } from '@psycron/components/button/Button';
+import { Box, IconButton } from '@mui/material';
 import {
 	isMediumMedia,
 	isMobileMedia,
@@ -61,7 +60,7 @@ export const hasPersistentSlotShadow = (slotStatus: SlotStatus): boolean =>
 
 export const WeekWorkspaceViewbar = styled(Box)`
 	min-height: 74px;
-	padding: 0 ${spacing.medium};
+	padding: 0 ${spacing.xs};
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
@@ -254,22 +253,23 @@ export const WeekSubtitle = styled('span')`
 	margin-top: ${spacing.space};
 `;
 
-export const FilterButton = styled(Button, {
+export const FilterButton = styled(IconButton, {
 	shouldForwardProp: (prop) => prop !== 'isActive',
 })<{ isActive: boolean }>`
-	border: 0;
-	color: ${palette.text.primary};
-	white-space: nowrap;
+	color: ${({ isActive }) =>
+		isActive ? palette.brand.purple : palette.text.primary};
+	background: ${({ isActive }) =>
+		isActive ? hexToRgba(palette.brand.purple, 0.1) : 'transparent'};
 
-	& span {
-		display: flex;
-		align-items: center;
-		gap: ${spacing.xs};
+	&:hover {
+		background: ${hexToRgba(palette.brand.purple, 0.08)};
+		color: ${palette.brand.purple};
 	}
-`;
 
-export const GhostActionButton = styled(Button)`
-	border: 0;
+	& svg {
+		height: 18px;
+		width: 18px;
+	}
 `;
 
 export const SlotBufferLabel = styled('span')`
@@ -296,4 +296,18 @@ export const WeekFooter = styled(Box)`
 export const WeekFooterActions = styled(Box)`
 	display: flex;
 	gap: ${spacing.xs};
+`;
+
+export const WeekFooterSettingsButton = styled(IconButton)`
+	color: ${palette.gray['05']};
+
+	&:hover {
+		background: ${hexToRgba(palette.brand.purple, 0.08)};
+		color: ${palette.brand.purple};
+	}
+
+	& svg {
+		height: 18px;
+		width: 18px;
+	}
 `;

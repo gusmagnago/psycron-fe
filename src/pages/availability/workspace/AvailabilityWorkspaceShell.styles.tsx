@@ -6,7 +6,11 @@ import {
 	isSmallerThanTabletMedia,
 } from '@psycron/theme/media-queries/mediaQueries';
 import { hexToRgba, palette } from '@psycron/theme/palette/palette.theme';
-import { shadowMedium, shadowSmall } from '@psycron/theme/shadow/shadow.theme';
+import {
+	shadowMedium,
+	shadowMediumPurple,
+	shadowSmall,
+} from '@psycron/theme/shadow/shadow.theme';
 import { spacing } from '@psycron/theme/spacing/spacing.theme';
 import { zIndexDrawer, zIndexSticky } from '@psycron/theme/zIndex';
 
@@ -142,7 +146,7 @@ export const WorkspaceEdgeToggle = styled(ButtonBase, {
 	justify-content: center;
 	color: ${palette.gray['08']};
 	background: ${palette.white};
-	box-shadow: ${shadowMedium};
+	box-shadow: ${shadowSmall};
 	transition:
 		transform 0.12s ease,
 		opacity 0.1s ease,
@@ -170,7 +174,7 @@ export const WorkspaceEdgeToggle = styled(ButtonBase, {
 
 	&:hover {
 		color: ${palette.brand.dark};
-		box-shadow: ${shadowSmall};
+		box-shadow: ${shadowMediumPurple};
 	}
 
 	${isSmallerThanTabletMedia} {

@@ -3,7 +3,7 @@ import { Box, ButtonBase } from '@mui/material';
 import { palette } from '@psycron/theme/palette/palette.theme';
 import {
 	shadowInnerPress,
-	shadowMedium,
+	shadowMediumPurple,
 	shadowSmall,
 } from '@psycron/theme/shadow/shadow.theme';
 import { spacing } from '@psycron/theme/spacing/spacing.theme';
@@ -11,7 +11,7 @@ import { spacing } from '@psycron/theme/spacing/spacing.theme';
 export const NavButtonStyled = styled(ButtonBase)`
 	background: ${palette.background.default};
 	border-radius: 15px;
-	box-shadow: ${shadowMedium};
+	box-shadow: ${shadowSmall};
 	width: 45px;
 	height: 45px;
 	display: flex;
@@ -21,7 +21,7 @@ export const NavButtonStyled = styled(ButtonBase)`
 	transition: box-shadow 0.15s ease;
 
 	&:hover {
-		box-shadow: ${shadowSmall};
+		box-shadow: ${shadowMediumPurple};
 	}
 
 	&.Mui-disabled {

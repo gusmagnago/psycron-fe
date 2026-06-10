@@ -13,7 +13,6 @@ import {
 	Filter,
 	FilterFull,
 	Google,
-	Refresh,
 	Settings,
 	TriangleAlert,
 } from '@psycron/components/icons';
@@ -41,9 +40,9 @@ import { AvailabilityWeekDesktopGrid } from './views/desktop-view/AvailabilityWe
 import { AvailabilityWeekMobileList } from './views/mobile-view/AvailabilityWeekMobileList';
 import {
 	FilterButton,
-	GhostActionButton,
 	WeekCalendarScroll,
 	WeekFooter,
+	WeekFooterSettingsButton,
 	WeekWorkspaceControls,
 	WeekWorkspaceSubtitle,
 	WeekWorkspaceTitle,
@@ -158,43 +157,25 @@ export const AvailabilityWeekPage = () => {
 		<FilterButton
 			isActive={activeFilterCount > 0}
 			onClick={(e) => setFilterAnchorEl(e.currentTarget as HTMLElement)}
-			small
-			variant='outlined'
 			aria-label={t('availability.week.filters')}
 			data-testid='availability-filter-button'
 			id='availability-filter-button'
+			size='small'
 		>
 			{activeFilterCount > 0 ? <FilterFull /> : <Filter />}
 		</FilterButton>
 	);
 
 	const settingsButton = (
-		<Button
-			small
-			tertiary
+		<WeekFooterSettingsButton
 			aria-label={t('availability.week.settings')}
 			data-testid='availability-settings-button'
 			id='availability-settings-button'
 			onClick={goToSettings}
-			variant='contained'
+			size='small'
 		>
 			<Settings />
-		</Button>
-	);
-
-	const syncButton = (
-		<GhostActionButton
-			small
-			tertiary
-			aria-label={t('availability.workspace.sync-google')}
-			data-testid='availability-sync-google-button'
-			id='availability-sync-google-button'
-			onClick={goToSettings}
-			variant='outlined'
-		>
-			<Refresh />
-			{!isMobile ? t('availability.workspace.sync-google') : null}
-		</GhostActionButton>
+		</WeekFooterSettingsButton>
 	);
 
 	const publishButton = (
@@ -328,7 +309,6 @@ export const AvailabilityWeekPage = () => {
 
 	const workspaceActions = (
 		<>
-			{syncButton}
 			{filterButton}
 			{publishButton}
 		</>
@@ -364,7 +344,6 @@ export const AvailabilityWeekPage = () => {
 				data-testid='availability-week-controls'
 				id='availability-week-controls'
 			>
-				{settingsButton}
 				<AvailabilityViewToggle
 					dayLabel={t('availability.workspace.view-day')}
 					value={viewMode}
@@ -387,6 +366,7 @@ export const AvailabilityWeekPage = () => {
 						data-testid='availability-week-footer'
 					>
 						<AvailabilityLegend items={legendItems} />
+						{settingsButton}
 					</WeekFooter>
 				}
 				isLoading={isLoading}

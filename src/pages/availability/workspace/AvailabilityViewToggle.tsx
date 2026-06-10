@@ -1,13 +1,11 @@
-import {
-	ViewToggleButton,
-	ViewToggleGroup,
-} from './AvailabilityViewToggle.styles';
+import { RangeGroup } from '@psycron/components/range-group/RangeGroup';
+
 import type {
 	AvailabilityViewMode,
 	AvailabilityViewToggleProps,
 } from './AvailabilityViewToggle.types';
 
-const VIEW_MODES: AvailabilityViewMode[] = ['day', 'week'];
+const AVAILABILITY_VIEW_TOGGLE_ID_PREFIX = 'availability-view-toggle';
 
 export const AvailabilityViewToggle = ({
 	dayLabel,
@@ -15,32 +13,23 @@ export const AvailabilityViewToggle = ({
 	value,
 	viewModeLabel,
 	weekLabel,
-}: AvailabilityViewToggleProps) => {
-	const labels: Record<AvailabilityViewMode, string> = {
-		day: dayLabel,
-		week: weekLabel,
-	};
-
-	return (
-		<ViewToggleGroup
-			aria-label={viewModeLabel}
-			data-testid='availability-view-toggle'
-			id='availability-view-toggle'
-			role='group'
-		>
-			{VIEW_MODES.map((viewMode) => (
-				<ViewToggleButton
-					aria-pressed={value === viewMode}
-					data-testid={`availability-view-${viewMode}-tab`}
-					id={`availability-view-${viewMode}-tab`}
-					isActive={value === viewMode}
-					key={viewMode}
-					onClick={() => onChange(viewMode)}
-					type='button'
-				>
-					{labels[viewMode]}
-				</ViewToggleButton>
-			))}
-		</ViewToggleGroup>
-	);
-};
+}: AvailabilityViewToggleProps) => (
+	<RangeGroup<AvailabilityViewMode>
+		ariaLabel={viewModeLabel}
+		idPrefix={AVAILABILITY_VIEW_TOGGLE_ID_PREFIX}
+		onChange={onChange}
+		options={[
+			{
+				ariaLabel: dayLabel,
+				label: dayLabel,
+				value: 'day',
+			},
+			{
+				ariaLabel: weekLabel,
+				label: weekLabel,
+				value: 'week',
+			},
+		]}
+		value={value}
+		/>
+);
