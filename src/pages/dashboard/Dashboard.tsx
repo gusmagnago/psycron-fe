@@ -18,7 +18,10 @@ import {
 } from '@dnd-kit/sortable';
 import { capture } from '@psycron/analytics/posthog/events';
 import { PostHogEvent } from '@psycron/analytics/posthog/types';
-import type { DashboardActionTarget } from '@psycron/api/dashboard/index.types';
+import type {
+	DashboardActionTarget,
+	DashboardWeekSeriesDay,
+} from '@psycron/api/dashboard/index.types';
 import { BentoTile } from '@psycron/components/dashboard/bento-tile/BentoTile';
 import { ActionCenterWidget } from '@psycron/components/dashboard/widgets/action-center-widget/ActionCenterWidget';
 import type { ActionCenterWidgetRow } from '@psycron/components/dashboard/widgets/action-center-widget/ActionCenterWidget.types';
@@ -28,13 +31,11 @@ import type { GlanceStat } from '@psycron/components/dashboard/widgets/glance-wi
 import { getNextBookedSlot } from '@psycron/components/dashboard/widgets/glance-widget/GlanceWidget.utils';
 import { GreetingWidget } from '@psycron/components/dashboard/widgets/greeting-widget/GreetingWidget';
 import { PracticeReadinessWidget } from '@psycron/components/dashboard/widgets/practice-readiness-widget/PracticeReadinessWidget';
-import { getActionTone } from '@psycron/components/dashboard/widgets/quick-actions-widget/QuickActionsWidget.utils';
 import { RecentPatientsWidget } from '@psycron/components/dashboard/widgets/recent-patients-widget/RecentPatientsWidget';
 import type { RecentPatient } from '@psycron/components/dashboard/widgets/recent-patients-widget/RecentPatientsWidget.types';
 import { RevenueWidget } from '@psycron/components/dashboard/widgets/revenue-widget/RevenueWidget';
 import { ScheduleWidget } from '@psycron/components/dashboard/widgets/schedule-widget/ScheduleWidget';
 import { SessionAnalyticsWidget } from '@psycron/components/dashboard/widgets/session-analytics-widget/SessionAnalyticsWidget';
-import type { WeeklyBarData } from '@psycron/components/dashboard/widgets/weekly-chart-widget/WeeklyChartWidget.types';
 import { AlarmClock, TriangleAlert } from '@psycron/components/icons';
 import { useUserDetails } from '@psycron/context/user/details/UserDetailsContext';
 import { useTimeOfDay } from '@psycron/hooks/useTimeOfDay';
@@ -65,6 +66,7 @@ import {
 } from './Dashboard.styles';
 import type { DashboardTileId } from './Dashboard.types';
 import {
+	getActionTone,
 	getFixedTileSpan,
 	getQuickActionIcon,
 	getTargetNav,
@@ -167,12 +169,12 @@ export const Dashboard = () => {
 		setActiveId(null);
 	};
 
-	const weeklyChartData = useMemo<WeeklyBarData[]>(
+	const weeklyChartData = useMemo<DashboardWeekSeriesDay[]>(
 		() => summary?.weeklySeries ?? [],
 		[summary?.weeklySeries]
 	);
 
-	const monthlyChartData = useMemo<WeeklyBarData[]>(
+	const monthlyChartData = useMemo<DashboardWeekSeriesDay[]>(
 		() => summary?.monthlySeries ?? [],
 		[summary?.monthlySeries]
 	);

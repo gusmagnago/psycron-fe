@@ -1,4 +1,10 @@
-import { useCallback, useMemo, useState } from 'react';
+import {
+	type Dispatch,
+	type SetStateAction,
+	useCallback,
+	useMemo,
+	useState,
+} from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
@@ -11,6 +17,7 @@ import { BentoTileHeaderChrome } from './components/bento-tile-header-chrome/Ben
 import {
 	BentoTileChromeContext,
 	type BentoTileChromeState,
+	isSameChrome,
 } from './BentoTile.context';
 import { bentoTileVariants } from './BentoTile.motion';
 import {
@@ -41,7 +48,24 @@ export const BentoTile = ({
 	variant = 'default',
 }: BentoTileProps) => {
 	const { t } = useTranslation();
-	const [chrome, setChrome] = useState<BentoTileChromeState>({});
+	const [chrome, setChromeState] = useState<BentoTileChromeState>({});
+
+	// Shallow-compare before committing so identical chrome (the common case when
+	// a tile re-renders for unrelated reasons) does not trigger a state update
+	// and re-render (review FE #101, finding 10).
+	const setChrome = useCallback<Dispatch<SetStateAction<BentoTileChromeState>>>(
+		(value) => {
+			setChromeState((prev) => {
+				const next =
+					typeof value === 'function'
+						? (value as (p: BentoTileChromeState) => BentoTileChromeState)(prev)
+						: value;
+
+				return isSameChrome(prev, next) ? prev : next;
+			});
+		},
+		[]
+	);
 	const [isExpanded, setIsExpanded] = useState(false);
 	const {
 		attributes,
@@ -69,7 +93,7 @@ export const BentoTile = ({
 	const sortableProps = isEditMode
 		? { ...attributes, ...listeners }
 		: undefined;
-	const chromeContext = useMemo(() => ({ setChrome }), []);
+	const chromeContext = useMemo(() => ({ setChrome }), [setChrome]);
 	const hasFooterChrome = Boolean(footer || actions || expandedContent);
 	const hasHeaderChrome = Boolean(title || icon || headerActions);
 	const editControlLabels = useMemo(

@@ -493,11 +493,7 @@ export type PostHogEventProps = {
 	[PostHogEvent.DashboardTileRestored]: { tile_id: string };
 	[PostHogEvent.DashboardWeatherResolved]: {
 		provider: 'fallback' | 'google-weather' | 'open-meteo';
-		source:
-			| 'browser-geolocation'
-			| 'geolocation-denied'
-			| 'geolocation-unavailable'
-			| 'request-failed';
+		source: 'clinic-address' | 'no-clinic-address' | 'request-failed';
 		status: 'fallback' | 'loading' | 'ready';
 		weather_type: 'clear' | 'cloudy' | 'rain' | 'snow' | 'storm';
 	};

@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { capture } from '@psycron/analytics/posthog/events';
-import { PostHogEvent } from '@psycron/analytics/posthog/types';
+import { PostHogEvent, type PostHogEventProps } from '@psycron/analytics/posthog/types';
 import { getCurrentWeather } from '@psycron/api/utils';
 import type { WeatherProvider } from '@psycron/api/utils/index.types';
 import type { WeatherType } from '@psycron/components/dashboard/lummi-hero/LummiHero.types';
@@ -8,6 +8,9 @@ import { useAuth } from '@psycron/context/user/auth/UserAuthenticationContext';
 import type { IClinicAddress } from '@psycron/context/user/auth/UserAuthenticationContext.types';
 
 export type WeatherStatus = 'fallback' | 'loading' | 'ready';
+
+type WeatherResolvedProps =
+	PostHogEventProps[PostHogEvent.DashboardWeatherResolved];
 
 interface WeatherState {
 	description?: string;
@@ -48,103 +51,56 @@ export const useWeather = (): WeatherState => {
 
 		const applyWeather = (
 			nextWeather: WeatherState,
-			eventPayload: {
-				provider: WeatherProvider;
-				source: string;
-				status: WeatherStatus;
-				weather_type: WeatherType;
-			}
+			eventPayload: WeatherResolvedProps
 		): void => {
 			if (!isActive) return;
 			setWeather(nextWeather);
 			capture(PostHogEvent.DashboardWeatherResolved, eventPayload);
 		};
 
-		const resolveFromGeolocation = (): void => {
-			if (!navigator.geolocation) {
-				applyWeather(DEFAULT_WEATHER, {
-					provider: 'fallback',
-					source: 'geolocation-unavailable',
-					status: 'fallback',
-					weather_type: 'clear',
-				});
-				return;
-			}
-
-			navigator.geolocation.getCurrentPosition(
-				async ({ coords }) => {
-					try {
-						const data = await getCurrentWeather({
-							lat: coords.latitude,
-							lng: coords.longitude,
-						});
-
-						const nextWeather = {
-							description: data.description,
-							iconBaseUri: data.iconBaseUri,
-							provider: data.provider,
-							status: data.provider === 'fallback' ? 'fallback' : 'ready',
-							temperatureCelsius: data.temperatureCelsius,
-							type: data.type,
-						} satisfies WeatherState;
-
-						applyWeather(nextWeather, {
-							provider: data.provider,
-							source: 'browser-geolocation',
-							status: nextWeather.status,
-							weather_type: data.type,
-						});
-					} catch {
-						applyWeather(DEFAULT_WEATHER, {
-							provider: 'fallback',
-							source: 'request-failed',
-							status: 'fallback',
-							weather_type: 'clear',
-						});
-					}
-				},
-				() => {
-					applyWeather(DEFAULT_WEATHER, {
-						provider: 'fallback',
-						source: 'geolocation-denied',
-						status: 'fallback',
-						weather_type: 'clear',
-					});
-				},
-				{ maximumAge: 5 * 60 * 1000, timeout: 5000 }
-			);
+		const applyFallback = (source: WeatherResolvedProps['source']): void => {
+			applyWeather(DEFAULT_WEATHER, {
+				provider: 'fallback',
+				source,
+				status: 'fallback',
+				weather_type: 'clear',
+			});
 		};
 
 		const resolveWeather = async (): Promise<void> => {
-			if (hasClinicAddress(clinicAddress)) {
-				try {
-					const data = await getCurrentWeather({
-						address: clinicAddress,
-					});
-
-					const nextWeather = {
-						description: data.description,
-						iconBaseUri: data.iconBaseUri,
-						provider: data.provider,
-						status: data.provider === 'fallback' ? 'fallback' : 'ready',
-						temperatureCelsius: data.temperatureCelsius,
-						type: data.type,
-					} satisfies WeatherState;
-
-					applyWeather(nextWeather, {
-						provider: data.provider,
-						source: 'clinic-address',
-						status: nextWeather.status,
-						weather_type: data.type,
-					});
-					return;
-				} catch {
-					resolveFromGeolocation();
-					return;
-				}
+			// Weather is resolved only from the therapist's saved clinic address.
+			// We never trigger navigator.geolocation here: an unsolicited browser
+			// location prompt on dashboard load erodes trust. Address-less therapists
+			// fall back to default weather until an explicit "use my location"
+			// affordance exists (review FE #101, finding 9).
+			if (!hasClinicAddress(clinicAddress)) {
+				applyFallback('no-clinic-address');
+				return;
 			}
 
-			resolveFromGeolocation();
+			try {
+				const data = await getCurrentWeather({
+					address: clinicAddress,
+				});
+
+				const nextWeather = {
+					description: data.description,
+					iconBaseUri: data.iconBaseUri,
+					provider: data.provider,
+					status: data.provider === 'fallback' ? 'fallback' : 'ready',
+					temperatureCelsius: data.temperatureCelsius,
+					type: data.type,
+				} satisfies WeatherState;
+
+				applyWeather(nextWeather, {
+					provider: data.provider,
+					source: 'clinic-address',
+					status: nextWeather.status,
+					weather_type: data.type,
+				});
+			} catch {
+				applyFallback('request-failed');
+			}
 		};
 
 		void resolveWeather();

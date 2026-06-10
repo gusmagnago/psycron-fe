@@ -22,6 +22,7 @@ import {
 	NOTIFICATIONS,
 	PATIENTS,
 } from '@psycron/pages/urls';
+import type { DashboardAccentTone } from '@psycron/theme/palette/dashboardAccents';
 
 import type { DashboardTileId, TileSpan } from './Dashboard.types';
 
@@ -98,6 +99,27 @@ export const getTargetNav = (
 			return { state: { openSettings: true }, to: `../${NOTIFICATIONS}` };
 		case 'patients':
 			return { to: `../${PATIENTS}` };
+	}
+};
+
+export const getActionTone = (
+	id: DashboardQuickActionId
+): DashboardAccentTone => {
+	switch (id) {
+		case 'add-patient':
+			return 'success';
+		case 'availability-settings':
+			return 'brand';
+		case 'fix-reminders':
+			return 'warning';
+		case 'follow-up-cancellations':
+			return 'today';
+		case 'patients':
+			return 'info';
+		case 'setup-availability':
+			return 'brand';
+		case 'view-week':
+			return 'info';
 	}
 };
 
