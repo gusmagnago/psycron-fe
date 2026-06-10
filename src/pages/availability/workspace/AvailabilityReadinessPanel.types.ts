@@ -1,12 +1,21 @@
+import type { AvailabilitySourceItem } from './AvailabilitySourceList.types';
+import type { AvailabilityStatusItem } from './AvailabilityStatusStrip.types';
+
 export interface AvailabilityReadinessPanelProps {
-	askJupiterLabel: string;
+	activeDate: Date;
 	checklistTitle: string;
 	googleChecklistLabel: string;
 	hasGoogleConnected: boolean;
 	hasSlots: boolean;
-	jupiterAnswer: string;
+	jupiterDescription: string;
 	jupiterLabel: string;
+	jupiterSuggestion: string;
+	jupiterToggleLabel: string;
 	pwaNote: string;
 	resolveLabel: string;
 	slotChecklistLabel: string;
+	sourceItems: AvailabilitySourceItem[];
+	sourcesTitle: string;
+	statusItems: AvailabilityStatusItem[];
+	statusTitle: string;
 }

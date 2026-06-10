@@ -7,7 +7,6 @@ import {
 } from '@psycron/components/icons';
 import { useJupiterAvailabilityConfig } from '@psycron/hooks/useJupiterAvailabilityConfig';
 
-import { AvailabilityControlsPanel } from './AvailabilityControlsPanel';
 import { AvailabilityReadinessPanel } from './AvailabilityReadinessPanel';
 import type { AvailabilityWorkspaceRouteFrameProps } from './AvailabilityWorkspaceRouteFrame.types';
 import { AvailabilityWorkspaceShell } from './AvailabilityWorkspaceShell';
@@ -89,22 +88,9 @@ export const AvailabilityWorkspaceRouteFrame = ({
 		<AvailabilityWorkspaceShell
 			contentMode='page'
 			isLoading={isLoading}
-			leftPanel={
-				<AvailabilityControlsPanel
-					activeDate={new Date()}
-					jupiterDescription={t('availability.workspace.jupiter-description')}
-					jupiterLabel={t('availability.workspace.jupiter-label')}
-					jupiterSuggestion={t('availability.workspace.jupiter-suggestion')}
-					jupiterToggleLabel={t('availability.workspace.jupiter-toggle-label')}
-					sourceItems={sourceItems}
-					sourcesTitle={t('availability.workspace.sources-title')}
-					statusItems={statusItems}
-					statusTitle={t('availability.workspace.status-title')}
-				/>
-			}
-			rightPanel={
+			panel={
 				<AvailabilityReadinessPanel
-					askJupiterLabel={t('availability.workspace.ask-jupiter')}
+					activeDate={new Date()}
 					checklistTitle={t('availability.workspace.checklist-title')}
 					googleChecklistLabel={
 						googleConnected
@@ -113,8 +99,10 @@ export const AvailabilityWorkspaceRouteFrame = ({
 					}
 					hasGoogleConnected={googleConnected}
 					hasSlots={hasAvailability}
-					jupiterAnswer={t('availability.workspace.jupiter-answer')}
+					jupiterDescription={t('availability.workspace.jupiter-description')}
 					jupiterLabel={t('availability.workspace.jupiter-label')}
+					jupiterSuggestion={t('availability.workspace.jupiter-suggestion')}
+					jupiterToggleLabel={t('availability.workspace.jupiter-toggle-label')}
 					pwaNote={t('availability.workspace.pwa-note')}
 					resolveLabel={t('availability.workspace.resolve-readiness')}
 					slotChecklistLabel={
@@ -122,6 +110,10 @@ export const AvailabilityWorkspaceRouteFrame = ({
 							? t('availability.workspace.checklist-setup-ready')
 							: t('availability.workspace.checklist-setup-empty')
 					}
+					sourceItems={sourceItems}
+					sourcesTitle={t('availability.workspace.sources-title')}
+					statusItems={statusItems}
+					statusTitle={t('availability.workspace.status-title')}
 				/>
 			}
 			subtitle={subtitle}

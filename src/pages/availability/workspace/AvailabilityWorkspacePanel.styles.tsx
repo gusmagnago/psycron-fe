@@ -11,11 +11,9 @@ import {
 import { spacing } from '@psycron/theme/spacing/spacing.theme';
 import { zIndexDrawer } from '@psycron/theme/zIndex';
 
-import type { AvailabilityWorkspacePanelSide } from './AvailabilityWorkspaceShell.types';
-
 export const WorkspacePanelRoot = styled('aside', {
-	shouldForwardProp: (prop) => prop !== 'isOpen' && prop !== 'side',
-})<{ isOpen: boolean; side: AvailabilityWorkspacePanelSide }>`
+	shouldForwardProp: (prop) => prop !== 'isOpen',
+})<{ isOpen: boolean }>`
 	flex: 0 0 auto;
 	width: 0;
 	min-width: 0;
@@ -75,13 +73,12 @@ export const WorkspacePanelRoot = styled('aside', {
 		z-index: 1;
 	}
 
-	${({ isOpen, side }) =>
+	${({ isOpen }) =>
 		isOpen &&
 		css`
-			width: ${side === 'left' ? '320px' : '420px'};
-			${side === 'left'
-				? `margin-right: ${spacing.small}; margin-left: 0;`
-				: `margin-left: ${spacing.small}; margin-right: 0;`}
+			width: 320px;
+			margin-left: ${spacing.xs};
+			margin-right: 0;
 			opacity: 1;
 			pointer-events: auto;
 		`}
@@ -89,28 +86,18 @@ export const WorkspacePanelRoot = styled('aside', {
 	${isSmallerThanTabletMedia} {
 		position: fixed;
 		top: 0;
+		right: 0;
 		height: 100dvh;
 		width: min(480px, 100vw);
 		margin: 0;
 		border-radius: 0;
 		background: ${palette.white};
 		z-index: ${zIndexDrawer - 1};
+		transform: translateX(100%);
+		box-shadow: -10px 0 30px 0 ${hexToRgba(palette.black, 0.2)};
 		transition:
 			transform 0.18s cubic-bezier(0.2, 0.8, 0.2, 1),
 			opacity 0.12s ease;
-
-		${({ side }) =>
-			side === 'left'
-				? css`
-						left: 0;
-						transform: translateX(-100%);
-						box-shadow: 10px 0 30px 0 ${hexToRgba(palette.black, 0.2)};
-					`
-				: css`
-						right: 0;
-						transform: translateX(100%);
-						box-shadow: -10px 0 30px 0 ${hexToRgba(palette.black, 0.2)};
-					`}
 
 		${({ isOpen }) =>
 			isOpen &&
@@ -139,14 +126,6 @@ export const WorkspacePanelTitle = styled((props) => (
 	letter-spacing: 0;
 	font-weight: 700;
 	color: ${palette.text.primary};
-`;
-
-export const WorkspacePanelSubtitle = styled(Text)`
-	display: flex;
-	margin-top: 3px;
-	color: ${palette.text.secondary};
-	font-size: 12px;
-	line-height: 1.35;
 `;
 
 export const WorkspacePanelClose = styled(ButtonBase)`

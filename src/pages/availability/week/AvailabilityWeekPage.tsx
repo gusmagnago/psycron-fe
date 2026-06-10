@@ -22,7 +22,6 @@ import useViewport from '@psycron/hooks/useViewport';
 import { useQueryClient } from '@tanstack/react-query';
 import { format, isPast, isToday, parseISO } from 'date-fns';
 
-import { AvailabilityControlsPanel } from '../workspace/AvailabilityControlsPanel';
 import { AvailabilityReadinessPanel } from '../workspace/AvailabilityReadinessPanel';
 import { AvailabilityViewToggle } from '../workspace/AvailabilityViewToggle';
 import type { AvailabilityViewMode } from '../workspace/AvailabilityViewToggle.types';
@@ -185,10 +184,10 @@ export const AvailabilityWeekPage = () => {
 			aria-label={t('availability.workspace.publish-changes')}
 			data-testid='availability-publish-button'
 			id='availability-publish-button'
-			onClick={() => shellRef.current?.openRightPanel()}
+			onClick={() => shellRef.current?.openPanel()}
 			variant='contained'
 		>
-			{t('availability.workspace.publish-changes')}
+			{t('availability.workspace.publish')}
 		</Button>
 	);
 
@@ -370,24 +369,9 @@ export const AvailabilityWeekPage = () => {
 					</WeekFooter>
 				}
 				isLoading={isLoading}
-				leftPanel={
-					<AvailabilityControlsPanel
-						activeDate={activeDate}
-						jupiterDescription={t('availability.workspace.jupiter-description')}
-						jupiterLabel={t('availability.workspace.jupiter-label')}
-						jupiterSuggestion={t('availability.workspace.jupiter-suggestion')}
-						jupiterToggleLabel={t(
-							'availability.workspace.jupiter-toggle-label'
-						)}
-						sourceItems={sourceItems}
-						sourcesTitle={t('availability.workspace.sources-title')}
-						statusItems={statusItems}
-						statusTitle={t('availability.workspace.status-title')}
-					/>
-				}
-				rightPanel={
+				panel={
 					<AvailabilityReadinessPanel
-						askJupiterLabel={t('availability.workspace.ask-jupiter')}
+						activeDate={activeDate}
 						checklistTitle={t('availability.workspace.checklist-title')}
 						googleChecklistLabel={
 							googleConnected
@@ -396,8 +380,12 @@ export const AvailabilityWeekPage = () => {
 						}
 						hasGoogleConnected={googleConnected}
 						hasSlots={hasSlots}
-						jupiterAnswer={t('availability.workspace.jupiter-answer')}
+						jupiterDescription={t('availability.workspace.jupiter-description')}
 						jupiterLabel={t('availability.workspace.jupiter-label')}
+						jupiterSuggestion={t('availability.workspace.jupiter-suggestion')}
+						jupiterToggleLabel={t(
+							'availability.workspace.jupiter-toggle-label'
+						)}
 						pwaNote={t('availability.workspace.pwa-note')}
 						resolveLabel={t('availability.workspace.resolve-readiness')}
 						slotChecklistLabel={
@@ -407,6 +395,10 @@ export const AvailabilityWeekPage = () => {
 									})
 								: t('availability.workspace.checklist-slots-empty')
 						}
+						sourceItems={sourceItems}
+						sourcesTitle={t('availability.workspace.sources-title')}
+						statusItems={statusItems}
+						statusTitle={t('availability.workspace.status-title')}
 					/>
 				}
 				subtitle={t('availability.workspace.subtitle')}

@@ -1,10 +1,9 @@
 import type { ReactNode } from 'react';
 
 export type AvailabilityWorkspaceContentMode = 'calendar' | 'page';
-export type AvailabilityWorkspacePanelSide = 'left' | 'right';
 
 export interface AvailabilityWorkspaceShellHandle {
-	openRightPanel: () => void;
+	openPanel: () => void;
 }
 
 export interface AvailabilityWorkspaceShellProps {
@@ -13,8 +12,7 @@ export interface AvailabilityWorkspaceShellProps {
 	contentMode?: AvailabilityWorkspaceContentMode;
 	footer?: ReactNode;
 	isLoading?: boolean;
-	leftPanel: ReactNode;
-	rightPanel: ReactNode;
+	panel: ReactNode;
 	subtitle?: string;
 	title: string;
 	viewbar?: ReactNode;

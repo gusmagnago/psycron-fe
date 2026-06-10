@@ -194,6 +194,10 @@ export const useAvailabilityWeekViewModel = ({
 				label: t(labelKey),
 				...(status === 'available' && { borderColor: palette.gray['02'] }),
 				...(status === 'blocked' && { borderColor: palette.gray['02'] }),
+				...(status === 'booked-google' && {
+					borderColor: palette.brand.google,
+					borderSide: 'left',
+				}),
 				...(status === 'buffer' && {
 					borderColor: BUFFER_COLORS.booked,
 					opacity: 1,
@@ -202,7 +206,11 @@ export const useAvailabilityWeekViewModel = ({
 					borderColor: palette.warning.main,
 					opacity: 0.78,
 				}),
-			})),
+			})).concat({
+				borderColor: palette.error.main,
+				color: hexToRgba(palette.error.main, 0.1),
+				label: t('availability.week.legend-conflict'),
+			}),
 		[t]
 	);
 

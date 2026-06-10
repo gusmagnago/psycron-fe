@@ -12,7 +12,7 @@ interface AvailabilityLegendProps {
 
 export const AvailabilityLegend = ({ items }: AvailabilityLegendProps) => (
 	<LegendGroup id='availability-legend' aria-label='Availability legend'>
-		{items.map(({ borderColor, color, label, opacity }) => (
+		{items.map(({ borderColor, borderSide, color, label, opacity }) => (
 			<LegendItem
 				key={label}
 				id={`legend-item-${label.toLowerCase().replace(/\s+/g, '-')}`}
@@ -20,6 +20,7 @@ export const AvailabilityLegend = ({ items }: AvailabilityLegendProps) => (
 				<LegendSwatch
 					color={color}
 					borderColor={borderColor}
+					borderSide={borderSide}
 					swatchOpacity={opacity}
 				/>
 				<LegendLabel>{label}</LegendLabel>

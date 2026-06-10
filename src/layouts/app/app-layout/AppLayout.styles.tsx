@@ -59,7 +59,7 @@ export const DividerWrapper = styled(Box)`
 	padding-bottom: ${AppLayoutDividerMobilePadding};
 
 	${isBiggerThanMediumMedia} {
-		padding-right: ${spacing.small};
+		padding-right: ${spacing.xs};
 		padding-bottom: 0;
 	}
 `;

@@ -285,9 +285,13 @@ export const WeekFooter = styled(Box)`
 	display: flex;
 	align-items: center;
 	flex-wrap: wrap;
-	gap: ${spacing.medium};
-	padding: ${spacing.small};
-	border-top: 1px solid ${palette.gray['02']};
+	gap: ${spacing.small};
+	min-height: 56px;
+	padding: ${spacing.extraSmall} ${spacing.medium};
+	border-top: 1px solid ${hexToRgba(palette.gray['02'], 0.78)};
+	color: ${palette.text.secondary};
+	font-size: 12px;
+	font-weight: 800;
 	flex-shrink: 0;
 	justify-content: space-between;
 	margin-bottom: 0;

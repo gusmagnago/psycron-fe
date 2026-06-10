@@ -14,10 +14,7 @@ import {
 import { spacing } from '@psycron/theme/spacing/spacing.theme';
 import { zIndexDrawer, zIndexSticky } from '@psycron/theme/zIndex';
 
-import type {
-	AvailabilityWorkspaceContentMode,
-	AvailabilityWorkspacePanelSide,
-} from './AvailabilityWorkspaceShell.types';
+import type { AvailabilityWorkspaceContentMode } from './AvailabilityWorkspaceShell.types';
 
 export const WorkspaceRoot = styled(Box)`
 	height: 100%;
@@ -129,18 +126,18 @@ export const WorkspaceScrim = styled(ButtonBase, {
 `;
 
 export const WorkspaceEdgeToggle = styled(ButtonBase, {
-	shouldForwardProp: (prop) =>
-		prop !== 'isAnyPanelOpen' && prop !== 'panelSide',
+	shouldForwardProp: (prop) => prop !== 'isOwnPanelOpen',
 })<{
-	isAnyPanelOpen: boolean;
-	panelSide: AvailabilityWorkspacePanelSide;
+	isOwnPanelOpen: boolean;
 }>`
 	position: absolute;
 	top: ${spacing.medium};
+	right: 0;
 	z-index: ${zIndexSticky};
 	width: 38px;
 	height: 64px;
 	border: 0;
+	border-radius: ${spacing.small} 0 0 ${spacing.small};
 	display: inline-flex;
 	align-items: center;
 	justify-content: center;
@@ -153,23 +150,12 @@ export const WorkspaceEdgeToggle = styled(ButtonBase, {
 		color 0.12s ease,
 		box-shadow 0.12s ease;
 
-	${({ panelSide }) =>
-		panelSide === 'left'
-			? css`
-					left: 0;
-					border-radius: 0 ${spacing.small} ${spacing.small} 0;
-				`
-			: css`
-					right: 0;
-					border-radius: ${spacing.small} 0 0 ${spacing.small};
-				`}
-
-	${({ isAnyPanelOpen, panelSide }) =>
-		isAnyPanelOpen &&
+	${({ isOwnPanelOpen }) =>
+		isOwnPanelOpen &&
 		css`
 			opacity: 0;
 			pointer-events: none;
-			transform: translateX(${panelSide === 'left' ? '-100%' : '100%'});
+			transform: translateX(100%);
 		`}
 
 	&:hover {
