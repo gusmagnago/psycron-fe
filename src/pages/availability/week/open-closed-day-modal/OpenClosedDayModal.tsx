@@ -42,6 +42,8 @@ export const OpenClosedDayModal = ({
 			openModal
 			title={t('availability.week.default-blocked-day.title')}
 			onClose={onClose}
+			id='open-closed-day-modal'
+			data-testid='open-closed-day-modal'
 			cardActionsProps={{
 				actionName: t('availability.week.default-blocked-day.confirm'),
 				disabled: isConfirmDisabled,
@@ -52,18 +54,26 @@ export const OpenClosedDayModal = ({
 				secondActionName: t('availability.week.drawer.cancel-back'),
 			}}
 		>
-			<ClosedDayModalBody>
+			<ClosedDayModalBody
+				id='open-closed-day-modal-body'
+				data-testid='open-closed-day-modal-body'
+			>
 				<ClosedDayModalText>
 					{t('availability.week.default-blocked-day.body', {
 						day: format(parseISO(openDate), 'EEEE, MMMM d'),
 					})}
 				</ClosedDayModalText>
 
-				<ClosedDayOptionsGrid>
+				<ClosedDayOptionsGrid
+					id='closed-day-options-grid'
+					data-testid='closed-day-options-grid'
+				>
 					<ClosedDayOptionButton
 						isSelected={mode === 'FULL_DAY'}
 						onClick={() => onModeChange('FULL_DAY')}
 						type='button'
+						id='full-day-option-button'
+						data-testid='full-day-option-button'
 					>
 						<ClosedDayOptionTitle>
 							{t('availability.week.default-blocked-day.open-full-day')}
@@ -77,6 +87,8 @@ export const OpenClosedDayModal = ({
 						isSelected={mode === 'TIME_RANGE'}
 						onClick={() => onModeChange('TIME_RANGE')}
 						type='button'
+						id='time-range-option-button'
+						data-testid='time-range-option-button'
 					>
 						<ClosedDayOptionTitle>
 							{t('availability.week.default-blocked-day.open-part-day')}
@@ -90,6 +102,8 @@ export const OpenClosedDayModal = ({
 						isSelected={mode === 'SPECIFIC_SLOTS'}
 						onClick={() => onModeChange('SPECIFIC_SLOTS')}
 						type='button'
+						id='specific-slots-option-button'
+						data-testid='specific-slots-option-button'
 					>
 						<ClosedDayOptionTitle>
 							{t('availability.week.default-blocked-day.open-specific-slots')}
@@ -103,7 +117,10 @@ export const OpenClosedDayModal = ({
 				</ClosedDayOptionsGrid>
 
 				{mode === 'TIME_RANGE' && (
-					<ClosedDayTimeRangeRow>
+					<ClosedDayTimeRangeRow
+						id='closed-day-time-range-row'
+						data-testid='closed-day-time-range-row'
+					>
 						<TextField
 							fullWidth
 							label={t('availability.week.default-blocked-day.start-time')}
@@ -122,9 +139,14 @@ export const OpenClosedDayModal = ({
 				)}
 
 				{mode === 'SPECIFIC_SLOTS' && (
-					<ClosedDaySlotsGrid>
+					<ClosedDaySlotsGrid
+						id='closed-day-slots-grid'
+						data-testid='closed-day-slots-grid'
+					>
 						{overrideSlotOptions.map((slotStartTime) => (
 							<ClosedDaySlotButton
+								id={`closed-day-slot-button-${slotStartTime}`}
+								data-testid={`closed-day-slot-button-${slotStartTime}`}
 								isSelected={selectedSpecificSlots.includes(slotStartTime)}
 								key={slotStartTime}
 								onClick={() => onSpecificSlotToggle(slotStartTime)}
@@ -137,7 +159,7 @@ export const OpenClosedDayModal = ({
 				)}
 
 				{mode === 'TIME_RANGE' && partialSlotOptions.length === 0 && (
-					<ClosedDayModalText>
+					<ClosedDayModalText id='no-slots-text' data-testid='no-slots-text'>
 						{t('availability.week.default-blocked-day.no-slots')}
 					</ClosedDayModalText>
 				)}

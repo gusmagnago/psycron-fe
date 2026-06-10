@@ -257,6 +257,8 @@ export const WeekSubtitle = styled('span')`
 export const FilterButton = styled(Button, {
 	shouldForwardProp: (prop) => prop !== 'isActive',
 })<{ isActive: boolean }>`
+	border: 0;
+	color: ${palette.text.primary};
 	white-space: nowrap;
 
 	& span {
@@ -264,6 +266,10 @@ export const FilterButton = styled(Button, {
 		align-items: center;
 		gap: ${spacing.xs};
 	}
+`;
+
+export const GhostActionButton = styled(Button)`
+	border: 0;
 `;
 
 export const SlotBufferLabel = styled('span')`
@@ -280,7 +286,7 @@ export const WeekFooter = styled(Box)`
 	align-items: center;
 	flex-wrap: wrap;
 	gap: ${spacing.medium};
-	padding-top: ${spacing.mediumSmall};
+	padding: ${spacing.small};
 	border-top: 1px solid ${palette.gray['02']};
 	flex-shrink: 0;
 	justify-content: space-between;

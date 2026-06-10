@@ -21,9 +21,15 @@ export const Drawer = ({
 	headerExtra,
 	onClose,
 	title,
+	id,
 }: IDrawer) => (
 	<>
-		<DrawerBackdrop aria-hidden='true' onClick={onClose} role='presentation' />
+		<DrawerBackdrop
+			aria-hidden='true'
+			onClick={onClose}
+			role='presentation'
+			id={id}
+		/>
 		<DrawerPanel aria-label={ariaLabel} aria-modal='true' role='dialog'>
 			<DrawerHeader>
 				<Box textAlign='left'>

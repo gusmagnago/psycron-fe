@@ -12,7 +12,10 @@ import {
 	SummaryChip,
 	SummaryRow,
 } from './DayHeaderPopover.styles';
-import type { IDayHeaderPopoverProps, IDaySummary } from './DayHeaderPopover.types';
+import type {
+	IDayHeaderPopoverProps,
+	IDaySummary,
+} from './DayHeaderPopover.types';
 
 export const DayHeaderPopover = ({
 	dayLabel,
@@ -33,24 +36,24 @@ export const DayHeaderPopover = ({
 	const [isConflictModalOpen, setIsConflictModalOpen] = useState(false);
 
 	const summary: IDaySummary = useMemo(() => {
-			let available = 0;
-			let blocked = 0;
-			let booked = 0;
-			let cancelled = 0;
+		let available = 0;
+		let blocked = 0;
+		let booked = 0;
+		let cancelled = 0;
 
-			for (const slot of slots) {
-				if (slot.status === 'available') available++;
-				else if (slot.status === 'blocked') blocked++;
-				else if (
-					slot.status === 'booked-jupiter' ||
-					slot.status === 'booked-google'
-				)
-					booked++;
-				else if (slot.status === 'cancelled') cancelled++;
-			}
+		for (const slot of slots) {
+			if (slot.status === 'available') available++;
+			else if (slot.status === 'blocked') blocked++;
+			else if (
+				slot.status === 'booked-jupiter' ||
+				slot.status === 'booked-google'
+			)
+				booked++;
+			else if (slot.status === 'cancelled') cancelled++;
+		}
 
-			return { available, blocked, booked, cancelled, total: slots.length };
-		}, [slots]);
+		return { available, blocked, booked, cancelled, total: slots.length };
+	}, [slots]);
 
 	const handleConfirm = () => {
 		if (confirmAction === 'block-all') onBlockAll();
@@ -59,13 +62,18 @@ export const DayHeaderPopover = ({
 	};
 
 	const bookedSlots = useMemo(
-		() => slots.filter((s) => s.status === 'booked-jupiter' || s.status === 'booked-google'),
+		() =>
+			slots.filter(
+				(s) => s.status === 'booked-jupiter' || s.status === 'booked-google'
+			),
 		[slots]
 	);
 
 	return (
 		<>
 			<BlockDayConflictModal
+				id={`${dayLabel}-conflict-modal`}
+				data-testid={`${dayLabel}-conflict-modal`}
 				availableCount={summary.available}
 				bookedSlots={bookedSlots}
 				dayLabel={dayLabel}
@@ -85,11 +93,21 @@ export const DayHeaderPopover = ({
 					actionName: t('common.close'),
 					onClick: onClose,
 				}}
+				id={`${dayLabel}-summary-modal`}
+				data-testid={`${dayLabel}-summary-modal`}
 			>
-				<PopoverContent>
-					<PopoverTitle>{t('availability.week.day-header.actions')}</PopoverTitle>
+				<PopoverContent
+					id={`${dayLabel}-summary-content`}
+					data-testid={`${dayLabel}-summary-content`}
+				>
+					<PopoverTitle>
+						{t('availability.week.day-header.actions')}
+					</PopoverTitle>
 
-					<SummaryRow>
+					<SummaryRow
+						id={`${dayLabel}-summary-row`}
+						data-testid={`${dayLabel}-summary-row`}
+					>
 						<SummaryChip>
 							{t('availability.week.day-header.summary', {
 								cancelled: summary.cancelled,
@@ -101,28 +119,36 @@ export const DayHeaderPopover = ({
 						</SummaryChip>
 					</SummaryRow>
 
-						{summary.booked > 0 && summary.available > 0 && (
-							<BookedWarning>
-								{t('availability.week.day-header.booked-warning', {
-									count: summary.booked,
-								})}
-							</BookedWarning>
-						)}
+					{summary.booked > 0 && summary.available > 0 && (
+						<BookedWarning
+							id={`${dayLabel}-booked-warning`}
+							data-testid={`${dayLabel}-booked-warning`}
+						>
+							{t('availability.week.day-header.booked-warning', {
+								count: summary.booked,
+							})}
+						</BookedWarning>
+					)}
 
-						<PopoverActions>
-							{summary.available > 0 && (
-								<Button
-									disabled={isBlockDayPending || isPastDay}
-									loading={isBlockDayPending}
-									onClick={() => {
-										if (summary.booked > 0) {
-											setIsConflictModalOpen(true);
-										} else {
-											setConfirmAction('block-all');
-										}
-									}}
-									severity='error'
-									small
+					<PopoverActions
+						id={`${dayLabel}-popover-actions`}
+						data-testid={`${dayLabel}-popover-actions`}
+					>
+						{summary.available > 0 && (
+							<Button
+								disabled={isBlockDayPending || isPastDay}
+								loading={isBlockDayPending}
+								onClick={() => {
+									if (summary.booked > 0) {
+										setIsConflictModalOpen(true);
+									} else {
+										setConfirmAction('block-all');
+									}
+								}}
+								severity='error'
+								small
+								id={`${dayLabel}-block-all-button`}
+								data-testid={`${dayLabel}-block-all-button`}
 							>
 								{t('availability.week.day-header.block-all')}
 							</Button>
@@ -134,17 +160,19 @@ export const DayHeaderPopover = ({
 								onClick={() => setConfirmAction('unblock-all')}
 								small
 								tertiary
-								>
-									{t('availability.week.day-header.unblock-all')}
-								</Button>
-							)}
-						</PopoverActions>
-					</PopoverContent>
+								id={`${dayLabel}-unblock-all-button`}
+								data-testid={`${dayLabel}-unblock-all-button`}
+							>
+								{t('availability.week.day-header.unblock-all')}
+							</Button>
+						)}
+					</PopoverActions>
+				</PopoverContent>
 			</Modal>
 
-				{confirmAction && (
-					<Modal
-						openModal
+			{confirmAction && (
+				<Modal
+					openModal
 					title={
 						confirmAction === 'block-all'
 							? t('availability.week.day-header.block-all')
@@ -161,6 +189,8 @@ export const DayHeaderPopover = ({
 						secondAction: () => setConfirmAction(null),
 						secondActionName: t('availability.week.drawer.cancel-back'),
 					}}
+					id={`${dayLabel}-confirm-modal`}
+					data-testid={`${dayLabel}-confirm-modal`}
 				>
 					{confirmAction === 'block-all'
 						? t('availability.week.day-header.block-all-confirm', {

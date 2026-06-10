@@ -350,7 +350,7 @@ export const AvailabilityWeekDrawer = ({
 			]
 				.filter(Boolean)
 				.join(' ') || undefined
-		: (slot.patientName || undefined);
+		: slot.patientName || undefined;
 	const bookedShareWith = getBookedShareWith(t, patientName);
 	const cancelledSubtitle = getCancelledSubtitle(t, slot.triggeredBy);
 	const drawerTitle = getDrawerTitle({
@@ -765,10 +765,17 @@ export const AvailabilityWeekDrawer = ({
 				ariaLabel={drawerTitle}
 				title={renderDrawerTitle()}
 				actions={renderDrawerActions()}
+				id='availability-week-drawer'
+				data-testid='availability-week-drawer'
 				headerExtra={
 					<>
 						{renderHeaderMeta()}
-						<DrawerBadgeRow>{renderHeaderBadges()}</DrawerBadgeRow>
+						<DrawerBadgeRow
+							id='availability-week-drawer-badge-row'
+							data-testid='availability-week-drawer-badge-row'
+						>
+							{renderHeaderBadges()}
+						</DrawerBadgeRow>
 					</>
 				}
 				onClose={onClose}
@@ -800,6 +807,10 @@ export const AvailabilityWeekDrawer = ({
 									onClick: dismissConflict,
 								}
 					}
+					id='availability-week-conflict-modal'
+					data-testid='availability-week-conflict-modal'
+					aria-describedby='availability-week-conflict-body'
+					aria-label={t('availability.week.drawer.conflict-title')}
 				>
 					<SlotBookingConflictView conflict={conflict} />
 				</Modal>
@@ -818,8 +829,22 @@ export const AvailabilityWeekDrawer = ({
 						),
 						secondAction: handleExistingBookingDismiss,
 					}}
+					id='availability-week-existing-booking-modal'
+					data-testid='availability-week-existing-booking-modal'
+					aria-describedby='availability-week-existing-booking-body'
+					aria-label={t('availability.week.drawer.existing-booking-title')}
 				>
-					<ConflictBody>
+					<ConflictBody
+						id='availability-week-existing-booking-body'
+						data-testid='availability-week-existing-booking-body'
+						aria-label={t('availability.week.drawer.existing-booking-body', {
+							name: existingBooking.patientName,
+							date: format(parseISO(existingBooking.date), 'PPP', {
+								locale: dateLocale,
+							}),
+							time: existingBooking.startTime,
+						})}
+					>
 						{t('availability.week.drawer.existing-booking-body', {
 							name: existingBooking.patientName,
 							date: format(parseISO(existingBooking.date), 'PPP', {

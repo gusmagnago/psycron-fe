@@ -18,7 +18,10 @@ export const SlotBookingConflictView = ({
 
 	if (conflict.kind === 'multiple') {
 		return (
-			<ConflictBody>
+			<ConflictBody
+				id='availability-week-conflict-body'
+				data-testid='availability-week-conflict-body'
+			>
 				{t('availability.week.drawer.conflict-multiple-body')}
 			</ConflictBody>
 		);
@@ -28,10 +31,18 @@ export const SlotBookingConflictView = ({
 
 	return (
 		<>
-			<ConflictBody>
+			<ConflictBody
+				id='availability-week-conflict-body'
+				data-testid='availability-week-conflict-body'
+			>
 				{t('availability.week.drawer.conflict-single-body')}
 			</ConflictBody>
-			<ConflictPatientName>{fullName}</ConflictPatientName>
+			<ConflictPatientName
+				id='availability-week-conflict-patient-name'
+				data-testid='availability-week-conflict-patient-name'
+			>
+				{fullName}
+			</ConflictPatientName>
 		</>
 	);
 };

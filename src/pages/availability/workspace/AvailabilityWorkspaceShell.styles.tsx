@@ -6,11 +6,7 @@ import {
 	isSmallerThanTabletMedia,
 } from '@psycron/theme/media-queries/mediaQueries';
 import { hexToRgba, palette } from '@psycron/theme/palette/palette.theme';
-import {
-	shadowDashboardTile,
-	shadowMedium,
-	shadowSmall,
-} from '@psycron/theme/shadow/shadow.theme';
+import { shadowMedium, shadowSmall } from '@psycron/theme/shadow/shadow.theme';
 import { spacing } from '@psycron/theme/spacing/spacing.theme';
 import { zIndexDrawer, zIndexSticky } from '@psycron/theme/zIndex';
 
@@ -139,30 +135,29 @@ export const WorkspaceEdgeToggle = styled(ButtonBase, {
 	top: ${spacing.medium};
 	z-index: ${zIndexSticky};
 	width: 38px;
-	min-width: 38px;
 	height: 64px;
-	min-height: 64px;
 	border: 0;
 	display: inline-flex;
 	align-items: center;
 	justify-content: center;
 	color: ${palette.gray['08']};
 	background: ${palette.white};
-	box-shadow: ${shadowDashboardTile};
+	box-shadow: ${shadowMedium};
 	transition:
 		transform 0.12s ease,
 		opacity 0.1s ease,
-		color 0.12s ease;
-
-	border-radius: 0;
+		color 0.12s ease,
+		box-shadow 0.12s ease;
 
 	${({ panelSide }) =>
 		panelSide === 'left'
 			? css`
 					left: 0;
+					border-radius: 0 ${spacing.small} ${spacing.small} 0;
 				`
 			: css`
 					right: 0;
+					border-radius: ${spacing.small} 0 0 ${spacing.small};
 				`}
 
 	${({ isAnyPanelOpen, panelSide }) =>
@@ -175,6 +170,7 @@ export const WorkspaceEdgeToggle = styled(ButtonBase, {
 
 	&:hover {
 		color: ${palette.brand.dark};
+		box-shadow: ${shadowSmall};
 	}
 
 	${isSmallerThanTabletMedia} {

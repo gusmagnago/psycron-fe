@@ -1634,6 +1634,7 @@
 			"open-controls": "Open availability controls",
 			"open-readiness": "Open publish readiness panel",
 			"page-title": "Availability workspace",
+			"publish-changes": "Publish changes",
 			"pwa-note": "PWA rule: preserve deep links, offline-safe shell states, safe-area spacing, and touch-first controls.",
 			"readiness-label": "Publish readiness and selected slot",
 			"resolve-readiness": "Review readiness",

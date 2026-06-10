@@ -3,6 +3,10 @@ import type { ReactNode } from 'react';
 export type AvailabilityWorkspaceContentMode = 'calendar' | 'page';
 export type AvailabilityWorkspacePanelSide = 'left' | 'right';
 
+export interface AvailabilityWorkspaceShellHandle {
+	openRightPanel: () => void;
+}
+
 export interface AvailabilityWorkspaceShellProps {
 	actions?: ReactNode;
 	children: ReactNode;
