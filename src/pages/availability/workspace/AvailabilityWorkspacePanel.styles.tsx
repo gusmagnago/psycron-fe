@@ -42,9 +42,9 @@ export const WorkspacePanelRoot = styled('aside', {
 	-webkit-backdrop-filter: blur(18px) saturate(1.24);
 	box-shadow: ${shadowSmall};
 	transition:
-		width 0.18s cubic-bezier(0.2, 0.8, 0.2, 1),
-		margin 0.18s cubic-bezier(0.2, 0.8, 0.2, 1),
-		opacity 0.12s ease;
+		width 0.12s cubic-bezier(0.2, 0.8, 0.2, 1),
+		margin 0.12s cubic-bezier(0.2, 0.8, 0.2, 1),
+		opacity 0.08s ease;
 
 	&::before {
 		content: '';
@@ -96,8 +96,8 @@ export const WorkspacePanelRoot = styled('aside', {
 		transform: translateX(100%);
 		box-shadow: -10px 0 30px 0 ${hexToRgba(palette.black, 0.2)};
 		transition:
-			transform 0.18s cubic-bezier(0.2, 0.8, 0.2, 1),
-			opacity 0.12s ease;
+			transform 0.12s cubic-bezier(0.2, 0.8, 0.2, 1),
+			opacity 0.08s ease;
 
 		${({ isOpen }) =>
 			isOpen &&

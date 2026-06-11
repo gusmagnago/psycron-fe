@@ -1,4 +1,3 @@
-import type { AvailabilitySourceItem } from './AvailabilitySourceList.types';
 import type { AvailabilityStatusItem } from './AvailabilityStatusStrip.types';
 
 export interface AvailabilityReadinessPanelProps {
@@ -14,8 +13,6 @@ export interface AvailabilityReadinessPanelProps {
 	pwaNote: string;
 	resolveLabel: string;
 	slotChecklistLabel: string;
-	sourceItems: AvailabilitySourceItem[];
-	sourcesTitle: string;
 	statusItems: AvailabilityStatusItem[];
 	statusTitle: string;
 }

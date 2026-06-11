@@ -6,7 +6,6 @@ import { AvailabilityLegend } from '@psycron/components/availability/Availabilit
 import { NavButton } from '@psycron/components/availability/AvailabilityNavButton';
 import { Button } from '@psycron/components/button/Button';
 import {
-	Calendar,
 	CheckSuccess,
 	ChevronLeft,
 	ChevronRight,
@@ -274,34 +273,11 @@ export const AvailabilityWeekPage = () => {
 			description: googleConnected
 				? t('availability.workspace.status-google-connected-desc')
 				: t('availability.workspace.status-google-disconnected-desc'),
-			icon: <Calendar />,
+			icon: <Google />,
 			id: 'google',
 			title: googleConnected
 				? t('availability.workspace.status-google-connected')
 				: t('availability.workspace.status-google-disconnected'),
-			tone: 'google' as const,
-		},
-	];
-
-	const sourceItems = [
-		{
-			badge: t('availability.workspace.badge-on'),
-			description: t('availability.workspace.source-psycron-desc'),
-			icon: <Calendar />,
-			id: 'psycron',
-			title: t('availability.workspace.source-psycron-title'),
-			tone: 'default' as const,
-		},
-		{
-			badge: googleConnected
-				? t('availability.workspace.badge-live')
-				: t('availability.workspace.badge-off'),
-			description: googleConnected
-				? t('availability.workspace.source-google-desc')
-				: t('availability.workspace.source-google-disconnected-desc'),
-			icon: <Google />,
-			id: 'google',
-			title: t('availability.workspace.source-google-title'),
 			tone: 'google' as const,
 		},
 	];
@@ -395,8 +371,6 @@ export const AvailabilityWeekPage = () => {
 									})
 								: t('availability.workspace.checklist-slots-empty')
 						}
-						sourceItems={sourceItems}
-						sourcesTitle={t('availability.workspace.sources-title')}
 						statusItems={statusItems}
 						statusTitle={t('availability.workspace.status-title')}
 					/>

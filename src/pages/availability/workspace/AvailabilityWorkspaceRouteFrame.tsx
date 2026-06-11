@@ -1,6 +1,5 @@
 import { useTranslation } from 'react-i18next';
 import {
-	Calendar,
 	CheckSuccess,
 	Google,
 	TriangleAlert,
@@ -50,36 +49,11 @@ export const AvailabilityWorkspaceRouteFrame = ({
 			description: googleConnected
 				? t('availability.workspace.status-google-connected-desc')
 				: t('availability.workspace.status-google-disconnected-desc'),
-			icon: <Calendar />,
+			icon: <Google />,
 			id: 'google',
 			title: googleConnected
 				? t('availability.workspace.status-google-connected')
 				: t('availability.workspace.status-google-disconnected'),
-			tone: 'google' as const,
-		},
-	];
-
-	const sourceItems = [
-		{
-			badge: hasAvailability
-				? t('availability.workspace.badge-on')
-				: t('availability.workspace.badge-off'),
-			description: t('availability.workspace.source-psycron-desc'),
-			icon: <Calendar />,
-			id: 'psycron',
-			title: t('availability.workspace.source-psycron-title'),
-			tone: 'default' as const,
-		},
-		{
-			badge: googleConnected
-				? t('availability.workspace.badge-live')
-				: t('availability.workspace.badge-off'),
-			description: googleConnected
-				? t('availability.workspace.source-google-desc')
-				: t('availability.workspace.source-google-disconnected-desc'),
-			icon: <Google />,
-			id: 'google',
-			title: t('availability.workspace.source-google-title'),
 			tone: 'google' as const,
 		},
 	];
@@ -110,8 +84,6 @@ export const AvailabilityWorkspaceRouteFrame = ({
 							? t('availability.workspace.checklist-setup-ready')
 							: t('availability.workspace.checklist-setup-empty')
 					}
-					sourceItems={sourceItems}
-					sourcesTitle={t('availability.workspace.sources-title')}
 					statusItems={statusItems}
 					statusTitle={t('availability.workspace.status-title')}
 				/>

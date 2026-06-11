@@ -24,7 +24,6 @@ import {
 	WorkspaceToggleTitle,
 } from './AvailabilityReadinessPanel.styles';
 import type { AvailabilityReadinessPanelProps } from './AvailabilityReadinessPanel.types';
-import { AvailabilitySourceList } from './AvailabilitySourceList';
 import { AvailabilityStatusStrip } from './AvailabilityStatusStrip';
 
 export const AvailabilityReadinessPanel = ({
@@ -40,8 +39,6 @@ export const AvailabilityReadinessPanel = ({
 	pwaNote,
 	resolveLabel,
 	slotChecklistLabel,
-	sourceItems,
-	sourcesTitle,
 	statusItems,
 	statusTitle,
 }: AvailabilityReadinessPanelProps) => {
@@ -94,7 +91,6 @@ export const AvailabilityReadinessPanel = ({
 				</JupiterNudge>
 			) : null}
 			<AvailabilityStatusStrip items={statusItems} title={statusTitle} />
-			<AvailabilitySourceList items={sourceItems} title={sourcesTitle} />
 			<ReadinessCard
 				aria-labelledby='availability-publish-checklist-title'
 				data-testid='availability-publish-checklist'
