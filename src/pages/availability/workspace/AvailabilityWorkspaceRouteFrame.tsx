@@ -1,14 +1,10 @@
 import { useTranslation } from 'react-i18next';
-import {
-	CheckSuccess,
-	Google,
-	TriangleAlert,
-} from '@psycron/components/icons';
 import { useJupiterAvailabilityConfig } from '@psycron/hooks/useJupiterAvailabilityConfig';
 
 import { AvailabilityReadinessPanel } from './AvailabilityReadinessPanel';
 import type { AvailabilityWorkspaceRouteFrameProps } from './AvailabilityWorkspaceRouteFrame.types';
 import { AvailabilityWorkspaceShell } from './AvailabilityWorkspaceShell';
+import { useAvailabilityStatusItems } from './useAvailabilityStatusItems';
 
 export const AvailabilityWorkspaceRouteFrame = ({
 	children,
@@ -21,42 +17,10 @@ export const AvailabilityWorkspaceRouteFrame = ({
 	const googleConnected = Boolean(availability?.googleCalendarConnected);
 	const hasAvailability = Boolean(availability);
 
-	const statusItems = [
-		{
-			badge: hasAvailability
-				? t('availability.workspace.badge-on')
-				: t('availability.workspace.badge-off'),
-			description: hasAvailability
-				? t('availability.workspace.status-setup-ready')
-				: t('availability.workspace.status-setup-empty'),
-			icon: <CheckSuccess />,
-			id: 'bookable',
-			title: t('availability.workspace.status-setup-title'),
-			tone: hasAvailability ? 'success' as const : 'warn' as const,
-		},
-		{
-			badge: '0',
-			description: t('availability.workspace.status-conflicts-clear'),
-			icon: <TriangleAlert />,
-			id: 'conflicts',
-			title: t('availability.workspace.status-conflicts-title', { count: 0 }),
-			tone: 'success' as const,
-		},
-		{
-			badge: googleConnected
-				? t('availability.workspace.badge-live')
-				: t('availability.workspace.badge-off'),
-			description: googleConnected
-				? t('availability.workspace.status-google-connected-desc')
-				: t('availability.workspace.status-google-disconnected-desc'),
-			icon: <Google />,
-			id: 'google',
-			title: googleConnected
-				? t('availability.workspace.status-google-connected')
-				: t('availability.workspace.status-google-disconnected'),
-			tone: 'google' as const,
-		},
-	];
+	const statusItems = useAvailabilityStatusItems({
+		googleConnected,
+		hasAvailability,
+	});
 
 	return (
 		<AvailabilityWorkspaceShell

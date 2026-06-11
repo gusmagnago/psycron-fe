@@ -1,11 +1,29 @@
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
-import { Box, ButtonBase } from '@mui/material';
+import { Box, ButtonBase, Skeleton } from '@mui/material';
 import { Text } from '@psycron/components/text/Text';
 import { hexToRgba, palette } from '@psycron/theme/palette/palette.theme';
 import { spacing } from '@psycron/theme/spacing/spacing.theme';
 
-import type { AvailabilityMiniCalendarDayState } from './AvailabilityMiniCalendar.types';
+import type {
+	AvailabilityMiniCalendarDayState,
+	AvailabilityMiniCalendarHeatLevel,
+} from './AvailabilityMiniCalendar.types';
+
+// Fixed booked-weight heatmap: brand purple at increasing opacity so the same
+// load reads identically across months. Text flips to white once the tint is
+// dark enough to keep the day number legible.
+const HEAT_STEPS: Record<
+	AvailabilityMiniCalendarHeatLevel,
+	{ background: string; color: string } | null
+> = {
+	0: null,
+	1: { background: hexToRgba(palette.brand.purple, 0.12), color: palette.brand.dark },
+	2: { background: hexToRgba(palette.brand.purple, 0.28), color: palette.brand.dark },
+	3: { background: hexToRgba(palette.brand.purple, 0.46), color: palette.white },
+	4: { background: hexToRgba(palette.brand.purple, 0.66), color: palette.white },
+	5: { background: hexToRgba(palette.brand.purple, 0.85), color: palette.white },
+};
 
 export const MiniCalendarCard = styled(Box)`
 	padding: ${spacing.small};
@@ -70,9 +88,21 @@ export const MiniDayGrid = styled(Box)`
 	text-align: center;
 `;
 
+export const MiniDaySkeleton = styled(Skeleton)`
+	width: 100%;
+	aspect-ratio: 1;
+	min-height: 34px;
+	border-radius: 14px;
+	transform: none;
+	background-color: ${hexToRgba(palette.brand.purple, 0.1)};
+`;
+
 export const MiniDayButton = styled(ButtonBase, {
-	shouldForwardProp: (prop) => prop !== 'dayState',
-})<{ dayState: AvailabilityMiniCalendarDayState }>`
+	shouldForwardProp: (prop) => prop !== 'dayState' && prop !== 'heatLevel',
+})<{
+	dayState: AvailabilityMiniCalendarDayState;
+	heatLevel: AvailabilityMiniCalendarHeatLevel;
+}>`
 	aspect-ratio: 1;
 	min-width: 0;
 	min-height: 34px;
@@ -83,17 +113,22 @@ export const MiniDayButton = styled(ButtonBase, {
 	font-size: 12px;
 	font-weight: 800;
 
+	${({ dayState, heatLevel }) => {
+		if (dayState === 'muted') return null;
+		const heat = HEAT_STEPS[heatLevel];
+		return (
+			heat &&
+			css`
+				background: ${heat.background};
+				color: ${heat.color};
+			`
+		);
+	}}
+
 	${({ dayState }) =>
 		dayState === 'muted' &&
 		css`
 			color: ${palette.text.disabled};
-		`}
-
-	${({ dayState }) =>
-		dayState === 'slots' &&
-		css`
-			background: ${hexToRgba(palette.brand.purple, 0.08)};
-			color: ${palette.brand.dark};
 		`}
 
 	${({ dayState }) =>

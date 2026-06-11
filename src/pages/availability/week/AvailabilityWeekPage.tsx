@@ -5,14 +5,11 @@ import { getAppointmentDetailsBySlotId } from '@psycron/api/user/availability';
 import { AvailabilityLegend } from '@psycron/components/availability/AvailabilityLegend';
 import { NavButton } from '@psycron/components/availability/AvailabilityNavButton';
 import {
-	CheckSuccess,
 	ChevronLeft,
 	ChevronRight,
 	Filter,
 	FilterFull,
-	Google,
 	Settings,
-	TriangleAlert,
 } from '@psycron/components/icons';
 import { useJupiterAvailabilityConfig } from '@psycron/hooks/useJupiterAvailabilityConfig';
 import { useTherapistId } from '@psycron/hooks/useTherapistId';
@@ -28,6 +25,7 @@ import type {
 } from '../workspace/AvailabilityViewToggle.types';
 import { AvailabilityWorkspaceShell } from '../workspace/AvailabilityWorkspaceShell';
 import type { AvailabilityWorkspaceShellHandle } from '../workspace/AvailabilityWorkspaceShell.types';
+import { useAvailabilityStatusItems } from '../workspace/useAvailabilityStatusItems';
 
 import { DayHeaderPopover } from './day-header-popover/DayHeaderPopover';
 import { AvailabilityWeekDrawer } from './drawer/AvailabilityWeekDrawer';
@@ -245,42 +243,10 @@ export const AvailabilityWeekPage = () => {
 	const googleConnected = Boolean(availability?.googleCalendarConnected);
 	const hasSlots = slotStats.available > 0;
 
-	const statusItems = [
-		{
-			badge: String(slotStats.available),
-			description: hasSlots
-				? t('availability.workspace.status-bookable-ready')
-				: t('availability.workspace.status-bookable-empty'),
-			icon: <CheckSuccess />,
-			id: 'bookable',
-			title: t('availability.workspace.status-bookable-title', {
-				count: slotStats.available,
-			}),
-			tone: hasSlots ? ('success' as const) : ('warn' as const),
-		},
-		{
-			badge: '0',
-			description: t('availability.workspace.status-conflicts-clear'),
-			icon: <TriangleAlert />,
-			id: 'conflicts',
-			title: t('availability.workspace.status-conflicts-title', { count: 0 }),
-			tone: 'success' as const,
-		},
-		{
-			badge: googleConnected
-				? t('availability.workspace.badge-live')
-				: t('availability.workspace.badge-off'),
-			description: googleConnected
-				? t('availability.workspace.status-google-connected-desc')
-				: t('availability.workspace.status-google-disconnected-desc'),
-			icon: <Google />,
-			id: 'google',
-			title: googleConnected
-				? t('availability.workspace.status-google-connected')
-				: t('availability.workspace.status-google-disconnected'),
-			tone: 'google' as const,
-		},
-	];
+	const statusItems = useAvailabilityStatusItems({
+		availableSlots: slotStats.available,
+		googleConnected,
+	});
 
 	const workspaceActions = filterButton;
 

@@ -5,7 +5,6 @@ import { Box, Divider } from '@mui/material';
 import { AppAnalytics } from '@psycron/analytics/posthog/AppAnalytics';
 import { getNotifications } from '@psycron/api/notifications';
 import { getAvailabilityCalendar } from '@psycron/api/user';
-import { getConflictCount } from '@psycron/api/user/conflicts';
 import { EnvironmentBanner } from '@psycron/components/environment-banner/EnvironmentBanner';
 import { AvailabilityGate } from '@psycron/components/guards/AvailabilityGate';
 import {
@@ -27,6 +26,7 @@ import { useRuntimeEnv } from '@psycron/context/runtime/RuntimeEnvContext';
 import { useAuth } from '@psycron/context/user/auth/UserAuthenticationContext';
 import { useUserDetails } from '@psycron/context/user/details/UserDetailsContext';
 import { useAuthSession } from '@psycron/hooks/useAuthSession';
+import { useConflictCount } from '@psycron/hooks/useConflictCount';
 import useViewport from '@psycron/hooks/useViewport';
 import {
 	buildCancellationRecoveryRows,
@@ -73,11 +73,7 @@ export const AppLayout: FC = () => {
 
 	const { isUserDetailsVisible, userDetails, toggleUserDetails } =
 		useUserDetails();
-	const { data: conflictCountData } = useQuery({
-		queryKey: ['conflictCount', userDetails?._id],
-		queryFn: () => getConflictCount(userDetails?._id ?? ''),
-		enabled: Boolean(userDetails?._id),
-	});
+	const { count: conflictCount } = useConflictCount(userDetails?._id);
 
 	const recoverySearchRange = useMemo(
 		() => formatRecoverySearchRange(new Date()),
@@ -149,7 +145,7 @@ export const AppLayout: FC = () => {
 			name: t('components.navbar.action-center'),
 			icon: <TriangleAlert />,
 			path: ACTIONCENTER,
-			badgeCount: (conflictCountData?.count ?? 0) + cancellationRecoveryCount,
+			badgeCount: conflictCount + cancellationRecoveryCount,
 		},
 		{
 			name: t('components.navbar.notifications'),

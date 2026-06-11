@@ -25,15 +25,28 @@ import {
 	MiniCalendarTitle,
 	MiniDayButton,
 	MiniDayGrid,
+	MiniDaySkeleton,
 	MiniWeekdayGrid,
 	MiniWeekdayLabel,
 } from './AvailabilityMiniCalendar.styles';
 import type {
 	AvailabilityMiniCalendarDayState,
+	AvailabilityMiniCalendarHeatLevel,
 	AvailabilityMiniCalendarProps,
 } from './AvailabilityMiniCalendar.types';
 
 const WEEKDAYS = ['M', 'T', 'W', 'T', 'F', 'S', 'S'] as const;
+
+// Fixed booked-count thresholds (not normalized per month) so the same daily
+// load renders the same shade across every month until the end of availability.
+const getHeatLevel = (booked: number): AvailabilityMiniCalendarHeatLevel => {
+	if (booked <= 0) return 0;
+	if (booked <= 2) return 1;
+	if (booked <= 4) return 2;
+	if (booked <= 6) return 3;
+	if (booked <= 8) return 4;
+	return 5;
+};
 
 export const AvailabilityMiniCalendar = ({
 	activeDate,
@@ -49,6 +62,7 @@ export const AvailabilityMiniCalendar = ({
 		goToDate,
 		goToNextMonth,
 		goToPrevMonth,
+		isLoading,
 	} = useJupiterAvailability({ anchorDate: activeDate, firstDate, lastDate });
 
 	// Keep the mini calendar's month in sync with the week shown in the viewbar:
@@ -74,12 +88,15 @@ export const AvailabilityMiniCalendar = ({
 		if (!isSameMonth(day, currentDate)) return 'muted';
 		if (isSameDay(day, activeDate)) return 'selected';
 
-		const key = format(day, 'yyyy-MM-dd');
-		const calendarDay = dayMap.get(key);
-		const slotCount =
-			(calendarDay?.jupiter.available ?? 0) + (calendarDay?.jupiter.booked ?? 0);
+		return 'default';
+	};
 
-		return slotCount > 0 ? 'slots' : 'empty';
+	// Booked weight = Jupiter patient bookings + Google busy time. Both make the
+	// day "heavier" and therefore darker on the heatmap.
+	const getBookedCount = (day: Date): number => {
+		const calendarDay = dayMap.get(format(day, 'yyyy-MM-dd'));
+
+		return (calendarDay?.jupiter.booked ?? 0) + (calendarDay?.google.booked ?? 0);
 	};
 
 	const handleDaySelect = (day: Date): void => {
@@ -135,6 +152,7 @@ export const AvailabilityMiniCalendar = ({
 				))}
 			</MiniWeekdayGrid>
 			<MiniDayGrid
+				aria-busy={isLoading}
 				aria-label={t('availability.workspace.month-grid-label', {
 					month: format(currentDate, 'MMMM yyyy'),
 				})}
@@ -143,22 +161,43 @@ export const AvailabilityMiniCalendar = ({
 				role='grid'
 			>
 				{calendarDays.map((day) => {
-					const dayState = getDayState(day);
 					const key = format(day, 'yyyy-MM-dd');
+
+					if (isLoading) {
+						return (
+							<MiniDaySkeleton
+								aria-hidden='true'
+								data-testid={`availability-month-day-skeleton-${key}`}
+								id={`availability-month-day-skeleton-${key}`}
+								key={key}
+								variant='rounded'
+							/>
+						);
+					}
+
+					const dayState = getDayState(day);
+					const bookedCount =
+						dayState === 'muted' ? 0 : getBookedCount(day);
+					const heatLevel = getHeatLevel(bookedCount);
+
+					const state =
+						dayState === 'selected'
+							? t('availability.workspace.month-day-selected')
+							: bookedCount > 0
+								? t('availability.workspace.month-day-booked', {
+										count: bookedCount,
+									})
+								: '';
 
 					return (
 						<MiniDayButton
 							aria-label={t('availability.workspace.month-day-label', {
 								date: format(day, 'EEEE, MMMM d'),
-								state:
-									dayState === 'slots'
-										? t('availability.workspace.month-day-has-slots')
-										: dayState === 'selected'
-											? t('availability.workspace.month-day-selected')
-											: '',
+								state,
 							})}
 							data-testid={`availability-month-day-${key}`}
 							dayState={dayState}
+							heatLevel={heatLevel}
 							id={`availability-month-day-${key}`}
 							key={key}
 							onClick={() => handleDaySelect(day)}
