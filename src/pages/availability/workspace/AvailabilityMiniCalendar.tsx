@@ -1,3 +1,4 @@
+import { useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { ChevronLeft, ChevronRight } from '@psycron/components/icons';
@@ -45,9 +46,21 @@ export const AvailabilityMiniCalendar = ({
 		canGoNext,
 		canGoPrev,
 		currentDate,
+		goToDate,
 		goToNextMonth,
 		goToPrevMonth,
-	} = useJupiterAvailability({ firstDate, lastDate });
+	} = useJupiterAvailability({ anchorDate: activeDate, firstDate, lastDate });
+
+	// Keep the mini calendar's month in sync with the week shown in the viewbar:
+	// when week navigation moves the active date into another month, follow it,
+	// while still allowing the month-nav buttons to browse independently.
+	const lastActiveDateRef = useRef(activeDate);
+	useEffect(() => {
+		if (!isSameMonth(activeDate, lastActiveDateRef.current)) {
+			goToDate(activeDate);
+		}
+		lastActiveDateRef.current = activeDate;
+	}, [activeDate, goToDate]);
 
 	const monthStart = startOfMonth(currentDate);
 	const monthEnd = endOfMonth(currentDate);

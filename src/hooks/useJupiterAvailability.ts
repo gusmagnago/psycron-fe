@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import { getAvailabilityCalendar } from '@psycron/api/user';
 import type { IDateInfo } from '@psycron/api/user/index.types';
 import { useTherapistId } from '@psycron/hooks/useTherapistId';
@@ -17,13 +17,14 @@ import {
 } from 'date-fns';
 
 interface UseJupiterAvailabilityOptions {
+	anchorDate?: Date;
 	firstDate?: IDateInfo | null;
 	lastDate?: IDateInfo | null;
 }
 
 export const useJupiterAvailability = (options?: UseJupiterAvailabilityOptions) => {
 	const therapistId = useTherapistId();
-	const [currentDate, setCurrentDate] = useState(new Date());
+	const [currentDate, setCurrentDate] = useState(() => options?.anchorDate ?? new Date());
 
 	const monthStart = startOfMonth(currentDate);
 	const monthEnd = endOfMonth(currentDate);
@@ -48,6 +49,11 @@ export const useJupiterAvailability = (options?: UseJupiterAvailabilityOptions) 
 	const canGoPrev = firstISO ? isAfter(startOfMonth(currentDate), startOfMonth(firstISO)) : false;
 	const canGoNext = lastISO ? isBefore(startOfMonth(currentDate), startOfMonth(lastISO)) : false;
 
+	const goToDate = useCallback((date: Date) => setCurrentDate(date), []);
+	const goToNextMonth = useCallback(() => setCurrentDate((d) => addMonths(d, 1)), []);
+	const goToPrevMonth = useCallback(() => setCurrentDate((d) => subMonths(d, 1)), []);
+	const goToToday = useCallback(() => setCurrentDate(new Date()), []);
+
 	return {
 		availability: data,
 		calendar: data?.calendar ?? [],
@@ -55,9 +61,10 @@ export const useJupiterAvailability = (options?: UseJupiterAvailabilityOptions) 
 		canGoPrev,
 		currentDate,
 		from,
-		goToNextMonth: () => setCurrentDate((d) => addMonths(d, 1)),
-		goToPrevMonth: () => setCurrentDate((d) => subMonths(d, 1)),
-		goToToday: () => setCurrentDate(new Date()),
+		goToDate,
+		goToNextMonth,
+		goToPrevMonth,
+		goToToday,
 		hasGoogleData,
 		isLoading,
 		to,
