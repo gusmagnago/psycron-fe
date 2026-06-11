@@ -23,9 +23,7 @@ export const WorkspaceHeaderRoot = styled(Box)`
 	}
 `;
 
-export const WorkspaceHeaderTitleGroup = styled(Box)`
-	padding-left: ${spacing.small};
-`;
+export const WorkspaceHeaderTitleGroup = styled(Box)``;
 
 export const WorkspaceHeaderTitle = styled((props) => (
 	<Text component='h1' {...props} />

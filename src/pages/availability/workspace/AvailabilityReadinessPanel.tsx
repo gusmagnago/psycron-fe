@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { ComingSoonBadge } from '@psycron/components/coming-soon-badge/ComingSoonBadge';
 import {
 	CheckSuccess,
 	Jupiter,
@@ -51,6 +52,10 @@ export const AvailabilityReadinessPanel = ({
 					<div>
 						<WorkspaceToggleTitle id='availability-jupiter-toggle-title'>
 							{jupiterLabel}
+							<ComingSoonBadge
+								data-testid='availability-jupiter-coming-soon'
+								id='availability-jupiter-coming-soon'
+							/>
 						</WorkspaceToggleTitle>
 						<WorkspaceToggleDescription>
 							{jupiterDescription}

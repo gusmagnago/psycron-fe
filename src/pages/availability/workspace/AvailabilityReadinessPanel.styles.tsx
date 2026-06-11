@@ -66,6 +66,8 @@ export const WorkspaceToggleRow = styled(Box)`
 
 export const WorkspaceToggleTitle = styled(Text)`
 	display: flex;
+	align-items: center;
+	gap: ${spacing.space};
 	font-size: 14px;
 	line-height: 1.25;
 	font-weight: 800;
