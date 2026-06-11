@@ -77,8 +77,6 @@ export const AvailabilityWorkspaceRouteFrame = ({
 					jupiterLabel={t('availability.workspace.jupiter-label')}
 					jupiterSuggestion={t('availability.workspace.jupiter-suggestion')}
 					jupiterToggleLabel={t('availability.workspace.jupiter-toggle-label')}
-					pwaNote={t('availability.workspace.pwa-note')}
-					resolveLabel={t('availability.workspace.resolve-readiness')}
 					slotChecklistLabel={
 						hasAvailability
 							? t('availability.workspace.checklist-setup-ready')

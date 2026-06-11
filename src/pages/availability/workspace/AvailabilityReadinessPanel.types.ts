@@ -10,8 +10,6 @@ export interface AvailabilityReadinessPanelProps {
 	jupiterLabel: string;
 	jupiterSuggestion: string;
 	jupiterToggleLabel: string;
-	pwaNote: string;
-	resolveLabel: string;
 	slotChecklistLabel: string;
 	statusItems: AvailabilityStatusItem[];
 	statusTitle: string;

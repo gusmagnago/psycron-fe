@@ -53,23 +53,6 @@ export const ReadinessCheckIcon = styled(Box, {
 	}
 `;
 
-export const ReadinessNote = styled(Box)`
-	padding: ${spacing.extraSmall};
-	border-radius: ${spacing.small};
-	color: ${palette.text.secondary};
-	background: ${palette.success.surface.light};
-	font-size: 12px;
-	line-height: 1.4;
-`;
-
-export const ReadinessActions = styled(Box)`
-	margin-top: auto;
-	padding-top: ${spacing.mediumSmall};
-	display: flex;
-	flex-direction: column;
-	gap: ${spacing.extraSmall};
-`;
-
 export const WorkspaceToggleRow = styled(Box)`
 	min-height: 62px;
 	display: flex;

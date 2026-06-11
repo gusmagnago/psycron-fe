@@ -1,9 +1,12 @@
 export type AvailabilityViewMode = 'day' | 'week';
 
+export type AvailabilityViewSelection = AvailabilityViewMode | 'month';
+
 export interface AvailabilityViewToggleProps {
 	dayLabel: string;
-	onChange: (viewMode: AvailabilityViewMode) => void;
-	value: AvailabilityViewMode;
+	monthLabel: string;
+	onChange: (selection: AvailabilityViewSelection) => void;
+	value: AvailabilityViewSelection;
 	viewModeLabel: string;
 	weekLabel: string;
 }

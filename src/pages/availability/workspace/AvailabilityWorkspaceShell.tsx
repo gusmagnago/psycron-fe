@@ -48,6 +48,7 @@ export const AvailabilityWorkspaceShell = forwardRef<
 			contentMode = 'calendar',
 			footer,
 			isLoading = false,
+			onPanelOpenChange,
 			panel,
 			subtitle,
 			title,
@@ -86,6 +87,10 @@ export const AvailabilityWorkspaceShell = forwardRef<
 			}),
 			[]
 		);
+
+		useEffect(() => {
+			onPanelOpenChange?.(isPanelOpen);
+		}, [isPanelOpen, onPanelOpenChange]);
 
 		useEffect(() => {
 			if (!isPanelOpen) return;

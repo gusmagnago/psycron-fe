@@ -1,7 +1,7 @@
 import { RangeGroup } from '@psycron/components/range-group/RangeGroup';
 
 import type {
-	AvailabilityViewMode,
+	AvailabilityViewSelection,
 	AvailabilityViewToggleProps,
 } from './AvailabilityViewToggle.types';
 
@@ -9,12 +9,13 @@ const AVAILABILITY_VIEW_TOGGLE_ID_PREFIX = 'availability-view-toggle';
 
 export const AvailabilityViewToggle = ({
 	dayLabel,
+	monthLabel,
 	onChange,
 	value,
 	viewModeLabel,
 	weekLabel,
 }: AvailabilityViewToggleProps) => (
-	<RangeGroup<AvailabilityViewMode>
+	<RangeGroup<AvailabilityViewSelection>
 		ariaLabel={viewModeLabel}
 		idPrefix={AVAILABILITY_VIEW_TOGGLE_ID_PREFIX}
 		onChange={onChange}
@@ -28,6 +29,11 @@ export const AvailabilityViewToggle = ({
 				ariaLabel: weekLabel,
 				label: weekLabel,
 				value: 'week',
+			},
+			{
+				ariaLabel: monthLabel,
+				label: monthLabel,
+				value: 'month',
 			},
 		]}
 		value={value}

@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { Button } from '@psycron/components/button/Button';
 import {
 	CheckSuccess,
 	Jupiter,
@@ -12,11 +11,9 @@ import {
 	JupiterIconFrame,
 	JupiterMessage,
 	JupiterNudge,
-	ReadinessActions,
 	ReadinessCard,
 	ReadinessCheck,
 	ReadinessCheckIcon,
-	ReadinessNote,
 	ReadinessTitle,
 	WorkspaceSwitch,
 	WorkspaceToggleDescription,
@@ -36,8 +33,6 @@ export const AvailabilityReadinessPanel = ({
 	jupiterLabel,
 	jupiterSuggestion,
 	jupiterToggleLabel,
-	pwaNote,
-	resolveLabel,
 	slotChecklistLabel,
 	statusItems,
 	statusTitle,
@@ -92,11 +87,11 @@ export const AvailabilityReadinessPanel = ({
 			) : null}
 			<AvailabilityStatusStrip items={statusItems} title={statusTitle} />
 			<ReadinessCard
-				aria-labelledby='availability-publish-checklist-title'
-				data-testid='availability-publish-checklist'
-				id='availability-publish-checklist'
+				aria-labelledby='availability-readiness-checklist-title'
+				data-testid='availability-readiness-checklist'
+				id='availability-readiness-checklist'
 			>
-				<ReadinessTitle id='availability-publish-checklist-title'>
+				<ReadinessTitle id='availability-readiness-checklist-title'>
 					{checklistTitle}
 				</ReadinessTitle>
 				<ReadinessCheck
@@ -138,24 +133,6 @@ export const AvailabilityReadinessPanel = ({
 					</span>
 				</ReadinessCheck>
 			</ReadinessCard>
-			<ReadinessNote
-				data-testid='availability-pwa-readiness-note'
-				id='availability-pwa-readiness-note'
-			>
-				{pwaNote}
-			</ReadinessNote>
-			<ReadinessActions>
-				<Button
-					fullWidth
-					tertiary
-					data-testid='availability-resolve-readiness-button'
-					id='availability-resolve-readiness-button'
-					variant='contained'
-				>
-					<TriangleAlert />
-					{resolveLabel}
-				</Button>
-			</ReadinessActions>
 		</>
 	);
 };

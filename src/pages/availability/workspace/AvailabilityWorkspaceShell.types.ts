@@ -12,6 +12,7 @@ export interface AvailabilityWorkspaceShellProps {
 	contentMode?: AvailabilityWorkspaceContentMode;
 	footer?: ReactNode;
 	isLoading?: boolean;
+	onPanelOpenChange?: (isOpen: boolean) => void;
 	panel: ReactNode;
 	subtitle?: string;
 	title: string;

@@ -4,7 +4,6 @@ import { useParams, useSearchParams } from 'react-router-dom';
 import { getAppointmentDetailsBySlotId } from '@psycron/api/user/availability';
 import { AvailabilityLegend } from '@psycron/components/availability/AvailabilityLegend';
 import { NavButton } from '@psycron/components/availability/AvailabilityNavButton';
-import { Button } from '@psycron/components/button/Button';
 import {
 	CheckSuccess,
 	ChevronLeft,
@@ -23,7 +22,10 @@ import { format, isPast, isToday, parseISO } from 'date-fns';
 
 import { AvailabilityReadinessPanel } from '../workspace/AvailabilityReadinessPanel';
 import { AvailabilityViewToggle } from '../workspace/AvailabilityViewToggle';
-import type { AvailabilityViewMode } from '../workspace/AvailabilityViewToggle.types';
+import type {
+	AvailabilityViewMode,
+	AvailabilityViewSelection,
+} from '../workspace/AvailabilityViewToggle.types';
 import { AvailabilityWorkspaceShell } from '../workspace/AvailabilityWorkspaceShell';
 import type { AvailabilityWorkspaceShellHandle } from '../workspace/AvailabilityWorkspaceShell.types';
 
@@ -85,6 +87,18 @@ export const AvailabilityWeekPage = () => {
 	const { availability } = useJupiterAvailabilityConfig();
 	const shellRef = useRef<AvailabilityWorkspaceShellHandle>(null);
 	const [viewMode, setViewMode] = useState<AvailabilityViewMode>('week');
+	const [isReadinessPanelOpen, setIsReadinessPanelOpen] = useState(false);
+
+	const handleViewSelection = useCallback(
+		(selection: AvailabilityViewSelection): void => {
+			if (selection === 'month') {
+				shellRef.current?.openPanel();
+				return;
+			}
+			setViewMode(selection);
+		},
+		[]
+	);
 
 	const [selectedSlot, setSelectedSlot] = useState<IWeekSlot | null>(null);
 	const [filterAnchorEl, setFilterAnchorEl] = useState<HTMLElement | null>(
@@ -174,20 +188,6 @@ export const AvailabilityWeekPage = () => {
 		>
 			<Settings />
 		</WeekFooterSettingsButton>
-	);
-
-	const publishButton = (
-		<Button
-			small
-			tertiary
-			aria-label={t('availability.workspace.publish-changes')}
-			data-testid='availability-publish-button'
-			id='availability-publish-button'
-			onClick={() => shellRef.current?.openPanel()}
-			variant='contained'
-		>
-			{t('availability.workspace.publish')}
-		</Button>
 	);
 
 	const prevButton = (
@@ -282,12 +282,7 @@ export const AvailabilityWeekPage = () => {
 		},
 	];
 
-	const workspaceActions = (
-		<>
-			{filterButton}
-			{publishButton}
-		</>
-	);
+	const workspaceActions = filterButton;
 
 	const viewbarTitle =
 		viewMode === 'day' ? format(activeDate, 'EEEE, MMMM d, yyyy') : weekRange;
@@ -321,10 +316,11 @@ export const AvailabilityWeekPage = () => {
 			>
 				<AvailabilityViewToggle
 					dayLabel={t('availability.workspace.view-day')}
-					value={viewMode}
+					monthLabel={t('availability.workspace.view-month')}
+					value={isReadinessPanelOpen ? 'month' : viewMode}
 					viewModeLabel={t('availability.workspace.view-mode-label')}
 					weekLabel={t('availability.workspace.view-week')}
-					onChange={setViewMode}
+					onChange={handleViewSelection}
 				/>
 			</WeekWorkspaceControls>
 		</WeekWorkspaceViewbar>
@@ -362,8 +358,6 @@ export const AvailabilityWeekPage = () => {
 						jupiterToggleLabel={t(
 							'availability.workspace.jupiter-toggle-label'
 						)}
-						pwaNote={t('availability.workspace.pwa-note')}
-						resolveLabel={t('availability.workspace.resolve-readiness')}
 						slotChecklistLabel={
 							hasSlots
 								? t('availability.workspace.checklist-slots-ready', {
@@ -378,6 +372,7 @@ export const AvailabilityWeekPage = () => {
 				subtitle={t('availability.workspace.subtitle')}
 				title={t('availability.workspace.page-title')}
 				viewbar={viewbar}
+				onPanelOpenChange={setIsReadinessPanelOpen}
 			>
 				<WeekCalendarScroll
 					aria-label={t('availability.workspace.calendar-scroll-label')}
