@@ -19,9 +19,7 @@ export const WeekGridWrapper = styled(Box)`
 	flex: 1;
 	min-height: 0;
 	overflow: auto;
-	/* Enough clearance that the last row of events scrolls fully above the
-	   footer legend — the footer must never cover a booking. */
-	padding-bottom: ${spacing.xl};
+	padding-bottom: 0;
 `;
 
 export const WeekGrid = styled(Box, {
@@ -30,7 +28,7 @@ export const WeekGrid = styled(Box, {
 	display: grid;
 	grid-template-columns: 72px
 		repeat(${({ dayCount }) => dayCount}, minmax(118px, 1fr));
-	grid-template-rows: 76px auto;
+	grid-template-rows: 50px auto;
 	column-gap: 0;
 	row-gap: 0;
 	min-width: ${({ dayCount }) => (dayCount === 1 ? '0' : '960px')};
@@ -42,7 +40,7 @@ export const WeekGrid = styled(Box, {
 export const WeekGridCorner = styled(Box)`
 	grid-column: 1;
 	grid-row: 1;
-	height: 76px;
+	height: 50px;
 	position: sticky;
 	top: 0;
 	left: 0;
@@ -183,8 +181,7 @@ export const DayColumn = styled(Box, {
 		prop !== 'isInteractive' &&
 		prop !== 'isToday' &&
 		prop !== 'isPast' &&
-		prop !== 'isFullyBlocked' &&
-		prop !== 'timelineHeight',
+		prop !== 'isFullyBlocked',
 })<{
 	columnIndex: number;
 	isDisabled?: boolean;
@@ -192,12 +189,12 @@ export const DayColumn = styled(Box, {
 	isInteractive?: boolean;
 	isPast?: boolean;
 	isToday?: boolean;
-	timelineHeight: number;
 }>`
 	grid-column: ${({ columnIndex }) => columnIndex};
 	grid-row: 1 / span 2;
 	position: relative;
-	height: ${({ timelineHeight }) => `${timelineHeight}px`};
+	/* Fill the grid track — the TimeAxis defines the timeline height. */
+	height: 100%;
 	background: ${({ isDisabled, isFullyBlocked, isPast, isToday }) => {
 		if (isDisabled || isPast) return hexToRgba(palette.gray['02'], 0.22);
 		if (isFullyBlocked) {
@@ -206,10 +203,6 @@ export const DayColumn = styled(Box, {
 		if (isToday) return hexToRgba(palette.secondary.main, 0.12);
 		return palette.background.default;
 	}};
-	background-image: ${({ isToday }) =>
-		isToday
-			? `repeating-linear-gradient(to bottom, transparent 0, transparent 59px, ${hexToRgba(palette.secondary.main, 0.22)} 60px, transparent 61px, transparent 119px, ${hexToRgba(palette.gray['02'], 0.42)} 120px)`
-			: `repeating-linear-gradient(to bottom, transparent 0, transparent 59px, ${hexToRgba(palette.gray['02'], 0.74)} 60px, transparent 61px, transparent 119px, ${hexToRgba(palette.gray['02'], 0.42)} 120px)`};
 	border-left: 1px solid
 		${({ isToday }) =>
 			isToday ? palette.secondary.main : hexToRgba(palette.gray['02'], 0.78)};
@@ -496,7 +489,6 @@ export const AvailableSlotHoverLabel = styled('span')`
 	border-radius: 999px;
 	background: ${palette.brand.light};
 	color: ${palette.brand.dark};
-	box-shadow: ${shadowSmall};
 	font-size: 12px;
 	font-weight: 800;
 	line-height: 1.2;

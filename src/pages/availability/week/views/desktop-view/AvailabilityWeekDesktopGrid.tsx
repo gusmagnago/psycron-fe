@@ -366,7 +366,10 @@ export const AvailabilityWeekDesktopGrid = ({
 	};
 
 	return (
-		<WeekGridWrapper>
+		<WeekGridWrapper
+			data-testid='availability-week-grid-wrapper'
+			id='availability-week-grid-wrapper'
+		>
 			<WeekGrid
 				aria-labelledby='availability-week-title'
 				data-testid='availability-calendar-grid'
@@ -430,6 +433,8 @@ export const AvailabilityWeekDesktopGrid = ({
 						<DayColumn
 							aria-label={format(day, 'EEEE, MMMM d')}
 							columnIndex={index + 2}
+							data-testid={`availability-day-column-${format(day, 'EEE').toLowerCase()}`}
+							id={`availability-day-column-${dateStr}`}
 							isInteractive={isDisabled && !isPastDay}
 							key={`day-column-${day.toISOString()}`}
 							isDisabled={isDisabled}
@@ -438,7 +443,6 @@ export const AvailabilityWeekDesktopGrid = ({
 							isToday={todayDay}
 							onClick={isDisabled && !isPastDay ? () => onDayHeaderClick(dateStr) : undefined}
 							role='row'
-							timelineHeight={timeline.totalHeight + DAY_HEADER_HEIGHT}
 						>
 							{timeline.hourMarks.map((mark, markIndex) => {
 								const cellId = getHourCellId(day, mark);
