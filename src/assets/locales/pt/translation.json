@@ -1920,7 +1920,18 @@
 					"contact-delivery": "Contato e modalidade",
 					"patient": "Paciente",
 					"session": "Sessão"
-				}
+				},
+				"busy-slot": "Marcar como ocupado",
+				"busy-confirm": "Confirmar ocupado",
+				"busy-confirm-body": "Este horário aparecerá como ocupado e será sincronizado com seu Google Calendar. Pacientes não poderão agendá-lo.",
+				"busy-success": "Horário marcado como ocupado.",
+				"busy-error": "Falha ao marcar como ocupado. Tente novamente.",
+				"unbusy-slot": "Remover ocupado",
+				"unbusy-confirm": "Confirmar remoção",
+				"unbusy-confirm-body": "Este horário voltará a ficar disponível para agendamento e o evento será removido do seu Google Calendar.",
+				"unbusy-success": "Ocupado removido — horário disponível novamente.",
+				"unbusy-error": "Falha ao remover ocupado. Tente novamente.",
+				"busy-subtitle": "Compromisso pessoal — sincronizado com o Google Calendar"
 			},
 			"buffer-label": "Buffer",
 			"legend-available": "Disponível",
@@ -1947,9 +1958,11 @@
 				"booked": "Consulta Psycron agendada com {{name}} em {{day}}, {{time}}",
 				"buffer": "Tempo de buffer em {{day}}, {{time}}",
 				"cancelled": "Consulta cancelada com {{name}} em {{day}}, {{time}}",
-				"google": "Bloqueio ocupado do Google em {{day}}, {{time}}",
+				"conflict": "Conflito de agenda: uma consulta Psycron sobrepõe um evento do Google Agenda em {{day}}, {{time}}",
+				"google-readonly": "Evento do Google Agenda {{title}} em {{day}}, {{time}}. Somente leitura.",
 				"patient": "paciente"
 			},
+			"google-source-label": "Google Agenda",
 			"slot": "horário",
 			"slots": "horários",
 			"filter-clear": "Limpar filtros",
@@ -2007,7 +2020,8 @@
 				"step1-title": "Agendamentos precisam de atenção",
 				"step2-summary": "Bloquear este dia irá bloquear {{available}} horário(s) disponível(is) e criar {{conflicts}} conflito(s) para agendamentos existentes.",
 				"step2-title": "Confirmar bloqueio do dia"
-			}
+			},
+			"legend-busy": "Ocupado"
 		},
 		"generate": {
 			"workspace-subtitle": "Crie uma configuração de disponibilidade com o Jupiter e depois revise no workspace de calendário.",

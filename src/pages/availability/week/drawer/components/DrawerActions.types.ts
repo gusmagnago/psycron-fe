@@ -11,6 +11,9 @@ export interface IDrawerActionConfig {
 export interface IDrawerActionsConfig {
 	primary?: IDrawerActionConfig;
 	secondary?: IDrawerActionConfig;
+	// Optional third action, rendered after secondary (e.g. "Mark as busy"
+	// alongside booking + block on an available slot).
+	tertiaryAction?: IDrawerActionConfig;
 }
 
 export interface IDrawerActionsProps {

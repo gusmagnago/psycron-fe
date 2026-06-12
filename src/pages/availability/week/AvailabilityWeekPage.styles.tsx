@@ -15,11 +15,16 @@ import type { SlotStatus } from './AvailabilityWeekPage.types';
 // ─── Slot colours ─────────────────────────────────────────────────────────────
 
 export const SLOT_COLORS: Record<SlotStatus, string> = {
-	available: hexToRgba(palette.brand.purple, 0.06),
+	available: palette.brand.light,
 	blocked: 'transparent',
 	buffer: hexToRgba(palette.brand.purple, 0.18),
-	'booked-google': hexToRgba(palette.gray['08'], 0.13),
+	// Fallback only — Google events render first-class with their real Google
+	// color (slot.googleColorId via getGoogleEventColor); see decision
+	// 2026-06-12 "first-class mirror, not busy overlay".
+	'booked-google': hexToRgba(palette.brand.google, 0.1),
 	'booked-jupiter': palette.brand.purple,
+	// Matches Google's graphite — busy mirrors to Google in that color.
+	busy: palette.gray['08'],
 	cancelled: palette.warning.surface.light,
 };
 
@@ -37,11 +42,13 @@ export const isClickableStatus = (status: SlotStatus) =>
 	status === 'available' ||
 	status === 'blocked' ||
 	status === 'buffer' ||
+	status === 'busy' ||
 	status === 'cancelled';
 
 export const getSlotTextColor = (slotStatus: SlotStatus): string => {
 	if (slotStatus === 'booked-jupiter') return palette.white;
-	if (slotStatus === 'booked-google') return palette.gray['08'];
+	if (slotStatus === 'busy') return palette.white;
+	if (slotStatus === 'booked-google') return palette.text.primary;
 	if (slotStatus === 'available') return palette.text.primary;
 	if (slotStatus === 'blocked') return palette.gray.dark;
 	if (slotStatus === 'cancelled') return palette.warning.dark;
@@ -55,8 +62,10 @@ export const getSlotBorder = (slotStatus: SlotStatus): string => {
 	return 'none';
 };
 
+// Every real event card (Psycron session or Google event) carries the same
+// standard shadow — conflicts signal via border-left, never via shadow.
 export const hasPersistentSlotShadow = (slotStatus: SlotStatus): boolean =>
-	slotStatus === 'booked-jupiter';
+	slotStatus === 'booked-jupiter' || slotStatus === 'booked-google';
 
 export const WeekWorkspaceViewbar = styled(Box)`
 	min-height: 74px;

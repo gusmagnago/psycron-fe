@@ -4,6 +4,7 @@ import { StatusEnum } from '@psycron/api/user/availability/index.types';
 import { useUserDetails } from '@psycron/context/user/details/UserDetailsContext';
 import type { SlotStatus } from '@psycron/pages/availability/week/AvailabilityWeekPage.types';
 import type { IWeekSlot } from '@psycron/pages/availability/week/AvailabilityWeekPage.types';
+import { WEEK_STARTS_ON } from '@psycron/utils/variables';
 import { useQuery } from '@tanstack/react-query';
 import { addMinutes, endOfWeek, format, isAfter, parseISO, startOfWeek } from 'date-fns';
 
@@ -53,8 +54,14 @@ export const useDashboardSlots = (): UseDashboardSlotsReturn => {
 	const therapistId = userDetails?._id ?? '';
 
 	const today = new Date();
-	const from = format(startOfWeek(today, { weekStartsOn: 1 }), 'yyyy-MM-dd');
-	const to = format(endOfWeek(today, { weekStartsOn: 1 }), 'yyyy-MM-dd');
+	const from = format(
+		startOfWeek(today, { weekStartsOn: WEEK_STARTS_ON }),
+		'yyyy-MM-dd'
+	);
+	const to = format(
+		endOfWeek(today, { weekStartsOn: WEEK_STARTS_ON }),
+		'yyyy-MM-dd'
+	);
 	const todayStr = format(today, 'yyyy-MM-dd');
 
 	const { data, isLoading } = useQuery({

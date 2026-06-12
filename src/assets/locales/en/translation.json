@@ -1920,7 +1920,18 @@
 					"contact-delivery": "Contact & Delivery",
 					"patient": "Patient",
 					"session": "Session"
-				}
+				},
+				"busy-slot": "Mark as busy",
+				"busy-confirm": "Confirm busy",
+				"busy-confirm-body": "This time will show as busy and sync to your Google Calendar. Patients will not be able to book it.",
+				"busy-success": "Slot marked as busy.",
+				"busy-error": "Failed to mark slot as busy. Please try again.",
+				"unbusy-slot": "Remove busy",
+				"unbusy-confirm": "Confirm removal",
+				"unbusy-confirm-body": "This time will become available for booking again and the busy event will be removed from your Google Calendar.",
+				"unbusy-success": "Busy removed — slot is available again.",
+				"unbusy-error": "Failed to remove busy. Please try again.",
+				"busy-subtitle": "Personal commitment — synced to Google Calendar"
 			},
 			"buffer-label": "Buffer",
 			"legend-available": "Available",
@@ -1965,9 +1976,11 @@
 				"booked": "Booked Psycron appointment with {{name}} on {{day}}, {{time}}",
 				"buffer": "Buffer time on {{day}}, {{time}}",
 				"cancelled": "Cancelled appointment with {{name}} on {{day}}, {{time}}",
-				"google": "Google busy block on {{day}}, {{time}}",
+				"conflict": "Scheduling conflict: a Psycron appointment overlaps a Google Calendar event on {{day}}, {{time}}",
+				"google-readonly": "Google Calendar event {{title}} on {{day}}, {{time}}. Read-only.",
 				"patient": "patient"
 			},
+			"google-source-label": "Google Calendar",
 			"slot": "slot",
 			"slots": "slots",
 			"title": "Week Schedule",
@@ -2007,7 +2020,8 @@
 				"step1-title": "Booked appointments need attention",
 				"step2-summary": "Blocking this day will block {{available}} available slot(s) and create {{conflicts}} conflict(s) for booked appointments.",
 				"step2-title": "Confirm day block"
-			}
+			},
+			"legend-busy": "Busy"
 		},
 		"generate": {
 			"workspace-subtitle": "Create a working availability setup with Jupiter, then review it in the calendar workspace.",

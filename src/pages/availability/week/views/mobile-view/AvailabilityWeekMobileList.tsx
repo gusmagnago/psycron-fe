@@ -1,5 +1,9 @@
 import { useTranslation } from 'react-i18next';
 import { Lock } from '@psycron/components/icons';
+import {
+	getGoogleEventColor,
+	getGoogleEventTextColor,
+} from '@psycron/utils/google/googleCalendarColors';
 import { format } from 'date-fns';
 
 import { SlotBufferLabel } from '../../AvailabilityWeekPage.styles';
@@ -30,6 +34,7 @@ import type { AvailabilityWeekMobileListProps } from './AvailabilityWeekMobileLi
 
 export const AvailabilityWeekMobileList = ({
 	days,
+	googleCalendarColor,
 	todayCardId,
 	onDayHeaderClick,
 	onSlotClick,
@@ -123,9 +128,36 @@ export const AvailabilityWeekMobileList = ({
 											);
 										}
 
+										const isGoogle = slot.status === 'booked-google';
+										// Google identity is the event title (notes), never an
+										// attendee-derived patient name. Other cards fall back
+										// to the note so no occupied card renders blank.
+										const slotTitle = isGoogle
+											? slot.notes
+											: slot.status === 'busy'
+												? (slot.notes ??
+													t('availability.week.legend-busy'))
+												: (slot.patientName ?? slot.notes);
+
 										return (
 											<MobileSlotCard
 												key={`mobile-slot-${slot.id}`}
+												googleColor={
+													isGoogle
+														? getGoogleEventColor(
+																slot.googleColorId,
+																googleCalendarColor
+															)
+														: undefined
+												}
+												googleTextColor={
+													isGoogle
+														? getGoogleEventTextColor(
+																slot.googleColorId,
+																googleCalendarColor
+															)
+														: undefined
+												}
 												slotStatus={slot.status}
 												onClick={() => (shouldClick ? onSlotClick(slot) : null)}
 												onPointerDown={() =>
@@ -137,10 +169,8 @@ export const AvailabilityWeekMobileList = ({
 													{formatTimeRange(slot.startTime, slot.duration)}
 												</MobileSlotTime>
 												<MobileSlotDetails>
-													{slot.patientName && (
-														<MobileSlotPatient>
-															{slot.patientName}
-														</MobileSlotPatient>
+													{slotTitle && (
+														<MobileSlotPatient>{slotTitle}</MobileSlotPatient>
 													)}
 													{slot.therapyType && (
 														<MobileSlotTherapy>

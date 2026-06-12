@@ -17,6 +17,7 @@ import {
 	AVAILABILITYWEEK_BASE,
 } from '@psycron/pages/urls';
 import { palette } from '@psycron/theme/palette/palette.theme';
+import { WEEK_STARTS_ON } from '@psycron/utils/variables';
 import {
 	eachDayOfInterval,
 	endOfMonth,
@@ -47,7 +48,8 @@ import {
 
 type SourceView = 'jupiter' | 'google';
 
-const WEEKDAYS = ['M', 'T', 'W', 'T', 'F', 'S', 'S'] as const;
+// Sunday-first, matching WEEK_STARTS_ON.
+const WEEKDAYS = ['S', 'M', 'T', 'W', 'T', 'F', 'S'] as const;
 
 const getOccupancyLevel = (
 	booked: number,
@@ -83,8 +85,8 @@ export const AvailabilityCalendarPage = () => {
 	const monthEnd = endOfMonth(currentDate);
 
 	const calendarDays = eachDayOfInterval({
-		start: startOfWeek(monthStart, { weekStartsOn: 1 }),
-		end: endOfWeek(monthEnd, { weekStartsOn: 1 }),
+		start: startOfWeek(monthStart, { weekStartsOn: WEEK_STARTS_ON }),
+		end: endOfWeek(monthEnd, { weekStartsOn: WEEK_STARTS_ON }),
 	});
 
 	const dayMap = new Map(calendar.map((d) => [d.date, d]));

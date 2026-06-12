@@ -6,6 +6,7 @@ import { useAvailability } from '@psycron/context/appointment/availability/Avail
 import { useJupiterAvailability } from '@psycron/hooks/useJupiterAvailability';
 import i18n from '@psycron/i18n';
 import { AVAILABILITYWEEK_BASE } from '@psycron/pages/urls';
+import { WEEK_STARTS_ON } from '@psycron/utils/variables';
 import {
 	eachDayOfInterval,
 	endOfMonth,
@@ -35,7 +36,8 @@ import type {
 	AvailabilityMiniCalendarProps,
 } from './AvailabilityMiniCalendar.types';
 
-const WEEKDAYS = ['M', 'T', 'W', 'T', 'F', 'S', 'S'] as const;
+// Sunday-first, matching WEEK_STARTS_ON.
+const WEEKDAYS = ['S', 'M', 'T', 'W', 'T', 'F', 'S'] as const;
 
 // Fixed booked-count thresholds (not normalized per month) so the same daily
 // load renders the same shade across every month until the end of availability.
@@ -79,8 +81,8 @@ export const AvailabilityMiniCalendar = ({
 	const monthStart = startOfMonth(currentDate);
 	const monthEnd = endOfMonth(currentDate);
 	const calendarDays = eachDayOfInterval({
-		start: startOfWeek(monthStart, { weekStartsOn: 1 }),
-		end: endOfWeek(monthEnd, { weekStartsOn: 1 }),
+		start: startOfWeek(monthStart, { weekStartsOn: WEEK_STARTS_ON }),
+		end: endOfWeek(monthEnd, { weekStartsOn: WEEK_STARTS_ON }),
 	});
 	const dayMap = new Map(calendar.map((day) => [day.date, day]));
 

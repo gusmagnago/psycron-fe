@@ -235,12 +235,14 @@ export const AvailabilityWeekPage = () => {
 					'booked-google': 0,
 					'booked-jupiter': 0,
 					buffer: 0,
+					busy: 0,
 					cancelled: 0,
 				} satisfies Record<IWeekSlot['status'], number>
 			),
 		[weekSlots]
 	);
 	const googleConnected = Boolean(availability?.googleCalendarConnected);
+	const googleCalendarColor = availability?.googleCalendarColor ?? null;
 	const hasSlots = slotStats.available > 0;
 
 	const statusItems = useAvailabilityStatusItems({
@@ -348,6 +350,7 @@ export const AvailabilityWeekPage = () => {
 					{isMobile ? (
 						<AvailabilityWeekMobileList
 							days={visibleMobileDays}
+							googleCalendarColor={googleCalendarColor}
 							todayCardId={todayCardId}
 							onDayHeaderClick={handleDayHeaderClick}
 							onSlotClick={handleSlotClick}
@@ -359,6 +362,7 @@ export const AvailabilityWeekPage = () => {
 							activeDate={activeDate}
 							debugNowMinutes={debugNowMinutes}
 							getDaySlots={getDaySlots}
+							googleCalendarColor={googleCalendarColor}
 							getVisibleDaySlots={getVisibleDaySlots}
 							onDayHeaderClick={handleDayHeaderClick}
 							onSlotClick={handleSlotClick}

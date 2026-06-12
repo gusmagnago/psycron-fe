@@ -19,7 +19,9 @@ export const WeekGridWrapper = styled(Box)`
 	flex: 1;
 	min-height: 0;
 	overflow: auto;
-	padding-bottom: ${spacing.xs};
+	/* Enough clearance that the last row of events scrolls fully above the
+	   footer legend — the footer must never cover a booking. */
+	padding-bottom: ${spacing.xl};
 `;
 
 export const WeekGrid = styled(Box, {
@@ -77,12 +79,12 @@ export const DayHeader = styled(Box, {
 }>`
 	grid-column: ${({ columnIndex }) => columnIndex};
 	grid-row: 1;
-	height: 76px;
+	height: 50px;
 	display: flex;
 	flex-direction: column;
 	align-items: center;
 	justify-content: center;
-	gap: ${spacing.xxs};
+	gap: 0;
 	position: sticky;
 	top: 0;
 	z-index: ${zIndexSticky};
@@ -216,6 +218,16 @@ export const DayColumn = styled(Box, {
 	border-bottom: 1px solid ${hexToRgba(palette.gray['02'], 0.78)};
 	overflow: clip;
 	cursor: ${({ isInteractive }) => (isInteractive ? 'pointer' : 'default')};
+
+	/* Days before today render their events in a disabled color — history,
+	   not actionable schedule. */
+	${({ isPast }) =>
+		isPast
+			? `& [id^='availability-slot-'] {
+					opacity: 0.5;
+					filter: saturate(0.35);
+				}`
+			: ''}
 `;
 
 export const HourGridLine = styled(Box, {
@@ -239,8 +251,12 @@ export const HalfHourGridLine = styled(Box, {
 `;
 
 export const HourHitArea = styled(ButtonBase, {
-	shouldForwardProp: (prop) => prop !== 'top',
-})<{ top: number }>`
+	shouldForwardProp: (prop) => prop !== 'isDisabledCell' && prop !== 'top',
+})<{
+	// Past time or time already occupied by a slot — no hover CTA, no click.
+	isDisabledCell: boolean;
+	top: number;
+}>`
 	position: absolute;
 	left: 0;
 	right: 0;
@@ -250,16 +266,19 @@ export const HourHitArea = styled(ButtonBase, {
 	border-radius: 0;
 	background: transparent;
 	z-index: 1;
+	cursor: ${({ isDisabledCell }) => (isDisabledCell ? 'default' : 'pointer')};
+	pointer-events: ${({ isDisabledCell }) => (isDisabledCell ? 'none' : 'auto')};
 
 	&:hover,
 	&:focus-visible {
-		background: ${hexToRgba(palette.brand.purple, 0.06)};
-		z-index: 7;
+		background: ${({ isDisabledCell }) =>
+			isDisabledCell ? 'transparent' : hexToRgba(palette.brand.purple, 0.06)};
+		z-index: ${({ isDisabledCell }) => (isDisabledCell ? 1 : 7)};
 	}
 
 	&:hover [data-hour-hit-label='true'],
 	&:focus-visible [data-hour-hit-label='true'] {
-		opacity: 1;
+		opacity: ${({ isDisabledCell }) => (isDisabledCell ? 0 : 1)};
 	}
 `;
 
@@ -312,12 +331,20 @@ export const CurrentTimeLine = styled(Box, {
 export const SlotCell = styled(ButtonBase, {
 	shouldForwardProp: (prop) =>
 		prop !== 'blockHeight' &&
+		prop !== 'googleColor' &&
+		prop !== 'googleTextColor' &&
+		prop !== 'hasConflict' &&
 		prop !== 'isCompact' &&
 		prop !== 'stackOrder' &&
 		prop !== 'slotStatus' &&
 		prop !== 'top',
 })<{
 	blockHeight: number;
+	// Real Google event color (+ contrast text) — set only for booked-google,
+	// so the cell renders like the same event in Google Calendar.
+	googleColor?: string;
+	googleTextColor?: string;
+	hasConflict: boolean;
 	isCompact: boolean;
 	slotStatus: SlotStatus;
 	stackOrder: number;
@@ -342,15 +369,23 @@ export const SlotCell = styled(ButtonBase, {
 	overflow: hidden;
 	z-index: ${({ stackOrder }) => stackOrder};
 	text-align: left;
-	background-color: ${({ slotStatus }) =>
-		slotStatus === 'blocked' ? 'transparent' : SLOT_COLORS[slotStatus]};
-	color: ${({ slotStatus }) => getSlotTextColor(slotStatus)};
-	border: ${({ slotStatus }) => getSlotBorder(slotStatus)};
-	border-left: ${({ slotStatus }) =>
-		slotStatus === 'available'
-			? `3px solid ${hexToRgba(palette.brand.purple, 0.28)}`
+	background: ${({ googleColor, slotStatus }) =>
+		slotStatus === 'blocked'
+			? 'transparent'
 			: slotStatus === 'booked-google'
-				? `4px solid ${palette.brand.google}`
+				? (googleColor ?? SLOT_COLORS[slotStatus])
+				: SLOT_COLORS[slotStatus]};
+	color: ${({ googleTextColor, slotStatus }) =>
+		slotStatus === 'booked-google' && googleTextColor
+			? googleTextColor
+			: getSlotTextColor(slotStatus)};
+	border: ${({ slotStatus }) => getSlotBorder(slotStatus)};
+	/* Conflict signals via a strong left border — never via box-shadow. */
+	border-left: ${({ hasConflict, slotStatus }) =>
+		hasConflict
+			? `4px solid ${palette.error.main}`
+			: slotStatus === 'available'
+				? `3px solid ${hexToRgba(palette.brand.purple, 0.28)}`
 				: getSlotBorder(slotStatus)};
 	cursor: ${({ slotStatus }) =>
 		isClickableStatus(slotStatus) ? 'pointer' : 'default'};
@@ -370,22 +405,26 @@ export const SlotCell = styled(ButtonBase, {
 					? shadowSmall
 					: 'none'};
 		transform: ${({ slotStatus }) =>
-			isClickableStatus(slotStatus) ? 'translateY(-1px)' : 'none'};
-		background-color: ${({ slotStatus }) =>
+			slotStatus !== 'booked-google' && isClickableStatus(slotStatus)
+				? 'translateY(-1px)'
+				: 'none'};
+		background: ${({ googleColor, slotStatus }) =>
 			slotStatus === 'blocked'
 				? hexToRgba(palette.warning.surface.light, 0.58)
-				: slotStatus === 'cancelled'
-					? SLOT_COLORS.cancelled
-					: SLOT_COLORS[slotStatus]};
+				: slotStatus === 'booked-google'
+					? (googleColor ?? SLOT_COLORS[slotStatus])
+					: slotStatus === 'cancelled'
+						? SLOT_COLORS.cancelled
+						: SLOT_COLORS[slotStatus]};
 		border: ${({ slotStatus }) =>
 			slotStatus === 'blocked'
 				? `1px solid ${palette.error.main}`
 				: getSlotBorder(slotStatus)};
-		border-left: ${({ slotStatus }) =>
-			slotStatus === 'available'
-				? `3px solid ${hexToRgba(palette.brand.purple, 0.28)}`
-				: slotStatus === 'booked-google'
-					? `4px solid ${palette.brand.google}`
+		border-left: ${({ hasConflict, slotStatus }) =>
+			hasConflict
+				? `4px solid ${palette.error.main}`
+				: slotStatus === 'available'
+					? `3px solid ${hexToRgba(palette.brand.purple, 0.28)}`
 					: getSlotBorder(slotStatus)};
 	}
 

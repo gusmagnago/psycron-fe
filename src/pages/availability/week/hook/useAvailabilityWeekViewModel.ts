@@ -12,6 +12,7 @@ import {
 	AVAILABILITYWEEK_BASE,
 } from '@psycron/pages/urls';
 import { hexToRgba, palette } from '@psycron/theme/palette/palette.theme';
+import { WEEK_STARTS_ON } from '@psycron/utils/variables';
 import {
 	addWeeks,
 	eachDayOfInterval,
@@ -29,7 +30,7 @@ import {
 import { BUFFER_COLORS, SLOT_COLORS } from '../AvailabilityWeekPage.styles';
 import type {
 	IAvailabilityWeekMobileDay,
-	IWeekSlot,
+	IStackedWeekSlot,
 } from '../AvailabilityWeekPage.types';
 import {
 	isBookedMobileSlot,
@@ -53,7 +54,7 @@ export const useAvailabilityWeekViewModel = ({
 }: UseAvailabilityWeekViewModelProps) => {
 	const { t } = useTranslation();
 	const navigate = useNavigate();
-	const { firstDate, lastDate } = useAvailability();
+	const { availabilityData, lastDate } = useAvailability();
 	const {
 		activeFilterCount,
 		clearFilters,
@@ -76,8 +77,8 @@ export const useAvailabilityWeekViewModel = ({
 		() => (date ? parseISO(date) : new Date()),
 		[date]
 	);
-	const weekStart = startOfWeek(baseDate, { weekStartsOn: 1 });
-	const weekEnd = endOfWeek(baseDate, { weekStartsOn: 1 });
+	const weekStart = startOfWeek(baseDate, { weekStartsOn: WEEK_STARTS_ON });
+	const weekEnd = endOfWeek(baseDate, { weekStartsOn: WEEK_STARTS_ON });
 	const weekDays = eachDayOfInterval({ start: weekStart, end: weekEnd });
 
 	const { weekData, isLoading } = useWeekSlots(
@@ -87,12 +88,12 @@ export const useAvailabilityWeekViewModel = ({
 	);
 
 	const getDaySlots = useCallback(
-		(day: Date): IWeekSlot[] => weekData[format(day, 'yyyy-MM-dd')] ?? [],
+		(day: Date): IStackedWeekSlot[] => weekData[format(day, 'yyyy-MM-dd')] ?? [],
 		[weekData]
 	);
 
 	const getVisibleDaySlots = useCallback(
-		(day: Date): IWeekSlot[] => {
+		(day: Date): IStackedWeekSlot[] => {
 			let slots = getDaySlots(day);
 
 			if (!prefs.showFreeSlots)
@@ -184,20 +185,31 @@ export const useAvailabilityWeekViewModel = ({
 		[expandedDays, getDaySlots, getVisibleDaySlots, workingDays]
 	);
 
-	const legendItems = useMemo<AvailabilityLegendItem[]>(
-		() =>
-			LEGEND_STATUSES.map(({ status, labelKey }) => ({
+	const legendItems = useMemo<AvailabilityLegendItem[]>(() => {
+		// Stable DOM ids (legend-item-<key>) regardless of locale.
+		const LEGEND_ITEM_KEYS: Record<string, string> = {
+			available: 'available',
+			blocked: 'blocked',
+			'booked-jupiter': 'booked',
+			buffer: 'buffer',
+			busy: 'busy',
+			cancelled: 'cancelled',
+		};
+
+		const items: AvailabilityLegendItem[] = LEGEND_STATUSES.map(
+			({ status, labelKey }) => ({
 				color:
 					status === 'buffer'
 						? hexToRgba(BUFFER_COLORS.booked, 0.12)
-						: SLOT_COLORS[status],
+						: status === 'blocked'
+							? // The blocked slot fill is transparent — the legend swatch
+								// needs a visible, accessible color of its own.
+								palette.gray['02']
+							: SLOT_COLORS[status],
+				itemKey: LEGEND_ITEM_KEYS[status],
 				label: t(labelKey),
 				...(status === 'available' && { borderColor: palette.gray['02'] }),
-				...(status === 'blocked' && { borderColor: palette.gray['02'] }),
-				...(status === 'booked-google' && {
-					borderColor: palette.brand.google,
-					borderSide: 'left',
-				}),
+				...(status === 'blocked' && { borderColor: palette.gray['04'] }),
 				...(status === 'buffer' && {
 					borderColor: BUFFER_COLORS.booked,
 					opacity: 1,
@@ -206,24 +218,41 @@ export const useAvailabilityWeekViewModel = ({
 					borderColor: palette.warning.main,
 					opacity: 0.78,
 				}),
-			})).concat({
-				borderColor: palette.error.main,
-				color: hexToRgba(palette.error.main, 0.1),
-				label: t('availability.week.legend-conflict'),
-			}),
-		[t]
-	);
+			})
+		);
+
+		items.push({
+			borderColor: palette.error.main,
+			color: palette.error.surface.light,
+			itemKey: 'conflict',
+			label: t('availability.week.legend-conflict'),
+		});
+
+		return items;
+	}, [t]);
 
 	const weekRange = `${format(weekStart, 'MMM d')} – ${format(weekEnd, 'MMM d, yyyy')}`;
 
-	const firstISO = firstDate?.date ? parseISO(firstDate.date) : null;
+	// Navigating back stops at the first day that actually has content —
+	// availability dates can start weeks before the first real slot, and
+	// paging through empty weeks reads as a broken calendar.
+	const firstContentISO = useMemo(() => {
+		const firstWithSlots = (availabilityData?.dates ?? []).find(
+			(d) => (d.slots?.length ?? 0) > 0
+		);
+		return firstWithSlots ? parseISO(firstWithSlots.date) : null;
+	}, [availabilityData]);
+
 	const lastISO = lastDate?.date ? parseISO(lastDate.date) : null;
 
-	const canGoPrev = firstISO
-		? isAfter(weekStart, startOfWeek(firstISO, { weekStartsOn: 1 }))
+	const canGoPrev = firstContentISO
+		? isAfter(
+				weekStart,
+				startOfWeek(firstContentISO, { weekStartsOn: WEEK_STARTS_ON })
+			)
 		: false;
 	const canGoNext = lastISO
-		? isBefore(weekStart, startOfWeek(lastISO, { weekStartsOn: 1 }))
+		? isBefore(weekStart, startOfWeek(lastISO, { weekStartsOn: WEEK_STARTS_ON }))
 		: false;
 
 	const goToPrevWeek = useCallback(

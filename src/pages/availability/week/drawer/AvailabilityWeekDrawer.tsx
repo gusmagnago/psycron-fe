@@ -33,9 +33,11 @@ import { useEditSlotForm } from './hooks/useEditSlotForm';
 import { usePatientSearch } from './hooks/usePatientSearch';
 import {
 	useBlockSlot,
+	useBusySlot,
 	useCancelSlot,
 	useReschedule,
 	useUnblockSlot,
+	useUnbusySlot,
 } from './hooks/useSlotActions';
 import { useSlotAddress } from './hooks/useSlotAddress';
 import { SlotAvailableBody } from './views/slot-available-body/SlotAvailableBody';
@@ -113,6 +115,7 @@ export const AvailabilityWeekDrawer = ({
 	const isAvailable = slot.status === 'available';
 	const isBuffer = slot.status === 'buffer';
 	const isBlocked = slot.status === 'blocked';
+	const isBusy = slot.status === 'busy';
 	const isCancelled = slot.status === 'cancelled';
 	const isBooked =
 		slot.status === 'booked-jupiter' || slot.status === 'booked-google';
@@ -255,6 +258,8 @@ export const AvailabilityWeekDrawer = ({
 
 	const blockSlot = useBlockSlot(slot, therapistId, onClose);
 	const unblockSlot = useUnblockSlot(slot, therapistId, onClose);
+	const busySlot = useBusySlot(slot, therapistId, onClose);
+	const unbusySlot = useUnbusySlot(slot, therapistId, onClose);
 	const cancelSlot = useCancelSlot(slot, therapistId, onClose);
 
 	const reschedule = useReschedule(
@@ -585,6 +590,18 @@ export const AvailabilityWeekDrawer = ({
 						{t('availability.week.drawer.unblock-confirm-body')}
 					</CancelViewBody>
 				);
+			case 'busy-confirm':
+				return (
+					<CancelViewBody>
+						{t('availability.week.drawer.busy-confirm-body')}
+					</CancelViewBody>
+				);
+			case 'unbusy-confirm':
+				return (
+					<CancelViewBody>
+						{t('availability.week.drawer.unbusy-confirm-body')}
+					</CancelViewBody>
+				);
 			case 'reschedule-or-cancel':
 				return (
 					<SlotCancelChoiceView
@@ -741,12 +758,14 @@ export const AvailabilityWeekDrawer = ({
 			reset: bufferTime.reset,
 			saveMutation: bufferTime.saveMutation,
 		},
+		busySlot,
 		cancelSlot,
 		editSlotForm,
 		hasConflict: !!conflict,
 		isAvailable,
 		isBuffer,
 		isBlocked,
+		isBusy,
 		isCancelled,
 		isChecking,
 		isPast,
@@ -755,6 +774,7 @@ export const AvailabilityWeekDrawer = ({
 		setView,
 		submitBooking,
 		unblockSlot,
+		unbusySlot,
 		view,
 	});
 

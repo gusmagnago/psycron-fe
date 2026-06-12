@@ -9,10 +9,9 @@ export const LEGEND_STATUSES: { labelKey: string; status: SlotStatus }[] = [
 		status: 'booked-jupiter',
 		labelKey: 'availability.week.legend-booked-jupiter',
 	},
-	{
-		status: 'booked-google',
-		labelKey: 'availability.week.legend-booked-google',
-	},
+	// Google events and BUSY slots are one concept in the legend: time that
+	// is taken but is not a Psycron session.
+	{ status: 'busy', labelKey: 'availability.week.legend-busy' },
 	// { status: 'buffer', labelKey: 'availability.week.legend-buffer' },
 	{ status: 'cancelled', labelKey: 'availability.week.legend-cancelled' },
 ];

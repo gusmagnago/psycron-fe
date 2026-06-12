@@ -12,7 +12,7 @@ import {
 	shadowSmall,
 } from '@psycron/theme/shadow/shadow.theme';
 import { spacing } from '@psycron/theme/spacing/spacing.theme';
-import { zIndexDrawer, zIndexSticky } from '@psycron/theme/zIndex';
+import { zIndexBase, zIndexDrawer } from '@psycron/theme/zIndex';
 
 import type { AvailabilityWorkspaceContentMode } from './AvailabilityWorkspaceShell.types';
 
@@ -133,7 +133,8 @@ export const WorkspaceEdgeToggle = styled(ButtonBase, {
 	position: absolute;
 	top: ${spacing.medium};
 	right: 0;
-	z-index: ${zIndexSticky};
+	/* Just above page content, below all sticky chrome and drawers. */
+	z-index: ${zIndexBase};
 	width: 38px;
 	height: 64px;
 	border: 0;

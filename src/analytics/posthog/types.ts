@@ -31,6 +31,8 @@ export const enum PostHogEvent {
 	AvailabilityLetPatientChooseAddress = 'availability let patient choose address toggled',
 	AvailabilitySettingSaved = 'availability setting saved',
 	AvailabilitySlotBlocked = 'availability slot blocked',
+	AvailabilitySlotBusyTagged = 'availability slot busy tagged',
+	AvailabilitySlotBusyUntagged = 'availability slot busy untagged',
 	AvailabilitySlotUnblocked = 'availability slot unblocked',
 	BackofficeWorkerSessionFailed = 'backoffice worker session failed',
 	ConsentGranted = 'consent granted',
@@ -296,6 +298,14 @@ export type PostHogEventProps = {
 	};
 
 	[PostHogEvent.AvailabilitySlotBlocked]: {
+		slot_start_time: string;
+	};
+
+	[PostHogEvent.AvailabilitySlotBusyTagged]: {
+		slot_start_time: string;
+	};
+
+	[PostHogEvent.AvailabilitySlotBusyUntagged]: {
 		slot_start_time: string;
 	};
 

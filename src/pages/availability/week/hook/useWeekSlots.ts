@@ -4,13 +4,17 @@ import { useAvailability } from '@psycron/context/appointment/availability/Avail
 import { isCanceledSlotStatus } from '@psycron/utils/availability/availability.utils';
 import { format, isWithinInterval, parseISO } from 'date-fns';
 
-import type { IWeekSlot, SlotStatus } from '../AvailabilityWeekPage.types';
+import type {
+	IStackedWeekSlot,
+	IWeekSlot,
+	SlotStatus,
+} from '../AvailabilityWeekPage.types';
+import {
+	stackDaySlots,
+	STATUS_STACK_ORDER,
+} from '../AvailabilityWeekStacking.utils';
 
 type WeekSlotSource = 'google' | 'jupiter';
-
-type SlotWithSource = {
-	source?: WeekSlotSource;
-};
 
 const computeDuration = (startTime: string, endTime: string): number => {
 	const [sh, sm] = startTime.split(':').map(Number);
@@ -32,6 +36,7 @@ const toSlotStatus = (
 ): SlotStatus | null => {
 	if (status === StatusEnum.AVAILABLE) return 'available';
 	if (status === StatusEnum.BLOCKED) return 'blocked';
+	if (status === StatusEnum.BUSY) return 'busy';
 	if (status === StatusEnum.BOOKED)
 		return source === 'google' ? 'booked-google' : 'booked-jupiter';
 	if (isCanceledSlotStatus(status)) return 'cancelled';
@@ -53,7 +58,7 @@ export const useWeekSlots = (
 		isWithinInterval(parseISO(d.date), { start: weekStart, end: weekEnd })
 	);
 
-	const weekData: Record<string, IWeekSlot[]> = {};
+	const weekData: Record<string, IStackedWeekSlot[]> = {};
 
 	weekDates.forEach((d) => {
 		const slots = d.slots ?? [];
@@ -63,8 +68,7 @@ export const useWeekSlots = (
 
 		const realSlots = slots
 			.map((slot, j): IWeekSlot | null => {
-				const slotSource = (slot as SlotWithSource).source;
-				const rawStatus = toSlotStatus(slot.status, slotSource);
+				const rawStatus = toSlotStatus(slot.status, slot.source);
 				if (!rawStatus) return null;
 				const status =
 					rawStatus === 'available' && slot.canceledAt && !slot.reopenedAt
@@ -82,6 +86,11 @@ export const useWeekSlots = (
 					date: dayStr,
 					deliveryMode: slot.deliveryMode ?? null,
 					duration: computeDuration(slot.startTime, slot.endTime),
+					googleColorId: slot.googleColorId ?? null,
+					googleEventId: slot.googleEventId ?? null,
+					googleHtmlLink: slot.googleHtmlLink ?? null,
+					googleLocation: slot.googleLocation ?? null,
+					googleMeetLink: slot.googleMeetLink ?? null,
 					id: slot._id ?? `${dayStr}-${j}`,
 					letPatientChooseAddress: slot.letPatientChooseAddress ?? false,
 					notes: slot.note,
@@ -96,11 +105,15 @@ export const useWeekSlots = (
 			})
 			.filter((s): s is IWeekSlot => s !== null);
 
-		if (bufferTimeMinutes > 0) {
-			const occupiedTimes = new Set(realSlots.map((s) => s.startTime));
-			const bufferSlots: IWeekSlot[] = [];
+		// Deterministic stacking + jupiter-google double-booking detection.
+		// Google events are first-class — nothing is merged or clipped here.
+		const stackedSlots = stackDaySlots(realSlots);
 
-			realSlots.forEach((slot) => {
+		if (bufferTimeMinutes > 0) {
+			const occupiedTimes = new Set(stackedSlots.map((s) => s.startTime));
+			const bufferSlots: IStackedWeekSlot[] = [];
+
+			stackedSlots.forEach((slot) => {
 				if (slot.status !== 'booked-jupiter' && slot.status !== 'booked-google')
 					return;
 
@@ -114,16 +127,17 @@ export const useWeekSlots = (
 					date: dayStr,
 					duration: bufferTimeMinutes,
 					id: `buffer-${slot.id}`,
+					stackOrder: STATUS_STACK_ORDER.buffer,
 					startTime: bufferStart,
 					status: 'buffer',
 				});
 			});
 
-			weekData[dayStr] = [...realSlots, ...bufferSlots].sort((a, b) =>
+			weekData[dayStr] = [...stackedSlots, ...bufferSlots].sort((a, b) =>
 				a.startTime.localeCompare(b.startTime)
 			);
 		} else {
-			weekData[dayStr] = realSlots;
+			weekData[dayStr] = stackedSlots;
 		}
 	});
 

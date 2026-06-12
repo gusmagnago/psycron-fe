@@ -30,6 +30,19 @@ export const DrawerActions = ({ config }: IDrawerActionsProps) => {
 					{config.secondary.label}
 				</Button>
 			)}
+			{config.tertiaryAction && (
+				<Button
+					fullWidth
+					disabled={config.tertiaryAction.disabled}
+					loading={config.tertiaryAction.loading}
+					onClick={config.tertiaryAction.onClick}
+					severity={config.tertiaryAction.severity}
+					tertiary={config.tertiaryAction.tertiary}
+					variant={config.tertiaryAction.variant}
+				>
+					{config.tertiaryAction.label}
+				</Button>
+			)}
 		</>
 	);
 };

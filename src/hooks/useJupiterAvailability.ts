@@ -2,6 +2,7 @@ import { useCallback, useState } from 'react';
 import { getAvailabilityCalendar } from '@psycron/api/user';
 import type { IDateInfo } from '@psycron/api/user/index.types';
 import { useTherapistId } from '@psycron/hooks/useTherapistId';
+import { WEEK_STARTS_ON } from '@psycron/utils/variables';
 import { useQuery } from '@tanstack/react-query';
 import {
 	addMonths,
@@ -29,8 +30,15 @@ export const useJupiterAvailability = (options?: UseJupiterAvailabilityOptions) 
 	const monthStart = startOfMonth(currentDate);
 	const monthEnd = endOfMonth(currentDate);
 
-	const from = format(startOfWeek(monthStart, { weekStartsOn: 1 }), 'yyyy-MM-dd');
-	const to = format(endOfWeek(monthEnd, { weekStartsOn: 1 }), 'yyyy-MM-dd');
+	// Fetch the same Sunday-first padded range the calendar grids render.
+	const from = format(
+		startOfWeek(monthStart, { weekStartsOn: WEEK_STARTS_ON }),
+		'yyyy-MM-dd'
+	);
+	const to = format(
+		endOfWeek(monthEnd, { weekStartsOn: WEEK_STARTS_ON }),
+		'yyyy-MM-dd'
+	);
 
 	const { data, isLoading } = useQuery({
 		queryKey: ['jupiterAvailability', therapistId, from, to],
