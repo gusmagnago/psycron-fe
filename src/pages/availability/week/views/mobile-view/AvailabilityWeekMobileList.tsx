@@ -1,13 +1,14 @@
 import { useTranslation } from 'react-i18next';
 import { Lock } from '@psycron/components/icons';
-import {
-	getGoogleEventColor,
-	getGoogleEventTextColor,
-} from '@psycron/utils/google/googleCalendarColors';
 import { format } from 'date-fns';
 
 import { SlotBufferLabel } from '../../AvailabilityWeekPage.styles';
-import { formatTimeRange, isClickable } from '../../AvailabilityWeekPage.utils';
+import {
+	formatTimeRange,
+	getGoogleSlotColors,
+	isClickable,
+	resolveSlotTitle,
+} from '../../AvailabilityWeekPage.utils';
 
 import {
 	MobileDayCard,
@@ -128,36 +129,20 @@ export const AvailabilityWeekMobileList = ({
 											);
 										}
 
-										const isGoogle = slot.status === 'booked-google';
-										// Google identity is the event title (notes), never an
-										// attendee-derived patient name. Other cards fall back
-										// to the note so no occupied card renders blank.
-										const slotTitle = isGoogle
-											? slot.notes
-											: slot.status === 'busy'
-												? (slot.notes ??
-													t('availability.week.legend-busy'))
-												: (slot.patientName ?? slot.notes);
+										const slotTitle = resolveSlotTitle(
+											slot,
+											t('availability.week.legend-busy')
+										);
+										const googleColors = getGoogleSlotColors(
+											slot,
+											googleCalendarColor
+										);
 
 										return (
 											<MobileSlotCard
 												key={`mobile-slot-${slot.id}`}
-												googleColor={
-													isGoogle
-														? getGoogleEventColor(
-																slot.googleColorId,
-																googleCalendarColor
-															)
-														: undefined
-												}
-												googleTextColor={
-													isGoogle
-														? getGoogleEventTextColor(
-																slot.googleColorId,
-																googleCalendarColor
-															)
-														: undefined
-												}
+												googleColor={googleColors?.googleColor}
+												googleTextColor={googleColors?.googleTextColor}
 												slotStatus={slot.status}
 												onClick={() => (shouldClick ? onSlotClick(slot) : null)}
 												onPointerDown={() =>

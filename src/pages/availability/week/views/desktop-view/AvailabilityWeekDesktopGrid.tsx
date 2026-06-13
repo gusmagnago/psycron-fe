@@ -1,10 +1,6 @@
 import type { KeyboardEvent as ReactKeyboardEvent } from 'react';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import {
-	getGoogleEventColor,
-	getGoogleEventTextColor,
-} from '@psycron/utils/google/googleCalendarColors';
 import { format, isBefore, isToday, startOfDay } from 'date-fns';
 
 import { SlotBufferLabel } from '../../AvailabilityWeekPage.styles';
@@ -14,8 +10,10 @@ import type {
 } from '../../AvailabilityWeekPage.types';
 import {
 	formatTimeRange,
+	getGoogleSlotColors,
 	isClickable,
 	isDayFullyBlocked,
+	resolveSlotTitle,
 } from '../../AvailabilityWeekPage.utils';
 import type { ISlotInterval } from '../../AvailabilityWeekStacking.utils';
 import {
@@ -274,6 +272,13 @@ export const AvailabilityWeekDesktopGrid = ({
 			});
 		}
 
+		if (slot.status === 'busy') {
+			return t('availability.week.slot-aria.busy', {
+				day: dayLabel,
+				time: timeRange,
+			});
+		}
+
 		return t('availability.week.slot-aria.blocked', {
 			day: dayLabel,
 			time: timeRange,
@@ -456,12 +461,15 @@ export const AvailabilityWeekDesktopGrid = ({
 
 								return (
 									<HourHitArea
-										aria-disabled={cellDisabled}
 										aria-label={t('availability.week.hour-action-aria', {
 											day: format(day, 'EEEE, MMMM d'),
 											time: timeLabel,
 										})}
 										data-testid={cellId}
+										// Disabled cells leave the tab order entirely — a
+										// keyboard user never lands on a dead "add availability"
+										// button that announces as actionable but does nothing.
+										disabled={cellDisabled}
 										id={cellId}
 										isDisabledCell={cellDisabled}
 										key={`hour-hit-${dateStr}-${mark}`}
@@ -475,7 +483,9 @@ export const AvailabilityWeekDesktopGrid = ({
 											handleHourCellKeyDown(event, index, markIndex)
 										}
 										role='gridcell'
-										tabIndex={activeCellKey === cellId ? 0 : -1}
+										tabIndex={
+											cellDisabled || activeCellKey !== cellId ? -1 : 0
+										}
 										top={getTopPosition(mark)}
 										type='button'
 									>
@@ -505,17 +515,14 @@ export const AvailabilityWeekDesktopGrid = ({
 
 								{daySlots.map((slot) => {
 									const isGoogle = slot.status === 'booked-google';
-									// Google identity is the event title (notes), never an
-									// attendee-derived patient name (decision 2026-05-29).
-									// Other cards fall back to the note so no occupied card
-									// ever renders blank.
-									const slotTitle = isGoogle
-										? toRenderableText(slot.notes)
-										: slot.status === 'busy'
-											? toRenderableText(slot.notes) ||
-												t('availability.week.legend-busy')
-											: toRenderableText(slot.patientName) ||
-												toRenderableText(slot.notes);
+									const slotTitle = resolveSlotTitle(
+										slot,
+										t('availability.week.legend-busy')
+									);
+									const googleColors = getGoogleSlotColors(
+										slot,
+										googleCalendarColor
+									);
 									const therapyType = toRenderableText(slot.therapyType);
 									const top =
 										getTopPosition(parseTimeToMinutes(slot.startTime)) +
@@ -560,22 +567,8 @@ export const AvailabilityWeekDesktopGrid = ({
 										blockHeight={blockHeight}
 										data-testid={getSlotTestId(slot)}
 										disableRipple={!isClickable(slot.status, day)}
-										googleColor={
-											isGoogle
-												? getGoogleEventColor(
-														slot.googleColorId,
-														googleCalendarColor
-													)
-												: undefined
-										}
-										googleTextColor={
-											isGoogle
-												? getGoogleEventTextColor(
-														slot.googleColorId,
-														googleCalendarColor
-													)
-												: undefined
-										}
+										googleColor={googleColors?.googleColor}
+										googleTextColor={googleColors?.googleTextColor}
 										hasConflict={Boolean(slot.hasConflict)}
 										id={`availability-slot-${slot.id}`}
 										isCompact={isCompact}

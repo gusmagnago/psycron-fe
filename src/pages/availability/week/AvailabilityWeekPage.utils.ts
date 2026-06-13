@@ -1,6 +1,47 @@
+import {
+	getGoogleEventColor,
+	getGoogleEventTextColor,
+} from '@psycron/utils/google/googleCalendarColors';
 import { isFuture, isToday } from 'date-fns';
 
 import type { IWeekSlot, SlotStatus } from './AvailabilityWeekPage.types';
+
+// Coerce a slot field to renderable text — non-string/number values become ''
+// so a card never renders `[object Object]` or a stray null.
+const toRenderableText = (value: unknown): string =>
+	typeof value === 'string' || typeof value === 'number' ? String(value) : '';
+
+/**
+ * The card title for a slot, shared by the desktop grid and the mobile list so
+ * the two never diverge: Google identity is the event title (never an
+ * attendee-derived patient name), busy falls back to a "Busy" label, everything
+ * else uses the patient name and falls back to the note.
+ */
+export const resolveSlotTitle = (
+	slot: IWeekSlot,
+	busyLabel: string
+): string => {
+	if (slot.status === 'booked-google') return toRenderableText(slot.notes);
+	if (slot.status === 'busy')
+		return toRenderableText(slot.notes) || busyLabel;
+	return toRenderableText(slot.patientName) || toRenderableText(slot.notes);
+};
+
+/**
+ * Resolved Google fill + contrast text for a slot, or `undefined` for
+ * non-Google slots. One source of truth for both views — the per-event colorId
+ * with the calendar color as fallback.
+ */
+export const getGoogleSlotColors = (
+	slot: IWeekSlot,
+	calendarColor?: string | null
+): { googleColor: string; googleTextColor: string } | undefined => {
+	if (slot.status !== 'booked-google') return undefined;
+	return {
+		googleColor: getGoogleEventColor(slot.googleColorId, calendarColor),
+		googleTextColor: getGoogleEventTextColor(slot.googleColorId, calendarColor),
+	};
+};
 
 export const LEGEND_STATUSES: { labelKey: string; status: SlotStatus }[] = [
 	{ status: 'available', labelKey: 'availability.week.legend-available' },
@@ -25,10 +66,13 @@ export const isClickable = (status: SlotStatus, slotDate: Date) => {
 	const isBlocked = status === 'blocked' && isFutureFromToday;
 
 	const isBuffer = status === 'buffer' && isFutureFromToday;
+	// Busy time can be untagged (back to available) while it is still in the
+	// future — same gate as blocked.
+	const isBusy = status === 'busy' && isFutureFromToday;
 	const isCancelled = status === 'cancelled';
 
 	const result =
-		isBooked || isAvailable || isBlocked || isBuffer || isCancelled;
+		isBooked || isAvailable || isBlocked || isBuffer || isBusy || isCancelled;
 
 	return result;
 };

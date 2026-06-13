@@ -1978,7 +1978,8 @@
 				"cancelled": "Cancelled appointment with {{name}} on {{day}}, {{time}}",
 				"conflict": "Scheduling conflict: a Psycron appointment overlaps a Google Calendar event on {{day}}, {{time}}",
 				"google-readonly": "Google Calendar event {{title}} on {{day}}, {{time}}. Read-only.",
-				"patient": "patient"
+				"patient": "patient",
+				"busy": "Busy time on {{day}}, {{time}} — personal commitment"
 			},
 			"google-source-label": "Google Calendar",
 			"slot": "slot",

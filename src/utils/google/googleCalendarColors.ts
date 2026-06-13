@@ -45,10 +45,25 @@ export const getGoogleEventTextColor = (
 	colorId?: string | null,
 	calendarColor?: string | null
 ): string => {
-	const hex = getGoogleEventColor(colorId, calendarColor).replace('#', '');
+	const raw = getGoogleEventColor(colorId, calendarColor).replace('#', '');
+	// Google's CalendarList color is a 6-digit hex, but a calendarColor from
+	// another source could be 3-digit (#abc) — expand it so the luminance math
+	// never parses to NaN (which would silently force white text everywhere).
+	const hex =
+		raw.length === 3
+			? raw
+					.split('')
+					.map((c) => c + c)
+					.join('')
+			: raw;
 	const r = Number.parseInt(hex.slice(0, 2), 16);
 	const g = Number.parseInt(hex.slice(2, 4), 16);
 	const b = Number.parseInt(hex.slice(4, 6), 16);
+	// Unparseable color → assume a dark fill and keep white (the safer default
+	// for Google's mostly-saturated palette).
+	if (Number.isNaN(r) || Number.isNaN(g) || Number.isNaN(b)) {
+		return palette.white;
+	}
 	const yiq = (r * 299 + g * 587 + b * 114) / 1000;
 
 	return yiq >= 160 ? palette.text.primary : palette.white;

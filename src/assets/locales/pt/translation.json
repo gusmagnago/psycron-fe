@@ -1960,7 +1960,8 @@
 				"cancelled": "Consulta cancelada com {{name}} em {{day}}, {{time}}",
 				"conflict": "Conflito de agenda: uma consulta Psycron sobrepõe um evento do Google Agenda em {{day}}, {{time}}",
 				"google-readonly": "Evento do Google Agenda {{title}} em {{day}}, {{time}}. Somente leitura.",
-				"patient": "paciente"
+				"patient": "paciente",
+				"busy": "Horário ocupado em {{day}}, {{time}} — compromisso pessoal"
 			},
 			"google-source-label": "Google Agenda",
 			"slot": "horário",
