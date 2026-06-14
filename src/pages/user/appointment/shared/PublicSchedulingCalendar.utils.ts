@@ -2,6 +2,7 @@ import {
 	capitalizeDateLabel,
 	getDateLocale,
 } from '@psycron/utils/date/date.utils';
+import { WEEK_STARTS_ON } from '@psycron/utils/variables';
 import {
 	addMonths,
 	addWeeks,
@@ -20,7 +21,6 @@ import {
 
 import type { PublicSchedulingViewMode } from './PublicSchedulingCalendar.types';
 
-const WEEK_STARTS_ON = 0;
 const WEEKDAY_SAMPLE_DATES = [
 	new Date(2024, 0, 7),
 	new Date(2024, 0, 8),

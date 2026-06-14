@@ -87,6 +87,11 @@ export interface IAvailabilityResponse {
 	calendar?: ICalendarDay[];
 	dates: IAvailabilityDateRef[];
 	firstDate: IDateInfo | null;
+	// Therapist's Google calendar color, co-located with the slots so Google
+	// events without a per-event colorId resolve their fill in this same
+	// response — avoids the flash from default blue while a slower config
+	// query resolves.
+	googleCalendarColor?: string | null;
 	isEmpty: boolean;
 	lastDate: IDateInfo | null;
 	timezone?: string;

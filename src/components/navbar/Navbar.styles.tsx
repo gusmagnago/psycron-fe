@@ -11,11 +11,14 @@ export const navbarTop = `calc(
 		${navbarHeight} + ${navbarPadding} + ${AppLayoutDividerMobilePadding}
 	)`;
 
+export const navbarRailWidth = `calc(75px + ${spacing.xs})`;
+
 export const NavbarWrapper = styled(Box)`
 	display: flex;
 	flex-direction: column;
 	align-items: center;
 	padding-right: ${spacing.xs};
+	width: ${navbarRailWidth};
 	height: 100%;
 	justify-content: space-between;
 `;

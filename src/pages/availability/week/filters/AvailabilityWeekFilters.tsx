@@ -95,14 +95,28 @@ export const AvailabilityWeekFilters = ({
 			onClose={onClose}
 			anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
 			transformOrigin={{ vertical: 'top', horizontal: 'right' }}
+			id='availability-week-filters'
+			data-testid='availability-week-filters'
 		>
-			<FiltersPanelContent>
-				<FiltersPanelHeader>
+			<FiltersPanelContent
+				id='availability-week-filters-content'
+				data-testid='availability-week-filters-content'
+			>
+				<FiltersPanelHeader
+					id='availability-week-filters-header'
+					data-testid='availability-week-filters-header'
+				>
 					<FiltersPanelTitle>
 						{t('availability.week.filters')}
 					</FiltersPanelTitle>
 					{activeFilterCount > 0 && (
-						<Button onClick={onClearFilters} secondary small>
+						<Button
+							onClick={onClearFilters}
+							secondary
+							small
+							id='availability-week-clear-filters-button'
+							data-testid='availability-week-clear-filters-button'
+						>
 							{t('availability.week.filter-clear')}
 						</Button>
 					)}
@@ -111,12 +125,24 @@ export const AvailabilityWeekFilters = ({
 				{sections.map((section) => (
 					<Fragment key={section.key}>
 						<FiltersDivider />
-						<FiltersSection>
+						<FiltersSection
+							id={`${section.key}-filter-section`}
+							data-testid={`${section.key}-filter-section`}
+						>
 							<FiltersSectionLabel>{t(section.labelKey)}</FiltersSectionLabel>
 							{section.type === 'switches' ? (
 								section.rows.map((row) => (
-									<FiltersSwitchRow key={row.labelKey}>
-										<FiltersSwitchLabel>{t(row.labelKey)}</FiltersSwitchLabel>
+									<FiltersSwitchRow
+										key={row.labelKey}
+										id={`${section.key}-switch-${row.labelKey}`}
+										data-testid={`${section.key}-switch-${row.labelKey}`}
+									>
+										<FiltersSwitchLabel
+											id={`${section.key}-switch-label-${row.labelKey}`}
+											data-testid={`${section.key}-switch-label-${row.labelKey}`}
+										>
+											{t(row.labelKey)}
+										</FiltersSwitchLabel>
 										<Switch
 											checked={row.checked}
 											onChange={row.onChange}
@@ -125,7 +151,10 @@ export const AvailabilityWeekFilters = ({
 									</FiltersSwitchRow>
 								))
 							) : (
-								<FiltersChipGroup>
+								<FiltersChipGroup
+									id={`${section.key}-chip-group`}
+									data-testid={`${section.key}-chip-group`}
+								>
 									{section.options.map((opt) => (
 										<FiltersChip
 											key={opt}
@@ -133,6 +162,8 @@ export const AvailabilityWeekFilters = ({
 											onClick={() => section.onToggle(opt)}
 											small
 											tertiary
+											id={`${section.key}-chip-${opt}`}
+											data-testid={`${section.key}-chip-${opt}`}
 										>
 											{section.getOptionLabel(opt)}
 										</FiltersChip>

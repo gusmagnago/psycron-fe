@@ -36,15 +36,21 @@ interface IBufferTimeActions {
 	saveMutation: { isPending: boolean; mutate: () => void };
 }
 
+interface IBusySlotActions {
+	mutation: { isPending: boolean; mutate: () => void };
+}
+
 export interface IUseDrawerActionsInput {
 	blockSlot: IBlockSlotActions;
 	bufferTime: IBufferTimeActions;
+	busySlot: IBusySlotActions;
 	cancelSlot: ICancelSlotActions;
 	editSlotForm: IEditSlotFormActions;
 	hasConflict: boolean;
 	isAvailable: boolean;
 	isBlocked: boolean;
 	isBuffer: boolean;
+	isBusy: boolean;
 	isCancelled: boolean;
 	isChecking: boolean;
 	isPast?: boolean;
@@ -53,18 +59,21 @@ export interface IUseDrawerActionsInput {
 	setView: (view: DrawerView) => void;
 	submitBooking: () => void;
 	unblockSlot: IBlockSlotActions;
+	unbusySlot: IBusySlotActions;
 	view: DrawerView;
 }
 
 export const useDrawerActions = ({
 	blockSlot,
 	bufferTime,
+	busySlot,
 	cancelSlot,
 	editSlotForm,
 	hasConflict,
 	isAvailable,
 	isBuffer,
 	isBlocked,
+	isBusy,
 	isCancelled,
 	isChecking,
 	isPast,
@@ -73,6 +82,7 @@ export const useDrawerActions = ({
 	setView,
 	submitBooking,
 	unblockSlot,
+	unbusySlot,
 	view,
 }: IUseDrawerActionsInput): IDrawerActionsConfig => {
 	const { t } = useTranslation();
@@ -180,6 +190,40 @@ export const useDrawerActions = ({
 				},
 			};
 
+		case 'busy-confirm':
+			return {
+				primary: {
+					disabled: busySlot.mutation.isPending,
+					label: t('availability.week.drawer.busy-confirm'),
+					loading: busySlot.mutation.isPending,
+					onClick: () => busySlot.mutation.mutate(),
+					tertiary: true,
+					variant: 'contained',
+				},
+				secondary: {
+					disabled: busySlot.mutation.isPending,
+					label: t('availability.week.drawer.cancel-back'),
+					onClick: () => setView('default'),
+				},
+			};
+
+		case 'unbusy-confirm':
+			return {
+				primary: {
+					disabled: unbusySlot.mutation.isPending,
+					label: t('availability.week.drawer.unbusy-confirm'),
+					loading: unbusySlot.mutation.isPending,
+					onClick: () => unbusySlot.mutation.mutate(),
+					tertiary: true,
+					variant: 'contained',
+				},
+				secondary: {
+					disabled: unbusySlot.mutation.isPending,
+					label: t('availability.week.drawer.cancel-back'),
+					onClick: () => setView('default'),
+				},
+			};
+
 		case 'unblock-confirm':
 			return {
 				primary: {
@@ -224,6 +268,16 @@ export const useDrawerActions = ({
 				};
 			}
 
+			if (isBusy) {
+				return {
+					primary: {
+						label: t('availability.week.drawer.unbusy-slot'),
+						onClick: () => setView('unbusy-confirm'),
+						tertiary: true,
+					},
+				};
+			}
+
 			if (isCancelled) {
 				return {
 					primary: {
@@ -250,6 +304,10 @@ export const useDrawerActions = ({
 						label: t('availability.week.drawer.block-slot'),
 						onClick: () => setView('block-confirm'),
 						severity: 'error',
+					},
+					tertiaryAction: {
+						label: t('availability.week.drawer.busy-slot'),
+						onClick: () => setView('busy-confirm'),
 					},
 				};
 			}

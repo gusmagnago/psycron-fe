@@ -5,12 +5,14 @@ import type { IWeekSlot } from '../AvailabilityWeekPage.types';
 export type DrawerView =
 	| 'block-confirm'
 	| 'buffer-edit'
+	| 'busy-confirm'
 	| 'cancel-reason'
 	| 'default'
 	| 'editing'
 	| 'reschedule-or-cancel'
 	| 'reschedule-slots'
-	| 'unblock-confirm';
+	| 'unblock-confirm'
+	| 'unbusy-confirm';
 
 export type LocationChoice = 'clinic' | 'custom' | 'patient';
 

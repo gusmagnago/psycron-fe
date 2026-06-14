@@ -18,19 +18,31 @@ export const LegendItem = styled(Box)`
 
 export const LegendSwatch = styled(Box, {
 	shouldForwardProp: (prop) =>
-		prop !== 'color' && prop !== 'borderColor' && prop !== 'swatchOpacity',
-})<{ borderColor?: string; color: string; swatchOpacity?: number }>`
+		prop !== 'borderColor' &&
+		prop !== 'borderSide' &&
+		prop !== 'color' &&
+		prop !== 'swatchOpacity',
+})<{
+	borderColor?: string;
+	borderSide?: 'all' | 'left';
+	color: string;
+	swatchOpacity?: number;
+}>`
 	width: 16px;
 	height: 16px;
 	border-radius: 4px;
 	background-color: ${({ color }) => color};
-	border: 2px solid ${({ borderColor }) => borderColor ?? 'transparent'};
 	opacity: ${({ swatchOpacity }) => swatchOpacity ?? 1};
 	flex-shrink: 0;
+
+	${({ borderColor, borderSide }) =>
+		borderSide === 'left'
+			? `border-left: 4px solid ${borderColor ?? 'transparent'};`
+			: `border: 2px solid ${borderColor ?? 'transparent'};`}
 `;
 
 export const LegendLabel = styled(Typography)`
-	font-size: 12px;
-	font-weight: 500;
-	color: ${palette.gray['05']};
+	font-size: inherit;
+	font-weight: inherit;
+	color: ${palette.text.secondary};
 `;

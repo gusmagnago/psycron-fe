@@ -1,16 +1,28 @@
-import { useEffect, useMemo, useState } from 'react';
+import type { KeyboardEvent as ReactKeyboardEvent } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { format, isBefore, isToday, startOfDay } from 'date-fns';
 
 import { SlotBufferLabel } from '../../AvailabilityWeekPage.styles';
-import type { IWeekSlot } from '../../AvailabilityWeekPage.types';
+import type {
+	IStackedWeekSlot,
+	IWeekSlot,
+} from '../../AvailabilityWeekPage.types';
 import {
 	formatTimeRange,
+	getGoogleSlotColors,
 	isClickable,
 	isDayFullyBlocked,
+	resolveSlotTitle,
 } from '../../AvailabilityWeekPage.utils';
+import type { ISlotInterval } from '../../AvailabilityWeekStacking.utils';
+import {
+	intervalsOverlap,
+	toInterval,
+} from '../../AvailabilityWeekStacking.utils';
 
 import {
+	AvailableSlotHoverLabel,
 	BlockedSlotHoverLabel,
 	CancelledSlotHoverLabel,
 	CurrentTimeLine,
@@ -20,6 +32,8 @@ import {
 	DayNumber,
 	HalfHourGridLine,
 	HourGridLine,
+	HourHitArea,
+	HourHitLabel,
 	SlotCell,
 	SlotCellBuffer,
 	SlotPatientName,
@@ -54,17 +68,29 @@ import {
 } from './AvailabilityWeekDesktopGrid.utils';
 
 export const AvailabilityWeekDesktopGrid = ({
+	activeDate,
 	debugNowMinutes,
 	getDaySlots,
 	getVisibleDaySlots,
+	googleCalendarColor,
 	onDayHeaderClick,
 	onSlotClick,
 	onSlotPointerDown,
+	viewMode,
 	weekData,
 	weekDays,
 }: AvailabilityWeekDesktopGridProps) => {
 	const { t } = useTranslation();
 	const [now, setNow] = useState(() => new Date());
+	const [activeCellKey, setActiveCellKey] = useState<string | null>(null);
+
+	const toRenderableText = (value: unknown): string => {
+		if (typeof value === 'string' || typeof value === 'number') {
+			return String(value);
+		}
+
+		return '';
+	};
 
 	const getCancelledHoverLabel = (triggeredBy?: IWeekSlot['triggeredBy']) => {
 		if (triggeredBy === 'PATIENT') {
@@ -155,10 +181,153 @@ export const AvailabilityWeekDesktopGrid = ({
 		return Math.max(proportionalHeight - visualGap, MIN_SLOT_HEIGHT);
 	};
 
-	const getRenderableSlots = (day: Date): IWeekSlot[] =>
+	const getRenderableSlots = (day: Date): IStackedWeekSlot[] =>
 		[...getVisibleDaySlots(day)]
 			.filter((slot) => isClickable(slot.status, day))
 			.sort((a, b) => a.startTime.localeCompare(b.startTime));
+
+	const activeDateStr = format(activeDate, 'yyyy-MM-dd');
+	const visibleWeekDays = useMemo(() => {
+		if (viewMode === 'week') return weekDays;
+		const activeDay = weekDays.find(
+			(day) => format(day, 'yyyy-MM-dd') === activeDateStr
+		);
+		return activeDay ? [activeDay] : weekDays.slice(0, 1);
+	}, [activeDateStr, viewMode, weekDays]);
+
+	const getHourCellId = useCallback(
+		(day: Date, mark: number): string =>
+			`availability-hour-${format(day, 'EEE').toLowerCase()}-${formatMinutesToTimeLabel(mark).replace(':', '')}`,
+		[]
+	);
+
+	const focusHourCell = useCallback((cellId: string): void => {
+		setActiveCellKey(cellId);
+		window.requestAnimationFrame(() => {
+			document.getElementById(cellId)?.focus();
+		});
+	}, []);
+
+	const getSlotTestId = (slot: IStackedWeekSlot): string => {
+		if (slot.hasConflict) return 'availability-event-conflict';
+		if (slot.status === 'booked-jupiter') return 'availability-event-booked';
+		if (slot.status === 'booked-google') return 'availability-event-google';
+		if (slot.status === 'buffer') return 'availability-event-buffer';
+		if (slot.status === 'cancelled') return 'availability-event-cancelled';
+		if (slot.status === 'available') return 'availability-event-available';
+		return 'availability-event-blocked';
+	};
+
+	const getSlotAriaLabel = (slot: IStackedWeekSlot, day: Date): string => {
+		const timeRange = formatTimeRange(slot.startTime, slot.duration);
+		const dayLabel = format(day, 'EEEE, MMMM d');
+		const patientName = toRenderableText(
+			slot.patientName ?? slot.cancelledPatientName
+		);
+
+		if (slot.hasConflict) {
+			return t('availability.week.slot-aria.conflict', {
+				day: dayLabel,
+				time: timeRange,
+			});
+		}
+
+		if (slot.status === 'available') {
+			return t('availability.week.slot-aria.available', {
+				day: dayLabel,
+				time: timeRange,
+			});
+		}
+
+		if (slot.status === 'booked-google') {
+			return t('availability.week.slot-aria.google-readonly', {
+				day: dayLabel,
+				time: timeRange,
+				title:
+					toRenderableText(slot.notes) ||
+					t('availability.week.google-source-label'),
+			});
+		}
+
+		if (slot.status === 'booked-jupiter') {
+			return t('availability.week.slot-aria.booked', {
+				day: dayLabel,
+				name: patientName || t('availability.week.slot-aria.patient'),
+				time: timeRange,
+			});
+		}
+
+		if (slot.status === 'cancelled') {
+			return t('availability.week.slot-aria.cancelled', {
+				day: dayLabel,
+				name: patientName || t('availability.week.slot-aria.patient'),
+				time: timeRange,
+			});
+		}
+
+		if (slot.status === 'buffer') {
+			return t('availability.week.slot-aria.buffer', {
+				day: dayLabel,
+				time: timeRange,
+			});
+		}
+
+		if (slot.status === 'busy') {
+			return t('availability.week.slot-aria.busy', {
+				day: dayLabel,
+				time: timeRange,
+			});
+		}
+
+		return t('availability.week.slot-aria.blocked', {
+			day: dayLabel,
+			time: timeRange,
+		});
+	};
+
+	const handleHourCellKeyDown = (
+		event: ReactKeyboardEvent<HTMLButtonElement>,
+		dayIndex: number,
+		markIndex: number
+	): void => {
+		const lastDayIndex = visibleWeekDays.length - 1;
+		const lastMarkIndex = timeline.hourMarks.length - 1;
+		let nextDayIndex = dayIndex;
+		let nextMarkIndex = markIndex;
+
+		if (event.key === 'ArrowRight') nextDayIndex = Math.min(dayIndex + 1, lastDayIndex);
+		else if (event.key === 'ArrowLeft') nextDayIndex = Math.max(dayIndex - 1, 0);
+		else if (event.key === 'ArrowDown') nextMarkIndex = Math.min(markIndex + 1, lastMarkIndex);
+		else if (event.key === 'ArrowUp') nextMarkIndex = Math.max(markIndex - 1, 0);
+		else if (event.key === 'Home') nextDayIndex = 0;
+		else if (event.key === 'End') nextDayIndex = lastDayIndex;
+		else return;
+
+		event.preventDefault();
+		const nextDay = visibleWeekDays[nextDayIndex];
+		const nextMark = timeline.hourMarks[nextMarkIndex];
+		if (!nextDay || nextMark === undefined) return;
+
+		focusHourCell(getHourCellId(nextDay, nextMark));
+	};
+
+	useEffect(() => {
+		const firstDay = visibleWeekDays[0];
+		const firstMark = timeline.hourMarks[0];
+		if (!firstDay || firstMark === undefined) return;
+
+		const availableCellIds = new Set(
+			visibleWeekDays.flatMap((day) =>
+				timeline.hourMarks.map((mark) => getHourCellId(day, mark))
+			)
+		);
+
+		setActiveCellKey((current) =>
+			current && availableCellIds.has(current)
+				? current
+				: getHourCellId(firstDay, firstMark)
+		);
+	}, [getHourCellId, timeline.hourMarks, visibleWeekDays]);
 
 	const currentMinutes =
 		debugNowMinutes ?? now.getHours() * 60 + now.getMinutes();
@@ -166,12 +335,56 @@ export const AvailabilityWeekDesktopGrid = ({
 		currentMinutes >= timeline.startMinute &&
 		currentMinutes <= timeline.endMinute;
 
+	// Occupied time per day — every slot that owns its time. "Add availability"
+	// only makes sense on genuinely empty future time; cancelled slots free
+	// their time, so they don't occupy.
+	const occupiedIntervalsByDay = useMemo(() => {
+		const byDay = new Map<string, ISlotInterval[]>();
+		Object.entries(weekData).forEach(([dateStr, slots]) => {
+			byDay.set(
+				dateStr,
+				slots
+					.filter((slot) => slot.status !== 'cancelled')
+					.map(toInterval)
+			);
+		});
+		return byDay;
+	}, [weekData]);
+
+	const isHourCellDisabled = (
+		dateStr: string,
+		isPastDay: boolean,
+		todayDay: boolean,
+		mark: number
+	): boolean => {
+		if (isPastDay) return true;
+		// The hour has already started today — too late to add availability in it.
+		if (todayDay && mark < currentMinutes) return true;
+
+		const hourInterval = {
+			endMin: mark + HOUR_INTERVAL_MINUTES,
+			startMin: mark,
+		};
+		return (occupiedIntervalsByDay.get(dateStr) ?? []).some((interval) =>
+			intervalsOverlap(hourInterval, interval)
+		);
+	};
+
 	return (
-		<WeekGridWrapper>
-			<WeekGrid>
+		<WeekGridWrapper
+			data-testid='availability-week-grid-wrapper'
+			id='availability-week-grid-wrapper'
+		>
+			<WeekGrid
+				aria-labelledby='availability-week-title'
+				data-testid='availability-calendar-grid'
+				dayCount={visibleWeekDays.length}
+				id='availability-calendar-grid'
+				role='grid'
+			>
 				<WeekGridCorner />
 
-				{weekDays.map((day, index) => {
+				{visibleWeekDays.map((day, index) => {
 					const dateStr = format(day, 'yyyy-MM-dd');
 					const isDisabled = !(dateStr in weekData);
 					const isPastDay = isBefore(day, startOfDay(new Date()));
@@ -181,7 +394,10 @@ export const AvailabilityWeekDesktopGrid = ({
 
 					return (
 						<DayHeader
+							aria-label={format(day, 'EEEE, MMMM d')}
 							columnIndex={index + 2}
+							data-testid={`availability-day-header-${format(day, 'EEE').toLowerCase()}`}
+							id={`availability-day-header-${dateStr}`}
 							isInteractive={!isPastDay}
 							key={`header-${day.toISOString()}`}
 							isDisabled={isDisabled}
@@ -189,6 +405,7 @@ export const AvailabilityWeekDesktopGrid = ({
 							isPast={isPastDay}
 							isToday={todayDay}
 							onClick={!isPastDay ? () => onDayHeaderClick(dateStr) : undefined}
+							role='columnheader'
 						>
 							<DayName>{format(day, 'EEE')}</DayName>
 							<DayNumber>{format(day, 'd')}</DayNumber>
@@ -208,7 +425,7 @@ export const AvailabilityWeekDesktopGrid = ({
 					))}
 				</TimeAxis>
 
-				{weekDays.map((day, index) => {
+				{visibleWeekDays.map((day, index) => {
 					const dateStr = format(day, 'yyyy-MM-dd');
 					const isDisabled = !(dateStr in weekData);
 					const isPastDay = isBefore(day, startOfDay(new Date()));
@@ -219,7 +436,10 @@ export const AvailabilityWeekDesktopGrid = ({
 
 					return (
 						<DayColumn
+							aria-label={format(day, 'EEEE, MMMM d')}
 							columnIndex={index + 2}
+							data-testid={`availability-day-column-${format(day, 'EEE').toLowerCase()}`}
+							id={`availability-day-column-${dateStr}`}
 							isInteractive={isDisabled && !isPastDay}
 							key={`day-column-${day.toISOString()}`}
 							isDisabled={isDisabled}
@@ -227,8 +447,56 @@ export const AvailabilityWeekDesktopGrid = ({
 							isPast={isPastDay}
 							isToday={todayDay}
 							onClick={isDisabled && !isPastDay ? () => onDayHeaderClick(dateStr) : undefined}
-							timelineHeight={timeline.totalHeight + DAY_HEADER_HEIGHT}
+							role='row'
 						>
+							{timeline.hourMarks.map((mark, markIndex) => {
+								const cellId = getHourCellId(day, mark);
+								const timeLabel = formatMinutesToTimeLabel(mark);
+								const cellDisabled = isHourCellDisabled(
+									dateStr,
+									isPastDay,
+									todayDay,
+									mark
+								);
+
+								return (
+									<HourHitArea
+										aria-label={t('availability.week.hour-action-aria', {
+											day: format(day, 'EEEE, MMMM d'),
+											time: timeLabel,
+										})}
+										data-testid={cellId}
+										// Disabled cells leave the tab order entirely — a
+										// keyboard user never lands on a dead "add availability"
+										// button that announces as actionable but does nothing.
+										disabled={cellDisabled}
+										id={cellId}
+										isDisabledCell={cellDisabled}
+										key={`hour-hit-${dateStr}-${mark}`}
+										onClick={
+											cellDisabled
+												? undefined
+												: () => onDayHeaderClick(dateStr)
+										}
+										onFocus={() => setActiveCellKey(cellId)}
+										onKeyDown={(event) =>
+											handleHourCellKeyDown(event, index, markIndex)
+										}
+										role='gridcell'
+										tabIndex={
+											cellDisabled || activeCellKey !== cellId ? -1 : 0
+										}
+										top={getTopPosition(mark)}
+										type='button'
+									>
+										{cellDisabled ? null : (
+											<HourHitLabel data-hour-hit-label='true'>
+												{t('availability.week.hour-action-label')}
+											</HourHitLabel>
+										)}
+									</HourHitArea>
+								);
+							})}
 							{timeline.hourMarks.map((mark) => (
 								<HourGridLine
 									key={`hour-line-${dateStr}-${mark}`}
@@ -245,17 +513,26 @@ export const AvailabilityWeekDesktopGrid = ({
 								<CurrentTimeLine top={getTopPosition(currentMinutes)} />
 							) : null}
 
-							{daySlots.map((slot, slotIndex) => {
-								const top =
-									getTopPosition(parseTimeToMinutes(slot.startTime)) +
-									getSlotVisualGap(slot) / 2;
+								{daySlots.map((slot) => {
+									const isGoogle = slot.status === 'booked-google';
+									const slotTitle = resolveSlotTitle(
+										slot,
+										t('availability.week.legend-busy')
+									);
+									const googleColors = getGoogleSlotColors(
+										slot,
+										googleCalendarColor
+									);
+									const therapyType = toRenderableText(slot.therapyType);
+									const top =
+										getTopPosition(parseTimeToMinutes(slot.startTime)) +
+										getSlotVisualGap(slot) / 2;
 								const blockHeight = getBlockHeight(slot);
 								const isCompact = blockHeight < SLOT_COMPACT_HEIGHT;
 								const canShowText = blockHeight >= SLOT_TEXT_MIN_HEIGHT;
-								const stackOrder = daySlots.length - slotIndex;
+								const stackOrder = slot.stackOrder;
 								const showBookedTime =
-									(slot.status === 'booked-jupiter' ||
-										slot.status === 'booked-google') &&
+									(slot.status === 'booked-jupiter' || isGoogle) &&
 									canShowText;
 
 								if (slot.status === 'buffer' && slot.bufferFor) {
@@ -264,8 +541,12 @@ export const AvailabilityWeekDesktopGrid = ({
 											key={`slot-buffer-${slot.id}`}
 											blockHeight={blockHeight}
 											bufferFor={slot.bufferFor}
+											data-testid={getSlotTestId(slot)}
+											aria-label={getSlotAriaLabel(slot, day)}
+											id={`availability-slot-${slot.id}`}
 											onClick={() => onSlotClick(slot)}
 											onPointerDown={() => onSlotPointerDown(slot)}
+											role='gridcell'
 											stackOrder={stackOrder}
 											top={top}
 										>
@@ -282,16 +563,28 @@ export const AvailabilityWeekDesktopGrid = ({
 
 								return (
 									<SlotCell
+										aria-label={getSlotAriaLabel(slot, day)}
 										blockHeight={blockHeight}
+										data-testid={getSlotTestId(slot)}
 										disableRipple={!isClickable(slot.status, day)}
+										googleColor={googleColors?.googleColor}
+										googleTextColor={googleColors?.googleTextColor}
+										hasConflict={Boolean(slot.hasConflict)}
+										id={`availability-slot-${slot.id}`}
 										isCompact={isCompact}
 										key={`slot-cell-${slot.id}`}
 										onClick={() => onSlotClick(slot)}
 										onPointerDown={() => onSlotPointerDown(slot)}
+										role='gridcell'
 										stackOrder={stackOrder}
 										slotStatus={slot.status}
 										top={top}
 									>
+										{slot.status === 'available' ? (
+											<AvailableSlotHoverLabel data-available-hover-label='true'>
+												{t('availability.week.available-hover-label')}
+											</AvailableSlotHoverLabel>
+										) : null}
 										{slot.status === 'blocked' ? (
 											<BlockedSlotHoverLabel data-blocked-hover-label='true'>
 												{t('availability.week.blocked-hover-label')}
@@ -302,22 +595,22 @@ export const AvailabilityWeekDesktopGrid = ({
 												{getCancelledHoverLabel(slot.triggeredBy)}
 											</CancelledSlotHoverLabel>
 										) : null}
-										{canShowText && slot.patientName ? (
-											<>
-												<SlotPatientName isCompact={isCompact}>
-													{slot.patientName}
-												</SlotPatientName>
-												{showBookedTime ? (
-													<SlotTimeMeta isCompact={isCompact}>
-														{formatTimeRange(slot.startTime, slot.duration)}
-													</SlotTimeMeta>
-												) : null}
-												{!isCompact && slot.therapyType ? (
-													<SlotTherapyType isCompact={isCompact}>
-														{slot.therapyType}
-													</SlotTherapyType>
-												) : null}
-											</>
+											{slotTitle ? (
+												<>
+													<SlotPatientName isCompact={isCompact}>
+														{slotTitle}
+													</SlotPatientName>
+													{showBookedTime ? (
+														<SlotTimeMeta isCompact={isCompact}>
+															{formatTimeRange(slot.startTime, slot.duration)}
+														</SlotTimeMeta>
+													) : null}
+													{!isCompact && therapyType ? (
+														<SlotTherapyType isCompact={isCompact}>
+															{therapyType}
+														</SlotTherapyType>
+													) : null}
+												</>
 										) : null}
 									</SlotCell>
 								);

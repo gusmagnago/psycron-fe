@@ -188,6 +188,7 @@ export const getDrawerTitle = ({
 	isAvailable,
 	isBuffer,
 	isBlocked,
+	isBusy,
 	isCancelled,
 	patientName,
 	t,
@@ -195,12 +196,14 @@ export const getDrawerTitle = ({
 	isAvailable: boolean;
 	isBlocked: boolean;
 	isBuffer: boolean;
+	isBusy: boolean;
 	isCancelled: boolean;
 	patientName?: string;
 	t: TFunction;
 }): string => {
 	if (isCancelled) return t('availability.week.drawer.cancelled-title');
 	if (isBlocked) return t('availability.week.drawer.blocked-title');
+	if (isBusy) return t('availability.week.drawer.busy-title');
 	if (isBuffer) return t('availability.week.drawer.break-title');
 	if (isAvailable) return t('availability.week.drawer.book-slot');
 	return patientName ?? '';
@@ -228,10 +231,8 @@ export const getBookedDeliveryLabel = (
 		? t('availability.week.drawer.booked-online-session')
 		: t('availability.week.drawer.booked-in-person');
 
+// The raw recipient name; ShareButton composes the "Share with …" copy so the
+// "with" is never duplicated.
 export const getBookedShareWith = (
-	t: TFunction,
 	patientName?: string
-): string | undefined =>
-	patientName
-		? t('components.share-button.share-with-name', { name: patientName })
-		: undefined;
+): string | undefined => patientName || undefined;

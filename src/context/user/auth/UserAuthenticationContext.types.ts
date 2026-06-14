@@ -193,6 +193,12 @@ export interface ISlot {
 	endTime: string;
 	followedUpAt?: ISODateString | null;
 	followedUpBy?: string | null;
+	// Google-imported event metadata (set by the calendar sync; null otherwise).
+	googleColorId?: string | null;
+	googleEventId?: string | null;
+	googleHtmlLink?: string | null;
+	googleLocation?: string | null;
+	googleMeetLink?: string | null;
 	letPatientChooseAddress?: boolean;
 	note?: string;
 	patientId?: string;
@@ -207,6 +213,9 @@ export interface ISlot {
 		| 'ARCHIVED'
 		| null;
 	reopenedAt?: ISODateString | null;
+	// Slot origin, stamped by the backend: 'google' = imported Google event,
+	// 'jupiter' = Psycron-owned (even when synced outbound to Google).
+	source?: 'google' | 'jupiter';
 	startTime: string;
 	status: StatusEnum;
 	triggeredBy?: 'PATIENT' | 'THERAPIST' | null;

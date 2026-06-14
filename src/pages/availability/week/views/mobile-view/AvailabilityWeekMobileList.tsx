@@ -3,7 +3,12 @@ import { Lock } from '@psycron/components/icons';
 import { format } from 'date-fns';
 
 import { SlotBufferLabel } from '../../AvailabilityWeekPage.styles';
-import { formatTimeRange, isClickable } from '../../AvailabilityWeekPage.utils';
+import {
+	formatTimeRange,
+	getGoogleSlotColors,
+	isClickable,
+	resolveSlotTitle,
+} from '../../AvailabilityWeekPage.utils';
 
 import {
 	MobileDayCard,
@@ -30,6 +35,7 @@ import type { AvailabilityWeekMobileListProps } from './AvailabilityWeekMobileLi
 
 export const AvailabilityWeekMobileList = ({
 	days,
+	googleCalendarColor,
 	todayCardId,
 	onDayHeaderClick,
 	onSlotClick,
@@ -123,9 +129,20 @@ export const AvailabilityWeekMobileList = ({
 											);
 										}
 
+										const slotTitle = resolveSlotTitle(
+											slot,
+											t('availability.week.legend-busy')
+										);
+										const googleColors = getGoogleSlotColors(
+											slot,
+											googleCalendarColor
+										);
+
 										return (
 											<MobileSlotCard
 												key={`mobile-slot-${slot.id}`}
+												googleColor={googleColors?.googleColor}
+												googleTextColor={googleColors?.googleTextColor}
 												slotStatus={slot.status}
 												onClick={() => (shouldClick ? onSlotClick(slot) : null)}
 												onPointerDown={() =>
@@ -137,10 +154,8 @@ export const AvailabilityWeekMobileList = ({
 													{formatTimeRange(slot.startTime, slot.duration)}
 												</MobileSlotTime>
 												<MobileSlotDetails>
-													{slot.patientName && (
-														<MobileSlotPatient>
-															{slot.patientName}
-														</MobileSlotPatient>
+													{slotTitle && (
+														<MobileSlotPatient>{slotTitle}</MobileSlotPatient>
 													)}
 													{slot.therapyType && (
 														<MobileSlotTherapy>

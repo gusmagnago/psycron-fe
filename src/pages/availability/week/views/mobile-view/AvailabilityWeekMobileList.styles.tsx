@@ -120,8 +120,18 @@ export const MobileDaySlots = styled(Box)`
 `;
 
 export const MobileSlotCard = styled(ButtonBase, {
-	shouldForwardProp: (prop) => prop !== 'slotStatus',
-})<{ slotStatus: SlotStatus }>`
+	shouldForwardProp: (prop) =>
+		prop !== 'googleColor' &&
+		prop !== 'googleTextColor' &&
+		prop !== 'slotStatus',
+})<{
+	// Real Google event color (+ contrast text) — set only for booked-google,
+	// so the card renders like the same event in Google Calendar.
+	googleColor?: string;
+	googleTextColor?: string;
+	slotStatus: SlotStatus;
+}>`
+	position: relative;
 	width: 100%;
 	border-radius: ${spacing.mediumSmall};
 	padding: ${spacing.xxs} ${spacing.small};
@@ -131,7 +141,10 @@ export const MobileSlotCard = styled(ButtonBase, {
 	align-items: center;
 	gap: ${spacing.xs};
 	text-align: left;
-	background-color: ${({ slotStatus }) => SLOT_COLORS[slotStatus]};
+	background: ${({ googleColor, slotStatus }) =>
+		slotStatus === 'booked-google'
+			? (googleColor ?? SLOT_COLORS[slotStatus])
+			: SLOT_COLORS[slotStatus]};
 	border: ${({ slotStatus }) => getSlotBorder(slotStatus)};
 	opacity: 1;
 	cursor: ${({ slotStatus }) =>
@@ -140,7 +153,10 @@ export const MobileSlotCard = styled(ButtonBase, {
 		opacity 0.1s ease,
 		transform 0.15s ease,
 		box-shadow 0.15s ease;
-	color: ${({ slotStatus }) => getSlotTextColor(slotStatus)};
+	color: ${({ googleTextColor, slotStatus }) =>
+		slotStatus === 'booked-google' && googleTextColor
+			? googleTextColor
+			: getSlotTextColor(slotStatus)};
 	box-shadow: ${({ slotStatus }) =>
 		hasPersistentSlotShadow(slotStatus) ? shadowSmall : 'none'};
 
@@ -153,7 +169,9 @@ export const MobileSlotCard = styled(ButtonBase, {
 					? shadowSmall
 					: 'none'};
 		transform: ${({ slotStatus }) =>
-			isClickableStatus(slotStatus) ? 'translateY(-1px)' : 'none'};
+			slotStatus !== 'booked-google' && isClickableStatus(slotStatus)
+				? 'translateY(-1px)'
+				: 'none'};
 	}
 
 	${({ slotStatus }) =>

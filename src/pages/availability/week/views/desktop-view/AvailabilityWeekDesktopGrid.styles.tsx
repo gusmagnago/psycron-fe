@@ -1,6 +1,5 @@
 import styled from '@emotion/styled';
 import { Box, ButtonBase } from '@mui/material';
-import { Text } from '@psycron/components/text/Text';
 import { hexToRgba, palette } from '@psycron/theme/palette/palette.theme';
 import { shadowMedium, shadowSmall } from '@psycron/theme/shadow/shadow.theme';
 import { spacing } from '@psycron/theme/spacing/spacing.theme';
@@ -20,29 +19,44 @@ export const WeekGridWrapper = styled(Box)`
 	flex: 1;
 	min-height: 0;
 	overflow: auto;
-	padding-bottom: ${spacing.xs};
+	padding-bottom: 0;
 `;
 
-export const WeekGrid = styled(Box)`
+export const WeekGrid = styled(Box, {
+	shouldForwardProp: (prop) => prop !== 'dayCount',
+})<{ dayCount: number }>`
 	display: grid;
-	grid-template-columns: 64px repeat(7, minmax(0, 1fr));
-	grid-template-rows: 88px auto;
+	grid-template-columns: 72px
+		repeat(${({ dayCount }) => dayCount}, minmax(118px, 1fr));
+	grid-template-rows: 50px auto;
 	column-gap: 0;
 	row-gap: 0;
-	min-width: 560px;
+	min-width: ${({ dayCount }) => (dayCount === 1 ? '0' : '960px')};
 	align-items: start;
+	background: ${palette.background.default};
+	position: relative;
 `;
 
 export const WeekGridCorner = styled(Box)`
 	grid-column: 1;
 	grid-row: 1;
-	height: 88px;
+	height: 50px;
 	position: sticky;
 	top: 0;
 	left: 0;
 	z-index: ${zIndexSticky};
-	background: ${palette.background.default};
-	border-bottom: 1px solid ${hexToRgba(palette.gray['02'], 0.85)};
+	background:
+		linear-gradient(
+			135deg,
+			${hexToRgba(palette.white, 0.74)},
+			${hexToRgba(palette.white, 0.42)}
+		),
+		${hexToRgba(palette.background.default, 0.55)};
+	backdrop-filter: blur(16px) saturate(1.2);
+	-webkit-backdrop-filter: blur(16px) saturate(1.2);
+	border-right: 1px solid ${hexToRgba(palette.gray['02'], 0.78)};
+	border-bottom: 1px solid ${hexToRgba(palette.gray['02'], 0.78)};
+	box-shadow: inset 0 1px 0 ${hexToRgba(palette.white, 0.8)};
 `;
 
 export const DayHeader = styled(Box, {
@@ -63,25 +77,30 @@ export const DayHeader = styled(Box, {
 }>`
 	grid-column: ${({ columnIndex }) => columnIndex};
 	grid-row: 1;
-	height: 88px;
+	height: 50px;
 	display: flex;
 	flex-direction: column;
 	align-items: center;
 	justify-content: center;
-	gap: ${spacing.xxs};
+	gap: 0;
 	position: sticky;
 	top: 0;
 	z-index: ${zIndexSticky};
-	backdrop-filter: blur(5px);
-	border-bottom: 1px solid ${hexToRgba(palette.gray['02'], 0.85)};
-	border-left: 1px solid ${hexToRgba(palette.gray['02'], 0.7)};
+	backdrop-filter: blur(16px) saturate(1.2);
+	-webkit-backdrop-filter: blur(16px) saturate(1.2);
+	border-bottom: 1px solid ${hexToRgba(palette.gray['02'], 0.78)};
+	border-left: 1px solid ${hexToRgba(palette.gray['02'], 0.78)};
 	background: ${({ isDisabled, isFullyBlocked, isPast, isToday }) => {
 		if (isDisabled || isFullyBlocked || isPast) {
 			return hexToRgba(palette.gray['02'], 0.24);
 		}
 		if (isToday) return hexToRgba(palette.secondary.main, 0.12);
-		return hexToRgba(palette.background.default, 0.64);
+		return `linear-gradient(135deg, ${hexToRgba(palette.white, 0.74)}, ${hexToRgba(palette.white, 0.42)}), ${hexToRgba(palette.background.default, 0.55)}`;
 	}};
+	box-shadow: ${({ isToday }) =>
+		isToday
+			? `inset 0 0 0 100px ${hexToRgba(palette.secondary.main, 0.12)}, inset 0 -2px 0 ${palette.secondary.main}, inset 0 1px 0 ${hexToRgba(palette.white, 0.8)}`
+			: `inset 0 1px 0 ${hexToRgba(palette.white, 0.8)}`};
 	cursor: ${({ isInteractive }) => (isInteractive ? 'pointer' : 'default')};
 	transition: background 0.15s ease;
 
@@ -95,16 +114,20 @@ export const DayHeader = styled(Box, {
 	}
 `;
 
-export const DayName = styled(Text)`
-	font-size: 13px;
-	color: ${palette.gray['05']};
-	font-weight: 500;
-	margin-bottom: ${spacing.space};
+export const DayName = styled('span')`
+	display: block;
+	font-size: 12px;
+	color: ${palette.gray['08']};
+	font-weight: 800;
+	letter-spacing: 0.04em;
+	text-transform: uppercase;
 `;
 
-export const DayNumber = styled(Text)`
-	font-size: 18px;
-	font-weight: 700;
+export const DayNumber = styled('span')`
+	display: block;
+	font-size: 20px;
+	line-height: 1;
+	font-weight: 800;
 	color: ${palette.text.primary};
 `;
 
@@ -118,6 +141,7 @@ export const TimeAxis = styled(Box, {
 	z-index: ${zIndexSticky};
 	height: ${({ timelineHeight }) => `${timelineHeight}px`};
 	background: ${palette.background.default};
+	border-right: 1px solid ${hexToRgba(palette.gray['02'], 0.78)};
 
 	&::after {
 		content: '';
@@ -126,7 +150,7 @@ export const TimeAxis = styled(Box, {
 		right: 0;
 		bottom: 0;
 		width: 1px;
-		background: ${palette.gray['02']};
+		background: ${hexToRgba(palette.gray['02'], 0.78)};
 	}
 `;
 
@@ -142,10 +166,11 @@ export const TimeLabel = styled(Box, {
 	transform: ${({ isFirst }) => (isFirst ? 'none' : 'translateY(-50%)')};
 `;
 
-export const TimeLabelText = styled(Text)`
-	font-size: 13px;
-	color: ${palette.gray['05']};
-	font-weight: 500;
+export const TimeLabelText = styled('span')`
+	display: block;
+	font-size: 12px;
+	color: ${palette.gray['08']};
+	font-weight: 800;
 	white-space: nowrap;
 `;
 
@@ -156,8 +181,7 @@ export const DayColumn = styled(Box, {
 		prop !== 'isInteractive' &&
 		prop !== 'isToday' &&
 		prop !== 'isPast' &&
-		prop !== 'isFullyBlocked' &&
-		prop !== 'timelineHeight',
+		prop !== 'isFullyBlocked',
 })<{
 	columnIndex: number;
 	isDisabled?: boolean;
@@ -165,12 +189,12 @@ export const DayColumn = styled(Box, {
 	isInteractive?: boolean;
 	isPast?: boolean;
 	isToday?: boolean;
-	timelineHeight: number;
 }>`
 	grid-column: ${({ columnIndex }) => columnIndex};
 	grid-row: 1 / span 2;
 	position: relative;
-	height: ${({ timelineHeight }) => `${timelineHeight}px`};
+	/* Fill the grid track — the TimeAxis defines the timeline height. */
+	height: 100%;
 	background: ${({ isDisabled, isFullyBlocked, isPast, isToday }) => {
 		if (isDisabled || isPast) return hexToRgba(palette.gray['02'], 0.22);
 		if (isFullyBlocked) {
@@ -181,12 +205,22 @@ export const DayColumn = styled(Box, {
 	}};
 	border-left: 1px solid
 		${({ isToday }) =>
-			isToday ? palette.secondary.main : hexToRgba(palette.gray['02'], 0.85)};
+			isToday ? palette.secondary.main : hexToRgba(palette.gray['02'], 0.78)};
 	border-right: 1px solid
 		${({ isToday }) => (isToday ? palette.secondary.main : 'transparent')};
-	border-bottom: 1px solid ${hexToRgba(palette.gray['02'], 0.85)};
+	border-bottom: 1px solid ${hexToRgba(palette.gray['02'], 0.78)};
 	overflow: clip;
 	cursor: ${({ isInteractive }) => (isInteractive ? 'pointer' : 'default')};
+
+	/* Days before today render their events in a disabled color — history,
+	   not actionable schedule. */
+	${({ isPast }) =>
+		isPast
+			? `& [id^='availability-slot-'] {
+					opacity: 0.5;
+					filter: saturate(0.35);
+				}`
+			: ''}
 `;
 
 export const HourGridLine = styled(Box, {
@@ -207,6 +241,59 @@ export const HalfHourGridLine = styled(Box, {
 	right: 0;
 	top: ${({ top }) => `${top}px`};
 	border-top: 1px dashed ${hexToRgba(palette.gray['02'], 0.5)};
+`;
+
+export const HourHitArea = styled(ButtonBase, {
+	shouldForwardProp: (prop) => prop !== 'isDisabledCell' && prop !== 'top',
+})<{
+	// Past time or time already occupied by a slot — no hover CTA, no click.
+	isDisabledCell: boolean;
+	top: number;
+}>`
+	position: absolute;
+	left: 0;
+	right: 0;
+	top: ${({ top }) => `${top}px`};
+	height: 60px;
+	border: 0;
+	border-radius: 0;
+	background: transparent;
+	z-index: 1;
+	cursor: ${({ isDisabledCell }) => (isDisabledCell ? 'default' : 'pointer')};
+	pointer-events: ${({ isDisabledCell }) => (isDisabledCell ? 'none' : 'auto')};
+
+	&:hover,
+	&:focus-visible {
+		background: ${({ isDisabledCell }) =>
+			isDisabledCell ? 'transparent' : hexToRgba(palette.brand.purple, 0.06)};
+		z-index: ${({ isDisabledCell }) => (isDisabledCell ? 1 : 7)};
+	}
+
+	&:hover [data-hour-hit-label='true'],
+	&:focus-visible [data-hour-hit-label='true'] {
+		opacity: ${({ isDisabledCell }) => (isDisabledCell ? 0 : 1)};
+	}
+`;
+
+export const HourHitLabel = styled('span')`
+	position: absolute;
+	left: 50%;
+	top: 50%;
+	transform: translate(-50%, -50%);
+	white-space: nowrap;
+	min-height: 28px;
+	display: inline-flex;
+	align-items: center;
+	padding: 5px ${spacing.extraSmall};
+	border-radius: 999px;
+	color: ${palette.brand.dark};
+	background: ${palette.brand.light};
+	font-size: 12px;
+	font-weight: 800;
+	box-shadow: ${shadowSmall};
+	opacity: 0;
+	pointer-events: none;
+	transition: opacity 0.15s ease;
 `;
 
 export const CurrentTimeLine = styled(Box, {
@@ -237,12 +324,20 @@ export const CurrentTimeLine = styled(Box, {
 export const SlotCell = styled(ButtonBase, {
 	shouldForwardProp: (prop) =>
 		prop !== 'blockHeight' &&
+		prop !== 'googleColor' &&
+		prop !== 'googleTextColor' &&
+		prop !== 'hasConflict' &&
 		prop !== 'isCompact' &&
 		prop !== 'stackOrder' &&
 		prop !== 'slotStatus' &&
 		prop !== 'top',
 })<{
 	blockHeight: number;
+	// Real Google event color (+ contrast text) — set only for booked-google,
+	// so the cell renders like the same event in Google Calendar.
+	googleColor?: string;
+	googleTextColor?: string;
+	hasConflict: boolean;
 	isCompact: boolean;
 	slotStatus: SlotStatus;
 	stackOrder: number;
@@ -267,10 +362,24 @@ export const SlotCell = styled(ButtonBase, {
 	overflow: hidden;
 	z-index: ${({ stackOrder }) => stackOrder};
 	text-align: left;
-	background-color: ${({ slotStatus }) =>
-		slotStatus === 'blocked' ? 'transparent' : SLOT_COLORS[slotStatus]};
-	color: ${({ slotStatus }) => getSlotTextColor(slotStatus)};
+	background: ${({ googleColor, slotStatus }) =>
+		slotStatus === 'blocked'
+			? 'transparent'
+			: slotStatus === 'booked-google'
+				? (googleColor ?? SLOT_COLORS[slotStatus])
+				: SLOT_COLORS[slotStatus]};
+	color: ${({ googleTextColor, slotStatus }) =>
+		slotStatus === 'booked-google' && googleTextColor
+			? googleTextColor
+			: getSlotTextColor(slotStatus)};
 	border: ${({ slotStatus }) => getSlotBorder(slotStatus)};
+	/* Conflict signals via a strong left border — never via box-shadow. */
+	border-left: ${({ hasConflict, slotStatus }) =>
+		hasConflict
+			? `4px solid ${palette.error.main}`
+			: slotStatus === 'available'
+				? `3px solid ${hexToRgba(palette.brand.purple, 0.28)}`
+				: getSlotBorder(slotStatus)};
 	cursor: ${({ slotStatus }) =>
 		isClickableStatus(slotStatus) ? 'pointer' : 'default'};
 	box-shadow: ${({ slotStatus }) =>
@@ -289,17 +398,27 @@ export const SlotCell = styled(ButtonBase, {
 					? shadowSmall
 					: 'none'};
 		transform: ${({ slotStatus }) =>
-			isClickableStatus(slotStatus) ? 'translateY(-1px)' : 'none'};
-		background-color: ${({ slotStatus }) =>
+			slotStatus !== 'booked-google' && isClickableStatus(slotStatus)
+				? 'translateY(-1px)'
+				: 'none'};
+		background: ${({ googleColor, slotStatus }) =>
 			slotStatus === 'blocked'
 				? hexToRgba(palette.warning.surface.light, 0.58)
-				: slotStatus === 'cancelled'
-					? SLOT_COLORS.cancelled
-					: SLOT_COLORS[slotStatus]};
+				: slotStatus === 'booked-google'
+					? (googleColor ?? SLOT_COLORS[slotStatus])
+					: slotStatus === 'cancelled'
+						? SLOT_COLORS.cancelled
+						: SLOT_COLORS[slotStatus]};
 		border: ${({ slotStatus }) =>
 			slotStatus === 'blocked'
 				? `1px solid ${palette.error.main}`
 				: getSlotBorder(slotStatus)};
+		border-left: ${({ hasConflict, slotStatus }) =>
+			hasConflict
+				? `4px solid ${palette.error.main}`
+				: slotStatus === 'available'
+					? `3px solid ${hexToRgba(palette.brand.purple, 0.28)}`
+					: getSlotBorder(slotStatus)};
 	}
 
 	${({ slotStatus }) =>
@@ -329,9 +448,21 @@ export const SlotCell = styled(ButtonBase, {
 		opacity: 1;
 		transform: translateY(0);
 	}
+
+	& [data-available-hover-label='true'] {
+		opacity: 0;
+		transform: translateY(2px);
+	}
+
+	&:hover [data-available-hover-label='true'],
+	&:focus-visible [data-available-hover-label='true'] {
+		opacity: 1;
+		transform: translateY(0);
+	}
 `;
 
-export const BlockedSlotHoverLabel = styled(Text)`
+export const BlockedSlotHoverLabel = styled('span')`
+	display: block;
 	font-size: 11px;
 	font-weight: 700;
 	line-height: 1.2;
@@ -341,11 +472,26 @@ export const BlockedSlotHoverLabel = styled(Text)`
 		transform 0.15s ease;
 `;
 
-export const CancelledSlotHoverLabel = styled(Text)`
+export const CancelledSlotHoverLabel = styled('span')`
+	display: block;
 	font-size: 11px;
 	font-weight: 700;
 	line-height: 1.2;
 	color: ${palette.warning.dark};
+	transition:
+		opacity 0.15s ease,
+		transform 0.15s ease;
+`;
+
+export const AvailableSlotHoverLabel = styled('span')`
+	align-self: center;
+	padding: 5px ${spacing.extraSmall};
+	border-radius: 999px;
+	background: ${palette.brand.light};
+	color: ${palette.brand.dark};
+	font-size: 12px;
+	font-weight: 800;
+	line-height: 1.2;
 	transition:
 		opacity 0.15s ease,
 		transform 0.15s ease;
@@ -397,9 +543,10 @@ export const SlotCellBuffer = styled(ButtonBase, {
 	}
 `;
 
-export const SlotPatientName = styled(Text, {
+export const SlotPatientName = styled('span', {
 	shouldForwardProp: (prop) => prop !== 'isCompact',
 })<{ isCompact: boolean }>`
+	display: block;
 	font-size: ${({ isCompact }) => (isCompact ? '11px' : '12px')};
 	font-weight: 700;
 	line-height: 1.2;
@@ -409,9 +556,10 @@ export const SlotPatientName = styled(Text, {
 	width: 100%;
 `;
 
-export const SlotTimeMeta = styled(Text, {
+export const SlotTimeMeta = styled('span', {
 	shouldForwardProp: (prop) => prop !== 'isCompact',
 })<{ isCompact: boolean }>`
+	display: block;
 	font-size: ${({ isCompact }) => (isCompact ? '9px' : '10px')};
 	font-weight: 500;
 	line-height: 1.2;
@@ -422,9 +570,10 @@ export const SlotTimeMeta = styled(Text, {
 	width: 100%;
 `;
 
-export const SlotTherapyType = styled(Text, {
+export const SlotTherapyType = styled('span', {
 	shouldForwardProp: (prop) => prop !== 'isCompact',
 })<{ isCompact: boolean }>`
+	display: block;
 	font-size: ${({ isCompact }) => (isCompact ? '9px' : '10px')};
 	font-weight: 400;
 	opacity: 0.8;

@@ -33,9 +33,11 @@ import { useEditSlotForm } from './hooks/useEditSlotForm';
 import { usePatientSearch } from './hooks/usePatientSearch';
 import {
 	useBlockSlot,
+	useBusySlot,
 	useCancelSlot,
 	useReschedule,
 	useUnblockSlot,
+	useUnbusySlot,
 } from './hooks/useSlotActions';
 import { useSlotAddress } from './hooks/useSlotAddress';
 import { SlotAvailableBody } from './views/slot-available-body/SlotAvailableBody';
@@ -49,6 +51,7 @@ import { isPastAppointment } from './views/slot-booked-body/SlotBookedBody.utils
 import { SlotBookingConflictView } from './views/slot-booking-conflict/SlotBookingConflictView';
 import { ConflictBody } from './views/slot-booking-conflict/SlotBookingConflictView.styles';
 import { SlotBreakBody } from './views/slot-break-body/SlotBreakBody';
+import { SlotBusyBody } from './views/slot-busy-body/SlotBusyBody';
 import { SlotCancelChoiceView } from './views/slot-cancel-choice-view/SlotCancelChoiceView';
 import { SlotCancelReasonForm } from './views/slot-cancel-reason-form/SlotCancelReasonForm';
 import { SlotCancelledBody } from './views/slot-cancelled-body/SlotCancelledBody';
@@ -113,6 +116,7 @@ export const AvailabilityWeekDrawer = ({
 	const isAvailable = slot.status === 'available';
 	const isBuffer = slot.status === 'buffer';
 	const isBlocked = slot.status === 'blocked';
+	const isBusy = slot.status === 'busy';
 	const isCancelled = slot.status === 'cancelled';
 	const isBooked =
 		slot.status === 'booked-jupiter' || slot.status === 'booked-google';
@@ -255,6 +259,8 @@ export const AvailabilityWeekDrawer = ({
 
 	const blockSlot = useBlockSlot(slot, therapistId, onClose);
 	const unblockSlot = useUnblockSlot(slot, therapistId, onClose);
+	const busySlot = useBusySlot(slot, therapistId, onClose);
+	const unbusySlot = useUnbusySlot(slot, therapistId, onClose);
 	const cancelSlot = useCancelSlot(slot, therapistId, onClose);
 
 	const reschedule = useReschedule(
@@ -350,13 +356,17 @@ export const AvailabilityWeekDrawer = ({
 			]
 				.filter(Boolean)
 				.join(' ') || undefined
-		: (slot.patientName || undefined);
-	const bookedShareWith = getBookedShareWith(t, patientName);
+		: slot.patientName || undefined;
+	const bookedShareWith = getBookedShareWith(patientName);
+	// Busy blocks mirror a Google event; surface its title when present, but
+	// never an attendee/patient name — busy time has no booking attached.
+	const busyCommitmentTitle = slot.notes?.trim() || null;
 	const cancelledSubtitle = getCancelledSubtitle(t, slot.triggeredBy);
 	const drawerTitle = getDrawerTitle({
 		isAvailable,
 		isBuffer,
 		isBlocked,
+		isBusy,
 		isCancelled,
 		patientName,
 		t,
@@ -497,6 +507,15 @@ export const AvailabilityWeekDrawer = ({
 			return <SlotBreakBody sessionDetails={sessionDetails} />;
 		}
 
+		if (isBusy) {
+			return (
+				<SlotBusyBody
+					commitmentTitle={busyCommitmentTitle}
+					sessionDetails={sessionDetails}
+				/>
+			);
+		}
+
 		return (
 			<>
 				<SlotAvailableBody
@@ -583,6 +602,18 @@ export const AvailabilityWeekDrawer = ({
 				return (
 					<CancelViewBody>
 						{t('availability.week.drawer.unblock-confirm-body')}
+					</CancelViewBody>
+				);
+			case 'busy-confirm':
+				return (
+					<CancelViewBody>
+						{t('availability.week.drawer.busy-confirm-body')}
+					</CancelViewBody>
+				);
+			case 'unbusy-confirm':
+				return (
+					<CancelViewBody>
+						{t('availability.week.drawer.unbusy-confirm-body')}
 					</CancelViewBody>
 				);
 			case 'reschedule-or-cancel':
@@ -694,7 +725,7 @@ export const AvailabilityWeekDrawer = ({
 	};
 
 	const renderHeaderBadges = () => {
-		if (isAvailable || isBuffer || isBlocked || isCancelled) {
+		if (isAvailable || isBuffer || isBlocked || isBusy || isCancelled) {
 			return (
 				<>
 					<ConfirmedBadge>
@@ -741,12 +772,14 @@ export const AvailabilityWeekDrawer = ({
 			reset: bufferTime.reset,
 			saveMutation: bufferTime.saveMutation,
 		},
+		busySlot,
 		cancelSlot,
 		editSlotForm,
 		hasConflict: !!conflict,
 		isAvailable,
 		isBuffer,
 		isBlocked,
+		isBusy,
 		isCancelled,
 		isChecking,
 		isPast,
@@ -755,6 +788,7 @@ export const AvailabilityWeekDrawer = ({
 		setView,
 		submitBooking,
 		unblockSlot,
+		unbusySlot,
 		view,
 	});
 
@@ -765,10 +799,17 @@ export const AvailabilityWeekDrawer = ({
 				ariaLabel={drawerTitle}
 				title={renderDrawerTitle()}
 				actions={renderDrawerActions()}
+				id='availability-week-drawer'
+				data-testid='availability-week-drawer'
 				headerExtra={
 					<>
 						{renderHeaderMeta()}
-						<DrawerBadgeRow>{renderHeaderBadges()}</DrawerBadgeRow>
+						<DrawerBadgeRow
+							id='availability-week-drawer-badge-row'
+							data-testid='availability-week-drawer-badge-row'
+						>
+							{renderHeaderBadges()}
+						</DrawerBadgeRow>
 					</>
 				}
 				onClose={onClose}
@@ -800,6 +841,10 @@ export const AvailabilityWeekDrawer = ({
 									onClick: dismissConflict,
 								}
 					}
+					id='availability-week-conflict-modal'
+					data-testid='availability-week-conflict-modal'
+					aria-describedby='availability-week-conflict-body'
+					aria-label={t('availability.week.drawer.conflict-title')}
 				>
 					<SlotBookingConflictView conflict={conflict} />
 				</Modal>
@@ -818,8 +863,22 @@ export const AvailabilityWeekDrawer = ({
 						),
 						secondAction: handleExistingBookingDismiss,
 					}}
+					id='availability-week-existing-booking-modal'
+					data-testid='availability-week-existing-booking-modal'
+					aria-describedby='availability-week-existing-booking-body'
+					aria-label={t('availability.week.drawer.existing-booking-title')}
 				>
-					<ConflictBody>
+					<ConflictBody
+						id='availability-week-existing-booking-body'
+						data-testid='availability-week-existing-booking-body'
+						aria-label={t('availability.week.drawer.existing-booking-body', {
+							name: existingBooking.patientName,
+							date: format(parseISO(existingBooking.date), 'PPP', {
+								locale: dateLocale,
+							}),
+							time: existingBooking.startTime,
+						})}
+					>
 						{t('availability.week.drawer.existing-booking-body', {
 							name: existingBooking.patientName,
 							date: format(parseISO(existingBooking.date), 'PPP', {

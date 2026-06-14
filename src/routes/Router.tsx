@@ -1,6 +1,6 @@
 import { Suspense } from 'react';
 import { HelmetProvider } from 'react-helmet-async';
-import { Route, Routes } from 'react-router-dom';
+import { Navigate, Route, Routes } from 'react-router-dom';
 import { Loader } from '@psycron/components/loader/Loader';
 import { AppLayout } from '@psycron/layouts/app/app-layout/AppLayout';
 import { BackofficeLayout } from '@psycron/layouts/backoffice/BackooficeLayout';
@@ -20,6 +20,10 @@ const Router = () => {
 			<Suspense fallback={<Loader />}>
 				<Routes>
 					<Route path='/' element={<RootRedirect />} />
+					<Route
+						path='/availability/workflow'
+						element={<Navigate replace to='/en/availability/workflow' />}
+					/>
 					<Route path='/:locale' element={<LanguageLayout />}>
 						<Route element={<PublicLayout />}>
 							{publicRoutes.map(({ path, element }, index) => (

@@ -41,7 +41,7 @@ export const useBlockSlot = (
 				availabilityDayId: slot.availabilityDayId ?? '',
 				data: {
 					...(blockReason ? { blockReason } : {}),
-					newStatus: 'BLOCKED',
+					newStatus: StatusEnum.BLOCKED,
 					startTime: slot.startTime,
 				},
 				slotId: slot._id ?? slot.id,
@@ -104,6 +104,92 @@ export const useUnblockSlot = (
 			});
 			queryClient.invalidateQueries({ queryKey: ['therapistAvailability'] });
 			onUnblocked();
+		},
+	});
+
+	return { mutation };
+};
+
+// ─── useBusySlot ─────────────────────────────────────────────────────────────
+
+// Tags an available slot as BUSY (personal, non-session commitment). The
+// backend mirrors it to Google Calendar as a graphite "Busy" event.
+export const useBusySlot = (
+	slot: IAvailabilityWeekDrawerProps['slot'],
+	therapistId: string | null,
+	onTagged: () => void
+) => {
+	const { t } = useTranslation();
+	const { showAlert } = useAlert();
+	const queryClient = useQueryClient();
+
+	const mutation = useMutation({
+		mutationFn: () =>
+			editSlotStatus({
+				availabilityDayId: slot.availabilityDayId ?? '',
+				data: { newStatus: StatusEnum.BUSY, startTime: slot.startTime },
+				slotId: slot._id ?? slot.id,
+				therapistId: therapistId ?? '',
+			}),
+		onError: () => {
+			showAlert({
+				message: t('availability.week.drawer.busy-error'),
+				severity: 'error',
+			});
+		},
+		onSuccess: () => {
+			capture(PostHogEvent.AvailabilitySlotBusyTagged, {
+				slot_start_time: slot.startTime,
+			});
+			showAlert({
+				message: t('availability.week.drawer.busy-success'),
+				severity: 'success',
+			});
+			queryClient.invalidateQueries({ queryKey: ['therapistAvailability'] });
+			onTagged();
+		},
+	});
+
+	return { mutation };
+};
+
+// ─── useUnbusySlot ───────────────────────────────────────────────────────────
+
+// Frees a BUSY slot back to AVAILABLE; the backend removes the mirrored
+// Google Calendar event.
+export const useUnbusySlot = (
+	slot: IAvailabilityWeekDrawerProps['slot'],
+	therapistId: string | null,
+	onUntagged: () => void
+) => {
+	const { t } = useTranslation();
+	const { showAlert } = useAlert();
+	const queryClient = useQueryClient();
+
+	const mutation = useMutation({
+		mutationFn: () =>
+			editSlotStatus({
+				availabilityDayId: slot.availabilityDayId ?? '',
+				data: { newStatus: StatusEnum.AVAILABLE, startTime: slot.startTime },
+				slotId: slot._id ?? slot.id,
+				therapistId: therapistId ?? '',
+			}),
+		onError: () => {
+			showAlert({
+				message: t('availability.week.drawer.unbusy-error'),
+				severity: 'error',
+			});
+		},
+		onSuccess: () => {
+			capture(PostHogEvent.AvailabilitySlotBusyUntagged, {
+				slot_start_time: slot.startTime,
+			});
+			showAlert({
+				message: t('availability.week.drawer.unbusy-success'),
+				severity: 'success',
+			});
+			queryClient.invalidateQueries({ queryKey: ['therapistAvailability'] });
+			onUntagged();
 		},
 	});
 

@@ -11,9 +11,10 @@ export const Modal = ({
 	isLoading,
 	cardTitleProps,
 	onClose,
+	id,
 }: IModal) => {
 	return (
-		<StyledModal open={openModal} onClose={onClose}>
+		<StyledModal open={openModal} onClose={onClose} id={id}>
 			<StyledContentWrapper>
 				<Card
 					cardActionsProps={cardActionsProps}

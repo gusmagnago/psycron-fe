@@ -1,7 +1,5 @@
 import styled from '@emotion/styled';
-import { Box } from '@mui/material';
-import { Button } from '@psycron/components/button/Button';
-import { Text } from '@psycron/components/text/Text';
+import { Box, IconButton } from '@mui/material';
 import {
 	isMediumMedia,
 	isMobileMedia,
@@ -17,11 +15,16 @@ import type { SlotStatus } from './AvailabilityWeekPage.types';
 // ─── Slot colours ─────────────────────────────────────────────────────────────
 
 export const SLOT_COLORS: Record<SlotStatus, string> = {
-	available: palette.white,
-	blocked: palette.gray['02'],
+	available: palette.brand.light,
+	blocked: 'transparent',
 	buffer: hexToRgba(palette.brand.purple, 0.18),
-	'booked-google': palette.brand.google,
+	// Fallback only — Google events render first-class with their real Google
+	// color (slot.googleColorId via getGoogleEventColor); see decision
+	// 2026-06-12 "first-class mirror, not busy overlay".
+	'booked-google': hexToRgba(palette.brand.google, 0.1),
 	'booked-jupiter': palette.brand.purple,
+	// Matches Google's graphite — busy mirrors to Google in that color.
+	busy: palette.gray['08'],
 	cancelled: palette.warning.surface.light,
 };
 
@@ -39,10 +42,13 @@ export const isClickableStatus = (status: SlotStatus) =>
 	status === 'available' ||
 	status === 'blocked' ||
 	status === 'buffer' ||
+	status === 'busy' ||
 	status === 'cancelled';
 
 export const getSlotTextColor = (slotStatus: SlotStatus): string => {
-	if (slotStatus.includes('booked')) return palette.white;
+	if (slotStatus === 'booked-jupiter') return palette.white;
+	if (slotStatus === 'busy') return palette.white;
+	if (slotStatus === 'booked-google') return palette.text.primary;
 	if (slotStatus === 'available') return palette.text.primary;
 	if (slotStatus === 'blocked') return palette.gray.dark;
 	if (slotStatus === 'cancelled') return palette.warning.dark;
@@ -50,12 +56,96 @@ export const getSlotTextColor = (slotStatus: SlotStatus): string => {
 };
 
 export const getSlotBorder = (slotStatus: SlotStatus): string => {
+	if (slotStatus === 'available') return '0 solid transparent';
+	if (slotStatus === 'booked-google') return '0 solid transparent';
 	if (slotStatus === 'cancelled') return `1px dashed ${palette.warning.main}`;
 	return 'none';
 };
 
+// Every real event card (Psycron session or Google event) carries the same
+// standard shadow — conflicts signal via border-left, never via shadow.
 export const hasPersistentSlotShadow = (slotStatus: SlotStatus): boolean =>
-	slotStatus === 'available' || slotStatus.includes('booked');
+	slotStatus === 'booked-jupiter' || slotStatus === 'booked-google';
+
+export const WeekWorkspaceViewbar = styled(Box)`
+	min-height: 74px;
+	padding: 0 ${spacing.xs};
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: ${spacing.small};
+	border-bottom: 1px solid ${hexToRgba(palette.gray['02'], 0.78)};
+	flex-shrink: 0;
+
+	${isMobileMedia} {
+		min-height: 0;
+		padding: ${spacing.extraSmall} ${spacing.small};
+		align-items: flex-start;
+		flex-direction: column;
+	}
+`;
+
+export const WeekWorkspaceTitleGroup = styled(Box)`
+	display: flex;
+	align-items: center;
+	gap: ${spacing.small};
+	min-width: 0;
+
+	${isMobileMedia} {
+		width: 100%;
+		justify-content: space-between;
+	}
+`;
+
+export const WeekWorkspaceTitleCopy = styled(Box)`
+	min-width: 0;
+`;
+
+export const WeekWorkspaceTitle = styled('h2')`
+	margin: 0;
+	font-size: 22px;
+	line-height: 1.2;
+	font-weight: 800;
+	color: ${palette.text.primary};
+`;
+
+export const WeekWorkspaceSubtitle = styled('span')`
+	display: block;
+	margin-top: 3px;
+	color: ${palette.text.secondary};
+	font-size: 13px;
+
+	${isMobileMedia} {
+		display: none;
+	}
+`;
+
+export const WeekWorkspaceControls = styled(Box)`
+	display: flex;
+	align-items: center;
+	justify-content: flex-end;
+	gap: ${spacing.extraSmall};
+	flex-wrap: wrap;
+
+	${isMobileMedia} {
+		width: 100%;
+		justify-content: stretch;
+
+		& > * {
+			flex: 1;
+		}
+	}
+`;
+
+export const WeekCalendarScroll = styled(Box)`
+	flex: 1 1 auto;
+	min-height: 0;
+	overflow: auto;
+	display: flex;
+	flex-direction: column;
+	overscroll-behavior: contain;
+	content-visibility: auto;
+`;
 
 // ─── Card ─────────────────────────────────────────────────────────────────────
 
@@ -155,7 +245,7 @@ export const WeekFeaturesActions = styled(Box)`
 	}
 `;
 
-export const WeekTitle = styled(Text)`
+export const WeekTitle = styled('span')`
 	font-size: 1.3rem;
 	font-weight: 500;
 	color: ${palette.text.primary};
@@ -166,25 +256,32 @@ export const WeekTitle = styled(Text)`
 	}
 `;
 
-export const WeekSubtitle = styled(Text)`
+export const WeekSubtitle = styled('span')`
 	font-size: 0.875rem;
 	color: ${palette.gray['05']};
 	margin-top: ${spacing.space};
 `;
 
-export const FilterButton = styled(Button, {
+export const FilterButton = styled(IconButton, {
 	shouldForwardProp: (prop) => prop !== 'isActive',
 })<{ isActive: boolean }>`
-	white-space: nowrap;
+	color: ${({ isActive }) =>
+		isActive ? palette.brand.purple : palette.text.primary};
+	background: ${({ isActive }) =>
+		isActive ? hexToRgba(palette.brand.purple, 0.1) : 'transparent'};
 
-	& span {
-		display: flex;
-		align-items: center;
-		gap: ${spacing.xs};
+	&:hover {
+		background: ${hexToRgba(palette.brand.purple, 0.08)};
+		color: ${palette.brand.purple};
+	}
+
+	& svg {
+		height: 18px;
+		width: 18px;
 	}
 `;
 
-export const SlotBufferLabel = styled(Text)`
+export const SlotBufferLabel = styled('span')`
 	font-size: 11px;
 	font-weight: 500;
 	color: ${palette.gray['05']};
@@ -197,9 +294,13 @@ export const WeekFooter = styled(Box)`
 	display: flex;
 	align-items: center;
 	flex-wrap: wrap;
-	gap: ${spacing.medium};
-	padding-top: ${spacing.mediumSmall};
-	border-top: 1px solid ${palette.gray['02']};
+	gap: ${spacing.small};
+	min-height: 56px;
+	padding: ${spacing.extraSmall} ${spacing.medium};
+	border-top: 1px solid ${hexToRgba(palette.gray['02'], 0.78)};
+	color: ${palette.text.secondary};
+	font-size: 12px;
+	font-weight: 800;
 	flex-shrink: 0;
 	justify-content: space-between;
 	margin-bottom: 0;
@@ -208,4 +309,18 @@ export const WeekFooter = styled(Box)`
 export const WeekFooterActions = styled(Box)`
 	display: flex;
 	gap: ${spacing.xs};
+`;
+
+export const WeekFooterSettingsButton = styled(IconButton)`
+	color: ${palette.gray['05']};
+
+	&:hover {
+		background: ${hexToRgba(palette.brand.purple, 0.08)};
+		color: ${palette.brand.purple};
+	}
+
+	& svg {
+		height: 18px;
+		width: 18px;
+	}
 `;

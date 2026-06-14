@@ -5,6 +5,7 @@ export interface IDrawer {
 	ariaLabel: string;
 	children?: ReactNode;
 	headerExtra?: ReactNode;
+	id?: string;
 	onClose: () => void;
 	title: ReactNode;
 }

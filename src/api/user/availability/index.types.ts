@@ -100,6 +100,9 @@ export enum StatusEnum {
 	AVAILABLE = 'AVAILABLE',
 	BLOCKED = 'BLOCKED',
 	BOOKED = 'BOOKED',
+	// Personal, non-session commitment — mirrors to Google Calendar as a
+	// graphite "Busy" event and blocks patient booking.
+	BUSY = 'BUSY',
 	CANCELED = 'CANCELED',
 	EMPTY = 'EMPTY',
 	ONHOLD = 'ONHOLD',

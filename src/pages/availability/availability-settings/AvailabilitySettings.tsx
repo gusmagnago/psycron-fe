@@ -14,8 +14,8 @@ import { JupiterTip } from '@psycron/components/jupiter-tip/JupiterTip';
 import { Modal } from '@psycron/components/modal/Modal';
 import { Select } from '@psycron/components/select/Select';
 import { Text } from '@psycron/components/text/Text';
-import { PageLayout } from '@psycron/layouts/app/pages-layout/PageLayout';
 import { BufferTimeEditor } from '@psycron/pages/availability/components/buffer-time-editor/BufferTimeEditor';
+import { AvailabilityWorkspaceRouteFrame } from '@psycron/pages/availability/workspace/AvailabilityWorkspaceRouteFrame';
 import { AVAILABILITYGENERATE } from '@psycron/pages/urls';
 
 import {
@@ -262,9 +262,9 @@ export const AvailabilitySettings = () => {
 
 	return (
 		<>
-			<PageLayout
+			<AvailabilityWorkspaceRouteFrame
 				isLoading={isLoading}
-				backButton
+				subtitle={t('availability.settings.workspace-subtitle')}
 				title={t('availability.settings.page-title')}
 			>
 				<SettingsWrapper>
@@ -760,7 +760,7 @@ export const AvailabilitySettings = () => {
 					/>
 				</SettingsDrawer>
 			)}
-			</PageLayout>
+			</AvailabilityWorkspaceRouteFrame>
 
 			<Modal
 				openModal={showTimezoneWarning}

@@ -115,12 +115,16 @@ export const generateTimeSlots = (duration: number) => {
 	return slots;
 };
 
+// Calendars across the app run Sunday → Saturday (matches Google Calendar's
+// default and Brazilian convention). Single source of truth for date-fns.
+export const WEEK_STARTS_ON = 0 as const;
+
 export const generateWeekDays = (startDate: Date) => {
-	const startOfWeekMonday = startOfWeek(startDate, {
-		weekStartsOn: 0,
+	const weekStart = startOfWeek(startDate, {
+		weekStartsOn: WEEK_STARTS_ON,
 	});
 
-	return Array.from({ length: 7 }, (_, i) => addDays(startOfWeekMonday, i));
+	return Array.from({ length: 7 }, (_, i) => addDays(weekStart, i));
 };
 
 export const getWeekDays = (today: Date, dateLocale: Locale) => {

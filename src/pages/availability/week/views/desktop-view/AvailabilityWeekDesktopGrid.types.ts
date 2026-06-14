@@ -1,12 +1,20 @@
-import type { IWeekSlot } from '../../AvailabilityWeekPage.types';
+import type { AvailabilityViewMode } from '../../../workspace/AvailabilityViewToggle.types';
+import type {
+	IStackedWeekSlot,
+	IWeekSlot,
+} from '../../AvailabilityWeekPage.types';
 
 export type AvailabilityWeekDesktopGridProps = {
+	activeDate: Date;
 	debugNowMinutes?: number | null;
-	getDaySlots: (day: Date) => IWeekSlot[];
-	getVisibleDaySlots: (day: Date) => IWeekSlot[];
+	getDaySlots: (day: Date) => IStackedWeekSlot[];
+	getVisibleDaySlots: (day: Date) => IStackedWeekSlot[];
+	// Calendar-level fallback color for Google events without a colorId.
+	googleCalendarColor?: string | null;
 	onDayHeaderClick: (dateStr: string) => void;
 	onSlotClick: (slot: IWeekSlot) => void;
 	onSlotPointerDown: (slot: IWeekSlot) => void;
-	weekData: Record<string, IWeekSlot[]>;
+	viewMode: AvailabilityViewMode;
+	weekData: Record<string, IStackedWeekSlot[]>;
 	weekDays: Date[];
 };
