@@ -719,15 +719,14 @@
 				"error": "Erro ao compartilhar, tente novamente mais tarde.",
 				"error-copy": "Erro ao copiar o link, tente novamente mais tarde."
 			},
-			"tooltip-tile": "Compartilhar com {{with}}",
-			"share-with-name": "com {{name}}",
-			"share-with-patients": "com seus pacientes",
 			"share-infos": {
 				"availability": {
 					"title": "{{therapistName}} compartilhou com você a disponibilidade",
 					"text": "Entre aqui para agendar o seu horário"
 				}
-			}
+			},
+			"tooltip-name": "Compartilhar com {{name}}",
+			"tooltip-patients": "Compartilhar com seus pacientes"
 		},
 		"agenda": {
 			"modal": "Você está marcando a sua consulta para {{appointment}}",
@@ -1931,7 +1930,10 @@
 				"unbusy-confirm-body": "Este horário voltará a ficar disponível para agendamento e o evento será removido do seu Google Calendar.",
 				"unbusy-success": "Ocupado removido — horário disponível novamente.",
 				"unbusy-error": "Falha ao remover ocupado. Tente novamente.",
-				"busy-subtitle": "Compromisso pessoal — sincronizado com o Google Calendar"
+				"busy-subtitle": "Compromisso pessoal — sincronizado com o Google Calendar",
+				"busy-title": "Ocupado",
+				"busy-note-label": "O que é isto?",
+				"busy-note": "Tempo pessoal que você marcou como ocupado. É espelhado no seu Google Calendar para que pacientes não possam agendar. Não há paciente nem sessão associada."
 			},
 			"buffer-label": "Buffer",
 			"legend-available": "Disponível",

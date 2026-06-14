@@ -73,6 +73,14 @@ export const useAvailabilityWeekViewModel = ({
 	const { availability } = useJupiterAvailabilityConfig();
 
 	const bufferTimeMinutes = availability?.bufferTimeMinutes ?? 0;
+
+	// Prefer the color co-located on the slots response (one request, no flash);
+	// fall back to the slower Jupiter config only if the slots response predates
+	// the field.
+	const googleCalendarColor =
+		availabilityData?.googleCalendarColor ??
+		availability?.googleCalendarColor ??
+		null;
 	const baseDate = useMemo(
 		() => (date ? parseISO(date) : new Date()),
 		[date]
@@ -311,6 +319,7 @@ export const useAvailabilityWeekViewModel = ({
 		goToPrevWeek,
 		goToSettings,
 		goToTodayWeek,
+		googleCalendarColor,
 		isLoading,
 		legendItems,
 		mobileDays,

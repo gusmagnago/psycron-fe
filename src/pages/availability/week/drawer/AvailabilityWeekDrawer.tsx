@@ -51,6 +51,7 @@ import { isPastAppointment } from './views/slot-booked-body/SlotBookedBody.utils
 import { SlotBookingConflictView } from './views/slot-booking-conflict/SlotBookingConflictView';
 import { ConflictBody } from './views/slot-booking-conflict/SlotBookingConflictView.styles';
 import { SlotBreakBody } from './views/slot-break-body/SlotBreakBody';
+import { SlotBusyBody } from './views/slot-busy-body/SlotBusyBody';
 import { SlotCancelChoiceView } from './views/slot-cancel-choice-view/SlotCancelChoiceView';
 import { SlotCancelReasonForm } from './views/slot-cancel-reason-form/SlotCancelReasonForm';
 import { SlotCancelledBody } from './views/slot-cancelled-body/SlotCancelledBody';
@@ -356,12 +357,16 @@ export const AvailabilityWeekDrawer = ({
 				.filter(Boolean)
 				.join(' ') || undefined
 		: slot.patientName || undefined;
-	const bookedShareWith = getBookedShareWith(t, patientName);
+	const bookedShareWith = getBookedShareWith(patientName);
+	// Busy blocks mirror a Google event; surface its title when present, but
+	// never an attendee/patient name — busy time has no booking attached.
+	const busyCommitmentTitle = slot.notes?.trim() || null;
 	const cancelledSubtitle = getCancelledSubtitle(t, slot.triggeredBy);
 	const drawerTitle = getDrawerTitle({
 		isAvailable,
 		isBuffer,
 		isBlocked,
+		isBusy,
 		isCancelled,
 		patientName,
 		t,
@@ -500,6 +505,15 @@ export const AvailabilityWeekDrawer = ({
 
 		if (isBuffer) {
 			return <SlotBreakBody sessionDetails={sessionDetails} />;
+		}
+
+		if (isBusy) {
+			return (
+				<SlotBusyBody
+					commitmentTitle={busyCommitmentTitle}
+					sessionDetails={sessionDetails}
+				/>
+			);
 		}
 
 		return (
@@ -711,7 +725,7 @@ export const AvailabilityWeekDrawer = ({
 	};
 
 	const renderHeaderBadges = () => {
-		if (isAvailable || isBuffer || isBlocked || isCancelled) {
+		if (isAvailable || isBuffer || isBlocked || isBusy || isCancelled) {
 			return (
 				<>
 					<ConfirmedBadge>

@@ -719,15 +719,14 @@
 				"error": "Someting went wrong, please try again later.",
 				"error-copy": "We couldn't copy the link, please try again later."
 			},
-			"tooltip-tile": "Share with {{with}}",
-			"share-with-name": "with {{name}}",
-			"share-with-patients": "with your patients",
 			"share-infos": {
 				"availability": {
 					"title": "{{therapistName}} shared with you their availability",
 					"text": "Enter here to book an appointment"
 				}
-			}
+			},
+			"tooltip-name": "Share with {{name}}",
+			"tooltip-patients": "Share with your patients"
 		},
 		"agenda": {
 			"modal": "You are booking for {{appointment}}",
@@ -1931,7 +1930,10 @@
 				"unbusy-confirm-body": "This time will become available for booking again and the busy event will be removed from your Google Calendar.",
 				"unbusy-success": "Busy removed — slot is available again.",
 				"unbusy-error": "Failed to remove busy. Please try again.",
-				"busy-subtitle": "Personal commitment — synced to Google Calendar"
+				"busy-subtitle": "Personal commitment — synced to Google Calendar",
+				"busy-title": "Busy",
+				"busy-note-label": "What is this?",
+				"busy-note": "Personal time you marked as busy. It is mirrored to your Google Calendar so patients cannot book it. There is no patient or session attached."
 			},
 			"buffer-label": "Buffer",
 			"legend-available": "Available",

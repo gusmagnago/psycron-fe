@@ -68,6 +68,7 @@ export const AvailabilityWeekPage = () => {
 		goToNextWeek,
 		goToPrevWeek,
 		goToSettings,
+		googleCalendarColor,
 		isLoading,
 		legendItems,
 		mobileDays,
@@ -242,7 +243,6 @@ export const AvailabilityWeekPage = () => {
 		[weekSlots]
 	);
 	const googleConnected = Boolean(availability?.googleCalendarConnected);
-	const googleCalendarColor = availability?.googleCalendarColor ?? null;
 	const hasSlots = slotStats.available > 0;
 
 	const statusItems = useAvailabilityStatusItems({

@@ -138,10 +138,11 @@ export const ShareButton = ({
 	return (
 		<ShareButtonRoot>
 			<Tooltip
-				title={t('components.share-button.tooltip-tile', {
-					with:
-						shareWith ?? t('components.share-button.share-with-patients'),
-				})}
+				title={
+					shareWith
+						? t('components.share-button.tooltip-name', { name: shareWith })
+						: t('components.share-button.tooltip-patients')
+				}
 				placement='left'
 				onClick={handleTriggerClick}
 			>
