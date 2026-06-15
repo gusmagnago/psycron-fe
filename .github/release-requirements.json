@@ -5,19 +5,8 @@
     { "name": "Júpiter + Availability Builder", "status": "done" },
     {
       "name": "Scheduling & Availability Management",
-      "status": "in-progress",
-      "tickets": [
-        {
-          "key": "PR-291",
-          "url": "https://psycron.atlassian.net/browse/PR-291",
-          "summary": "Google Meet/Zoom auto-links"
-        },
-        {
-          "key": "PR-294",
-          "url": "https://psycron.atlassian.net/browse/PR-294",
-          "summary": "Booked slot drawer UX overhaul"
-        }
-      ]
+      "status": "done",
+      "note": "Google Calendar full integration (PR-337) + permissions (PR-289) merged to dev 2026-06-14 (BE #107, FE #102): first-class mirror, slot provenance, BUSY status, occlusion guards. PR-294 (booked slot drawer) done. PR-291 (Meet/Zoom auto-links) + live inbound events.watch sync deferred to v1.1.0."
     },
     { "name": "Public Booking Pages", "status": "done" },
     {
@@ -81,7 +70,7 @@
       "name": "Google Calendar Permissions Fix",
       "ticket": "PR-289",
       "url": "https://psycron.atlassian.net/browse/PR-289",
-      "status": "pending"
+      "status": "done"
     }
   ]
 }
