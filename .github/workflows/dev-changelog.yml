@@ -346,7 +346,9 @@ jobs:
 
             const section = [
               '<p><em>Auto-updated by GitHub Actions on ' + esc(date) + ' from <strong>' + esc(repo) + '</strong></em></p>',
-              progressBar,
+              // Progress bar intentionally NOT rendered here: it is inserted once in the
+              // 'Current Status' section below (which de-dupes prior bars). Rendering it in
+              // both sections produced duplicate/conflicting progress bars on the page.
               reqTable,
               blockerTable,
               '<h3>Dev branch status</h3>',
