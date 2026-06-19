@@ -30,6 +30,7 @@ export type EditUserFormValues = {
 		phone?: string;
 		whatsapp?: string;
 	};
+	dateOfBirth?: string;
 	firstName: string;
 	lastName: string;
 	password: string;

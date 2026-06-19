@@ -5,9 +5,10 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { capture } from '@psycron/analytics/posthog/events';
 import { PostHogEvent } from '@psycron/analytics/posthog/types';
 import type { CustomError } from '@psycron/api/error';
-import { editUserById } from '@psycron/api/user';
+import { editUserById, resyncGoogleProfile } from '@psycron/api/user';
 import type { IEditUser } from '@psycron/api/user/index.types';
 import { AvatarUploader } from '@psycron/components/avatar/avatar-uploader/AvatarUploader';
+import { Button } from '@psycron/components/button/Button';
 import { AddressForm } from '@psycron/components/form/components/address/AddressForm';
 import { ContactsForm } from '@psycron/components/form/components/contacts/ContactsForm';
 import { FormFooter } from '@psycron/components/form/components/footer/FormFooter';
@@ -126,6 +127,28 @@ export const EditUser = () => {
 		},
 	});
 
+	const resyncGoogleMutation = useMutation({
+		mutationFn: () => resyncGoogleProfile(_id),
+		onSuccess: async () => {
+			await queryClient.invalidateQueries({
+				queryKey: ['userDetails', userId],
+			});
+			showAlert({
+				message: t(
+					'components.user-details.google-resync-success',
+					'Profile synced from Google'
+				),
+				severity: 'success',
+			});
+		},
+		onError: (error: CustomError) => {
+			showAlert({
+				message: error.message || t('globals.error.internal-server-error'),
+				severity: 'error',
+			});
+		},
+	});
+
 	if (
 		isUserDetailsLoading ||
 		!isUserDetailsSucces ||
@@ -189,6 +212,8 @@ export const EditUser = () => {
 			<FormProvider {...methods}>
 				<EditUserFormContainer
 					as='form'
+					id='edit-user-form'
+					data-testid='edit-user-form'
 					onSubmit={methods.handleSubmit(onSubmit)}
 				>
 					<EditUserDetailsAvatarWrapper>
@@ -198,9 +223,24 @@ export const EditUser = () => {
 							lastName={lastName}
 							picture={pictureUrl}
 						/>
+						{isGoogleUser ? (
+							<Button
+								secondary
+								small
+								loading={resyncGoogleMutation.isPending}
+								onClick={() => resyncGoogleMutation.mutate()}
+								data-testid='resync-google-button'
+							>
+								{t(
+									'components.user-details.sync-from-google',
+									'Sync from Google'
+								)}
+							</Button>
+						) : null}
 					</EditUserDetailsAvatarWrapper>
 
 					<EditSection
+						testId='edit-user-section-name'
 						title={t('globals.name')}
 						isEnabled={enabled.name}
 						onToggle={() => {
@@ -211,12 +251,18 @@ export const EditUser = () => {
 						<NameForm<EditUserFormValues>
 							required
 							disabled={!enabled.name}
-							fields={{ firstName: 'firstName', lastName: 'lastName' }}
+							fields={{
+								firstName: 'firstName',
+								lastName: 'lastName',
+								dateOfBirth: 'dateOfBirth',
+							}}
 							placeholderFirstName={firstName}
 							placeholderLastName={lastName}
+							showDateOfBirth
 						/>
 					</EditSection>
 					<EditSection
+						testId='edit-user-section-contact'
 						title={t('components.user-details.section.title.contact')}
 						isEnabled={enabled.contacts}
 						onToggle={() => {
@@ -238,6 +284,7 @@ export const EditUser = () => {
 						/>
 					</EditSection>
 					<EditSection
+						testId='edit-user-section-clinic'
 						title={t('components.user-details.section.title.clinic')}
 						isEnabled={enabled.clinicAddress}
 						onToggle={() => {
@@ -251,6 +298,7 @@ export const EditUser = () => {
 						/>
 					</EditSection>
 					<EditSection
+						testId='edit-user-section-password'
 						title={t('globals.password')}
 						isEnabled={enabled.password}
 						disabled={!canEdit.password}

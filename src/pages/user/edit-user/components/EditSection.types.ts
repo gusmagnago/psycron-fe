@@ -5,5 +5,6 @@ export interface EditSectionProps {
 	disabled?: boolean;
 	isEnabled: boolean;
 	onToggle: (next: boolean) => void;
+	testId?: string;
 	title: string;
 }

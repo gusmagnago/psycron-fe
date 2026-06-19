@@ -1,6 +1,7 @@
 import type { FieldValues, Path } from 'react-hook-form';
 
 export type NameFormFields<T extends FieldValues> = {
+	dateOfBirth?: Path<T>;
 	firstName: Path<T>;
 	lastName: Path<T>;
 };
@@ -23,4 +24,6 @@ export interface NameFormProps<T extends FieldValues> {
 
 	placeholderLastName?: string;
 	required?: boolean;
+	/** Opt-in: render an optional date-of-birth field (used on the edit page). */
+	showDateOfBirth?: boolean;
 }

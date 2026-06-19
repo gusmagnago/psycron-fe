@@ -30,6 +30,16 @@ export const editUserById = async ({
 	return response.data;
 };
 
+export const resyncGoogleProfile = async (
+	userId: string
+): Promise<IUserByIdResponse> => {
+	const response = await apiClient.post<IUserByIdResponse>(
+		`/users/${userId}/google/resync`
+	);
+
+	return response.data;
+};
+
 export const changePassword = async ({ data, userId }: IChangePass) => {
 	const response = await apiClient.post<IResponse>(
 		`/users/password-change/${userId}`,

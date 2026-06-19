@@ -81,6 +81,7 @@ export interface IBaseUser {
 	_id: string;
 	contacts: IContactInfo;
 	createdAt?: ISODateString;
+	dateOfBirth?: ISODateString | null;
 	firstName: string;
 	lastName: string;
 	updatedAt?: ISODateString;
