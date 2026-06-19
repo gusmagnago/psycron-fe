@@ -13,6 +13,7 @@ type Contacts = {
 type UserDetailsLike = {
 	clinicAddress?: Partial<IClinicAddress>;
 	contacts: Contacts;
+	dateOfBirth?: string | null;
 	firstName: string;
 	lastName: string;
 	password?: string;
@@ -27,6 +28,8 @@ export const toEditUserDefaults = (
 		postcode: user.clinicAddress?.postcode ?? '',
 		street: user.clinicAddress?.street ?? '',
 	},
+	// Native date input expects 'YYYY-MM-DD'; the API returns an ISO datetime.
+	dateOfBirth: user.dateOfBirth ? String(user.dateOfBirth).slice(0, 10) : '',
 	firstName: user.firstName ?? '',
 	lastName: user.lastName ?? '',
 	contacts: {
@@ -50,6 +53,8 @@ export const buildEditUserPayload = (args: {
 	if (enabled.name) {
 		data.firstName = values.firstName.trim() || original.firstName;
 		data.lastName = values.lastName.trim() || original.lastName;
+		// '' clears the DOB; the BE guard treats an empty value as "unset".
+		data.dateOfBirth = values.dateOfBirth?.trim() || null;
 	}
 
 	if (enabled.clinicAddress) {

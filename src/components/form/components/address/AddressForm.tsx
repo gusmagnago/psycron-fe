@@ -76,6 +76,7 @@ export const AddressForm = <T extends FieldValues>({
 					helperText={streetState.error?.message as string | undefined}
 					autoComplete='street-address'
 					disabled={disabled}
+					slotProps={{ htmlInput: { 'data-testid': 'address-form-street' } }}
 				/>
 			</Grid>
 			<Grid size={{ xs: 12, md: 6 }}>
@@ -89,6 +90,7 @@ export const AddressForm = <T extends FieldValues>({
 					helperText={cityState.error?.message as string | undefined}
 					autoComplete='address-level2'
 					disabled={disabled}
+					slotProps={{ htmlInput: { 'data-testid': 'address-form-city' } }}
 				/>
 			</Grid>
 			<Grid size={{ xs: 12, md: 6 }}>
@@ -102,6 +104,7 @@ export const AddressForm = <T extends FieldValues>({
 					helperText={postcodeState.error?.message as string | undefined}
 					autoComplete='postal-code'
 					disabled={disabled}
+					slotProps={{ htmlInput: { 'data-testid': 'address-form-postcode' } }}
 				/>
 			</Grid>
 			<Grid size={{ xs: 12 }}>
@@ -115,6 +118,7 @@ export const AddressForm = <T extends FieldValues>({
 					helperText={countryState.error?.message as string | undefined}
 					autoComplete='country-name'
 					disabled={disabled}
+					slotProps={{ htmlInput: { 'data-testid': 'address-form-country' } }}
 				/>
 			</Grid>
 		</Grid>

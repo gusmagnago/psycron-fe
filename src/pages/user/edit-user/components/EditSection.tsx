@@ -10,9 +10,10 @@ export const EditSection = ({
 	onToggle,
 	children,
 	disabled = false,
+	testId,
 }: EditSectionProps) => {
 	return (
-		<Box display='flex' flexDirection='column' gap={2}>
+		<Box display='flex' flexDirection='column' gap={2} data-testid={testId}>
 			<Box display='flex' justifyContent='space-between' alignItems='center'>
 				<Text variant='subtitle1' fontWeight={700}>
 					{title}
