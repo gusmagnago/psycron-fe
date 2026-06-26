@@ -10,7 +10,10 @@ export interface PracticeReadinessWidgetProps {
 	contactsConfigured: number;
 	contactsTotal: number;
 	hasAvailability: boolean;
+	/** Patients detected in the synced calendar, awaiting review/import. */
+	importCandidateCount?: number;
 	isLoading?: boolean;
+	onImportAction?: () => void;
 	onSegmentAction: (segment: ReadinessSegmentId) => void;
 }
 

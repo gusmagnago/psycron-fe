@@ -16,6 +16,7 @@ export const NameForm = <T extends FieldValues>({
 	placeholderLastName,
 	labelFirstName,
 	labelLastName,
+	showDateOfBirth = false,
 }: NameFormProps<T>) => {
 	const { t } = useTranslation();
 
@@ -26,6 +27,7 @@ export const NameForm = <T extends FieldValues>({
 
 	const firstNamePath = fields?.firstName ?? ('firstName' as Path<T>);
 	const lastNamePath = fields?.lastName ?? ('lastName' as Path<T>);
+	const dateOfBirthPath = fields?.dateOfBirth ?? ('dateOfBirth' as Path<T>);
 
 	const firstNameError = errors[firstNamePath];
 	const lastNameError = errors[lastNamePath];
@@ -85,6 +87,23 @@ export const NameForm = <T extends FieldValues>({
 					disabled={disabled}
 				/>
 			</NameInputWrapper>
+
+			{showDateOfBirth ? (
+				<NameInputWrapper>
+					<TextField
+						type='date'
+						label={t('components.form.signup.date-of-birth', 'Date of birth')}
+						fullWidth
+						id={String(dateOfBirthPath)}
+						{...register(dateOfBirthPath)}
+						disabled={disabled}
+						slotProps={{
+							inputLabel: { shrink: true },
+							htmlInput: { 'data-testid': 'name-form-date-of-birth' },
+						}}
+					/>
+				</NameInputWrapper>
+			) : null}
 		</NameFormWrapper>
 	);
 };

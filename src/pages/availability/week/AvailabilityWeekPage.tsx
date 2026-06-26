@@ -17,6 +17,7 @@ import useViewport from '@psycron/hooks/useViewport';
 import { useQueryClient } from '@tanstack/react-query';
 import { format, isPast, isToday, parseISO } from 'date-fns';
 
+import { PracticeImportPrompt } from '../practice-import/PracticeImportPrompt';
 import { AvailabilityReadinessPanel } from '../workspace/AvailabilityReadinessPanel';
 import { AvailabilityViewToggle } from '../workspace/AvailabilityViewToggle';
 import type {
@@ -342,6 +343,7 @@ export const AvailabilityWeekPage = () => {
 				viewbar={viewbar}
 				onPanelOpenChange={setIsReadinessPanelOpen}
 			>
+				<PracticeImportPrompt therapistId={therapistId} />
 				<WeekCalendarScroll
 					aria-label={t('availability.workspace.calendar-scroll-label')}
 					data-testid='availability-calendar-scroll'

@@ -25,6 +25,7 @@ export const PhoneInputComponent = <T extends FieldValues>({
 	disabled,
 	labelKey,
 	required,
+	testId,
 	validateFn,
 }: PhoneInputComponentProps<T>) => {
 	const { t } = useTranslation();
@@ -95,6 +96,7 @@ export const PhoneInputComponent = <T extends FieldValues>({
 						isFocused={focused}
 						hasError={Boolean(error)}
 						isDisabled={Boolean(disabled)}
+						data-testid={testId}
 					>
 						<PhoneInput
 							labels={labels}

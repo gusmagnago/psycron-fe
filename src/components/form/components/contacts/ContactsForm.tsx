@@ -84,7 +84,10 @@ export const ContactsForm = <T extends FieldValues>({
 					helperText={emailError}
 					required={required}
 					disabled={disabled}
-					slotProps={{ inputLabel: { shrink: !!emailValue } }}
+					slotProps={{
+						inputLabel: { shrink: !!emailValue },
+						htmlInput: { 'data-testid': 'contacts-form-email' },
+					}}
 				/>
 
 			{!hidePhone && (
@@ -108,6 +111,7 @@ export const ContactsForm = <T extends FieldValues>({
 							disabled={disabled}
 							defaultValue={defaultValues?.phone ?? ''}
 							labelKey='globals.phone'
+							testId='contacts-form-phone'
 						/>
 					</InputWrapper>
 				)}

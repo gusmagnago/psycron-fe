@@ -145,6 +145,10 @@ export const AvailabilityWorkspaceShell = forwardRef<
 			return () => window.cancelAnimationFrame(frameId);
 		}, [isPanelOpen, isSmallerThanTablet]);
 
+		// The readiness sidebar (edge toggle + scrim + panel) is irrelevant during
+		// the Jupiter onboarding conversation, so hide it in chat mode.
+		const showReadinessPanel = Boolean(panel) && contentMode !== 'chat';
+
 		return (
 			<WorkspaceRoot
 				data-testid='availability-page-root'
@@ -158,32 +162,36 @@ export const AvailabilityWorkspaceShell = forwardRef<
 					data-testid='availability-workspace'
 					id='availability-workspace'
 				>
-					<WorkspaceScrim
-						aria-hidden='true'
-						data-testid='availability-drawer-scrim'
-						id='availability-drawer-scrim'
-						isVisible={isPanelOpen}
-						onClick={() => closePanel()}
-						tabIndex={-1}
-						type='button'
-					/>
-					<WorkspaceEdgeToggle
-						aria-controls='availability-right-sidebar'
-						aria-expanded={isPanelOpen}
-						aria-label={t(
-							isPanelOpen
-								? 'availability.workspace.close-readiness'
-								: 'availability.workspace.open-readiness'
-						)}
-						data-testid='availability-right-sidebar-toggle'
-						id='availability-right-sidebar-toggle'
-						isOwnPanelOpen={isPanelOpen}
-						onClick={togglePanel}
-						ref={toggleRef}
-						type='button'
-					>
-						<ChevronLeft aria-hidden='true' />
-					</WorkspaceEdgeToggle>
+					{showReadinessPanel ? (
+						<>
+							<WorkspaceScrim
+								aria-hidden='true'
+								data-testid='availability-drawer-scrim'
+								id='availability-drawer-scrim'
+								isVisible={isPanelOpen}
+								onClick={() => closePanel()}
+								tabIndex={-1}
+								type='button'
+							/>
+							<WorkspaceEdgeToggle
+								aria-controls='availability-right-sidebar'
+								aria-expanded={isPanelOpen}
+								aria-label={t(
+									isPanelOpen
+										? 'availability.workspace.close-readiness'
+										: 'availability.workspace.open-readiness'
+								)}
+								data-testid='availability-right-sidebar-toggle'
+								id='availability-right-sidebar-toggle'
+								isOwnPanelOpen={isPanelOpen}
+								onClick={togglePanel}
+								ref={toggleRef}
+								type='button'
+							>
+								<ChevronLeft aria-hidden='true' />
+							</WorkspaceEdgeToggle>
+						</>
+					) : null}
 					<WorkspaceMain
 						aria-labelledby='availability-page-title'
 						data-testid='availability-main'
@@ -213,18 +221,20 @@ export const AvailabilityWorkspaceShell = forwardRef<
 						</WorkspaceMainContent>
 						{footer}
 					</WorkspaceMain>
-					<AvailabilityWorkspacePanel
-						ariaLabel={t('availability.workspace.readiness-label')}
-						closeLabel={t('availability.workspace.close-readiness')}
-						id='availability-right-sidebar'
-						isOpen={isPanelOpen}
-						panelRef={panelRef}
-						testId='availability-right-sidebar'
-						title={t('availability.workspace.right-panel-title')}
-						onClose={() => closePanel()}
-					>
-						{panel}
-					</AvailabilityWorkspacePanel>
+					{showReadinessPanel ? (
+						<AvailabilityWorkspacePanel
+							ariaLabel={t('availability.workspace.readiness-label')}
+							closeLabel={t('availability.workspace.close-readiness')}
+							id='availability-right-sidebar'
+							isOpen={isPanelOpen}
+							panelRef={panelRef}
+							testId='availability-right-sidebar'
+							title={t('availability.workspace.right-panel-title')}
+							onClose={() => closePanel()}
+						>
+							{panel}
+						</AvailabilityWorkspacePanel>
+					) : null}
 				</WorkspaceFrame>
 			</WorkspaceRoot>
 		);

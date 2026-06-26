@@ -8,7 +8,7 @@ import {
 	ONBOARDING_KEY,
 	STORAGE_KEY,
 } from '@psycron/pages/availability/jupiter-conversation/useJupiterFlow';
-import { AVAILABILITYGENERATE } from '@psycron/pages/urls';
+import { AVAILABILITYGENERATE, PREVIEW2 } from '@psycron/pages/urls';
 import { useQuery } from '@tanstack/react-query';
 
 interface AvailabilityGateProps {
@@ -29,17 +29,22 @@ export const AvailabilityGate = ({ children }: AvailabilityGateProps) => {
 	});
 
 	const isOnGeneratePage = location.pathname.includes(AVAILABILITYGENERATE);
+	const isOnPreview2Page = location.pathname.includes(PREVIEW2);
 	const hasAvailability = data !== null;
 	const hasDraft = !!localStorage.getItem(STORAGE_KEY);
 	// Once the query resolves, a missing availability (or a pending draft) means
 	// we are about to redirect — we must not render children for that frame, or
 	// the dashboard flashes briefly before the navigation lands.
 	const willRedirect =
-		!isLoading && !isOnGeneratePage && (!hasAvailability || hasDraft);
+		!isLoading &&
+		!isOnGeneratePage &&
+		!isOnPreview2Page &&
+		(!hasAvailability || hasDraft);
 
 	useEffect(() => {
 		if (isLoading) return;
 		if (isOnGeneratePage) return;
+		if (isOnPreview2Page) return;
 
 		if (!hasAvailability) {
 			if (!hasAlerted.current && !!localStorage.getItem(ONBOARDING_KEY)) {
@@ -61,6 +66,7 @@ export const AvailabilityGate = ({ children }: AvailabilityGateProps) => {
 		hasDraft,
 		isLoading,
 		isOnGeneratePage,
+		isOnPreview2Page,
 		navigate,
 		i18n.language,
 		showAlert,

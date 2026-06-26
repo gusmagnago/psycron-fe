@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { CalendarItem } from '@psycron/api/auth';
-import { Button } from '@psycron/components/button/Button';
 import { ChevronLeft } from '@psycron/components/icons';
 
 import {
@@ -10,7 +9,7 @@ import {
 	CalendarList,
 	CalendarName,
 	CalendarOption,
-	ConfirmBtn,
+	ConfirmButton,
 	PickerCard,
 	PickerHeader,
 	PickerTitle,
@@ -40,13 +39,18 @@ export const GoogleCalendarPicker = ({
 	};
 
 	return (
-		<PickerCard>
+		<PickerCard
+			data-testid='jupiter-onboarding-calendar-picker'
+			id='jupiter-onboarding-calendar-picker'
+		>
 			<PickerHeader>
 				{onBack && (
 					<BackBtn
 						onClick={onBack}
 						type='button'
 						aria-label={t('jupiter.calendar-picker.back')}
+						data-testid='jupiter-onboarding-calendar-picker-back'
+						id='jupiter-onboarding-calendar-picker-back'
 					>
 						<ChevronLeft />
 					</BackBtn>
@@ -54,12 +58,17 @@ export const GoogleCalendarPicker = ({
 				<PickerTitle>{t('jupiter.calendar-picker.title')}</PickerTitle>
 			</PickerHeader>
 
-			<CalendarList>
+			<CalendarList
+				data-testid='jupiter-onboarding-calendar-list'
+				id='jupiter-onboarding-calendar-list'
+			>
 				{calendars.map((cal) => (
 					<CalendarOption
 						key={cal.id}
 						isSelected={selectedId === cal.id}
 						onClick={() => setSelectedId(cal.id)}
+						data-testid={`jupiter-onboarding-calendar-option-${cal.id}`}
+						id={`jupiter-onboarding-calendar-option-${cal.id}`}
 					>
 						<CalendarDot color={cal.backgroundColor} />
 						<CalendarName>{cal.summary}</CalendarName>
@@ -70,11 +79,13 @@ export const GoogleCalendarPicker = ({
 				))}
 			</CalendarList>
 
-			<ConfirmBtn>
-				<Button variant='contained' onClick={handleConfirm}>
-					{t('jupiter.calendar-picker.confirm')}
-				</Button>
-			</ConfirmBtn>
+			<ConfirmButton
+				onClick={handleConfirm}
+				data-testid='jupiter-onboarding-calendar-picker-confirm'
+				id='jupiter-onboarding-calendar-picker-confirm'
+			>
+				{t('jupiter.calendar-picker.confirm')}
+			</ConfirmButton>
 		</PickerCard>
 	);
 };

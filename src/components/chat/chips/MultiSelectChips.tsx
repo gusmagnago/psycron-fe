@@ -22,6 +22,7 @@ export const MultiSelectChips = ({
 	otherChipKey,
 	otherPlaceholder,
 	onOtherSubmit,
+	testIdPrefix,
 }: IMultiSelectChipsProps) => {
 	const [selectedKeys, setSelectedKeys] = useState<Set<string>>(new Set());
 	const [submitted, setSubmitted] = useState(false);
@@ -78,12 +79,15 @@ export const MultiSelectChips = ({
 
 	if (showOther) {
 		return (
-			<OtherInputRow>
+			<OtherInputRow
+				data-testid={testIdPrefix ? `${testIdPrefix}-other-row` : undefined}
+			>
 				<OtherBackButton
 					onClick={() => {
 						setShowOther(false);
 						setOtherValue('');
 					}}
+					data-testid={testIdPrefix ? `${testIdPrefix}-other-back` : undefined}
 				>
 					<ChevronLeft />
 				</OtherBackButton>
@@ -94,11 +98,13 @@ export const MultiSelectChips = ({
 					value={otherValue}
 					onChange={(e) => setOtherValue(e.target.value)}
 					onKeyDown={handleOtherKeyDown}
+					data-testid={testIdPrefix ? `${testIdPrefix}-other-input` : undefined}
 				/>
 				<OtherSendButton
 					hasValue={!!otherValue.trim()}
 					disabled={!otherValue.trim()}
 					onClick={submitOther}
+					data-testid={testIdPrefix ? `${testIdPrefix}-other-send` : undefined}
 				>
 					<Send />
 				</OtherSendButton>
@@ -107,7 +113,10 @@ export const MultiSelectChips = ({
 	}
 
 	return (
-		<ChipsContainer>
+		<ChipsContainer
+			data-testid={testIdPrefix ? `${testIdPrefix}-chips` : undefined}
+			id={testIdPrefix ? `${testIdPrefix}-chips` : undefined}
+		>
 			{options.map((option) => (
 				<ChipButton
 					key={option.key}
@@ -115,13 +124,21 @@ export const MultiSelectChips = ({
 					isSelected={selectedKeys.has(option.key)}
 					onClick={() => toggleKey(option.key)}
 					disabled={disabled}
+					data-testid={
+						testIdPrefix ? `${testIdPrefix}-chip-${option.key}` : undefined
+					}
+					id={testIdPrefix ? `${testIdPrefix}-chip-${option.key}` : undefined}
 				>
+					{option.icon}
 					{option.label}
 				</ChipButton>
 			))}
 
 			{selectedKeys.size > 0 && (
-				<ContinueButton onClick={handleConfirm}>
+				<ContinueButton
+					onClick={handleConfirm}
+					data-testid={testIdPrefix ? `${testIdPrefix}-continue` : undefined}
+				>
 					{confirmLabel}
 				</ContinueButton>
 			)}
