@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react';
 
-export type AvailabilityWorkspaceContentMode = 'calendar' | 'page';
+export type AvailabilityWorkspaceContentMode = 'calendar' | 'chat' | 'page';
 
 export interface AvailabilityWorkspaceShellHandle {
 	openPanel: () => void;

@@ -2,18 +2,14 @@ import { useTranslation } from 'react-i18next';
 import type { IChipOption } from '@psycron/components/chat/chips/ChatChips.types';
 import { SingleSelectChips } from '@psycron/components/chat/chips/SingleSelectChips';
 
-import {
-	BotBubble,
-	BotMessageGroup,
-	ChipsInline,
-	IconRow,
-} from '../jupiter-conversation/JupiterConversation.styles';
-
 interface GoogleCalendarSuccessProps {
 	isImporting?: boolean;
 	onSelect: (key: string) => void;
 }
 
+// Dock control only: the success bubbles ("Your Google Calendar is connected!",
+// "Want me to use your existing schedule…") are emitted into the conversation
+// stream by the flow — this renders just the use-existing / scratch choice chips.
 export const GoogleCalendarSuccess = ({
 	isImporting = false,
 	onSelect,
@@ -33,48 +29,13 @@ export const GoogleCalendarSuccess = ({
 		},
 	];
 
+	if (isImporting) return null;
+
 	return (
-		<>
-			<BotMessageGroup>
-				<IconRow showIcon={false}>
-					<BotBubble isFirst={false}>
-						{t('jupiter.google-calendar.success-line1')}
-					</BotBubble>
-				</IconRow>
-			</BotMessageGroup>
-
-			<BotMessageGroup>
-				<IconRow showIcon={false}>
-					<BotBubble isFirst={false}>
-						{t('jupiter.google-calendar.success-line2')}
-					</BotBubble>
-				</IconRow>
-			</BotMessageGroup>
-
-			<BotMessageGroup>
-				<IconRow showIcon={false}>
-					<BotBubble isFirst={false}>
-						{t('jupiter.google-calendar.success-line3')}
-					</BotBubble>
-				</IconRow>
-			</BotMessageGroup>
-
-			<BotMessageGroup>
-				<IconRow showIcon={false}>
-					<BotBubble isFirst={false}>
-						{t('jupiter.google-calendar.next-choice')}
-					</BotBubble>
-				</IconRow>
-			</BotMessageGroup>
-
-			{!isImporting && (
-				<ChipsInline>
-					<SingleSelectChips
-						options={postConnectOptions}
-						onSelect={onSelect}
-					/>
-				</ChipsInline>
-			)}
-		</>
+		<SingleSelectChips
+			options={postConnectOptions}
+			testIdPrefix='jupiter-onboarding-google-success'
+			onSelect={onSelect}
+		/>
 	);
 };

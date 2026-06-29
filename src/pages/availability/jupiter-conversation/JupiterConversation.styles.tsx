@@ -7,7 +7,10 @@ import {
 	isMobileMedia,
 } from '@psycron/theme/media-queries/mediaQueries';
 import { hexToRgba, palette } from '@psycron/theme/palette/palette.theme';
-import { shadowMain, shadowSmall } from '@psycron/theme/shadow/shadow.theme';
+import {
+	shadowGlassShimmer,
+	shadowSmall,
+} from '@psycron/theme/shadow/shadow.theme';
 import { spacing } from '@psycron/theme/spacing/spacing.theme';
 import { zIndexSticky } from '@psycron/theme/zIndex';
 
@@ -52,26 +55,85 @@ const messageGroupBase = css`
 
 // ─── Components ───────────────────────────────────────────────────────────────
 
+// Mirrors the preview's `jupiter-onboarding-root` (the prototype `.chat`):
+// a flex column that fills the workspace content area, with a scrolling stream
+// above a fixed dock. The workspace shell provides the surrounding frame, so
+// there is no floating card here.
 export const CardWrapper = styled(Box)`
+	position: relative;
 	display: flex;
-	flex-direction: column;
-	width: 100%;
 	flex: 1;
 	min-height: 0;
-	position: relative;
+	flex-direction: column;
+	width: 100%;
+	height: 100%;
+`;
 
-	padding: ${spacing.small};
+// `jupiter-onboarding-stream` — the scrollable message region. Bottom-anchoring
+// is done by the reading's margin-top: auto (NOT justify-content: flex-end, which
+// clips the top of an overflowing flex column and blocks scrolling up). The
+// column narrows on desktop. `bottomInset` reserves the glass dock's height as
+// padding so the latest message rests just above it while older messages scroll
+// behind the glass.
+export const ConversationStream = styled(Box, {
+	shouldForwardProp: (prop) => prop !== 'bottomInset',
+})<{ bottomInset?: number }>`
+	display: flex;
+	flex: 1;
+	flex-direction: column;
+	min-height: 0;
+	width: 100%;
+	margin: 0 auto;
+	overflow-y: auto;
+	padding: ${spacing.xs};
+	padding-bottom: ${({ bottomInset }) =>
+		bottomInset ? `${bottomInset}px` : spacing.xs};
+	scroll-behavior: smooth;
 
 	${isBiggerThanMediumMedia} {
-		flex: none;
-		width: 640px;
-		min-height: 350px;
-		max-height: 500px;
-		box-shadow: ${shadowMain};
-		border-radius: ${spacing.largeXl};
-		background: ${palette.background.paper};
-		overflow: hidden;
+		width: 80%;
 	}
+`;
+
+// `jupiter-onboarding-reading` — inner column holding the bubbles. margin-top:
+// auto pins the run to the bottom when it's short, while still allowing the
+// container to scroll up to the top when it overflows. Tight default gap so
+// consecutive same-sender bubbles read as one merged box; a new sender run
+// re-introduces space via isGroupStart.
+export const ConversationReading = styled(Box)`
+	display: flex;
+	flex-direction: column;
+	gap: ${spacing.xxs};
+	width: 100%;
+	margin-top: auto;
+`;
+
+// `jupiter-onboarding-dock` — glass control panel overlaid on the bottom of the
+// stream so messages scroll behind it. Translucent + backdrop blur, matching the
+// glassmorphic surfaces used elsewhere (calendar, nav, footers).
+export const ConversationDock = styled(Box)`
+	position: absolute;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	z-index: ${zIndexSticky};
+	padding: ${spacing.xs} ${spacing.xs} ${spacing.small};
+	background: ${hexToRgba(palette.background.default, 0.6)};
+	backdrop-filter: blur(12px) saturate(140%);
+	-webkit-backdrop-filter: blur(12px) saturate(140%);
+	border-top: 1px solid ${hexToRgba(palette.white, 0.5)};
+	box-shadow: ${shadowGlassShimmer};
+`;
+
+// `jupiter-onboarding-dock-inner` — centered, width-capped control column.
+export const ConversationDockInner = styled(Box)`
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: ${spacing.small};
+	width: 100%;
+	max-width: 560px;
+	margin: 0 auto;
 `;
 
 export const PublishingOverlay = styled(Box)`
@@ -115,64 +177,158 @@ export const CardSubtitle = styled(Text)`
 	line-height: 1.4;
 `;
 
-export const ConversationContainer = styled(Box)`
+
+// isGroupStart = first bubble of a run AND not the very first message; restores
+// the larger separation between distinct sender groups.
+const groupStartSpacing = css`
+	margin-top: ${spacing.xs};
+`;
+
+// Two columns: the avatar, then a stack (bubble row over note row). Mirrors the
+// preview's group → avatar + stack. align-items: flex-end bottom-anchors the
+// avatar to the stack, as in the preview.
+export const BotMessageGroup = styled(Box, {
+	shouldForwardProp: (prop) => prop !== 'isGroupStart',
+})<{ isGroupStart?: boolean }>`
+	display: flex;
+	flex-direction: row;
+	align-items: flex-end;
+	gap: ${spacing.xs};
+	align-self: flex-start;
+	max-width: 80%;
+
+	${isMobileMedia} {
+		max-width: 90%;
+	}
+
+	${({ isGroupStart }) => isGroupStart && groupStartSpacing}
+`;
+
+// Second column: the chat bubble on top and the (optional) status note below it,
+// both aligned to the bubble's left edge — not under the avatar.
+export const BotStack = styled(Box)`
 	display: flex;
 	flex-direction: column;
-	flex: 1;
-	min-height: 0;
-	overflow-y: auto;
-	padding: ${spacing.small};
-	gap: ${spacing.xs};
+	align-items: flex-start;
+	gap: ${spacing.xxs};
+	min-width: 0;
 `;
 
-export const BotMessageGroup = styled(Box)`
-	${messageGroupBase}
-	align-self: flex-start;
-	gap: ${spacing.xs};
-`;
-
-export const UserMessageGroup = styled(Box)`
+export const UserMessageGroup = styled(Box, {
+	shouldForwardProp: (prop) => prop !== 'isGroupStart',
+})<{ isGroupStart?: boolean }>`
 	${messageGroupBase}
 	align-self: flex-end;
-	padding-bottom: ${spacing.small};
+	gap: ${spacing.xxs};
+
+	${({ isGroupStart }) => isGroupStart && groupStartSpacing}
 `;
 
+// Bot bubbles are anchored to the left edge. Matching the preview: the avatar
+// (not a sharp bubble corner) marks the speaker, so the first bubble keeps a
+// rounded top-left (small); inner/anchor corners stay tight (xxs) so a run reads
+// as one box.
 export const BotBubble = styled(Box, {
-	shouldForwardProp: (prop) => prop !== 'isFirst',
-})<{ isFirst: boolean }>`
+	shouldForwardProp: (prop) => prop !== 'isFirst' && prop !== 'isLast',
+})<{ isFirst: boolean; isLast: boolean }>`
 	${bubbleBase}
 
 	background: ${jupiterBackgroundMain};
 	color: inherit;
 	text-align: left;
+	// Preserve newlines (e.g. the multi-line "welcome back" recap) while still
+	// wrapping long lines.
+	white-space: pre-line;
 
-	${({ isFirst }) =>
-		isFirst &&
-		css`
-			border-top-left-radius: 0;
-		`}
+	border-top-left-radius: ${({ isFirst }) =>
+		isFirst ? spacing.small : spacing.xxs};
+	border-bottom-left-radius: ${spacing.xxs};
+	border-top-right-radius: ${spacing.small};
+	border-bottom-right-radius: ${spacing.small};
 `;
 
-export const UserBubble = styled(Box)`
+// User bubbles mirror the bot: anchored to the right edge, with the xxs
+// bottom-right tail on the last bubble of the group.
+export const UserBubble = styled(Box, {
+	shouldForwardProp: (prop) => prop !== 'isFirst' && prop !== 'isLast',
+})<{ isFirst: boolean; isLast: boolean }>`
 	${bubbleBase}
 
 	background-color: ${palette.brand.light};
-	border-top-right-radius: 0;
 	align-self: flex-end;
 	text-align: right;
+
+	border-top-right-radius: ${spacing.small};
+	border-bottom-right-radius: ${spacing.xxs};
+	border-top-left-radius: ${({ isFirst }) =>
+		isFirst ? spacing.small : spacing.xxs};
+	border-bottom-left-radius: ${({ isLast }) =>
+		isLast ? spacing.small : spacing.xxs};
 `;
 
-export const IconRow = styled(Box, {
-	shouldForwardProp: (prop) => prop !== 'showIcon',
-})<{ showIcon: boolean }>`
+// Mirrors the preview's avatar atom: a 30px white disc with the floating Jupiter
+// mark and an idle blink. `isVisible={false}` keeps the disc's footprint as a
+// spacer so stacked continuation bubbles stay aligned under the first.
+export const Avatar = styled(Box, {
+	shouldForwardProp: (prop) => prop !== 'isVisible',
+})<{ isVisible?: boolean }>`
 	display: flex;
-	align-items: flex-start;
-	gap: ${spacing.xs};
+	flex-shrink: 0;
+	align-items: center;
+	justify-content: center;
+	width: 30px;
+	height: 30px;
+	border-radius: 50%;
+	background: ${palette.white};
+	box-shadow: ${shadowSmall};
+	color: ${palette.brand.purple};
+	visibility: ${({ isVisible }) => (isVisible === false ? 'hidden' : 'visible')};
+	animation: jupiterFloat 4.5s ease-in-out infinite;
 
 	& svg {
-		visibility: ${({ showIcon }) => (showIcon ? 'visible' : 'hidden')};
-		color: ${palette.brand.purple};
-		flex-shrink: 0;
+		width: 24px;
+		height: 24px;
+	}
+
+	@keyframes jupiterFloat {
+		0%,
+		100% {
+			transform: translateY(0);
+		}
+		50% {
+			transform: translateY(-3.5px);
+		}
+	}
+
+	// Idle eye blink — the two eye paths blink twice per cycle, then rest.
+	& svg path:nth-of-type(2),
+	& svg path:nth-of-type(3) {
+		transform-box: fill-box;
+		transform-origin: center;
+		animation: jupiterBlink 5.2s ease-in-out infinite;
+	}
+
+	@keyframes jupiterBlink {
+		0%,
+		6%,
+		12%,
+		18%,
+		100% {
+			transform: scaleY(1);
+		}
+		3%,
+		15% {
+			transform: scaleY(0.1);
+		}
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		animation: none;
+
+		& svg path:nth-of-type(2),
+		& svg path:nth-of-type(3) {
+			animation: none;
+		}
 	}
 `;
 

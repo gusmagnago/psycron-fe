@@ -1447,23 +1447,74 @@
 			"value-weekly": "Weekly (until end of month)",
 			"value-monthly": "Monthly (until end of year)"
 		},
+		"notes": {
+			"start-choice": "This choice decides whether I infer your schedule from Google or build clean availability from your answers.",
+			"specialty": "Your professional title helps me tailor sensible defaults for your sessions.",
+			"working-days": "Only selected days become patient-bookable. You can still block exceptions later in the calendar.",
+			"time-range": "This sets the outer working window. Booked sessions and Google busy time can still block parts of the day.",
+			"session-duration": "Session length controls how Psycron splits your available hours into patient-bookable slots.",
+			"session-type": "Patients need to know whether a slot needs a video link, an address, or a choice before they book.",
+			"timezone": "Timezone protects bookings across Brazil, Portugal, travel, and daylight-saving changes.",
+			"recurrence": "Weekly repeats the same times every week. Monthly repeats once per month — better for occasional clinic days.",
+			"preview": "This is the last check before patients can see these times on your booking page.",
+			"google-permission": "Google access lets Psycron detect busy time and avoid showing unsafe booking slots to patients.",
+			"google-source-choice": "Use existing schedule if Google reflects your real practice. Set hours from scratch if Google is noisy or incomplete.",
+			"imported-from-calendar": "Imported from {{calendar}}"
+		},
 		"preview": {
-			"title": "Your Availability Preview",
-			"label-days": "Working days:",
-			"label-hours": "Hours:",
-			"label-duration": "Duration:",
-			"label-recurrence": "Repeat:",
-			"label-session-type": "Session type:",
-			"label-timezone": "Timezone:",
-			"footer": "You can edit your availability anytime from your dashboard.",
-			"cta": "Publish Availability",
-			"loading": "Publishing...",
-			"reset": "Start over"
+			"title": "Your availability",
+			"label-calendar": "Calendar",
+			"label-days": "Days",
+			"label-hours": "Hours",
+			"label-duration": "Session",
+			"label-recurrence": "Repeats",
+			"label-session-type": "Type",
+			"label-timezone": "Timezone",
+			"calendar-fallback": "Google Calendar",
+			"no-calendar": "Not connected",
+			"status": {
+				"google-import": "Imported from Google",
+				"google-manual": "Google connected",
+				"manual": "Manual setup"
+			},
+			"footer": {
+				"google-import": "This schedule was inferred from {{calendar}}. Review it now; you can fine-tune everything in the calendar afterwards.",
+				"google-manual": "Google busy time will be respected from {{calendar}}. You can fine-tune everything in the calendar afterwards.",
+				"manual": "Google is not connected yet. Psycron can publish these hours now, but external busy time will not be checked until Google is connected."
+			},
+			"publish": {
+				"blocked": "Complete required answers",
+				"google-import": {
+					"idle": "Publish imported availability",
+					"publishing": "Publishing imported availability...",
+					"success": "Imported availability published"
+				},
+				"google-manual": {
+					"idle": "Publish with Google sync",
+					"publishing": "Publishing with Google sync...",
+					"success": "Google-synced availability published"
+				},
+				"manual": {
+					"idle": "Publish without Google",
+					"publishing": "Publishing without Google...",
+					"success": "Availability published"
+				}
+			},
+			"reset": "Start over",
+			"sync": {
+				"pending": "Your availability is published, but we couldn’t sync your Google Calendar busy times. Retry now so your schedule blocks conflicting times.",
+				"retry": "Retry Google sync",
+				"continue": "Continue without sync"
+			}
+		},
+		"recap": {
+			"label-specialties": "Specialties:"
 		},
 		"post-publish": {
 			"page-title": "Availability",
 			"page-subtitle": "Manage your availability and scheduling preferences",
 			"success-toast": "Your availability is now live. Clients can start booking sessions with you right away.",
+			"sync-pending-toast": "Your availability is live, but we couldn’t sync your Google Calendar busy times yet. You can sync again from Availability settings.",
 			"welcome-toast": "Welcome to Psycron!",
 			"tip-title": "Jupiter’s tip",
 			"tip-text": "Your availability looks great. Adding a cancellation policy helps reduce no-shows and sets clear expectations with clients.",
@@ -1540,19 +1591,22 @@
 			"back": "Go back"
 		},
 		"google-calendar": {
-			"permissions-intro": "We’ll securely connect to your Google Calendar to:",
-			"permission-1": "Read your busy times",
-			"permission-2": "Prevent double bookings",
-			"permission-3": "Keep everything in sync",
-			"privacy-note": "We never edit or delete events without your permission.",
-			"back": "← Back",
-			"continue": "Continue",
-			"success-line1": "Perfect! 🎉",
+			"permissions-intro": "Connect Google Calendar",
+			"permission-1": "See the times you are busy",
+			"permission-2": "Read your existing working hours",
+			"permission-3": "Add new sessions you book in Psycron",
+			"permissions-list-label": "Google Calendar access Psycron will request",
+			"privacy-note": "We never edit or share your existing events. You can disconnect Google any time.",
+			"back": "Back",
+			"back-aria": "Go back without connecting Google Calendar",
+			"continue": "Allow access",
+			"connected": "Your Google Calendar is connected — choose which calendar I should use below.",
+			"success-line1": "Your Google Calendar is connected!",
 			"success-line2": "Your Google Calendar is now connected.",
 			"success-line3": "I’ll automatically block times when you’re already busy.",
-			"next-choice": "Would you like to:",
-			"chip-use-existing": "Use my existing schedule as availability",
-			"chip-define-hours": "Define specific working hours",
+			"next-choice": "Want me to use your existing schedule, or set your hours from scratch?",
+			"chip-use-existing": "Use my existing schedule",
+			"chip-define-hours": "Set hours from scratch",
 			"define-hours-fallback": "Got it! Google Calendar import is coming soon. Let’s set your working hours manually for now.",
 			"importing": "Give me a moment — I’m importing your schedule from Google Calendar...",
 			"imported": "Done! I found your working days and hours. Just a couple more things to set up.",
@@ -1585,6 +1639,34 @@
 			"SATURDAY": "Saturday",
 			"SUNDAY": "Sunday"
 		}
+	},
+	"practice-import": {
+		"prompt": "We found <strong>{{count}}</strong> patients in your booked Google Calendar sessions.",
+		"review-cta": "Review",
+		"action-label": "Patients in your calendar",
+		"action-meta_one": "{{count}} to review",
+		"action-meta_other": "{{count}} to review",
+		"action-aria": "Review {{count}} patients detected in your calendar",
+		"insight-category": "Patients",
+		"insight-text_one": "You have {{count}} patient waiting in your calendar — add them to your patient list.",
+		"insight-text_other": "You have {{count}} patients waiting in your calendar — add them to your patient list.",
+		"title": "Add patients from your calendar",
+		"subtitle": "Review the {{count}} people detected in your booked sessions and add them to your patient list. Uncheck anyone you don't want to add.",
+		"first-name": "First name",
+		"last-name": "Last name",
+		"sessions_one": "{{count}} session",
+		"sessions_other": "{{count}} sessions",
+		"confidence-high": "High match",
+		"confidence-medium": "Likely",
+		"confidence-low": "Review",
+		"include-aria": "Include {{name}}",
+		"confirm_one": "Add {{count}} patient",
+		"confirm_other": "Add {{count}} patients",
+		"cancel": "Not now",
+		"empty": "No patients to import from your calendar yet.",
+		"commit-success_one": "Added {{count}} patient.",
+		"commit-success_other": "Added {{count}} patients.",
+		"commit-error": "Couldn't add patients. Please try again."
 	},
 	"availability": {
 		"calendar": {
@@ -1908,6 +1990,7 @@
 				"booked-call-aria": "Call {{name}}",
 				"booked-whatsapp-aria": "Message {{name}} on WhatsApp",
 				"booked-email-aria": "Email {{name}}",
+				"source-google": "Google Calendar",
 				"source-manual": "Booked",
 				"unblock-confirm": "Confirm unblock",
 				"unblock-confirm-body": "This slot will become available for booking again.",

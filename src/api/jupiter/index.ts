@@ -73,10 +73,17 @@ export interface JupiterPublishPayload {
 	workingDays: string[];
 }
 
+export interface JupiterPublishResult {
+	availabilityId: string;
+	// True when Google busy times were synced into the published availability
+	// during publish. False/absent for manual setups or if the sync failed.
+	calendarSynced?: boolean;
+}
+
 export const generateJupiterAvailability = async (
 	payload: JupiterPublishPayload
-): Promise<{ availabilityId: string }> => {
-	const response = await apiClient.post<{ availabilityId: string }>(
+): Promise<JupiterPublishResult> => {
+	const response = await apiClient.post<JupiterPublishResult>(
 		'/jupiter/availability/generate',
 		payload
 	);

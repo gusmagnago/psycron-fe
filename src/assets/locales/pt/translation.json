@@ -1447,23 +1447,74 @@
 			"value-weekly": "Semanal (até o fim do mês)",
 			"value-monthly": "Mensal (até o fim do ano)"
 		},
+		"notes": {
+			"start-choice": "Esta escolha define se eu deduzo sua agenda a partir do Google ou construo sua disponibilidade a partir das suas respostas.",
+			"specialty": "Seu título profissional me ajuda a definir padrões adequados para suas sessões.",
+			"working-days": "Apenas os dias selecionados ficam disponíveis para agendamento. Você ainda pode bloquear exceções depois no calendário.",
+			"time-range": "Isto define a janela geral de trabalho. Sessões agendadas e horários ocupados no Google ainda podem bloquear partes do dia.",
+			"session-duration": "A duração da sessão controla como o Psycron divide suas horas disponíveis em horários agendáveis.",
+			"session-type": "Os pacientes precisam saber se um horário exige um link de vídeo, um endereço ou uma escolha antes de agendar.",
+			"timezone": "O fuso horário protege os agendamentos entre Brasil, Portugal, viagens e mudanças de horário de verão.",
+			"recurrence": "Semanal repete os mesmos horários toda semana. Mensal repete uma vez por mês — melhor para dias de clínica ocasionais.",
+			"preview": "Esta é a última verificação antes de os pacientes verem estes horários na sua página de agendamento.",
+			"google-permission": "O acesso ao Google permite que o Psycron detecte horários ocupados e evite mostrar horários inseguros aos pacientes.",
+			"google-source-choice": "Use a agenda atual se o Google reflete sua prática real. Defina os horários do zero se o Google estiver incompleto ou desorganizado.",
+			"imported-from-calendar": "Importado de {{calendar}}"
+		},
 		"preview": {
-			"title": "Resumo da sua Disponibilidade",
-			"label-days": "Dias de atendimento:",
-			"label-hours": "Horário:",
-			"label-duration": "Duração:",
-			"label-recurrence": "Repetição:",
-			"label-session-type": "Tipo de sessão:",
-			"label-timezone": "Fuso horário:",
-			"footer": "Você pode editar sua disponibilidade a qualquer momento no painel.",
-			"cta": "Publicar Disponibilidade",
-			"loading": "Publicando...",
-			"reset": "Recomeçar"
+			"title": "Sua disponibilidade",
+			"label-calendar": "Calendário",
+			"label-days": "Dias",
+			"label-hours": "Horário",
+			"label-duration": "Sessão",
+			"label-recurrence": "Repetição",
+			"label-session-type": "Tipo",
+			"label-timezone": "Fuso horário",
+			"calendar-fallback": "Google Calendar",
+			"no-calendar": "Não conectado",
+			"status": {
+				"google-import": "Importado do Google",
+				"google-manual": "Google conectado",
+				"manual": "Configuração manual"
+			},
+			"footer": {
+				"google-import": "Esta agenda foi deduzida de {{calendar}}. Revise agora; você pode ajustar tudo no calendário depois.",
+				"google-manual": "Os horários ocupados do Google serão respeitados a partir de {{calendar}}. Você pode ajustar tudo no calendário depois.",
+				"manual": "O Google ainda não está conectado. O Psycron pode publicar estes horários agora, mas horários ocupados externos não serão verificados até conectar o Google."
+			},
+			"publish": {
+				"blocked": "Complete as respostas obrigatórias",
+				"google-import": {
+					"idle": "Publicar disponibilidade importada",
+					"publishing": "Publicando disponibilidade importada...",
+					"success": "Disponibilidade importada publicada"
+				},
+				"google-manual": {
+					"idle": "Publicar com sincronização do Google",
+					"publishing": "Publicando com sincronização do Google...",
+					"success": "Disponibilidade sincronizada publicada"
+				},
+				"manual": {
+					"idle": "Publicar sem o Google",
+					"publishing": "Publicando sem o Google...",
+					"success": "Disponibilidade publicada"
+				}
+			},
+			"reset": "Recomeçar",
+			"sync": {
+				"pending": "Sua disponibilidade foi publicada, mas não conseguimos sincronizar os horários ocupados do seu Google Agenda. Tente novamente para que sua agenda bloqueie os horários em conflito.",
+				"retry": "Tentar sincronizar com o Google",
+				"continue": "Continuar sem sincronizar"
+			}
+		},
+		"recap": {
+			"label-specialties": "Especialidades:"
 		},
 		"post-publish": {
 			"page-title": "Disponibilidade",
 			"page-subtitle": "Gerencie sua disponibilidade e preferências de agendamento",
 			"success-toast": "Sua disponibilidade está ativa. Seus clientes já podem agendar sessões com você.",
+			"sync-pending-toast": "Sua disponibilidade está ativa, mas ainda não conseguimos sincronizar os horários ocupados do seu Google Agenda. Você pode sincronizar novamente nas configurações de disponibilidade.",
 			"welcome-toast": "Bem-vindo ao Psycron!",
 			"tip-title": "Dica da Júpiter",
 			"tip-text": "Sua disponibilidade está ótima. Adicionar uma política de cancelamento ajuda a reduzir faltas e define expectativas claras com seus clientes.",
@@ -1540,19 +1591,22 @@
 			"back": "Voltar"
 		},
 		"google-calendar": {
-			"permissions-intro": "Vamos conectar sua Google Agenda com segurança para:",
-			"permission-1": "Ler seus horários ocupados",
-			"permission-2": "Evitar agendamentos duplicados",
-			"permission-3": "Manter tudo sincronizado",
-			"privacy-note": "Nós nunca editamos ou excluímos eventos sem sua permissão.",
-			"back": "← Voltar",
-			"continue": "Continuar",
-			"success-line1": "Perfeito! 🎉",
+			"permissions-intro": "Conectar o Google Agenda",
+			"permission-1": "Ver os horários em que você está ocupado",
+			"permission-2": "Ler seus horários de trabalho existentes",
+			"permission-3": "Adicionar novas sessões que você agendar no Psycron",
+			"permissions-list-label": "Acessos à Google Agenda que o Psycron vai solicitar",
+			"privacy-note": "Nós nunca editamos ou compartilhamos seus eventos existentes. Você pode desconectar o Google a qualquer momento.",
+			"back": "Voltar",
+			"back-aria": "Voltar sem conectar a Google Agenda",
+			"continue": "Permitir acesso",
+			"connected": "Sua Google Agenda está conectada — escolha abaixo qual agenda devo usar.",
+			"success-line1": "Sua Google Agenda está conectada!",
 			"success-line2": "Sua Google Agenda está conectada.",
 			"success-line3": "Vou bloquear automaticamente os horários em que você já estiver ocupado.",
-			"next-choice": "Você gostaria de:",
-			"chip-use-existing": "Usar minha agenda atual como disponibilidade",
-			"chip-define-hours": "Definir horários de trabalho específicos",
+			"next-choice": "Quer que eu use sua agenda atual ou que você defina seus horários do zero?",
+			"chip-use-existing": "Usar minha agenda atual",
+			"chip-define-hours": "Definir horários do zero",
 			"define-hours-fallback": "Entendido! A importação do Google Agenda estará disponível em breve. Por enquanto, vamos definir seus horários manualmente.",
 			"importing": "Um momento — estou importando sua agenda do Google Agenda...",
 			"imported": "Pronto! Encontrei seus dias e horários de trabalho. Só mais algumas configurações.",
@@ -1585,6 +1639,34 @@
 			"SATURDAY": "Sábado",
 			"SUNDAY": "Domingo"
 		}
+	},
+	"practice-import": {
+		"prompt": "Encontramos <strong>{{count}}</strong> pacientes nas sessões agendadas do seu Google Agenda.",
+		"review-cta": "Revisar",
+		"action-label": "Pacientes na sua agenda",
+		"action-meta_one": "{{count}} para revisar",
+		"action-meta_other": "{{count}} para revisar",
+		"action-aria": "Revisar {{count}} pacientes detectados na sua agenda",
+		"insight-category": "Pacientes",
+		"insight-text_one": "Você tem {{count}} paciente na sua agenda — adicione-o à sua lista de pacientes.",
+		"insight-text_other": "Você tem {{count}} pacientes na sua agenda — adicione-os à sua lista de pacientes.",
+		"title": "Adicionar pacientes da sua agenda",
+		"subtitle": "Revise as {{count}} pessoas detectadas nas suas sessões agendadas e adicione-as à sua lista de pacientes. Desmarque quem você não quiser adicionar.",
+		"first-name": "Nome",
+		"last-name": "Sobrenome",
+		"sessions_one": "{{count}} sessão",
+		"sessions_other": "{{count}} sessões",
+		"confidence-high": "Alta correspondência",
+		"confidence-medium": "Provável",
+		"confidence-low": "Revisar",
+		"include-aria": "Incluir {{name}}",
+		"confirm_one": "Adicionar {{count}} paciente",
+		"confirm_other": "Adicionar {{count}} pacientes",
+		"cancel": "Agora não",
+		"empty": "Ainda não há pacientes para importar da sua agenda.",
+		"commit-success_one": "{{count}} paciente adicionado.",
+		"commit-success_other": "{{count}} pacientes adicionados.",
+		"commit-error": "Não foi possível adicionar os pacientes. Tente novamente."
 	},
 	"availability": {
 		"calendar": {
@@ -1908,6 +1990,7 @@
 				"booked-call-aria": "Ligar para {{name}}",
 				"booked-whatsapp-aria": "Enviar mensagem para {{name}} no WhatsApp",
 				"booked-email-aria": "Enviar email para {{name}}",
+				"source-google": "Google Calendar",
 				"source-manual": "Agendado",
 				"unblock-confirm": "Confirmar desbloqueio",
 				"unblock-confirm-body": "Este horário ficará disponível para agendamentos novamente.",

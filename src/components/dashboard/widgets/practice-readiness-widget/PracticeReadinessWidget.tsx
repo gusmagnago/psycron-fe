@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { Skeleton } from '@mui/material';
 import { Button } from '@psycron/components/button/Button';
 import { WidgetLayout } from '@psycron/components/dashboard/widget-layout/WidgetLayout';
-import { Available, Phone, Wallet } from '@psycron/components/icons';
+import { Available, Phone, SaveUser, Wallet } from '@psycron/components/icons';
 import { palette } from '@psycron/theme/palette/palette.theme';
 
 import {
@@ -46,10 +46,13 @@ export const PracticeReadinessWidget = ({
 	contactsConfigured,
 	contactsTotal,
 	hasAvailability,
+	importCandidateCount = 0,
 	isLoading,
+	onImportAction,
 	onSegmentAction,
 }: PracticeReadinessWidgetProps) => {
 	const { t } = useTranslation();
+	const showImportRow = importCandidateCount > 0 && Boolean(onImportAction);
 
 	const contactsPct =
 		contactsTotal > 0 ? (contactsConfigured / contactsTotal) * 100 : 0;
@@ -64,7 +67,15 @@ export const PracticeReadinessWidget = ({
 		[availabilityPct, billingPercentage, contactsPct]
 	);
 
-	const overall = getWeightedReadiness(percentages);
+	// Pending imports count as an incomplete (0%) readiness item that drags the
+	// overall ring down until the therapist reviews/adds them. Folded in with a
+	// fixed weight, normalized — so with no pending imports the ring is unchanged.
+	const importPct = 0;
+	const IMPORT_WEIGHT = 0.25;
+	const baseOverall = getWeightedReadiness(percentages);
+	const overall = showImportRow
+		? Math.round((baseOverall + importPct * IMPORT_WEIGHT) / (1 + IMPORT_WEIGHT))
+		: baseOverall;
 	const primary = getPrimarySegment(percentages);
 
 	const headerActions = useMemo(
@@ -158,6 +169,48 @@ export const PracticeReadinessWidget = ({
 			id='dashboard-practice-readiness-actions'
 		>
 			<ReadinessSegments>
+				{showImportRow && (
+					<ReadinessRow
+						aria-label={t('practice-import.action-label')}
+						data-testid='dashboard-practice-readiness-segment-import'
+						id='dashboard-practice-readiness-segment-import'
+						onClick={onImportAction}
+						type='button'
+					>
+						<ReadinessIcon
+							$tone={getSegmentTone(importPct)}
+							data-testid='dashboard-practice-readiness-segment-import-icon'
+							id='dashboard-practice-readiness-segment-import-icon'
+						>
+							<SaveUser />
+						</ReadinessIcon>
+						<ReadinessRowText>
+							<ReadinessRowTitle
+								data-testid='dashboard-practice-readiness-segment-import-title'
+								id='dashboard-practice-readiness-segment-import-title'
+							>
+								{t('practice-import.action-label')}
+							</ReadinessRowTitle>
+							<ReadinessRowSub
+								data-testid='dashboard-practice-readiness-segment-import-sub'
+								id='dashboard-practice-readiness-segment-import-sub'
+							>
+								{t('practice-import.action-meta', {
+									count: importCandidateCount,
+								})}
+							</ReadinessRowSub>
+							<ReadinessBar
+								data-testid='dashboard-practice-readiness-segment-import-bar'
+								id='dashboard-practice-readiness-segment-import-bar'
+							>
+								<ReadinessBarFill
+									$pct={importPct}
+									$tone={getSegmentTone(importPct)}
+								/>
+							</ReadinessBar>
+						</ReadinessRowText>
+					</ReadinessRow>
+				)}
 				{segments.map((segment) => {
 					const tone = getSegmentTone(segment.percentage);
 					return (

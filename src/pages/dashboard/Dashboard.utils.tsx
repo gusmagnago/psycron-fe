@@ -33,7 +33,7 @@ export const TILE_DESKTOP: Record<DashboardTileId, TileSpan> = {
 	'recent-patients': { col: 3, row: 3 },
 	revenue: { col: 3, row: 3 },
 	schedule: { col: 12, row: 4 },
-	'practice-readiness': { col: 6, row: 2 },
+	'practice-readiness': { col: 6, row: 4 },
 	'session-analytics': { col: 6, row: 3 },
 };
 
@@ -44,20 +44,22 @@ export const TILE_TABLET: Record<DashboardTileId, TileSpan> = {
 	'recent-patients': { col: 3, row: 2 },
 	revenue: { col: 3, row: 2 },
 	schedule: { col: 6, row: 4 },
-	'practice-readiness': { col: 3, row: 2 },
+	'practice-readiness': { col: 6, row: 2 },
 	'session-analytics': { col: 6, row: 2 },
 };
 
 export const MIN_TILE_ROW_SPAN = 1;
-export const MAX_TILE_ROW_SPAN = 6;
+export const MAX_TILE_ROW_SPAN = 4;
 export const COL_RESIZE_STEP = 3;
 export const MAX_TILE_COL_SPAN = 12;
-export const MAX_TILE_COL_SPAN_BY_ID: Partial<Record<DashboardTileId, number>> = {
-	greeting: 7,
-};
-export const MAX_TILE_ROW_SPAN_BY_ID: Partial<Record<DashboardTileId, number>> = {
-	greeting: 4,
-};
+export const MAX_TILE_COL_SPAN_BY_ID: Partial<Record<DashboardTileId, number>> =
+	{
+		greeting: 7,
+	};
+export const MAX_TILE_ROW_SPAN_BY_ID: Partial<Record<DashboardTileId, number>> =
+	{
+		greeting: 4,
+	};
 
 export const TILE_MIN_HEIGHT: Record<DashboardTileId, number> = {
 	'action-center': 220,
@@ -70,7 +72,8 @@ export const TILE_MIN_HEIGHT: Record<DashboardTileId, number> = {
 	'session-analytics': 220,
 };
 
-export const getFixedTileSpan = (id: DashboardTileId): TileSpan => TILE_DESKTOP[id];
+export const getFixedTileSpan = (id: DashboardTileId): TileSpan =>
+	TILE_DESKTOP[id];
 
 export const getTargetNav = (
 	target: DashboardActionTarget

@@ -96,6 +96,12 @@ export const WorkspaceMainContent = styled(Box, {
 				padding: ${spacing.small};
 			}
 		`}
+
+	${({ contentMode }) =>
+		contentMode === 'chat' &&
+		css`
+			position: relative;
+		`}
 `;
 
 export const WorkspaceLoaderRegion = styled(Box)`

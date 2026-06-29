@@ -1,119 +1,38 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useNavigate } from 'react-router-dom';
-import type { CalendarItem } from '@psycron/api/auth';
-import {
-	getGoogleCalendarConnectUrl,
-	getGoogleCalendarList,
-	getGoogleCalendarStatus,
-	selectGoogleCalendar,
-} from '@psycron/api/auth';
-import type { IAvailabilityRecord } from '@psycron/api/availability/index.types';
-import {
-	generateJupiterAvailability,
-	importGoogleCalendarSchedule,
-	type RecurrencePattern,
-} from '@psycron/api/jupiter';
-import { QUERY_KEYS } from '@psycron/api/queryKeys';
+import { getGoogleCalendarStatus } from '@psycron/api/auth';
+import { type RecurrencePattern } from '@psycron/api/jupiter';
 import { editUserById } from '@psycron/api/user';
-import { useAlert } from '@psycron/context/alert/AlertContext';
-import { AVAILABILITYGENERATE, AVAILABILITYPATH } from '@psycron/pages/urls';
-import { useQueryClient } from '@tanstack/react-query';
+import { slugToTitleCase } from '@psycron/utils/string/string.utils';
 
 import type {
 	JupiterAnswers,
-	JupiterMessage,
 	JupiterStep,
 } from './JupiterConversation.types';
+import {
+	CANONICAL_TO_CHIP,
+	loadSaved,
+	SESSION_TYPE_CANONICAL,
+	STEP_QUESTION_KEY,
+	STORAGE_KEY,
+	WEEKDAY_KEY_MAP,
+} from './jupiterFlow.constants';
 import {
 	SPECIALTY_CHIP_KEY_MAP,
 	SPECIALTY_SESSION_TYPE_DEFAULTS,
 	SPECIALTY_SESSION_TYPE_FALLBACK,
 } from './jupiterSpecialtyDefaults';
+import { useGoogleCalendarOnboarding } from './useGoogleCalendarOnboarding';
+import { useJupiterMessages } from './useJupiterMessages';
+import { useJupiterPublish } from './useJupiterPublish';
 
-export const STORAGE_KEY = '_psy_jd';
-export const ONBOARDING_KEY = '_psy_ob';
-export const PUBLISHED_KEY = '_psy_pub';
-
-const SESSION_TYPE_CANONICAL: Record<string, string> = {
-	'chip-both': 'BOTH',
-	'chip-in-person': 'IN_PERSON',
-	'chip-online': 'ONLINE',
-};
-
-// One-time migration from legacy readable keys
-const LEGACY_STORAGE_KEY = 'jupiter-flow';
-const LEGACY_ONBOARDING_KEY = 'psycron-jupiter-onboarded';
-const migrateLocalStorageKeys = () => {
-	const draft = localStorage.getItem(LEGACY_STORAGE_KEY);
-	if (draft) {
-		localStorage.setItem(STORAGE_KEY, draft);
-		localStorage.removeItem(LEGACY_STORAGE_KEY);
-	}
-	const onboarded = localStorage.getItem(LEGACY_ONBOARDING_KEY);
-	if (onboarded) {
-		localStorage.setItem(ONBOARDING_KEY, onboarded);
-		localStorage.removeItem(LEGACY_ONBOARDING_KEY);
-	}
-};
-
-migrateLocalStorageKeys();
-
-const VALID_SESSION_TYPE_KEYS = new Set(['chip-online', 'chip-in-person', 'chip-both']);
-
-const loadSaved = (): {
-	answers: JupiterAnswers;
-	step: JupiterStep;
-} | null => {
-	try {
-		const raw = localStorage.getItem(STORAGE_KEY);
-		if (!raw) return null;
-		const data = JSON.parse(raw) as { answers: JupiterAnswers; step: JupiterStep };
-		// Migrate: if sessionType is a translated label (pre-chip-key era), clear it
-		if (data.answers?.sessionType && !VALID_SESSION_TYPE_KEYS.has(data.answers.sessionType)) {
-			data.answers = { ...data.answers, sessionType: undefined };
-			if (data.step === 'preview') data.step = 'session-type';
-		}
-		// Migrate: if at preview but recurrencePattern not yet collected, redirect to that step
-		if (data.step === 'preview' && !data.answers?.recurrencePattern) {
-			data.step = 'recurrence-pattern';
-		}
-		return data;
-	} catch {
-		return null;
-	}
-};
-
-const STEP_QUESTION_KEY: Partial<Record<JupiterStep, string>> = {
-	'calendar-choice': 'jupiter.calendar-choice.msg2',
-	'recurrence-pattern': 'jupiter.recurrence-pattern.response',
-	'session-duration': 'jupiter.session-duration.response',
-	'session-type': 'jupiter.session-type.response',
-	specialty: 'jupiter.specialty.response',
-	'time-range': 'jupiter.time-range.response',
-	timezone: 'jupiter.timezone.response',
-	'working-days': 'jupiter.working-days.response',
-};
-
-const WEEKDAY_KEY_MAP: Record<string, string> = {
-	'chip-fri': 'FRIDAY',
-	'chip-mon': 'MONDAY',
-	'chip-sat': 'SATURDAY',
-	'chip-sun': 'SUNDAY',
-	'chip-thu': 'THURSDAY',
-	'chip-tue': 'TUESDAY',
-	'chip-wed': 'WEDNESDAY',
-};
-
-const CANONICAL_TO_CHIP: Record<string, string> = {
-	FRIDAY: 'chip-fri',
-	MONDAY: 'chip-mon',
-	SATURDAY: 'chip-sat',
-	SUNDAY: 'chip-sun',
-	THURSDAY: 'chip-thu',
-	TUESDAY: 'chip-tue',
-	WEDNESDAY: 'chip-wed',
-};
+// Re-exported for consumers that read the onboarding/draft flags directly
+// (AvailabilityGate, useAvailabilitySettings).
+export {
+	ONBOARDING_KEY,
+	PUBLISHED_KEY,
+	STORAGE_KEY,
+} from './jupiterFlow.constants';
 
 interface UseJupiterFlowOptions {
 	initialAnswers?: JupiterAnswers;
@@ -121,15 +40,18 @@ interface UseJupiterFlowOptions {
 	userSpecialities?: string[];
 }
 
+/**
+ * Orchestrates the Jupiter onboarding conversation: owns step + answers state
+ * and the per-step handlers, and composes the focused sub-hooks for the message
+ * stream ([[useJupiterMessages]]), publishing ([[useJupiterPublish]]) and the
+ * Google path ([[useGoogleCalendarOnboarding]]).
+ */
 export const useJupiterFlow = ({
 	initialAnswers,
 	therapistId,
 	userSpecialities,
 }: UseJupiterFlowOptions = {}) => {
-	const { t, i18n } = useTranslation();
-	const navigate = useNavigate();
-	const { showAlert } = useAlert();
-	const queryClient = useQueryClient();
+	const { t } = useTranslation();
 
 	const saved = useMemo(() => loadSaved(), []);
 
@@ -147,11 +69,6 @@ export const useJupiterFlow = ({
 	const [answers, setAnswers] = useState<JupiterAnswers>(
 		initialAnswers ?? saved?.answers ?? {}
 	);
-	const [messages, setMessages] = useState<JupiterMessage[]>([]);
-	const [isPublishing, setIsPublishing] = useState(false);
-	const [isImporting, setIsImporting] = useState(false);
-	const [isLoadingCalendars, setIsLoadingCalendars] = useState(false);
-	const [calendarList, setCalendarList] = useState<CalendarItem[]>([]);
 	const [specialityKey, setSpecialityKey] = useState(0);
 	const [workingDaysKey, setWorkingDaysKey] = useState(0);
 
@@ -166,24 +83,35 @@ export const useJupiterFlow = ({
 		localStorage.setItem(STORAGE_KEY, JSON.stringify({ step, answers }));
 	}, [step, answers]);
 
-	const addBotMessage = useCallback((content: string, showIcon = true) => {
-		setMessages((prev) => [...prev, { content, sender: 'bot', showIcon }]);
-	}, []);
+	const {
+		messages,
+		setMessages,
+		isBotTyping,
+		addBotMessage,
+		addUserMessage,
+		revealBotMessage,
+		buildStepNote,
+		buildTranscript,
+	} = useJupiterMessages(answers);
 
-	const addUserMessage = useCallback((content: string) => {
-		setMessages((prev) => [...prev, { content, sender: 'user' }]);
-	}, []);
+	const { isPublishing, handlePublish, handleRetrySync, handleContinueWithoutSync } =
+		useJupiterPublish({ answers, therapistId, addBotMessage });
 
 	// ─── Core transition helpers ───────────────────────────────────────────────
 
 	const advance = useCallback(
-		(botKey: string, nextStep: JupiterStep, delay = 300) => {
-			setTimeout(() => {
-				addBotMessage(t(botKey));
-				setStep(nextStep);
-			}, delay);
+		(botKey: string, nextStep: JupiterStep, delay?: number) => {
+			// Each question follows the user's answer, so it opens a new bot turn —
+			// show the avatar (showIcon) so every turn reads like the preview.
+			revealBotMessage(
+				t(botKey),
+				true,
+				buildStepNote(nextStep),
+				() => setStep(nextStep),
+				delay
+			);
 		},
-		[addBotMessage, t]
+		[buildStepNote, revealBotMessage, t]
 	);
 
 	const commit = useCallback(
@@ -201,6 +129,26 @@ export const useJupiterFlow = ({
 		[addUserMessage, advance]
 	);
 
+	const {
+		calendarList,
+		isImporting,
+		isLoadingCalendars,
+		handleCalendarPicked,
+		handleGoogleContinue,
+		handleGoogleBack,
+		handleGooglePostConnect,
+	} = useGoogleCalendarOnboarding({
+		step,
+		setStep,
+		answers,
+		setAnswers,
+		addBotMessage,
+		addUserMessage,
+		revealBotMessage,
+		buildStepNote,
+		advance,
+	});
+
 	// ─── Google OAuth return handler ───────────────────────────────────────────
 
 	useEffect(() => {
@@ -210,8 +158,15 @@ export const useJupiterFlow = ({
 		url.searchParams.delete('calendar');
 		window.history.replaceState({}, '', url.toString());
 
+		if (hasInitialized.current) return;
 		hasInitialized.current = true;
-	}, [isCalendarConnected]);
+
+		// The Google OAuth round-trip reloads the page and wipes the in-memory
+		// chat. Rebuild the conversation from saved answers and acknowledge the
+		// connection so the user isn't dropped into an empty stream at the picker.
+		setMessages(buildTranscript());
+		addBotMessage(t('jupiter.google-calendar.connected'));
+	}, [isCalendarConnected, buildTranscript, addBotMessage, setMessages, t]);
 
 	// ─── Flow initialization ───────────────────────────────────────────────────
 
@@ -220,28 +175,56 @@ export const useJupiterFlow = ({
 		hasInitialized.current = true;
 
 		if (saved) {
-			addBotMessage(t('jupiter.errors.session-timeout'));
+			// Rebuild the whole conversation from the saved answers so the returning
+			// user sees their full history (questions + their answer bubbles) and
+			// continues from the current step — never a fresh step-by-step. The
+			// durable source of truth is `answers`, so the copy is always current.
+			const transcript = buildTranscript();
 			const questionKey = STEP_QUESTION_KEY[saved.step];
-			if (questionKey) {
-				setTimeout(() => addBotMessage(t(questionKey), false), 500);
+
+			if (transcript.length) {
+				setMessages(transcript);
+				if (questionKey) {
+					// Follows the last answer bubble → new bot turn, show the avatar.
+					revealBotMessage(t(questionKey), true, buildStepNote(saved.step));
+				}
+			} else {
+				// Nothing answered yet — open with the greeting + current question.
+				setMessages([
+					{
+						content: t('jupiter.calendar-choice.msg1'),
+						sender: 'bot',
+						showIcon: true,
+					},
+				]);
+				if (questionKey) {
+					revealBotMessage(t(questionKey), false, buildStepNote(saved.step));
+				}
 			}
 			return;
 		}
 
 		addBotMessage(t('jupiter.calendar-choice.msg1'));
-		setTimeout(
-			() =>
-				addBotMessage(
-					t(
-						!userSpecialities?.length
-							? 'jupiter.specialty.response'
-							: 'jupiter.calendar-choice.msg2'
-					),
-					false
-				),
-			500
+		const nextStep = !userSpecialities?.length ? 'specialty' : 'calendar-choice';
+		revealBotMessage(
+			t(
+				!userSpecialities?.length
+					? 'jupiter.specialty.response'
+					: 'jupiter.calendar-choice.msg2'
+			),
+			false,
+			buildStepNote(nextStep)
 		);
-	}, [addBotMessage, saved, t, userSpecialities?.length]);
+	}, [
+		addBotMessage,
+		buildStepNote,
+		buildTranscript,
+		revealBotMessage,
+		saved,
+		setMessages,
+		t,
+		userSpecialities?.length,
+	]);
 
 	// ─── Step handlers ─────────────────────────────────────────────────────────
 
@@ -249,14 +232,21 @@ export const useJupiterFlow = ({
 		async (key: string) => {
 			if (key === 'google') {
 				addUserMessage(t('jupiter.calendar-choice.chip-google'));
-				setAnswers((prev) => ({ ...prev, calendarChoice: 'google' }));
+				setAnswers((prev) => ({
+					...prev,
+					availabilitySource: 'google-manual',
+					calendarChoice: 'google',
+				}));
 
 				try {
 					const status = await getGoogleCalendarStatus();
 					if (status.connected) {
-						// Already connected — skip OAuth, go straight to google-success
-						addBotMessage(t('jupiter.calendar-choice.google-already-connected'));
-						setTimeout(() => setStep('google-success'), 300);
+						revealBotMessage(
+							t('jupiter.calendar-choice.google-already-connected'),
+							true,
+							undefined,
+							() => setStep('google-success')
+						);
 						return;
 					}
 				} catch {
@@ -266,11 +256,15 @@ export const useJupiterFlow = ({
 				setStep('google-permissions');
 			} else {
 				addUserMessage(t('jupiter.calendar-choice.chip-manual'));
-				setAnswers((prev) => ({ ...prev, calendarChoice: 'manual' }));
-				advance('jupiter.working-days.response', 'working-days', 500);
+				setAnswers((prev) => ({
+					...prev,
+					availabilitySource: 'manual',
+					calendarChoice: 'manual',
+				}));
+				advance('jupiter.working-days.response', 'working-days');
 			}
 		},
-		[addBotMessage, addUserMessage, advance, t]
+		[addUserMessage, advance, revealBotMessage, t]
 	);
 
 	const handleWorkingDays = useCallback(
@@ -278,9 +272,7 @@ export const useJupiterFlow = ({
 			const dayLabels = selectedKeys
 				.map((key) => t(`jupiter.working-days.${key}`))
 				.join(', ');
-			const canonicalDays = selectedKeys.map(
-				(key) => WEEKDAY_KEY_MAP[key] ?? key
-			);
+			const canonicalDays = selectedKeys.map((key) => WEEKDAY_KEY_MAP[key] ?? key);
 			addUserMessage(dayLabels);
 			setAnswers((prev) => ({ ...prev, workingDays: canonicalDays }));
 			advance('jupiter.time-range.response', 'time-range');
@@ -288,7 +280,6 @@ export const useJupiterFlow = ({
 		[addUserMessage, advance, t]
 	);
 
-	// Accepts canonical day names (e.g. ["MONDAY","FRIDAY"]) from AI-parsed text
 	const handleWorkingDaysFromText = useCallback(
 		(canonicalDays: string[]) => {
 			const chipKeys = canonicalDays
@@ -309,14 +300,20 @@ export const useJupiterFlow = ({
 	// ─── Specialty handlers ────────────────────────────────────────────────────
 
 	const commitSpecialities = useCallback(
-		async (canonicals: string[]) => {
-			const label = canonicals.join(', ');
+		async (canonicals: string[], displayLabel?: string) => {
+			// Show the copy the user actually picked (chip labels), not the internal
+			// canonical slugs. Free-text entries fall back to a readable form of the
+			// canonical (e.g. "speech-therapist" → "Speech Therapist").
+			const label = displayLabel ?? canonicals.map(slugToTitleCase).join(', ');
 			addUserMessage(label);
 			setAnswers((prev) => ({ ...prev, specialities: canonicals }));
 
 			if (therapistId) {
 				try {
-					await editUserById({ data: { specialities: canonicals }, userId: therapistId });
+					await editUserById({
+						data: { specialities: canonicals },
+						userId: therapistId,
+					});
 				} catch {
 					// Non-critical — flow continues regardless
 				}
@@ -328,12 +325,21 @@ export const useJupiterFlow = ({
 			setAnswers((prev) => ({ ...prev, sessionType: defaultSessionType }));
 
 			addBotMessage(t('jupiter.specialty.acknowledged'));
-			setTimeout(() => {
-				addBotMessage(t('jupiter.calendar-choice.msg2'), false);
-				setStep('calendar-choice');
-			}, 500);
+			revealBotMessage(
+				t('jupiter.calendar-choice.msg2'),
+				false,
+				buildStepNote('calendar-choice'),
+				() => setStep('calendar-choice')
+			);
 		},
-		[addBotMessage, addUserMessage, therapistId, t]
+		[
+			addBotMessage,
+			addUserMessage,
+			buildStepNote,
+			revealBotMessage,
+			therapistId,
+			t,
+		]
 	);
 
 	const handleSpecialty = useCallback(
@@ -341,9 +347,12 @@ export const useJupiterFlow = ({
 			const canonicals = selectedKeys.map(
 				(k) => SPECIALTY_CHIP_KEY_MAP[k] ?? k.replace('chip-', '')
 			);
-			commitSpecialities(canonicals);
+			const displayLabel = selectedKeys
+				.map((k) => t(`jupiter.specialty.${k}`))
+				.join(', ');
+			commitSpecialities(canonicals, displayLabel);
 		},
-		[commitSpecialities]
+		[commitSpecialities, t]
 	);
 
 	const handleSpecialtyFromText = useCallback(
@@ -367,7 +376,6 @@ export const useJupiterFlow = ({
 		[addBotMessage, t]
 	);
 
-	// Receives the resolved display label (from chip option or free text input)
 	const handleTimeRange = useCallback(
 		(label: string) =>
 			commit(
@@ -380,7 +388,6 @@ export const useJupiterFlow = ({
 		[commit]
 	);
 
-	// Receives the resolved display label (from chip option or free text input)
 	const handleSessionDuration = useCallback(
 		(label: string) => {
 			const hasSpecialityDefault =
@@ -389,7 +396,13 @@ export const useJupiterFlow = ({
 			const sessionTypeResponseKey = hasSpecialityDefault
 				? 'jupiter.session-type.response-with-suggestion'
 				: 'jupiter.session-type.response';
-			commit(label, 'sessionDuration', label, sessionTypeResponseKey, 'session-type');
+			commit(
+				label,
+				'sessionDuration',
+				label,
+				sessionTypeResponseKey,
+				'session-type'
+			);
 		},
 		[answers.specialities, commit]
 	);
@@ -409,26 +422,30 @@ export const useJupiterFlow = ({
 	);
 
 	const advanceAfterTimezone = useCallback(() => {
-		// Skip recurrence step if already detected from Google Calendar import
-		setAnswers((prev) => {
-			if (prev.recurrencePattern) {
-				const summaryKey =
-					prev.recurrencePattern === 'WEEKLY'
-						? 'jupiter.recurrence-pattern.summary-weekly'
-						: 'jupiter.recurrence-pattern.summary-monthly';
-				setTimeout(() => {
-					addBotMessage(t(summaryKey));
-					setStep('preview');
-				}, 300);
-			} else {
-				setTimeout(() => {
-					addBotMessage(t('jupiter.recurrence-pattern.response'));
-					setStep('recurrence-pattern');
-				}, 300);
-			}
-			return prev;
-		});
-	}, [addBotMessage, t]);
+		// Read recurrencePattern from the current closure — NOT from inside a
+		// setAnswers updater. Updater functions must be pure; React can invoke them
+		// more than once (e.g. StrictMode), which would fire the reveal twice and
+		// duplicate the summary bubble.
+		if (answers.recurrencePattern) {
+			// Recurrence is already known (e.g. inferred from the Google import), so
+			// skip the question and go straight to the summary + preview.
+			const summaryKey =
+				answers.recurrencePattern === 'WEEKLY'
+					? 'jupiter.recurrence-pattern.summary-weekly'
+					: 'jupiter.recurrence-pattern.summary-monthly';
+			// Follows the timezone answer → new bot turn, so show the avatar.
+			revealBotMessage(t(summaryKey), true, buildStepNote('preview'), () =>
+				setStep('preview')
+			);
+		} else {
+			revealBotMessage(
+				t('jupiter.recurrence-pattern.response'),
+				true,
+				buildStepNote('recurrence-pattern'),
+				() => setStep('recurrence-pattern')
+			);
+		}
+	}, [answers.recurrencePattern, buildStepNote, revealBotMessage, t]);
 
 	const handleTimezone = useCallback(
 		(key: string) => {
@@ -460,7 +477,8 @@ export const useJupiterFlow = ({
 
 	const handleRecurrencePattern = useCallback(
 		(key: string) => {
-			const value: RecurrencePattern = key === 'chip-weekly' ? 'WEEKLY' : 'MONTHLY';
+			const value: RecurrencePattern =
+				key === 'chip-weekly' ? 'WEEKLY' : 'MONTHLY';
 			const label = t(`jupiter.recurrence-pattern.${key}`);
 			const summaryKey =
 				key === 'chip-weekly'
@@ -471,54 +489,6 @@ export const useJupiterFlow = ({
 		[commit, t]
 	);
 
-	// ─── Publish / Reset ───────────────────────────────────────────────────────
-
-	const handlePublish = useCallback(async () => {
-		if (
-			!answers.workingDays?.length ||
-			!answers.timeRange ||
-			!answers.sessionDuration ||
-			!answers.sessionType ||
-			!answers.timezone ||
-			!answers.recurrencePattern
-		)
-			return;
-
-		setIsPublishing(true);
-		try {
-			const { availabilityId } = await generateJupiterAvailability({
-				recurrencePattern: answers.recurrencePattern,
-				workingDays: answers.workingDays,
-				timeRange: answers.timeRange,
-				sessionDuration: answers.sessionDuration,
-				sessionType: answers.sessionType,
-				timezone: answers.timezone,
-			});
-			localStorage.removeItem(STORAGE_KEY);
-			localStorage.setItem(ONBOARDING_KEY, 'true');
-			localStorage.setItem(PUBLISHED_KEY, 'true');
-			const record: IAvailabilityRecord = {
-				availabilityId,
-				recurrencePattern: answers.recurrencePattern,
-				sessionDuration: answers.sessionDuration!,
-				sessionType: answers.sessionType!,
-				timeRange: answers.timeRange!,
-				timezone: answers.timezone!,
-				workingDays: answers.workingDays!,
-			};
-			queryClient.setQueryData<IAvailabilityRecord>(['availability'], record);
-			queryClient.setQueryData<IAvailabilityRecord>(['availabilityGate'], record);
-			queryClient.invalidateQueries({ queryKey: QUERY_KEYS.therapistAvailability(therapistId) });
-			showAlert({ message: t('jupiter.post-publish.success-toast'), severity: 'success' });
-			showAlert({ message: t('jupiter.post-publish.welcome-toast'), severity: 'success' });
-			navigate(`/${i18n.language}/${AVAILABILITYPATH}`);
-		} catch {
-			addBotMessage(t('jupiter.errors.save-fail'));
-		} finally {
-			setIsPublishing(false);
-		}
-	}, [answers, addBotMessage, i18n.language, navigate, queryClient, showAlert, t, therapistId]);
-
 	const handleReset = useCallback(() => {
 		localStorage.removeItem(STORAGE_KEY);
 		setStep('calendar-choice');
@@ -526,143 +496,20 @@ export const useJupiterFlow = ({
 		setMessages([
 			{
 				content: t('jupiter.calendar-choice.msg2'),
+				note: buildStepNote('calendar-choice'),
 				sender: 'bot',
 				showIcon: true,
 			},
 		]);
 		hasInitialized.current = true;
-	}, [t]);
-
-	// ─── Calendar picker ───────────────────────────────────────────────────────
-
-	useEffect(() => {
-		if (step !== 'calendar-picker') return;
-
-		setIsLoadingCalendars(true);
-		getGoogleCalendarList()
-			.then((calendars) => {
-				// If only one calendar (primary), auto-select and skip the picker
-				if (calendars.length <= 1) {
-					const id = calendars[0]?.id ?? 'primary';
-					setAnswers((prev) => ({ ...prev, selectedCalendarId: id }));
-					selectGoogleCalendar(id).catch(() => null);
-					setStep('google-success');
-					return;
-				}
-				setCalendarList(calendars);
-			})
-			.catch(() => {
-				// On error fall through to google-success without forcing a selection
-				setStep('google-success');
-			})
-			.finally(() => setIsLoadingCalendars(false));
-	 
-	}, [step]);
-
-	const handleCalendarPicked = useCallback(
-		async (calendarId: string) => {
-			setAnswers((prev) => ({ ...prev, selectedCalendarId: calendarId }));
-			try {
-				await selectGoogleCalendar(calendarId);
-			} catch {
-				// Non-critical — continue regardless
-			}
-			setStep('google-success');
-		},
-		[]
-	);
-
-	// ─── Google Calendar path ──────────────────────────────────────────────────
-
-	const handleGoogleContinue = useCallback(async () => {
-		try {
-			const { url } = await getGoogleCalendarConnectUrl({
-				locale: i18n.language,
-				returnTo: `/${AVAILABILITYGENERATE}?calendar=connected`,
-			});
-			window.location.assign(url);
-		} catch {
-			addBotMessage(t('jupiter.errors.google-oauth-fail'));
-		}
-	}, [addBotMessage, i18n.language, t]);
-
-	const handleGoogleBack = useCallback(() => setStep('calendar-choice'), []);
-
-	const handleGooglePostConnect = useCallback(
-		async (key: string) => {
-			addUserMessage(
-				key === 'chip-use-existing'
-					? t('jupiter.google-calendar.chip-use-existing')
-					: t('jupiter.google-calendar.chip-define-hours')
-			);
-
-			if (key === 'chip-use-existing') {
-				setIsImporting(true);
-				addBotMessage(t('jupiter.google-calendar.importing'));
-
-				try {
-					const schedule = await importGoogleCalendarSchedule();
-
-					setIsImporting(false);
-
-					if (schedule && schedule.workingDays.length > 0) {
-						const timeRange = `${schedule.startTime} - ${schedule.endTime}`;
-
-						const updatedAnswers: Partial<JupiterAnswers> = {
-							workingDays: schedule.workingDays,
-							timeRange,
-						};
-
-						// Auto-set recurrence if the calendar had recurring events
-						if (schedule.recurrencePattern) {
-							updatedAnswers.recurrencePattern = schedule.recurrencePattern;
-						}
-
-						setAnswers((prev) => ({ ...prev, ...updatedAnswers }));
-
-						// Show the user what was imported so they can verify
-						const dayLabels = schedule.workingDays
-							.map((d) => {
-								const chipKey = CANONICAL_TO_CHIP[d];
-								return chipKey ? t(`jupiter.working-days.${chipKey}`) : d;
-							})
-							.join(', ');
-
-						setTimeout(() => {
-							addBotMessage(
-								t('jupiter.google-calendar.imported-summary', {
-									days: dayLabels,
-									hours: timeRange,
-								}),
-								false
-							);
-							setStep('session-duration');
-						}, 300);
-					} else {
-						setTimeout(() => {
-							addBotMessage(t('jupiter.google-calendar.import-failed'), false);
-							setStep('working-days');
-						}, 300);
-					}
-				} catch {
-					setIsImporting(false);
-					setTimeout(() => {
-						addBotMessage(t('jupiter.google-calendar.import-failed'), false);
-						setStep('working-days');
-					}, 300);
-				}
-			} else {
-				advance('jupiter.working-days.response', 'working-days');
-			}
-		},
-		[addBotMessage, addUserMessage, advance, setAnswers, t]
-	);
+	}, [buildStepNote, setMessages, t]);
 
 	return {
 		step,
 		answers,
 		messages,
 		calendarList,
+		isBotTyping,
 		isImporting,
 		isLoadingCalendars,
 		isPublishing,
@@ -674,10 +521,12 @@ export const useJupiterFlow = ({
 		handleCalendarPicked,
 		handleGoogleBack,
 		handleGoogleContinue,
+		handleContinueWithoutSync,
 		handleGooglePostConnect,
 		handlePublish,
 		handleRecurrencePattern,
 		handleReset,
+		handleRetrySync,
 		handleSessionDuration,
 		handleSessionType,
 		handleSpecialty,

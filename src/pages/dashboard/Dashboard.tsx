@@ -30,19 +30,22 @@ import { GlanceWidget } from '@psycron/components/dashboard/widgets/glance-widge
 import type { GlanceStat } from '@psycron/components/dashboard/widgets/glance-widget/GlanceWidget.types';
 import { getNextBookedSlot } from '@psycron/components/dashboard/widgets/glance-widget/GlanceWidget.utils';
 import { GreetingWidget } from '@psycron/components/dashboard/widgets/greeting-widget/GreetingWidget';
+import type { JupiterInsight } from '@psycron/components/dashboard/widgets/jupiter-insights-widget/JupiterInsightsWidget.types';
 import { PracticeReadinessWidget } from '@psycron/components/dashboard/widgets/practice-readiness-widget/PracticeReadinessWidget';
 import { RecentPatientsWidget } from '@psycron/components/dashboard/widgets/recent-patients-widget/RecentPatientsWidget';
 import type { RecentPatient } from '@psycron/components/dashboard/widgets/recent-patients-widget/RecentPatientsWidget.types';
 import { RevenueWidget } from '@psycron/components/dashboard/widgets/revenue-widget/RevenueWidget';
 import { ScheduleWidget } from '@psycron/components/dashboard/widgets/schedule-widget/ScheduleWidget';
 import { SessionAnalyticsWidget } from '@psycron/components/dashboard/widgets/session-analytics-widget/SessionAnalyticsWidget';
-import { AlarmClock, TriangleAlert } from '@psycron/components/icons';
+import { AlarmClock, SaveUser, TriangleAlert } from '@psycron/components/icons';
 import { useUserDetails } from '@psycron/context/user/details/UserDetailsContext';
 import { useTimeOfDay } from '@psycron/hooks/useTimeOfDay';
 import useViewport from '@psycron/hooks/useViewport';
+import { usePracticeImport } from '@psycron/pages/availability/practice-import/usePracticeImport';
 import type { IWeekSlot } from '@psycron/pages/availability/week/AvailabilityWeekPage.types';
 import { AvailabilityWeekDrawer } from '@psycron/pages/availability/week/drawer/AvailabilityWeekDrawer';
 import {
+	AVAILABILITYPATH,
 	AVAILABILITYSETTINGS,
 	AVAILABILITYWEEK_BASE,
 	PATIENTPROFILE,
@@ -88,9 +91,7 @@ const NEEDS_TILE_IDS = [
 	'practice-readiness',
 	'action-center',
 ] as const satisfies readonly DashboardTileId[];
-const DAY_TILE_IDS = [
-	'schedule',
-] as const satisfies readonly DashboardTileId[];
+const DAY_TILE_IDS = ['schedule'] as const satisfies readonly DashboardTileId[];
 const PRACTICE_TILE_IDS = [
 	'session-analytics',
 	'revenue',
@@ -125,6 +126,17 @@ export const Dashboard = () => {
 
 	const [activeId, setActiveId] = useState<DashboardTileId | null>(null);
 	const [selectedSlot, setSelectedSlot] = useState<IWeekSlot | null>(null);
+
+	// Patients detected in the therapist's synced Google Calendar events. Surfaced
+	// across the dashboard (action center, greeting, practice readiness); acting on
+	// any of them sends the therapist to the availability page, where the review
+	// modal opens. Reviewing/committing populates the patient list + readiness.
+	const therapistId = userDetails?._id;
+	const { preview: importPreview } = usePracticeImport(therapistId);
+	const importCount = importPreview.data?.summary.patientsFound ?? 0;
+	const openPracticeImport = useCallback(() => {
+		navigate(`../${AVAILABILITYPATH}`, { state: { openPracticeImport: true } });
+	}, [navigate]);
 
 	const sensors = useSensors(
 		useSensor(PointerSensor, { activationConstraint: { distance: 8 } }),
@@ -206,6 +218,21 @@ export const Dashboard = () => {
 			whatsappRemindersEnabled,
 		});
 
+	// Surface the calendar-import nudge as a Júpiter insight in the greeting panel
+	// until the therapist has reviewed/added the detected patients.
+	const greetingInsights = useMemo<JupiterInsight[]>(() => {
+		if (importCount === 0) return jupiterInsights;
+		const importInsight: JupiterInsight = {
+			actionLabel: t('practice-import.review-cta'),
+			category: t('practice-import.insight-category'),
+			id: 'practice-import',
+			onAction: openPracticeImport,
+			source: 'fallback',
+			text: t('practice-import.insight-text', { count: importCount }),
+		};
+		return [importInsight, ...jupiterInsights];
+	}, [importCount, jupiterInsights, openPracticeImport, t]);
+
 	const nextBookedSlot = useMemo(
 		() => getNextBookedSlot(todaySlots),
 		[todaySlots]
@@ -285,19 +312,42 @@ export const Dashboard = () => {
 
 	const actionCenterItems = useMemo<ActionCenterWidgetRow[]>(
 		() => [
+			...(importCount > 0
+				? [
+						{
+							actionLabel: t('practice-import.review-cta'),
+							ariaLabel: t('practice-import.action-aria', {
+								count: importCount,
+							}),
+							icon: <SaveUser />,
+							id: 'practice-import',
+							label: t('practice-import.action-label'),
+							meta: t('practice-import.action-meta', { count: importCount }),
+							onClick: () => {
+								capture(PostHogEvent.DashboardActionCenterItemClicked, {
+									count: importCount,
+									item_type: 'practice-import',
+									source: 'dashboard-summary',
+									tier: summary?.tier ?? 'unknown',
+									tile_id: 'action-center',
+								});
+								openPracticeImport();
+							},
+							tone: 'brand' as const,
+							variant: 'quick' as const,
+						},
+					]
+				: []),
 			...(summary?.actionCenter.items ?? [])
 				.slice()
 				.sort((a, b) => a.rank - b.rank)
-					.map((item) => ({
-						actionLabel: t(
-							`page.dashboard.widgets.action-center.actions.${item.type}`
-						),
-					ariaLabel: `${t(
-						'page.dashboard.widgets.action-center.action-aria',
-						{
-							item: t(item.labelKey),
-						}
-					)}. ${t('page.dashboard.widgets.action-center.item-count', {
+				.map((item) => ({
+					actionLabel: t(
+						`page.dashboard.widgets.action-center.actions.${item.type}`
+					),
+					ariaLabel: `${t('page.dashboard.widgets.action-center.action-aria', {
+						item: t(item.labelKey),
+					})}. ${t('page.dashboard.widgets.action-center.item-count', {
 						count: item.count,
 					})}`,
 					id: `alert-${item.type}`,
@@ -322,10 +372,8 @@ export const Dashboard = () => {
 			...(summary?.quickActions ?? [])
 				.slice()
 				.sort((a, b) => a.rank - b.rank)
-					.map((action) => ({
-					actionLabel: t(
-						'page.dashboard.widgets.action-center.actions.open'
-					),
+				.map((action) => ({
+					actionLabel: t('page.dashboard.widgets.action-center.actions.open'),
 					ariaLabel: action.descriptionKey
 						? `${t(action.labelKey)}. ${t(action.descriptionKey, action.descriptionValues)}`
 						: t(action.labelKey),
@@ -349,7 +397,9 @@ export const Dashboard = () => {
 				})),
 		],
 		[
+			importCount,
 			navigateToDashboardTarget,
+			openPracticeImport,
 			summary?.actionCenter.items,
 			summary?.quickActions,
 			summary?.tier,
@@ -439,7 +489,7 @@ export const Dashboard = () => {
 					<BentoTile {...commonProps} key={tileId} variant='greeting'>
 						<GreetingWidget
 							band={band}
-							insights={jupiterInsights}
+							insights={greetingInsights}
 							isLoading={isLoading || isJupiterInsightsLoading}
 							name={userDetails?.firstName ?? ''}
 							sessionCount={todaySlots?.length}
@@ -512,7 +562,9 @@ export const Dashboard = () => {
 							contactsConfigured={contactsConfigured}
 							contactsTotal={patientCount}
 							hasAvailability={hasAvailability}
+							importCandidateCount={importCount}
 							isLoading={isSummaryLoading}
+							onImportAction={openPracticeImport}
 							onSegmentAction={(segment) => {
 								capture(PostHogEvent.DashboardBillingReadinessClicked, {
 									percentage: billingReadiness?.percentage ?? 0,

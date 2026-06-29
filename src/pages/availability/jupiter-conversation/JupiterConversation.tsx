@@ -5,8 +5,7 @@ import { OtherInput } from '@psycron/components/chat/chips/ChatChips.styles';
 import type { IChipOption } from '@psycron/components/chat/chips/ChatChips.types';
 import { MultiSelectChips } from '@psycron/components/chat/chips/MultiSelectChips';
 import { SingleSelectChips } from '@psycron/components/chat/chips/SingleSelectChips';
-import { Divider } from '@psycron/components/divider/Divider';
-import { ChevronLeft, Jupiter, Send } from '@psycron/components/icons';
+import { ChevronLeft, Google, Jupiter, Send } from '@psycron/components/icons';
 import { useUserDetails } from '@psycron/context/user/details/UserDetailsContext';
 
 import { AvailabilityPreviewCard } from '../availability-preview-card/AvailabilityPreviewCard';
@@ -14,20 +13,21 @@ import { GoogleCalendarPermissions } from '../google-calendar-path/GoogleCalenda
 import { GoogleCalendarPicker } from '../google-calendar-path/GoogleCalendarPicker';
 import { GoogleCalendarSuccess } from '../google-calendar-path/GoogleCalendarSuccess';
 
+import { AnimatedEllipsisText } from './animated-ellipsis-text/AnimatedEllipsisText';
+import { StatusNote } from './status-note/StatusNote';
 import {
+	Avatar,
 	BackButton,
 	BotBubble,
 	BotMessageGroup,
-	CardHeader,
-	CardSubtitle,
-	CardTitle,
+	BotStack,
 	CardWrapper,
 	ChipsInline,
-	ConversationContainer,
-	IconRow,
+	ConversationDock,
+	ConversationDockInner,
+	ConversationReading,
+	ConversationStream,
 	InputRow,
-	PublishingMessageWrapper,
-	PublishingOverlay,
 	SendButton,
 	UserBubble,
 	UserMessageGroup,
@@ -35,10 +35,14 @@ import {
 import { JupiterThinking } from './JupiterThinking';
 import { useJupiterFlow } from './useJupiterFlow';
 
+const TID = 'jupiter-onboarding';
+
 export const JupiterConversation = () => {
 	const { t } = useTranslation();
 	const bottomRef = useRef<HTMLDivElement | null>(null);
+	const dockRef = useRef<HTMLDivElement | null>(null);
 
+	const [dockHeight, setDockHeight] = useState(0);
 	const [customInputFor, setCustomInputFor] = useState<string | null>(null);
 	const [customValue, setCustomValue] = useState('');
 	const [isParsing, setIsParsing] = useState(false);
@@ -51,6 +55,7 @@ export const JupiterConversation = () => {
 		answers,
 		messages,
 		calendarList,
+		isBotTyping,
 		isImporting,
 		isLoadingCalendars,
 		isPublishing,
@@ -60,12 +65,14 @@ export const JupiterConversation = () => {
 		initFlow,
 		handleCalendarChoice,
 		handleCalendarPicked,
+		handleContinueWithoutSync,
 		handleGoogleBack,
 		handleGoogleContinue,
 		handleGooglePostConnect,
 		handlePublish,
 		handleRecurrencePattern,
 		handleReset,
+		handleRetrySync,
 		handleSessionDuration,
 		handleSessionType,
 		handleSpecialty,
@@ -136,15 +143,34 @@ export const JupiterConversation = () => {
 
 	useEffect(() => {
 		bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
-	}, [messages, step]);
+	}, [messages, step, isBotTyping]);
+
+	// Track the glass dock's height so the stream reserves matching bottom space:
+	// the latest message rests just above the dock while older ones scroll behind.
+	useEffect(() => {
+		const dockElement = dockRef.current;
+		if (!dockElement) return;
+
+		const updateHeight = () => setDockHeight(dockElement.offsetHeight);
+		updateHeight();
+
+		const observer = new ResizeObserver(updateHeight);
+		observer.observe(dockElement);
+		return () => observer.disconnect();
+	}, [step]);
 
 	const chipOptions = useMemo(
 		() => ({
 			calendar: [
 				{
+					icon: (
+						<span aria-hidden='true'>
+							<Google />
+						</span>
+					),
 					key: 'google',
 					label: t('jupiter.calendar-choice.chip-google'),
-					variant: 'primary' as const,
+					variant: 'google' as const,
 				},
 				{
 					key: 'manual',
@@ -256,9 +282,10 @@ export const JupiterConversation = () => {
 	) => {
 		if (customInputFor === stepKey) {
 			return (
-				<ChipsInline>
+				<ChipsInline data-testid={`${TID}-${stepKey}-custom`}>
 					<InputRow>
 						<BackButton
+							data-testid={`${TID}-${stepKey}-custom-back`}
 							onClick={() => {
 								setCustomInputFor(null);
 								setCustomValue('');
@@ -272,6 +299,7 @@ export const JupiterConversation = () => {
 							placeholder={placeholder}
 							value={customValue}
 							disabled={isParsing}
+							data-testid={`${TID}-${stepKey}-custom-input`}
 							onChange={(e) => setCustomValue(e.target.value)}
 							onKeyDown={(e) => {
 								if (e.key === 'Enter') submitCustomInput(stepKey, onValue);
@@ -281,6 +309,7 @@ export const JupiterConversation = () => {
 						<SendButton
 							hasValue={!!customValue.trim()}
 							disabled={!customValue.trim() || isParsing}
+							data-testid={`${TID}-${stepKey}-custom-send`}
 							onClick={() => submitCustomInput(stepKey, onValue)}
 						>
 							<Send />
@@ -294,10 +323,11 @@ export const JupiterConversation = () => {
 		}
 
 		return (
-			<ChipsInline>
+			<ChipsInline data-testid={`${TID}-step-${stepKey}`}>
 				<SingleSelectChips
 					key={stepKey}
 					options={options}
+					testIdPrefix={`${TID}-${stepKey}`}
 					onSelect={(key) => {
 						if (key === 'chip-custom') {
 							setCustomInputFor(stepKey);
@@ -315,10 +345,11 @@ export const JupiterConversation = () => {
 		switch (step) {
 			case 'specialty':
 				return (
-					<ChipsInline>
+					<ChipsInline data-testid={`${TID}-step-specialty`}>
 						<MultiSelectChips
 							key={specialityKey}
 							options={chipOptions.specialty}
+							testIdPrefix={`${TID}-specialty`}
 							onConfirm={handleSpecialty}
 							confirmLabel={t('jupiter.specialty.continue')}
 							otherChipKey='chip-other'
@@ -331,10 +362,11 @@ export const JupiterConversation = () => {
 
 			case 'calendar-choice':
 				return (
-					<ChipsInline>
+					<ChipsInline data-testid={`${TID}-step-calendar-choice`}>
 						<SingleSelectChips
 							key='calendar-choice'
 							options={chipOptions.calendar}
+							testIdPrefix={`${TID}-calendar`}
 							onSelect={handleCalendarChoice}
 						/>
 					</ChipsInline>
@@ -342,10 +374,11 @@ export const JupiterConversation = () => {
 
 			case 'working-days':
 				return (
-					<ChipsInline>
+					<ChipsInline data-testid={`${TID}-step-working-days`}>
 						<MultiSelectChips
 							key={workingDaysKey}
 							options={chipOptions.days}
+							testIdPrefix={`${TID}-working-days`}
 							onConfirm={handleWorkingDays}
 							confirmLabel={t('jupiter.working-days.continue')}
 							otherPlaceholder={t('jupiter.working-days.other-placeholder')}
@@ -373,10 +406,11 @@ export const JupiterConversation = () => {
 
 			case 'session-type':
 				return (
-					<ChipsInline>
+					<ChipsInline data-testid={`${TID}-step-session-type`}>
 						<SingleSelectChips
 							key='session-type'
 							options={chipOptions.sessionType}
+							testIdPrefix={`${TID}-session-type`}
 							onSelect={handleSessionType}
 						/>
 					</ChipsInline>
@@ -385,13 +419,14 @@ export const JupiterConversation = () => {
 			case 'timezone':
 				if (answers.timezoneConfirmed === false) {
 					return (
-						<ChipsInline>
+						<ChipsInline data-testid={`${TID}-step-timezone-custom`}>
 							<InputRow>
 								<OtherInput
 									autoFocus
 									size='small'
 									placeholder={detectedTimezone}
 									value={customValue}
+									data-testid={`${TID}-timezone-custom-input`}
 									onChange={(e) => setCustomValue(e.target.value)}
 									onKeyDown={(e) => {
 										if (e.key === 'Enter' && customValue.trim()) {
@@ -404,6 +439,7 @@ export const JupiterConversation = () => {
 								<SendButton
 									hasValue={!!customValue.trim()}
 									disabled={!customValue.trim()}
+									data-testid={`${TID}-timezone-custom-send`}
 									onClick={() => {
 										if (customValue.trim()) {
 											handleTimezoneSelect(customValue.trim());
@@ -418,10 +454,11 @@ export const JupiterConversation = () => {
 					);
 				}
 				return (
-					<ChipsInline>
+					<ChipsInline data-testid={`${TID}-step-timezone`}>
 						<SingleSelectChips
 							key='timezone'
 							options={chipOptions.timezone}
+							testIdPrefix={`${TID}-timezone`}
 							onSelect={handleTimezone}
 						/>
 					</ChipsInline>
@@ -429,10 +466,11 @@ export const JupiterConversation = () => {
 
 			case 'recurrence-pattern':
 				return (
-					<ChipsInline>
+					<ChipsInline data-testid={`${TID}-step-recurrence-pattern`}>
 						<SingleSelectChips
 							key='recurrence-pattern'
 							options={chipOptions.recurrencePattern}
+							testIdPrefix={`${TID}-recurrence`}
 							onSelect={handleRecurrencePattern}
 						/>
 					</ChipsInline>
@@ -444,8 +482,10 @@ export const JupiterConversation = () => {
 						answers={answers}
 						detectedTimezone={detectedTimezone}
 						isPublishing={isPublishing}
+						onContinueWithoutSync={handleContinueWithoutSync}
 						onPublish={handlePublish}
 						onReset={handleReset}
+						onRetrySync={handleRetrySync}
 					/>
 				);
 
@@ -484,39 +524,97 @@ export const JupiterConversation = () => {
 	};
 
 	return (
-		<CardWrapper>
-			<CardHeader>
-				<CardTitle>Jupiter</CardTitle>
-				<CardSubtitle>{t('jupiter.subtitle')}</CardSubtitle>
-			</CardHeader>
-			<Divider />
-			<ConversationContainer>
-				{messages.map((msg, index) =>
-					msg.sender === 'bot' ? (
-						<BotMessageGroup key={index}>
-							<IconRow showIcon={!!msg.showIcon}>
+		<CardWrapper data-testid={`${TID}-root`} id={`${TID}-root`}>
+			<ConversationStream
+				bottomInset={dockHeight}
+				data-testid={`${TID}-stream`}
+				id={`${TID}-stream`}
+			>
+				<ConversationReading
+					aria-live='polite'
+					data-testid={`${TID}-reading`}
+					id={`${TID}-reading`}
+				>
+					{messages.map((msg, index) => {
+					// Group consecutive messages from the same sender so they render as
+					// one merged box (tight gap + squared inner corners).
+					const prev = messages[index - 1];
+					const next = messages[index + 1];
+					const isFirstInGroup = !prev || prev.sender !== msg.sender;
+					const isLastInGroup = !next || next.sender !== msg.sender;
+					const isGroupStart = index > 0 && isFirstInGroup;
+
+					return msg.sender === 'bot' ? (
+						<BotMessageGroup
+							key={index}
+							isGroupStart={isGroupStart}
+							data-testid={`${TID}-message-bot-${index}`}
+						>
+							<Avatar isVisible={!!msg.showIcon} aria-hidden='true'>
 								<Jupiter />
-								<BotBubble isFirst={!!msg.showIcon}>{msg.content}</BotBubble>
-							</IconRow>
+							</Avatar>
+							<BotStack>
+								<BotBubble
+									isFirst={isFirstInGroup}
+									isLast={isLastInGroup}
+									data-testid={`${TID}-bubble-bot-${index}`}
+								>
+									<AnimatedEllipsisText text={msg.content} />
+								</BotBubble>
+								{msg.note && (
+									<StatusNote
+										id={msg.note.testId}
+										testId={msg.note.testId}
+										text={msg.note.text}
+										type={msg.note.type}
+									/>
+								)}
+							</BotStack>
 						</BotMessageGroup>
 					) : (
-						<UserMessageGroup key={index}>
-							<UserBubble>{msg.content}</UserBubble>
+						<UserMessageGroup
+							key={index}
+							isGroupStart={isGroupStart}
+							data-testid={`${TID}-message-user-${index}`}
+						>
+							<UserBubble
+								isFirst={isFirstInGroup}
+								isLast={isLastInGroup}
+								data-testid={`${TID}-bubble-user-${index}`}
+							>
+								{msg.content}
+							</UserBubble>
 						</UserMessageGroup>
-					)
-				)}
-				{renderStepChips()}
-				<div ref={bottomRef} />
-			</ConversationContainer>
-
-			{isPublishing && (
-				<>
-					<PublishingOverlay />
-					<PublishingMessageWrapper>
-						<JupiterThinking />
-					</PublishingMessageWrapper>
-				</>
-			)}
+					);
+				})}
+					{isBotTyping && (
+						<BotMessageGroup
+							isGroupStart
+							data-testid={`${TID}-message-bot-typing`}
+						>
+							<Avatar aria-hidden='true'>
+								<Jupiter />
+							</Avatar>
+							<BotStack>
+								<JupiterThinking />
+							</BotStack>
+						</BotMessageGroup>
+					)}
+					<div ref={bottomRef} data-testid={`${TID}-stream-bottom`} />
+				</ConversationReading>
+			</ConversationStream>
+			<ConversationDock
+				ref={dockRef}
+				data-testid={`${TID}-dock`}
+				id={`${TID}-dock`}
+			>
+				<ConversationDockInner
+					data-testid={`${TID}-dock-inner`}
+					id={`${TID}-dock-inner`}
+				>
+					{renderStepChips()}
+				</ConversationDockInner>
+			</ConversationDock>
 		</CardWrapper>
 	);
 };

@@ -101,6 +101,10 @@ export const useWeekSlots = (
 					startTime: slot.startTime,
 					status,
 					triggeredBy: slot.triggeredBy ?? undefined,
+					googleAttendees: slot.googleAttendees ?? null,
+					googleDescription: slot.googleDescription ?? null,
+					googleOrganizer: slot.googleOrganizer ?? null,
+					googleRecurringId: slot.googleRecurringId ?? null,
 				};
 			})
 			.filter((s): s is IWeekSlot => s !== null);

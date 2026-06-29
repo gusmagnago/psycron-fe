@@ -13,6 +13,7 @@ import {
 	OtherSendButton,
 } from './ChatChips.styles';
 import type { IMultiSelectChipsProps } from './ChatChips.types';
+import { chipTestId } from './chatChips.utils';
 
 export const MultiSelectChips = ({
 	options,
@@ -22,6 +23,7 @@ export const MultiSelectChips = ({
 	otherChipKey,
 	otherPlaceholder,
 	onOtherSubmit,
+	testIdPrefix,
 }: IMultiSelectChipsProps) => {
 	const [selectedKeys, setSelectedKeys] = useState<Set<string>>(new Set());
 	const [submitted, setSubmitted] = useState(false);
@@ -78,12 +80,13 @@ export const MultiSelectChips = ({
 
 	if (showOther) {
 		return (
-			<OtherInputRow>
+			<OtherInputRow data-testid={chipTestId(testIdPrefix, 'other-row')}>
 				<OtherBackButton
 					onClick={() => {
 						setShowOther(false);
 						setOtherValue('');
 					}}
+					data-testid={chipTestId(testIdPrefix, 'other-back')}
 				>
 					<ChevronLeft />
 				</OtherBackButton>
@@ -94,11 +97,13 @@ export const MultiSelectChips = ({
 					value={otherValue}
 					onChange={(e) => setOtherValue(e.target.value)}
 					onKeyDown={handleOtherKeyDown}
+					data-testid={chipTestId(testIdPrefix, 'other-input')}
 				/>
 				<OtherSendButton
 					hasValue={!!otherValue.trim()}
 					disabled={!otherValue.trim()}
 					onClick={submitOther}
+					data-testid={chipTestId(testIdPrefix, 'other-send')}
 				>
 					<Send />
 				</OtherSendButton>
@@ -107,7 +112,10 @@ export const MultiSelectChips = ({
 	}
 
 	return (
-		<ChipsContainer>
+		<ChipsContainer
+			data-testid={chipTestId(testIdPrefix, 'chips')}
+			id={chipTestId(testIdPrefix, 'chips')}
+		>
 			{options.map((option) => (
 				<ChipButton
 					key={option.key}
@@ -115,13 +123,19 @@ export const MultiSelectChips = ({
 					isSelected={selectedKeys.has(option.key)}
 					onClick={() => toggleKey(option.key)}
 					disabled={disabled}
+					data-testid={chipTestId(testIdPrefix, `chip-${option.key}`)}
+					id={chipTestId(testIdPrefix, `chip-${option.key}`)}
 				>
+					{option.icon}
 					{option.label}
 				</ChipButton>
 			))}
 
 			{selectedKeys.size > 0 && (
-				<ContinueButton onClick={handleConfirm}>
+				<ContinueButton
+					onClick={handleConfirm}
+					data-testid={chipTestId(testIdPrefix, 'continue')}
+				>
 					{confirmLabel}
 				</ContinueButton>
 			)}

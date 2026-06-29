@@ -8,6 +8,7 @@ import { useAvailabilityStatusItems } from './useAvailabilityStatusItems';
 
 export const AvailabilityWorkspaceRouteFrame = ({
 	children,
+	contentMode = 'page',
 	isLoading = false,
 	subtitle,
 	title,
@@ -24,7 +25,7 @@ export const AvailabilityWorkspaceRouteFrame = ({
 
 	return (
 		<AvailabilityWorkspaceShell
-			contentMode='page'
+			contentMode={contentMode}
 			isLoading={isLoading}
 			panel={
 				<AvailabilityReadinessPanel
