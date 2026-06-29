@@ -50,6 +50,13 @@ const theme = createTheme({
 	},
 	spacing: (factor: number) => `${factor * parseFloat(spacing.space)}px`,
 	components: {
+		// Kill the MUI click ripple app-wide — the expanding-circle "burst" on
+		// every button/icon press reads as an unwanted explosion effect.
+		MuiButtonBase: {
+			defaultProps: {
+				disableRipple: true,
+			},
+		},
 		MuiButton: {
 			styleOverrides: buttonStyles(createTheme({ palette })),
 		},
