@@ -2,7 +2,6 @@ import { Navigate } from 'react-router-dom';
 import { ActionCenterPage } from '@psycron/pages/action-center/ActionCenterPage';
 import { AvailabilitySettings } from '@psycron/pages/availability/availability-settings/AvailabilitySettings';
 import { GenerateAvailability } from '@psycron/pages/availability/GenerateAvailability';
-import { OnboardingPreview2 } from '@psycron/pages/availability/onboarding-preview-2/OnboardingPreview2';
 import { AvailabilityWeekPage } from '@psycron/pages/availability/week/AvailabilityWeekPage';
 import { Dashboard } from '@psycron/pages/dashboard/Dashboard';
 import { NotificationsPage } from '@psycron/pages/notifications/NotificationsPage';
@@ -27,7 +26,6 @@ import {
 	NOTIFICATIONSETTINGS,
 	PATIENTPROFILE,
 	PATIENTS,
-	PREVIEW2,
 	USERDETAILS,
 } from '@psycron/pages/urls';
 // import { AddPatient } from '@psycron/pages/user/appointment/add-patient/AddPatient';
@@ -58,7 +56,6 @@ const privateRoutes = [
 	{ path: AVAILABILITYRECOVERY, element: <ActionCenterPage initialTab='recovery' /> },
 	{ path: AVAILABILITYWEEK, element: <AvailabilityWeekPage /> },
 	{ path: AVAILABILITYGENERATE, element: <GenerateAvailability /> },
-	{ path: PREVIEW2, element: <OnboardingPreview2 /> },
 	{ path: AVAILABILITYSETTINGS, element: <AvailabilitySettings /> },
 	// { path: `${APPOINTMENTS}/cancel/:patientId`, element: <CancelAppointment /> },
 	// { path: ADDPATIENT, element: <AddPatient /> },

@@ -34,8 +34,6 @@ export const ACTIONCENTER = 'action-center';
 export const CONFLICTS = 'conflicts';
 export const NOTIFICATIONS = 'notifications';
 export const NOTIFICATIONSETTINGS = 'notifications/settings';
-export const PREVIEW = 'preview';
-export const PREVIEW2 = 'preview-2';
 // PRIVATE - USER
 export const USERDETAILS = USERID;
 export const EDITUSERPATH = 'edit';

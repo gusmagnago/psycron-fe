@@ -7,9 +7,7 @@ import { BackofficeLayout } from '@psycron/layouts/backoffice/BackooficeLayout';
 import { LanguageLayout } from '@psycron/layouts/language-layout/LanguageLayout';
 import { WorkerAppProviders } from '@psycron/layouts/providers/WorkerAppProviders';
 import { PublicLayout } from '@psycron/layouts/public-layout/PublicLayout';
-import { AvailabilityComponentsPreview } from '@psycron/pages/availability/preview/AvailabilityComponentsPreview';
 import { NotFound } from '@psycron/pages/error/not-found/NotFound';
-import { PREVIEW } from '@psycron/pages/urls';
 
 import privateRoutes from './PrivateRoutes';
 import publicRoutes from './PublicRoutes';
@@ -26,18 +24,7 @@ const Router = () => {
 						path='/availability/workflow'
 						element={<Navigate replace to='/en/availability/workflow' />}
 					/>
-					<Route
-						path='/preview-2'
-						element={<Navigate replace to='/en/preview-2' />}
-					/>
-					<Route
-						path='/preview'
-						element={<Navigate replace to='/en/preview' />}
-					/>
 					<Route path='/:locale' element={<LanguageLayout />}>
-						{/* Dev-only component catalog. Mounted here, outside AppLayout,
-						    so it renders without auth or the availability gate. */}
-						<Route path={PREVIEW} element={<AvailabilityComponentsPreview />} />
 						<Route element={<PublicLayout />}>
 							{publicRoutes.map(({ path, element }, index) => (
 								<Route key={index} path={path} element={element} />
