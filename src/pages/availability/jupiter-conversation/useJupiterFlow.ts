@@ -19,6 +19,7 @@ import { QUERY_KEYS } from '@psycron/api/queryKeys';
 import { editUserById } from '@psycron/api/user';
 import { useAlert } from '@psycron/context/alert/AlertContext';
 import { AVAILABILITYGENERATE, AVAILABILITYPATH } from '@psycron/pages/urls';
+import { slugToTitleCase } from '@psycron/utils/string/string.utils';
 import { useQueryClient } from '@tanstack/react-query';
 
 import type { StatusNoteType } from './status-note/StatusNote.types';
@@ -241,12 +242,6 @@ export const useJupiterFlow = ({
 	// whole history — not a fresh step-by-step — with always-current copy. Only
 	// the answered steps are emitted, in flow order.
 	const buildTranscript = useCallback((): JupiterMessage[] => {
-		const titleCase = (slug: string) =>
-			slug
-				.split('-')
-				.map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-				.join(' ');
-
 		const messageLog: JupiterMessage[] = [];
 		const pushQA = (
 			questionKey: string,
@@ -266,7 +261,7 @@ export const useJupiterFlow = ({
 			pushQA(
 				'jupiter.specialty.response',
 				'specialty',
-				answers.specialities.map(titleCase).join(', ')
+				answers.specialities.map(slugToTitleCase).join(', ')
 			);
 		}
 		if (answers.calendarChoice) {
@@ -538,15 +533,7 @@ export const useJupiterFlow = ({
 			// canonical slugs. Free-text entries fall back to a readable form of the
 			// canonical (e.g. "speech-therapist" → "Speech Therapist").
 			const label =
-				displayLabel ??
-				canonicals
-					.map((canonical) =>
-						canonical
-							.split('-')
-							.map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-							.join(' ')
-					)
-					.join(', ');
+				displayLabel ?? canonicals.map(slugToTitleCase).join(', ');
 			addUserMessage(label);
 			setAnswers((prev) => ({ ...prev, specialities: canonicals }));
 
