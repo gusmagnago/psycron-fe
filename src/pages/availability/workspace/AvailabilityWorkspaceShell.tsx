@@ -145,9 +145,10 @@ export const AvailabilityWorkspaceShell = forwardRef<
 			return () => window.cancelAnimationFrame(frameId);
 		}, [isPanelOpen, isSmallerThanTablet]);
 
-		// The readiness sidebar (edge toggle + scrim + panel) is irrelevant during
-		// the Jupiter onboarding conversation, so hide it in chat mode.
-		const showReadinessPanel = Boolean(panel) && contentMode !== 'chat';
+		// The readiness sidebar (edge toggle + scrim + panel) belongs only to the
+		// calendar scope — the strict /availability index. Keep it off settings
+		// ('page') and the Jupiter onboarding conversation ('chat').
+		const showReadinessPanel = Boolean(panel) && contentMode === 'calendar';
 
 		return (
 			<WorkspaceRoot
