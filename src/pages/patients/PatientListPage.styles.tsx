@@ -290,7 +290,7 @@ export const StatusPill = styled(Box, {
 	text-transform: uppercase;
 `;
 
-export const DuplicateWarningPill = styled('button')`
+export const DuplicateWarningPill = styled('span')`
 	align-items: center;
 	background: ${hexToRgba(palette.warning.main, 0.12)};
 	border: 1px solid ${hexToRgba(palette.warning.main, 0.22)};
