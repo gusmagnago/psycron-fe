@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { Outlet } from 'react-router-dom';
 import { Box, Divider } from '@mui/material';
 import { AppAnalytics } from '@psycron/analytics/posthog/AppAnalytics';
-import { getNotifications } from '@psycron/api/notifications';
+import { getUnreadNotificationsCount } from '@psycron/api/notifications';
 import { getAvailabilityCalendar } from '@psycron/api/user';
 import { EnvironmentBanner } from '@psycron/components/environment-banner/EnvironmentBanner';
 import { AvailabilityGate } from '@psycron/components/guards/AvailabilityGate';
@@ -44,7 +44,6 @@ import {
 	PAYMENTS,
 } from '@psycron/pages/urls';
 import { useQuery } from '@tanstack/react-query';
-import { format, subDays } from 'date-fns';
 
 import {
 	HelpCenterBody,
@@ -93,7 +92,12 @@ export const AppLayout: FC = () => {
 			}),
 		enabled: Boolean(userDetails?._id),
 		gcTime: 1000 * 60 * 30,
-		staleTime: 1000 * 60 * 5,
+		// Poll (foreground only) so the action-center badge reflects new conflicts /
+		// cancellations without a manual reload.
+		staleTime: 1000 * 30,
+		refetchInterval: 1000 * 30,
+		refetchIntervalInBackground: false,
+		refetchOnWindowFocus: true,
 	});
 	const cancellationRecoveryCount = useMemo(
 		() =>
@@ -103,28 +107,20 @@ export const AppLayout: FC = () => {
 		[cancellationRecoveryData?.dates]
 	);
 
-	// Badge the Notifications item with failed deliveries from the last day —
-	// the actionable subset a practitioner needs to retry.
-	const notificationsFrom = useMemo(
-		() => format(subDays(new Date(), 1), 'yyyy-MM-dd'),
-		[]
-	);
-	const { data: failedNotificationsData } = useQuery({
-		queryKey: ['failedNotificationsCount', userDetails?._id, notificationsFrom],
-		queryFn: () =>
-			getNotifications({
-				from: notificationsFrom,
-				limit: 100,
-				status: 'FAILED',
-			}),
+	// Badge the Notifications item with the therapist's unread count (new bookings,
+	// failed deliveries, etc.). Polled (foreground only) so it reflects bookings made
+	// from the public flow without a manual reload.
+	const { data: unreadNotificationsData } = useQuery({
+		queryKey: ['notificationsUnreadCount', userDetails?._id],
+		queryFn: getUnreadNotificationsCount,
 		enabled: Boolean(userDetails?._id),
 		gcTime: 1000 * 60 * 30,
-		staleTime: 1000 * 60 * 5,
+		staleTime: 1000 * 30,
+		refetchInterval: 1000 * 30,
+		refetchIntervalInBackground: false,
+		refetchOnWindowFocus: true,
 	});
-	const failedNotificationsCount =
-		failedNotificationsData?.total ??
-		failedNotificationsData?.notifications.length ??
-		0;
+	const unreadNotificationsCount = unreadNotificationsData?.unreadCount ?? 0;
 
 	const openExternalHelp = () => {
 		window.open(getHelpUrl(i18n.language), '_blank', 'noopener,noreferrer');
@@ -151,7 +147,7 @@ export const AppLayout: FC = () => {
 			name: t('components.navbar.notifications'),
 			icon: <Bell />,
 			path: NOTIFICATIONS,
-			badgeCount: failedNotificationsCount,
+			badgeCount: unreadNotificationsCount,
 		},
 		{
 			name: t('globals.patients'),

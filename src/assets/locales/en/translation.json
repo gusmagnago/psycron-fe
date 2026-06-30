@@ -2398,6 +2398,7 @@
 			"conflict": "Conflict",
 			"account_setup": "Account setup",
 			"daily_schedule_summary": "Daily schedule summary",
+			"new_booking": "New booking",
 			"unknown": "Notification",
 			"whatsapp_action_required": "WhatsApp follow-up required"
 		},

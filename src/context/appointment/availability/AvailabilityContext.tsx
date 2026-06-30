@@ -46,7 +46,13 @@ export const AvailabilityProvider = ({
 		queryKey: QUERY_KEYS.therapistAvailability(therapistId),
 		queryFn: async () => getTherapistLatestAvailability(therapistId),
 		enabled: !!therapistId,
-		staleTime: 1000 * 60 * 5,
+		// Public bookings happen in the patient's browser and cannot invalidate the
+		// therapist's open session — poll (foreground only) so newly booked slots
+		// surface without a manual reload.
+		staleTime: 1000 * 30,
+		refetchInterval: 1000 * 30,
+		refetchIntervalInBackground: false,
+		refetchOnWindowFocus: true,
 	});
 
 	const pageStatus = useMemo(() => {

@@ -34,6 +34,7 @@ export type NotificationMessageType =
 	| 'APPOINTMENT_UPDATED'
 	| 'CONFLICT'
 	| 'DAILY_SCHEDULE_SUMMARY'
+	| 'NEW_BOOKING'
 	| 'REMINDER'
 	| 'WHATSAPP_ACTION_REQUIRED'
 	| string;
@@ -103,4 +104,17 @@ export interface IRetryNotificationResponse {
 export interface IArchiveNotificationResponse {
 	_id: string;
 	isArchived: boolean;
+}
+
+export interface IUnreadNotificationsCountResponse {
+	unreadCount: number;
+}
+
+export interface IMarkNotificationReadResponse {
+	_id: string;
+	readAt: string;
+}
+
+export interface IMarkAllNotificationsReadResponse {
+	modifiedCount: number;
 }
