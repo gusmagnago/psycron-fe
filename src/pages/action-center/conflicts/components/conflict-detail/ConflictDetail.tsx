@@ -102,6 +102,7 @@ export const ConflictDetail = ({
 						fullWidth
 						severity='error'
 						variant='contained'
+						data-testid='conflict-action-cancel-appointment'
 						disabled={isUpdating}
 						onClick={() =>
 							onUpdateConflict({
@@ -118,6 +119,7 @@ export const ConflictDetail = ({
 					<Button
 						small
 						tertiary
+						data-testid='conflict-action-dismiss'
 						disabled={isUpdating}
 						onClick={() =>
 							onUpdateConflict({
@@ -144,6 +146,7 @@ export const ConflictDetail = ({
 						fullWidth
 						tertiary
 						variant='contained'
+						data-testid='conflict-action-merge'
 						disabled={isUpdating || !canMergePatients}
 						onClick={() => setIsMergeReviewOpen(true)}
 					>
@@ -181,6 +184,7 @@ export const ConflictDetail = ({
 						<Button
 							small
 							secondary
+							data-testid='conflict-action-keep-existing'
 							disabled={isUpdating}
 							onClick={() =>
 								onUpdateConflict({
@@ -195,6 +199,7 @@ export const ConflictDetail = ({
 						<Button
 							small
 							variant='outlined'
+							data-testid='conflict-action-keep-new'
 							disabled={isUpdating}
 							onClick={() =>
 								onUpdateConflict({
@@ -212,6 +217,7 @@ export const ConflictDetail = ({
 					<Button
 						small
 						tertiary
+						data-testid='conflict-action-dismiss'
 						disabled={isUpdating}
 						onClick={() =>
 							onUpdateConflict({
@@ -229,6 +235,7 @@ export const ConflictDetail = ({
 			<ConflictActions>
 				<Button
 					small
+					data-testid='conflict-action-mark-resolved'
 					disabled={isUpdating}
 					onClick={() =>
 						onUpdateConflict({
@@ -243,6 +250,7 @@ export const ConflictDetail = ({
 				<Button
 					small
 					variant='outlined'
+					data-testid='conflict-action-dismiss'
 					disabled={isUpdating}
 					onClick={() =>
 						onUpdateConflict({

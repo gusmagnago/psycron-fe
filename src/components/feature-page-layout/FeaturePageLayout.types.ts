@@ -13,6 +13,7 @@ export interface FeaturePageLayoutColors {
 export interface FeaturePageTabItem<Value extends string = string> {
 	disabled?: boolean;
 	label: ReactNode;
+	testId?: string;
 	value: Value;
 }
 
@@ -35,7 +36,9 @@ export interface FeaturePageLayoutProps<Value extends string = string> {
 
 export interface FeaturePageQueueAccessibilityLabels {
 	detailLabel: string;
+	detailTestId?: string;
 	queueLabel: string;
+	queueTestId?: string;
 }
 
 export type FeaturePageQueueAnalyticsEventName =

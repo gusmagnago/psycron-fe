@@ -231,6 +231,7 @@
 				"filtered-body": "Try adjusting your search or filters to find the patient you are looking for."
 			},
 			"clear-search": "Clear search",
+			"load-more": "Load more",
 			"billing": {
 				"none": "Not set",
 				"per-session-short": "/ session",

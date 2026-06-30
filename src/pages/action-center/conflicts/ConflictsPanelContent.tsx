@@ -82,6 +82,8 @@ export const ConflictsPanelContent = () => {
 
 					return (
 						<QueueSelectableCard
+							data-testid={`conflict-card-${conflict._id}`}
+							id={`conflict-card-${conflict._id}`}
 							isSelected={conflict._id === selectedConflictId}
 							key={conflict._id}
 							onClick={() => {
@@ -127,7 +129,9 @@ export const ConflictsPanelContent = () => {
 			<FeaturePageQueue
 				accessibility={{
 					detailLabel: t('conflicts.accessibility.detail'),
+					detailTestId: 'conflict-detail',
 					queueLabel: t('conflicts.accessibility.queue'),
+					queueTestId: 'conflict-queue',
 				}}
 				analytics={{
 					onEvent: ({ properties }) => {

@@ -79,7 +79,11 @@ export const FeaturePageQueue = ({
 	return (
 		<>
 			<FeaturePageQueueGrid isExpanded={isQueueExpanded}>
-				<FeaturePageQueueSidebar aria-label={accessibility.queueLabel}>
+				<FeaturePageQueueSidebar
+					aria-label={accessibility.queueLabel}
+					data-testid={accessibility.queueTestId}
+					id={accessibility.queueTestId}
+				>
 					{queueSummary}
 					<FeaturePageQueueToggleWrapper>
 						<Button
@@ -106,6 +110,8 @@ export const FeaturePageQueue = ({
 				{!isSmallerThanTablet && (
 					<FeaturePageQueueDetailWrapper
 						aria-label={accessibility.detailLabel}
+						data-testid={accessibility.detailTestId}
+						id={accessibility.detailTestId}
 						isHidden={isQueueExpanded}
 					>
 						{children}

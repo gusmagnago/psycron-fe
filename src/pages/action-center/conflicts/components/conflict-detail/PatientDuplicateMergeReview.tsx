@@ -99,6 +99,7 @@ export const PatientDuplicateMergeReview = ({
 							</MergeReviewFieldLabel>
 							<MergeReviewOption
 								aria-checked={selectedSource === 'primary'}
+								data-testid={`conflict-merge-option-${field}-primary`}
 								disabled={isLoading}
 								role='radio'
 								type='button'
@@ -115,6 +116,7 @@ export const PatientDuplicateMergeReview = ({
 							</MergeReviewOption>
 							<MergeReviewOption
 								aria-checked={selectedSource === 'secondary'}
+								data-testid={`conflict-merge-option-${field}-secondary`}
 								disabled={isLoading}
 								role='radio'
 								type='button'
@@ -135,13 +137,20 @@ export const PatientDuplicateMergeReview = ({
 			</MergeReviewGrid>
 
 			<MergeReviewActions>
-				<Button small secondary disabled={isLoading} onClick={onCancel}>
+				<Button
+					small
+					secondary
+					data-testid='conflict-merge-cancel'
+					disabled={isLoading}
+					onClick={onCancel}
+				>
 					{t('globals.cancel')}
 				</Button>
 				<Button
 					small
 					tertiary
 					variant='contained'
+					data-testid='conflict-merge-confirm'
 					disabled={isLoading || !canConfirm}
 					onClick={() =>
 						onConfirm({

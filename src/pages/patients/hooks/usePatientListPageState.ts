@@ -1,18 +1,21 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import type { CustomError } from '@psycron/api/error';
-import { getPatientById } from '@psycron/api/patient';
+import { getPatients } from '@psycron/api/patient';
 import {
 	getConflicts,
 	scanPatientDuplicates,
 } from '@psycron/api/user/conflicts';
 import type { IPatientDuplicateConflictMetadata } from '@psycron/api/user/conflicts/index.types';
 import { useAlert } from '@psycron/context/alert/AlertContext';
-import type { IPatient } from '@psycron/context/user/auth/UserAuthenticationContext.types';
 import { useUserDetails } from '@psycron/context/user/details/UserDetailsContext';
 import useViewport from '@psycron/hooks/useViewport';
 import { PATIENTS } from '@psycron/pages/urls';
-import { useMutation, useQueries, useQuery } from '@tanstack/react-query';
+import {
+	useInfiniteQuery,
+	useMutation,
+	useQuery,
+} from '@tanstack/react-query';
 
 import type {
 	PatientListSortDirection,
@@ -22,17 +25,19 @@ import type {
 import {
 	getPatientListSortDefaultDirection,
 	mapPatientToListItem,
-	sortPatientListItems,
 } from '../PatientsPage.utils';
+
+const PATIENTS_PAGE_SIZE = 20;
 
 export const usePatientListPageState = () => {
 	const navigate = useNavigate();
 	const { locale } = useParams<{ locale: string }>();
 	const { isSmallerThanTablet } = useViewport();
-	const { isUserDetailsLoading, therapistId, userDetails } = useUserDetails();
+	const { isUserDetailsLoading, therapistId } = useUserDetails();
 	const { showAlert } = useAlert();
 
 	const [searchQuery, setSearchQuery] = useState('');
+	const [debouncedSearch, setDebouncedSearch] = useState('');
 	const [sortDirection, setSortDirection] = useState<PatientListSortDirection>(
 		getPatientListSortDefaultDirection('name')
 	);
@@ -40,7 +45,11 @@ export const usePatientListPageState = () => {
 	const [statusFilter, setStatusFilter] =
 		useState<PatientListStatusFilter>('all');
 
-	const patientIds = [...new Set(userDetails?.patients ?? [])];
+	// Debounce the search box so we don't fire a request per keystroke.
+	useEffect(() => {
+		const timer = setTimeout(() => setDebouncedSearch(searchQuery.trim()), 300);
+		return () => clearTimeout(timer);
+	}, [searchQuery]);
 
 	const scanMutation = useMutation({
 		mutationFn: () => scanPatientDuplicates(therapistId),
@@ -50,7 +59,7 @@ export const usePatientListPageState = () => {
 	});
 
 	useEffect(() => {
-		if (therapistId && patientIds.length > 0) {
+		if (therapistId) {
 			scanMutation.mutate();
 		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
@@ -78,43 +87,49 @@ export const usePatientListPageState = () => {
 		return ids;
 	}, [conflictsData]);
 
-	const patientQueries = useQueries({
-		queries: patientIds.map((patientId) => ({
-			enabled: Boolean(therapistId && patientId),
-			queryFn: () => getPatientById(therapistId, patientId),
-			queryKey: ['patientListItem', therapistId, patientId],
-			staleTime: 1000 * 60 * 5,
-		})),
+	const {
+		data,
+		fetchNextPage,
+		hasNextPage,
+		isFetchingNextPage,
+		isLoading: isPatientsLoading,
+	} = useInfiniteQuery({
+		enabled: Boolean(therapistId),
+		queryKey: [
+			'patientsList',
+			therapistId,
+			debouncedSearch,
+			sortField,
+			sortDirection,
+			statusFilter,
+		],
+		queryFn: ({ pageParam }) =>
+			getPatients(therapistId, {
+				page: pageParam,
+				limit: PATIENTS_PAGE_SIZE,
+				q: debouncedSearch || undefined,
+				sort: sortField,
+				dir: sortDirection,
+				status: statusFilter,
+			}),
+		initialPageParam: 1,
+		getNextPageParam: (lastPage) =>
+			lastPage.page * lastPage.limit < lastPage.total
+				? lastPage.page + 1
+				: undefined,
+		staleTime: 1000 * 60,
 	});
 
-	const patients = useMemo(
+	// Server already paginates, searches and sorts — just flatten + map for display.
+	const filteredPatients = useMemo(
 		() =>
-			patientQueries
-				.map((query) => query.data)
-				.filter((patient): patient is IPatient => Boolean(patient))
+			(data?.pages ?? [])
+				.flatMap((pageResult) => pageResult.patients)
 				.map((patient) => mapPatientToListItem(patient)),
-		[patientQueries]
+		[data]
 	);
 
-	const filteredPatients = useMemo(() => {
-		const normalizedQuery = searchQuery.trim().toLowerCase();
-
-		const nextItems = patients.filter((patient) => {
-			const matchesSearch = !normalizedQuery
-				? true
-				: patient.searchableText.includes(normalizedQuery);
-			const matchesStatus =
-				statusFilter === 'all'
-					? true
-					: statusFilter === 'active'
-						? patient.isActive
-						: !patient.isActive;
-
-			return matchesSearch && matchesStatus;
-		});
-
-		return sortPatientListItems(nextItems, sortField, sortDirection);
-	}, [patients, searchQuery, sortDirection, sortField, statusFilter]);
+	const totalPatients = data?.pages?.[0]?.total ?? 0;
 
 	const openPatientProfile = (patientId: string): void => {
 		navigate(`/${locale}/${PATIENTS}/${patientId}`);
@@ -122,11 +137,13 @@ export const usePatientListPageState = () => {
 
 	return {
 		duplicatePatientIds,
+		fetchNextPage,
 		filteredPatients,
-		hasPatients: patients.length > 0,
+		hasNextPage,
+		hasPatients: totalPatients > 0,
 		isDesktopTable: !isSmallerThanTablet,
-		isLoading:
-			isUserDetailsLoading || patientQueries.some((query) => query.isLoading),
+		isFetchingNextPage,
+		isLoading: isUserDetailsLoading || isPatientsLoading,
 		openPatientProfile,
 		searchQuery,
 		setSearchQuery,
@@ -136,5 +153,6 @@ export const usePatientListPageState = () => {
 		sortDirection,
 		sortField,
 		statusFilter,
+		totalPatients,
 	};
 };

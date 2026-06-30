@@ -28,6 +28,26 @@ export interface IPatientByIdResponse {
 	patient: IPatient;
 }
 
+export type PatientsSortField = 'name' | 'total-sessions' | 'last-appointment';
+export type PatientsSortDirection = 'asc' | 'desc';
+export type PatientsStatusFilter = 'all' | 'active' | 'inactive';
+
+export interface IGetPatientsParams {
+	dir?: PatientsSortDirection;
+	limit?: number;
+	page?: number;
+	q?: string;
+	sort?: PatientsSortField;
+	status?: PatientsStatusFilter;
+}
+
+export interface IGetPatientsResponse {
+	limit: number;
+	page: number;
+	patients: IPatient[];
+	total: number;
+}
+
 export interface PatientFormData {
 	_id?: string;
 	address?: ISlotAddress | null;

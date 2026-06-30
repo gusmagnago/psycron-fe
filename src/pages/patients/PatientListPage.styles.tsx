@@ -382,3 +382,9 @@ export const MetaLabel = styled(Text)`
 	letter-spacing: 0.04em;
 	text-transform: uppercase;
 `;
+
+export const LoadMoreRow = styled(Box)`
+	display: flex;
+	justify-content: center;
+	padding: ${spacing.small} 0;
+`;

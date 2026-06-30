@@ -209,13 +209,18 @@ export const CancellationRecoveryDetailPanel = ({
 
 			<QueueActionsRow>
 				{primaryAction?.kind === 'rebook' ? (
-					<Button disabled={!row.patientId} onClick={handleRebook}>
+					<Button
+						data-testid='recovery-action-rebook'
+						disabled={!row.patientId}
+						onClick={handleRebook}
+					>
 						{t(primaryAction.labelKey)}
 					</Button>
 				) : null}
 				{primaryAction?.kind === 'archive' ? (
 					<Button
 						loading={isArchiving}
+						data-testid='recovery-action-archive'
 						onClick={handleArchive}
 						secondary
 					>
@@ -236,6 +241,7 @@ export const CancellationRecoveryDetailPanel = ({
 								}
 								aria-expanded={Boolean(menuAnchor)}
 								aria-haspopup='menu'
+								data-testid='recovery-action-more'
 								onClick={openMenu}
 							>
 								<Dots />
@@ -250,12 +256,16 @@ export const CancellationRecoveryDetailPanel = ({
 							transformOrigin={{ horizontal: 'right', vertical: 'top' }}
 						>
 							{canOpenPatient ? (
-								<ActionMenuItem onClick={handleOpenPatient}>
+								<ActionMenuItem
+									data-testid='recovery-action-open-patient'
+									onClick={handleOpenPatient}
+								>
 									{t('availability.cancellation-recovery.actions.open-patient')}
 								</ActionMenuItem>
 							) : null}
 							{canReopen ? (
 								<ActionMenuItem
+									data-testid='recovery-action-reopen'
 									disabled={isReopening}
 									onClick={handleReopen}
 								>
@@ -264,6 +274,7 @@ export const CancellationRecoveryDetailPanel = ({
 							) : null}
 							{canArchive && primaryAction?.kind !== 'archive' ? (
 								<ActionMenuItem
+									data-testid='recovery-action-archive-menu'
 									disabled={isArchiving}
 									onClick={handleArchive}
 								>
