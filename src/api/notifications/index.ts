@@ -4,8 +4,11 @@ import type {
 	IArchiveNotificationResponse,
 	IGetNotificationsParams,
 	IGetNotificationsResponse,
+	IMarkAllNotificationsReadResponse,
+	IMarkNotificationReadResponse,
 	INotificationPreferencesPayload,
 	IRetryNotificationResponse,
+	IUnreadNotificationsCountResponse,
 	IUpdateNotificationPreferencesResponse,
 } from './index.types';
 
@@ -19,6 +22,34 @@ export const getNotifications = async (
 
 	return response.data;
 };
+
+export const getUnreadNotificationsCount =
+	async (): Promise<IUnreadNotificationsCountResponse> => {
+		const response = await apiClient.get<IUnreadNotificationsCountResponse>(
+			'/notifications/unread-count'
+		);
+
+		return response.data;
+	};
+
+export const markNotificationRead = async (
+	notificationId: string
+): Promise<IMarkNotificationReadResponse> => {
+	const response = await apiClient.patch<IMarkNotificationReadResponse>(
+		`/notifications/${notificationId}/read`
+	);
+
+	return response.data;
+};
+
+export const markAllNotificationsRead =
+	async (): Promise<IMarkAllNotificationsReadResponse> => {
+		const response = await apiClient.patch<IMarkAllNotificationsReadResponse>(
+			'/notifications/read-all'
+		);
+
+		return response.data;
+	};
 
 export const archiveNotification = async (
 	notificationId: string

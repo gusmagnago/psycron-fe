@@ -24,7 +24,11 @@ export const useConflictCount = (
 		queryKey: QUERY_KEYS.conflictCount(therapistId ?? ''),
 		queryFn: () => getConflictCount(therapistId ?? ''),
 		enabled: Boolean(therapistId),
-		staleTime: 1000 * 60 * 5,
+		// Poll (foreground only) so the action-center badge updates without a reload.
+		staleTime: 1000 * 30,
+		refetchInterval: 1000 * 30,
+		refetchIntervalInBackground: false,
+		refetchOnWindowFocus: true,
 	});
 
 	return { count: data?.count ?? 0, isLoading };

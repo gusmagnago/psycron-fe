@@ -46,6 +46,9 @@ export const PatientProvider = ({ children }: IPatientProviderProps) => {
 	const bookAppointmentFromLinkMutation = useMutation({
 		mutationFn: bookAppointmentFromLink,
 		onSuccess: (data) => {
+			queryClient.invalidateQueries({
+				queryKey: QUERY_KEYS.therapistAvailability(),
+			});
 			navigate(
 				`/${i18n.language}/${data.therapistId}/${data.patient._id}/${APPOINTMENTCONFIRMATION}`
 			);

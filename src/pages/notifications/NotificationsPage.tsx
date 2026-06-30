@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router-dom';
 import { capture } from '@psycron/analytics/posthog/events';
 import { PostHogEvent } from '@psycron/analytics/posthog/types';
+import { markAllNotificationsRead } from '@psycron/api/notifications';
 import { Button } from '@psycron/components/button/Button';
 import { Checkbox } from '@psycron/components/checkbox/Checkbox';
 import {
@@ -23,6 +24,7 @@ import { Tooltip } from '@psycron/components/tooltip/Tooltip';
 import { useUserDetails } from '@psycron/context/user/details/UserDetailsContext';
 import { NotificationSettingsDrawer } from '@psycron/pages/notifications/settings/NotificationSettingsDrawer';
 import { PatientNotificationSettingsDrawer } from '@psycron/pages/notifications/settings/PatientNotificationSettingsDrawer';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 import { NotificationDetailPanel } from './components/NotificationDetailPanel';
 import { NotificationFeedCard } from './components/NotificationFeedCard';
@@ -72,6 +74,22 @@ export const NotificationsPage = ({ initialSettingsOpen = false }: Notifications
 	);
 
 	const { therapistId } = useUserDetails();
+
+	const queryClient = useQueryClient();
+	const { mutate: markAllRead } = useMutation({
+		mutationFn: markAllNotificationsRead,
+		onSuccess: () => {
+			queryClient.invalidateQueries({
+				queryKey: ['notificationsUnreadCount'],
+			});
+		},
+	});
+
+	// Opening the feed clears the unread badge for the therapist.
+	useEffect(() => {
+		if (!therapistId) return;
+		markAllRead();
+	}, [therapistId, markAllRead]);
 
 	const {
 		activeFilterCount,
