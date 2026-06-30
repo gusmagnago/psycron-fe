@@ -86,9 +86,18 @@ export const PatientListPage = () => {
 		statusFilter,
 	} = usePatientListPageState();
 
-	const goToConflicts = (event: React.MouseEvent) => {
+	const goToConflicts = (event: React.SyntheticEvent) => {
 		event.stopPropagation();
 		navigate(`/${locale}/${CONFLICTS}?type=PATIENT_DUPLICATE`);
+	};
+
+	// The duplicate pill lives inside the row <button>, so it renders as a span
+	// (a nested <button> is invalid DOM) with explicit button semantics.
+	const handleDuplicatePillKeyDown = (event: React.KeyboardEvent) => {
+		if (event.key === 'Enter' || event.key === ' ') {
+			event.preventDefault();
+			goToConflicts(event);
+		}
 	};
 
 	const isFiltering = Boolean(searchQuery) || statusFilter !== 'all';
@@ -357,9 +366,11 @@ export const PatientListPage = () => {
 										</SecondaryValue>
 										{duplicatePatientIds.has(patient._id) ? (
 											<DuplicateWarningPill
-												onClick={goToConflicts}
-												type='button'
 												data-testid={`patient-duplicate-${patient._id}`}
+												onClick={goToConflicts}
+												onKeyDown={handleDuplicatePillKeyDown}
+												role='button'
+												tabIndex={0}
 											>
 												{t('patients.list.possible-duplicate')}
 											</DuplicateWarningPill>
@@ -420,9 +431,11 @@ export const PatientListPage = () => {
 										<MobileCardBadges>
 											{duplicatePatientIds.has(patient._id) ? (
 												<DuplicateWarningPill
-													onClick={goToConflicts}
-													type='button'
 													data-testid={`patient-duplicate-mobile-${patient._id}`}
+													onClick={goToConflicts}
+													onKeyDown={handleDuplicatePillKeyDown}
+													role='button'
+													tabIndex={0}
 												>
 													{t('patients.list.possible-duplicate')}
 												</DuplicateWarningPill>
