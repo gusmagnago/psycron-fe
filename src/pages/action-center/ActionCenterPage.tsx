@@ -28,6 +28,7 @@ export const ActionCenterPage = ({
 				ariaLabel: t('action-center.tabs.aria-label'),
 				items: ACTION_CENTER_TABS.map((tab) => ({
 					label: t(`action-center.tabs.${tab}`),
+					testId: `action-center-tab-${tab}`,
 					value: tab,
 				})),
 				onChange: (value) => setActiveTab(value as ActionCenterTab),

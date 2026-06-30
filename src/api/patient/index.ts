@@ -10,6 +10,8 @@ import type {
 	ICreatePatientResponse,
 	IEditPatientDetailsById,
 	IEditPatientDetailsByIdResponse,
+	IGetPatientsParams,
+	IGetPatientsResponse,
 	IPatientByIdResponse,
 	IPublicPatientSessionsResponse,
 	IUpdatePatientNotificationPreferencesPayload,
@@ -37,6 +39,18 @@ export const getPatientById = async (
 	);
 
 	return response.data.patient;
+};
+
+export const getPatients = async (
+	therapistId: string,
+	params: IGetPatientsParams
+): Promise<IGetPatientsResponse> => {
+	const response = await apiClient.get<IGetPatientsResponse>(
+		`/patient/${therapistId}/patients`,
+		{ params }
+	);
+
+	return response.data;
 };
 
 export const updatePatientDetailsById = async ({

@@ -29,6 +29,7 @@ import {
 	FieldGroup,
 	FieldLabel,
 	IconCell,
+	LoadMoreRow,
 	MetaLabel,
 	MobileCard,
 	MobileCardBadges,
@@ -68,9 +69,11 @@ export const PatientListPage = () => {
 	const { locale } = useParams<{ locale: string }>();
 	const {
 		duplicatePatientIds,
+		fetchNextPage,
 		filteredPatients,
-		hasPatients,
+		hasNextPage,
 		isDesktopTable,
+		isFetchingNextPage,
 		isLoading,
 		openPatientProfile,
 		searchQuery,
@@ -88,10 +91,11 @@ export const PatientListPage = () => {
 		navigate(`/${locale}/${CONFLICTS}?type=PATIENT_DUPLICATE`);
 	};
 
-	const emptyTitle = hasPatients
+	const isFiltering = Boolean(searchQuery) || statusFilter !== 'all';
+	const emptyTitle = isFiltering
 		? t('patients.list.empty.filtered-title')
 		: t('patients.list.empty.initial-title');
-	const emptyBody = hasPatients
+	const emptyBody = isFiltering
 		? t('patients.list.empty.filtered-body')
 		: t('patients.list.empty.initial-body');
 	const sortValue = encodePatientListSortValue(sortField, sortDirection);
@@ -110,6 +114,8 @@ export const PatientListPage = () => {
 		<SortableHeaderButton
 			isActive={sortField === field}
 			onClick={() => handleSortChange(field)}
+			id={`patients-sort-header-${field}`}
+			data-testid={`patients-sort-header-${field}`}
 			type='button'
 		>
 			{label}
@@ -217,6 +223,8 @@ export const PatientListPage = () => {
 						<FieldLabel>{t('patients.list.search-label')}</FieldLabel>
 						<ControlField
 							fullWidth
+							id='patients-search'
+							data-testid='patients-search'
 							placeholder={t('patients.list.search-placeholder')}
 							value={searchQuery}
 							onChange={(event) => setSearchQuery(event.target.value)}
@@ -228,6 +236,8 @@ export const PatientListPage = () => {
 						<ControlField
 							select
 							fullWidth
+							id='patients-status-filter'
+							data-testid='patients-status-filter'
 							value={statusFilter}
 							onChange={(event) =>
 								setStatusFilter(
@@ -235,13 +245,16 @@ export const PatientListPage = () => {
 								)
 							}
 						>
-							<StyledMenuItem value='all'>
+							<StyledMenuItem value='all' data-testid='patients-status-all'>
 								{t('patients.list.status-all')}
 							</StyledMenuItem>
-							<StyledMenuItem value='active'>
+							<StyledMenuItem value='active' data-testid='patients-status-active'>
 								{t('patients.list.status-active')}
 							</StyledMenuItem>
-							<StyledMenuItem value='inactive'>
+							<StyledMenuItem
+								value='inactive'
+								data-testid='patients-status-inactive'
+							>
 								{t('patients.list.status-inactive')}
 							</StyledMenuItem>
 						</ControlField>
@@ -252,6 +265,8 @@ export const PatientListPage = () => {
 						<ControlField
 							select
 							fullWidth
+							id='patients-sort'
+							data-testid='patients-sort'
 							value={sortValue}
 							onChange={(event) => {
 								const { direction: nextDirection, field: nextField } =
@@ -266,6 +281,10 @@ export const PatientListPage = () => {
 										option.field,
 										option.direction
 									)}
+									data-testid={`patients-sort-${encodePatientListSortValue(
+										option.field,
+										option.direction
+									)}`}
 									value={encodePatientListSortValue(
 										option.field,
 										option.direction
@@ -325,6 +344,8 @@ export const PatientListPage = () => {
 								<PatientTableRow
 									key={patient._id}
 									type='button'
+									id={`patient-row-${patient._id}`}
+									data-testid={`patient-row-${patient._id}`}
 									onClick={() => openPatientProfile(patient._id)}
 								>
 									<PrimaryCell>
@@ -338,6 +359,7 @@ export const PatientListPage = () => {
 											<DuplicateWarningPill
 												onClick={goToConflicts}
 												type='button'
+												data-testid={`patient-duplicate-${patient._id}`}
 											>
 												{t('patients.list.possible-duplicate')}
 											</DuplicateWarningPill>
@@ -382,6 +404,8 @@ export const PatientListPage = () => {
 								<MobileCard
 									key={patient._id}
 									type='button'
+									id={`patient-card-${patient._id}`}
+									data-testid={`patient-card-${patient._id}`}
 									onClick={() => openPatientProfile(patient._id)}
 								>
 									<MobileCardTop>
@@ -398,6 +422,7 @@ export const PatientListPage = () => {
 												<DuplicateWarningPill
 													onClick={goToConflicts}
 													type='button'
+													data-testid={`patient-duplicate-mobile-${patient._id}`}
 												>
 													{t('patients.list.possible-duplicate')}
 												</DuplicateWarningPill>
@@ -479,13 +504,31 @@ export const PatientListPage = () => {
 							type='button'
 							tertiary
 							variant='outlined'
+							id='patients-clear-search'
+							data-testid='patients-clear-search'
 							onClick={() => setSearchQuery('')}
-							disabled={!hasPatients}
+							disabled={!isFiltering}
 						>
 							{t('patients.list.clear-search')}
 						</Button>
 					</EmptyState>
 				)}
+
+				{filteredPatients.length && hasNextPage ? (
+					<LoadMoreRow>
+						<Button
+							type='button'
+							secondary
+							variant='outlined'
+							id='patients-load-more'
+							data-testid='patients-load-more'
+							loading={isFetchingNextPage}
+							onClick={() => fetchNextPage()}
+						>
+							{t('patients.list.load-more')}
+						</Button>
+					</LoadMoreRow>
+				) : null}
 			</PatientListLayout>
 		</PageLayout>
 	);

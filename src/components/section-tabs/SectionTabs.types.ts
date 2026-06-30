@@ -3,6 +3,7 @@ import type { ReactNode } from 'react';
 export interface SectionTabItem<Value extends string = string> {
 	disabled?: boolean;
 	label: ReactNode;
+	testId?: string;
 	value: Value;
 }
 

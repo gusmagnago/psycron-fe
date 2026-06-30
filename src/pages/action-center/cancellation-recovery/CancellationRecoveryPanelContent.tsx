@@ -176,6 +176,7 @@ export const CancellationRecoveryPanelContent = () => {
 						disabled={isArchivingAll}
 						fullWidth
 						loading={isArchivingAll}
+						data-testid='recovery-action-archive-all'
 						onClick={archiveAllRows}
 						secondary
 					>
@@ -193,6 +194,8 @@ export const CancellationRecoveryPanelContent = () => {
 			{filteredRows.length ? (
 				filteredRows.map((row) => (
 					<RecoveryCard
+						data-testid={`recovery-card-${row.slotId}`}
+						id={`recovery-card-${row.slotId}`}
 						isSelected={row.slotId === selectedSlotId}
 						key={row.slotId}
 						onClick={() => {
@@ -237,9 +240,11 @@ export const CancellationRecoveryPanelContent = () => {
 					detailLabel: t(
 						'availability.cancellation-recovery.accessibility.detail'
 					),
+					detailTestId: 'recovery-detail',
 					queueLabel: t(
 						'availability.cancellation-recovery.accessibility.queue'
 					),
+					queueTestId: 'recovery-queue',
 				}}
 				analytics={{
 					onEvent: ({ properties }) => {

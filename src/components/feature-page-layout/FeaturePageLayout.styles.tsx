@@ -81,15 +81,21 @@ export const FeaturePageQueueDetailWrapper = styled(Box, {
 	box-shadow: ${shadowMedium};
 	display: flex;
 	flex-direction: column;
-	min-height: 0;
-	min-width: 0;
-	overflow: auto;
+	overflow-y: auto;
+
 	padding: ${spacing.large};
+
+	${isBiggerThanTabletMedia} {
+		// Cap the panel to the viewport minus the app chrome (navbar, page header,
+		// tabs, paddings) so it scrolls internally instead of stretching the page.
+		max-height: calc(100dvh - 12rem);
+	}
 
 	${isSmallerThanTabletMedia} {
 		display: ${({ isHidden }) => (isHidden ? 'none' : 'flex')};
 		flex: none;
 		height: auto;
+		max-height: none;
 		overflow: visible;
 		padding: ${spacing.medium};
 	}

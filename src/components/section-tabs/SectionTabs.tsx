@@ -26,6 +26,7 @@ export const SectionTabs = <Value extends string,>({
 			>
 				{items.map((item) => (
 					<SectionTabButton
+						data-testid={item.testId}
 						disabled={item.disabled}
 						key={item.value}
 						label={item.label}
