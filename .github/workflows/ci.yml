@@ -1,0 +1,29 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [dev, main]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+      - run: npm run test:unit
+
+  # NOTE: Playwright E2E (`npm run test:e2e`) is intentionally not gated yet.
+  # 17 of 26 specs pass standalone, but the google-calendar specs need a
+  # backend / authenticated session mocked via page.route(). Enable a job
+  # here once those specs are self-contained.
