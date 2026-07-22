@@ -15,6 +15,7 @@ import {
 	useInfiniteQuery,
 	useMutation,
 	useQuery,
+	useQueryClient,
 } from '@tanstack/react-query';
 
 import type {
@@ -35,6 +36,7 @@ export const usePatientListPageState = () => {
 	const { isSmallerThanTablet } = useViewport();
 	const { isUserDetailsLoading, therapistId } = useUserDetails();
 	const { showAlert } = useAlert();
+	const queryClient = useQueryClient();
 
 	const [searchQuery, setSearchQuery] = useState('');
 	const [debouncedSearch, setDebouncedSearch] = useState('');
@@ -53,6 +55,12 @@ export const usePatientListPageState = () => {
 
 	const scanMutation = useMutation({
 		mutationFn: () => scanPatientDuplicates(therapistId),
+		// The scan may open, refresh, or auto-dismiss duplicate conflicts. Refetch
+		// the conflict queries so the list pills (and the open-count badge) reflect
+		// the post-scan state instead of the snapshot read on mount.
+		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: ['conflicts'] });
+		},
 		onError: (error: CustomError) => {
 			showAlert({ message: error.message, severity: 'error' });
 		},

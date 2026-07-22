@@ -31,31 +31,37 @@ export const AvailabilityGate = ({ children }: AvailabilityGateProps) => {
 	const isOnGeneratePage = location.pathname.includes(AVAILABILITYGENERATE);
 	const hasAvailability = data !== null;
 	const hasDraft = !!localStorage.getItem(STORAGE_KEY);
-	// Once the query resolves, a missing availability (or a pending draft) means
-	// we are about to redirect — we must not render children for that frame, or
-	// the dashboard flashes briefly before the navigation lands.
-	const willRedirect =
-		!isLoading && !isOnGeneratePage && (!hasAvailability || hasDraft);
+	// Published availability is authoritative: a leftover onboarding draft must
+	// never bounce a user who already has availability back into the generate
+	// flow. A draft only means "resume onboarding" when no availability exists.
+	// Once the query resolves, a missing availability means we are about to
+	// redirect — we must not render children for that frame, or the dashboard
+	// flashes briefly before the navigation lands.
+	const willRedirect = !isLoading && !isOnGeneratePage && !hasAvailability;
 
 	useEffect(() => {
 		if (isLoading) return;
-		if (isOnGeneratePage) return;
 
-		if (!hasAvailability) {
-			if (!hasAlerted.current && !!localStorage.getItem(ONBOARDING_KEY)) {
-				hasAlerted.current = true;
-				showAlert({
-					message: t('availability.gate.deleted-notice'),
-					severity: 'warning',
-				});
+		if (hasAvailability) {
+			// Drop a stale draft so it can't trap the user in generate on the
+			// next load — but not while they're actively on the generate page
+			// (e.g. regenerating), where the draft is legitimately in flight.
+			if (hasDraft && !isOnGeneratePage) {
+				localStorage.removeItem(STORAGE_KEY);
 			}
-			navigate(`/${i18n.language}/${AVAILABILITYGENERATE}`, { replace: true });
 			return;
 		}
 
-		if (hasDraft) {
-			navigate(`/${i18n.language}/${AVAILABILITYGENERATE}`, { replace: true });
+		if (isOnGeneratePage) return;
+
+		if (!hasAlerted.current && !!localStorage.getItem(ONBOARDING_KEY)) {
+			hasAlerted.current = true;
+			showAlert({
+				message: t('availability.gate.deleted-notice'),
+				severity: 'warning',
+			});
 		}
+		navigate(`/${i18n.language}/${AVAILABILITYGENERATE}`, { replace: true });
 	}, [
 		hasAvailability,
 		hasDraft,
