@@ -13,7 +13,11 @@ import { FormWrapper } from '../FormWrapper/FormWrapper';
 
 import type { AddPatientFormData, AddPatientProps } from './AddPatientForm.types';
 
-export const AddPatientForm = ({ shortButton }: AddPatientProps) => {
+export const AddPatientForm = ({
+	buttonId,
+	buttonTestId,
+	shortButton,
+}: AddPatientProps) => {
 	const { t } = useTranslation();
 	const { showAlert } = useAlert();
 	const { therapistId } = useUserDetails();
@@ -60,11 +64,17 @@ export const AddPatientForm = ({ shortButton }: AddPatientProps) => {
 	return (
 		<>
 			{shortButton ? (
-				<IconButton onClick={() => setOpen(true)}>
+				<IconButton
+					id={buttonId}
+					data-testid={buttonTestId}
+					onClick={() => setOpen(true)}
+				>
 					<AddPatient />
 				</IconButton>
 			) : (
 				<Button
+					id={buttonId}
+					data-testid={buttonTestId}
 					onClick={() => setOpen(true)}
 					endIcon={<AddPatient />}
 					color='primary'
