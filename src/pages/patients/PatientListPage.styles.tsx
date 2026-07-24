@@ -22,6 +22,11 @@ const attentionPulse = keyframes`
 	50% { opacity: 1; transform: scale(1); }
 `;
 
+const queueToggleIconIn = keyframes`
+	from { opacity: 0.35; transform: rotate(-90deg) scale(0.82); }
+	to { opacity: 1; transform: rotate(0) scale(1); }
+`;
+
 export const PatientListLayout = styled(Box)`
 	display: flex;
 	flex-direction: column;
@@ -32,33 +37,35 @@ export const PatientListLayout = styled(Box)`
 	}
 `;
 
+export const QueueSection = styled('section')`
+	display: flex;
+	flex-direction: column;
+	padding: ${spacing.small} 0 0;
+`;
+
 export const SectionLabel = styled(Box)`
 	align-items: center;
 	display: flex;
 	gap: ${spacing.extraSmall};
 
-	&::after {
-		background: ${palette.gray['02']};
-		content: '';
-		flex: 1;
-		height: 1px;
-		min-width: ${spacing.largeXl};
-	}
-
 	${isMobileMedia} {
-		align-items: flex-start;
-		flex-direction: column;
-
-		&::after {
-			display: none;
-		}
+		align-items: center;
 	}
 `;
 
 export const SectionLabelCopy = styled(Box)`
 	display: flex;
+	flex: 0 1 auto;
 	flex-direction: column;
 	gap: ${spacing.space};
+	min-width: 0;
+`;
+
+export const SectionLabelDivider = styled('span')`
+	background: ${palette.gray['02']};
+	flex: 1;
+	height: 1px;
+	min-width: ${spacing.medium};
 `;
 
 export const SectionTitle = styled(Text)`
@@ -75,11 +82,93 @@ export const SectionPurpose = styled(Text)`
 	font-weight: 600;
 `;
 
+export const QueueVisibilityToggle = styled('button')`
+	align-items: center;
+	background: transparent;
+	border: 0;
+	border-radius: 50%;
+	color: ${palette.brand.dark};
+	cursor: pointer;
+	display: inline-flex;
+	flex: 0 0 auto;
+	height: 44px;
+	justify-content: center;
+	padding: 0;
+	position: relative;
+	width: 44px;
+
+	&::before {
+		background: ${palette.white};
+		border: 1px solid ${palette.tertiary.light};
+		border-radius: 50%;
+		box-shadow: ${shadowSmall};
+		content: '';
+		height: ${spacing.large};
+		position: absolute;
+		width: ${spacing.large};
+	}
+
+	&:hover,
+	&:focus-visible {
+		outline: 3px solid ${hexToRgba(palette.brand.purple, 0.22)};
+		outline-offset: 2px;
+	}
+
+	&:hover::before,
+	&:focus-visible::before {
+		background: ${palette.tertiary.light};
+		border-color: ${palette.brand.purple};
+	}
+`;
+
+export const QueueVisibilityIcon = styled('span')`
+	align-items: center;
+	display: inline-flex;
+	position: relative;
+
+	svg {
+		animation: ${queueToggleIconIn} 220ms ease-out;
+		height: ${spacing.small};
+		width: ${spacing.small};
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		svg {
+			animation: none;
+		}
+	}
+`;
+
+export const QueueCollapseRegion = styled('div')`
+	display: grid;
+	grid-template-rows: 1fr;
+	opacity: 1;
+	transition:
+		grid-template-rows 220ms ease,
+		opacity 180ms ease;
+
+	&[data-expanded='false'] {
+		grid-template-rows: 0fr;
+		opacity: 0;
+		pointer-events: none;
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		transition: none;
+	}
+`;
+
+export const QueueCollapseContent = styled('div')`
+	min-height: 0;
+	overflow: hidden;
+`;
+
 export const WorkQueues = styled('section')`
 	align-items: start;
 	display: grid;
 	gap: ${spacing.small};
 	grid-template-columns: repeat(4, minmax(0, 1fr));
+	margin-top: ${spacing.small};
 
 	${isSmallerThanTabletMedia} {
 		grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -292,6 +381,63 @@ export const Workspace = styled('section')`
 	}
 `;
 
+export const WorkspaceControlsSection = styled('section')`
+	display: flex;
+	flex-direction: column;
+`;
+
+export const WorkspaceControlsHeader = styled('div')`
+	align-items: center;
+	display: none;
+	justify-content: space-between;
+	padding-bottom: ${spacing.xs};
+
+	${isSmallerThanTabletMedia} {
+		display: flex;
+	}
+`;
+
+export const WorkspaceControlsTitle = styled(Text)`
+	color: ${palette.gray['08']};
+	font-size: 0.75rem;
+	font-weight: 800;
+	letter-spacing: 0.07em;
+	text-transform: uppercase;
+`;
+
+export const WorkspaceControlsRegion = styled('div')`
+	display: grid;
+	grid-template-rows: 1fr;
+	opacity: 1;
+
+	${isSmallerThanTabletMedia} {
+		transition:
+			grid-template-rows 220ms ease,
+			opacity 180ms ease;
+
+		&[data-expanded='false'] {
+			grid-template-rows: 0fr;
+			opacity: 0;
+			pointer-events: none;
+		}
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		transition: none;
+	}
+`;
+
+export const WorkspaceControlsContent = styled('div')`
+	min-height: 0;
+	overflow: visible;
+
+	${isSmallerThanTabletMedia} {
+		[data-expanded='false'] & {
+			overflow: hidden;
+		}
+	}
+`;
+
 export const ControlsBar = styled(Box)`
 	align-items: flex-end;
 	display: grid;
@@ -400,6 +546,10 @@ export const ColumnsWrapper = styled(Box)`
 	& #patients-workspace-columns-trigger svg {
 		height: 18px;
 		width: 18px;
+	}
+
+	${isMobileMedia} {
+		display: none;
 	}
 `;
 

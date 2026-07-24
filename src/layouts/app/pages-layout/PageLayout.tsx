@@ -1,17 +1,18 @@
-import { Box } from '@mui/material';
 import { Link } from '@psycron/components/link/Link';
 import { NavigateLink } from '@psycron/components/link/navigate/NavigateLink';
 import { Loader } from '@psycron/components/loader/Loader';
-import { spacing } from '@psycron/theme/spacing/spacing.theme';
 
 import {
 	PageChildrenWrapper,
+	PageContent,
 	PageLayoutWrapper,
 	PageLoaderWrapper,
 	PageSubTitle,
+	PageSubTitleWrapper,
 	PageTitle,
 	PageTitleActions,
 	PageTitleContent,
+	PageTitleNavigation,
 	PageTitleWrapper,
 } from './PageLayout.styles';
 import type { IPageLayout } from './PageLayout.types';
@@ -24,33 +25,84 @@ export const PageLayout = ({
 	subTitle,
 	backButton,
 	backTo,
+	idPrefix = 'page-layout',
 	link,
 	linkName,
 }: IPageLayout) => {
 	return (
-		<PageLayoutWrapper>
-			{title ? (
-				<PageTitleWrapper>
-					<PageTitleContent>
-						<PageTitle>{title}</PageTitle>
-						{subTitle ? (
-							<Box pt={spacing.xs}>
-								<PageSubTitle>{subTitle}</PageSubTitle>
-							</Box>
+		<PageLayoutWrapper
+			data-testid={`${idPrefix}-layout`}
+			id={`${idPrefix}-layout`}
+		>
+			<PageChildrenWrapper
+				data-scroll-region='page'
+				data-testid={`${idPrefix}-scroll-region`}
+				id={`${idPrefix}-scroll-region`}
+			>
+				{title ? (
+					<PageTitleWrapper
+						data-testid={`${idPrefix}-header`}
+						id={`${idPrefix}-header`}
+					>
+						<PageTitleContent
+							data-testid={`${idPrefix}-title-content`}
+							id={`${idPrefix}-title-content`}
+						>
+							<PageTitle
+								data-testid={`${idPrefix}-title`}
+								id={`${idPrefix}-title`}
+							>
+								{title}
+							</PageTitle>
+							{backButton || link ? (
+								<PageTitleNavigation
+									data-testid={`${idPrefix}-navigation`}
+									id={`${idPrefix}-navigation`}
+								>
+									{backButton ? <NavigateLink isBack to={backTo} /> : null}
+									{link ? <Link to={link}>{linkName}</Link> : null}
+								</PageTitleNavigation>
+							) : null}
+						</PageTitleContent>
+						{actions ? (
+							<PageTitleActions
+								data-testid={`${idPrefix}-actions-slot`}
+								id={`${idPrefix}-actions-slot`}
+							>
+								{actions}
+							</PageTitleActions>
 						) : null}
-						{backButton ? <NavigateLink isBack to={backTo} /> : null}
-						{String(link) ? <Link to={link}>{linkName}</Link> : null}
-					</PageTitleContent>
-					{actions ? <PageTitleActions>{actions}</PageTitleActions> : null}
-				</PageTitleWrapper>
-			) : null}
-			{isLoading ? (
-				<PageLoaderWrapper>
-					<Loader />
-				</PageLoaderWrapper>
-			) : (
-				<PageChildrenWrapper>{children}</PageChildrenWrapper>
-			)}
+					</PageTitleWrapper>
+				) : null}
+				{subTitle ? (
+					<PageSubTitleWrapper
+						data-testid={`${idPrefix}-subtitle-wrapper`}
+						id={`${idPrefix}-subtitle-wrapper`}
+					>
+						<PageSubTitle
+							data-testid={`${idPrefix}-subtitle`}
+							id={`${idPrefix}-subtitle`}
+						>
+							{subTitle}
+						</PageSubTitle>
+					</PageSubTitleWrapper>
+				) : null}
+				<PageContent
+					data-testid={`${idPrefix}-content`}
+					id={`${idPrefix}-content`}
+				>
+					{isLoading ? (
+						<PageLoaderWrapper
+							data-testid={`${idPrefix}-loader`}
+							id={`${idPrefix}-loader`}
+						>
+							<Loader />
+						</PageLoaderWrapper>
+					) : (
+						children
+					)}
+				</PageContent>
+			</PageChildrenWrapper>
 		</PageLayoutWrapper>
 	);
 };

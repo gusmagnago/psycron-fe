@@ -206,6 +206,11 @@
 			"updating-results": "Atualizando resultados de pacientes",
 			"columns-control": "Colunas",
 			"columns-visible": "Colunas visíveis",
+			"controls": {
+				"collapse": "Recolher busca e filtros de pacientes",
+				"expand": "Expandir busca e filtros de pacientes",
+				"title": "Busca e filtros"
+			},
 			"column-filter": {
 				"all-values": "Todos os valores",
 				"label": "Filtrar {{column}}",

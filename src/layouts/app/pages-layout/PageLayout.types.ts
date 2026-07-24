@@ -6,6 +6,7 @@ export interface IPageLayout {
 	backButton?: boolean;
 	backTo?: To;
 	children: ReactNode;
+	idPrefix?: string;
 	isLoading?: boolean;
 	link?: string;
 	linkName?: string;

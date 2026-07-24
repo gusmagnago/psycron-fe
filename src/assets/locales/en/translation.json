@@ -206,6 +206,11 @@
 			"updating-results": "Updating patient results",
 			"columns-control": "Columns",
 			"columns-visible": "Visible columns",
+			"controls": {
+				"collapse": "Collapse patient search and filters",
+				"expand": "Expand patient search and filters",
+				"title": "Search and filters"
+			},
 			"column-filter": {
 				"all-values": "All values",
 				"label": "Filter {{column}}",

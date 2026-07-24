@@ -35,6 +35,8 @@ import {
 	Columns3Cog,
 	Copy,
 	FileExclamationPoint,
+	Minus,
+	Plus,
 	ReceiptText,
 	ScanEye,
 } from 'lucide-react';
@@ -82,12 +84,17 @@ import {
 	PatientTableSurface,
 	PrimaryValue,
 	QueueCard,
+	QueueCollapseContent,
+	QueueCollapseRegion,
 	QueueCopy,
 	QueueCount,
 	QueueDescription,
 	QueueIcon,
+	QueueSection,
 	QueueTitle,
 	QueueTop,
+	QueueVisibilityIcon,
+	QueueVisibilityToggle,
 	ResultsCount,
 	ResultsHeader,
 	ResultsHint,
@@ -96,6 +103,7 @@ import {
 	SecondaryValue,
 	SectionLabel,
 	SectionLabelCopy,
+	SectionLabelDivider,
 	SectionPurpose,
 	SectionTitle,
 	SimpleValue,
@@ -105,6 +113,11 @@ import {
 	VisuallyHidden,
 	WorkQueues,
 	Workspace,
+	WorkspaceControlsContent,
+	WorkspaceControlsHeader,
+	WorkspaceControlsRegion,
+	WorkspaceControlsSection,
+	WorkspaceControlsTitle,
 } from './PatientListPage.styles';
 import {
 	getPatientWorkspaceQueueCount,
@@ -178,6 +191,9 @@ export const PatientListPage = () => {
 	const [filterColumn, setFilterColumn] =
 		useState<PatientWorkspaceFilterableColumn | null>(null);
 	const [isFloatingQueuesOpen, setIsFloatingQueuesOpen] = useState(false);
+	const [isWorkspaceControlsExpanded, setIsWorkspaceControlsExpanded] =
+		useState(true);
+	const [isWorkQueuesExpanded, setIsWorkQueuesExpanded] = useState(true);
 	const [isWorkQueuesVisible, setIsWorkQueuesVisible] = useState(true);
 	const [selectedPatient, setSelectedPatient] =
 		useState<PatientWorkspaceRow | null>(null);
@@ -186,7 +202,7 @@ export const PatientListPage = () => {
 			column: 'patient',
 			direction: 'asc',
 		});
-	const workQueuesRef = useRef<HTMLElement | null>(null);
+	const workQueueSectionRef = useRef<HTMLElement | null>(null);
 	const [visibleColumns, setVisibleColumns] = useState<
 		PatientWorkspaceColumn[]
 	>(getInitialVisibleColumns);
@@ -194,6 +210,7 @@ export const PatientListPage = () => {
 		fetchNextPage,
 		filteredPatients,
 		hasNextPage,
+		isDesktopTable,
 		isFetchingNextPage,
 		isLoading,
 		isRefreshingResults,
@@ -220,8 +237,9 @@ export const PatientListPage = () => {
 	}, [visibleColumns]);
 
 	useEffect(() => {
-		const workQueues = workQueuesRef.current;
-		if (!workQueues || typeof IntersectionObserver === 'undefined') return;
+		const workQueueSection = workQueueSectionRef.current;
+		if (!workQueueSection || typeof IntersectionObserver === 'undefined')
+			return;
 
 		const observer = new IntersectionObserver(([entry]) => {
 			const isVisible = entry.isIntersecting;
@@ -229,7 +247,7 @@ export const PatientListPage = () => {
 			if (isVisible) setIsFloatingQueuesOpen(false);
 		});
 
-		observer.observe(workQueues);
+		observer.observe(workQueueSection);
 		return () => observer.disconnect();
 	}, []);
 
@@ -555,6 +573,12 @@ export const PatientListPage = () => {
 		}));
 		closeColumnFilter();
 	};
+	const toggleWorkspaceControls = (): void => {
+		setIsWorkspaceControlsExpanded((current) => {
+			if (current) setColumnsOpen(false);
+			return !current;
+		});
+	};
 
 	const handleRowKeyDown = (
 		event: KeyboardEvent<HTMLTableRowElement>,
@@ -666,124 +690,250 @@ export const PatientListPage = () => {
 					/>
 				</AddPatientAction>
 			}
+			idPrefix='patients-page'
 			title={t('patients.list.title')}
 			subTitle={t('patients.list.subtitle')}
 			isLoading={isLoading}
 		>
 			<PatientListLayout data-testid='patients-page'>
-				<SectionLabel id='patients-queue-state-label'>
-					<SectionLabelCopy>
-						<SectionTitle>{t('patients.list.queues.label')}</SectionTitle>
-						<SectionPurpose>
-							{isAllClear
-								? t('patients.list.queues.all-clear-purpose')
-								: hasAuthoritativeQueues
-									? t('patients.list.queues.purpose')
-									: t('patients.list.queues.pending-purpose')}
-						</SectionPurpose>
-					</SectionLabelCopy>
-				</SectionLabel>
-
-				<WorkQueues
-					id='patients-work-queues'
-					data-testid='patients-work-queues'
-					aria-label={t('patients.list.queues.label')}
-					ref={workQueuesRef}
+				<QueueSection
+					data-testid='patients-queue-state-label'
+					id='patients-queue-state-label'
+					ref={workQueueSectionRef}
 				>
-					{queues.map((queueItem) => {
-						const isClear = queueItem.count === 0;
-						const isSelected = queue === queueItem.queue;
-						const queueIcon = isClear ? <CheckSuccess /> : queueItem.icon;
-
-						return (
-							<QueueCard
-								aria-label={
-									isClear
-										? t('patients.list.queues.all-clear-aria', {
-												queue: t(queueItem.labelKey),
-											})
-										: isSelected
-											? t('patients.list.queues.clear-filter', {
-													queue: t(queueItem.labelKey),
-												})
-											: t('patients.list.queues.filter-by', {
-													queue: t(queueItem.labelKey),
-												})
-								}
-								aria-pressed={isSelected}
-								data-action={
-									isClear
-										? 'queue-all-clear'
-										: isSelected
-											? 'show-all-patients'
-											: 'filter-patients'
-								}
-								data-queue={queueItem.queue}
-								data-state={isClear ? 'clear' : 'actionable'}
-								data-testid={queueItem.id}
-								disabled={isClear}
-								id={queueItem.id}
-								key={queueItem.queue}
-								onClick={() => toggleQueue(queueItem.queue)}
-								type='button'
+					<SectionLabel
+						data-testid='patients-queue-state-header'
+						id='patients-queue-state-header'
+					>
+						<SectionLabelCopy
+							data-testid='patients-queue-state-copy'
+							id='patients-queue-state-copy'
+						>
+							<SectionTitle
+								data-testid='patients-queue-state-title'
+								id='patients-queue-state-title'
 							>
-								<QueueIcon
-									id={`${queueItem.id}-icon`}
-									data-testid={`${queueItem.id}-icon`}
-								>
-									{cloneElement(queueIcon, {
-										'data-testid': `${queueItem.id}-icon-svg`,
-										id: `${queueItem.id}-icon-svg`,
-									})}
-								</QueueIcon>
-								<QueueCopy
-									id={`${queueItem.id}-copy`}
-									data-testid={`${queueItem.id}-copy`}
-								>
-									<QueueTop
-										id={`${queueItem.id}-header`}
-										data-testid={`${queueItem.id}-header`}
-									>
-										<QueueTitle
-											id={`${queueItem.id}-title`}
-											data-testid={`${queueItem.id}-title`}
+								{t('patients.list.queues.label')}
+							</SectionTitle>
+							<SectionPurpose
+								data-testid='patients-queue-state-purpose'
+								id='patients-queue-state-purpose'
+							>
+								{isAllClear
+									? t('patients.list.queues.all-clear-purpose')
+									: hasAuthoritativeQueues
+										? t('patients.list.queues.purpose')
+										: t('patients.list.queues.pending-purpose')}
+							</SectionPurpose>
+						</SectionLabelCopy>
+						<SectionLabelDivider
+							aria-hidden='true'
+							data-testid='patients-queue-state-divider'
+							id='patients-queue-state-divider'
+						/>
+						<QueueVisibilityToggle
+							aria-controls='patients-work-queues'
+							aria-expanded={isWorkQueuesExpanded}
+							aria-label={t(
+								isWorkQueuesExpanded
+									? 'common.layout.collapse-queue'
+									: 'common.layout.expand-queue'
+							)}
+							data-action={
+								isWorkQueuesExpanded
+									? 'collapse-work-queues'
+									: 'expand-work-queues'
+							}
+							data-testid='patients-work-queues-toggle'
+							id='patients-work-queues-toggle'
+							onClick={() =>
+								setIsWorkQueuesExpanded((current) => !current)
+							}
+							type='button'
+						>
+							<QueueVisibilityIcon
+								data-expanded={isWorkQueuesExpanded}
+								data-testid='patients-work-queues-toggle-icon'
+								id='patients-work-queues-toggle-icon'
+							>
+								{isWorkQueuesExpanded ? <Minus /> : <Plus />}
+							</QueueVisibilityIcon>
+						</QueueVisibilityToggle>
+					</SectionLabel>
+
+					<QueueCollapseRegion
+						aria-hidden={!isWorkQueuesExpanded}
+						data-expanded={isWorkQueuesExpanded}
+						data-testid='patients-work-queues-region'
+						id='patients-work-queues-region'
+						inert={isWorkQueuesExpanded ? undefined : true}
+					>
+						<QueueCollapseContent>
+							<WorkQueues
+								id='patients-work-queues'
+								data-testid='patients-work-queues'
+								aria-label={t('patients.list.queues.label')}
+							>
+								{queues.map((queueItem) => {
+									const isClear = queueItem.count === 0;
+									const isSelected = queue === queueItem.queue;
+									const queueIcon = isClear ? (
+										<CheckSuccess />
+									) : (
+										queueItem.icon
+									);
+
+									return (
+										<QueueCard
+											aria-label={
+												isClear
+													? t('patients.list.queues.all-clear-aria', {
+															queue: t(queueItem.labelKey),
+														})
+													: isSelected
+														? t('patients.list.queues.clear-filter', {
+																queue: t(queueItem.labelKey),
+															})
+														: t('patients.list.queues.filter-by', {
+																queue: t(queueItem.labelKey),
+															})
+											}
+											aria-pressed={isSelected}
+											data-action={
+												isClear
+													? 'queue-all-clear'
+													: isSelected
+														? 'show-all-patients'
+														: 'filter-patients'
+											}
+											data-queue={queueItem.queue}
+											data-state={isClear ? 'clear' : 'actionable'}
+											data-testid={queueItem.id}
+											disabled={isClear}
+											id={queueItem.id}
+											key={queueItem.queue}
+											onClick={() => toggleQueue(queueItem.queue)}
+											type='button'
 										>
-											{t(queueItem.labelKey)}
-										</QueueTitle>
-										{queueItem.count !== undefined ? (
-											<QueueCount
-												id={`${queueItem.id}-count`}
-												data-testid={`${queueItem.id}-count`}
+											<QueueIcon
+												id={`${queueItem.id}-icon`}
+												data-testid={`${queueItem.id}-icon`}
 											>
-												{queueItem.count}
-											</QueueCount>
-										) : null}
-									</QueueTop>
-									<QueueDescription
-										id={`${queueItem.id}-description`}
-										data-testid={`${queueItem.id}-description`}
-									>
-										{t(
-											isClear
-												? queueItem.clearDescriptionKey
-												: queueItem.descriptionKey
-										)}
-									</QueueDescription>
-								</QueueCopy>
-							</QueueCard>
-						);
-					})}
-				</WorkQueues>
+												{cloneElement(queueIcon, {
+													'data-testid': `${queueItem.id}-icon-svg`,
+													id: `${queueItem.id}-icon-svg`,
+												})}
+											</QueueIcon>
+											<QueueCopy
+												id={`${queueItem.id}-copy`}
+												data-testid={`${queueItem.id}-copy`}
+											>
+												<QueueTop
+													id={`${queueItem.id}-header`}
+													data-testid={`${queueItem.id}-header`}
+												>
+													<QueueTitle
+														id={`${queueItem.id}-title`}
+														data-testid={`${queueItem.id}-title`}
+													>
+														{t(queueItem.labelKey)}
+													</QueueTitle>
+													{queueItem.count !== undefined ? (
+														<QueueCount
+															id={`${queueItem.id}-count`}
+															data-testid={`${queueItem.id}-count`}
+														>
+															{queueItem.count}
+														</QueueCount>
+													) : null}
+												</QueueTop>
+												<QueueDescription
+													id={`${queueItem.id}-description`}
+													data-testid={`${queueItem.id}-description`}
+												>
+													{t(
+														isClear
+															? queueItem.clearDescriptionKey
+															: queueItem.descriptionKey
+													)}
+												</QueueDescription>
+											</QueueCopy>
+										</QueueCard>
+									);
+								})}
+							</WorkQueues>
+						</QueueCollapseContent>
+					</QueueCollapseRegion>
+				</QueueSection>
 
 				<Workspace
 					aria-label={t('patients.list.workspace-label')}
 					data-testid='patients-workspace'
 					id='patients-workspace'
 				>
-					<ControlsBar
-						id='patients-workspace-controls'
-						data-testid='patients-controls'
+					<WorkspaceControlsSection
+						data-testid='patients-workspace-controls-section'
+						id='patients-workspace-controls-section'
 					>
+						<WorkspaceControlsHeader
+							data-testid='patients-workspace-controls-header'
+							id='patients-workspace-controls-header'
+						>
+							<WorkspaceControlsTitle
+								data-testid='patients-workspace-controls-title'
+								id='patients-workspace-controls-title'
+							>
+								{t('patients.list.controls.title')}
+							</WorkspaceControlsTitle>
+							<QueueVisibilityToggle
+								aria-controls='patients-workspace-controls'
+								aria-expanded={
+									isDesktopTable || isWorkspaceControlsExpanded
+								}
+								aria-label={t(
+									isWorkspaceControlsExpanded
+										? 'patients.list.controls.collapse'
+										: 'patients.list.controls.expand'
+								)}
+								data-action={
+									isWorkspaceControlsExpanded
+										? 'collapse-workspace-controls'
+										: 'expand-workspace-controls'
+								}
+								data-testid='patients-workspace-controls-toggle'
+								id='patients-workspace-controls-toggle'
+								onClick={toggleWorkspaceControls}
+								type='button'
+							>
+								<QueueVisibilityIcon
+									data-expanded={isWorkspaceControlsExpanded}
+									data-testid='patients-workspace-controls-toggle-icon'
+									id='patients-workspace-controls-toggle-icon'
+								>
+									{isWorkspaceControlsExpanded ? <Minus /> : <Plus />}
+								</QueueVisibilityIcon>
+							</QueueVisibilityToggle>
+						</WorkspaceControlsHeader>
+						<WorkspaceControlsRegion
+							aria-hidden={
+								!isDesktopTable && !isWorkspaceControlsExpanded
+							}
+							data-expanded={
+								isDesktopTable || isWorkspaceControlsExpanded
+							}
+							data-testid='patients-workspace-controls-region'
+							id='patients-workspace-controls-region'
+							inert={
+								!isDesktopTable && !isWorkspaceControlsExpanded
+									? true
+									: undefined
+							}
+						>
+							<WorkspaceControlsContent>
+								<ControlsBar
+									id='patients-workspace-controls'
+									data-testid='patients-controls'
+								>
 						<FieldGroup
 							id='patients-workspace-search-field'
 							data-testid='patients-workspace-search-field'
@@ -988,7 +1138,10 @@ export const PatientListPage = () => {
 								</ColumnsPanel>
 							) : null}
 						</ColumnsWrapper>
-					</ControlsBar>
+								</ControlsBar>
+							</WorkspaceControlsContent>
+						</WorkspaceControlsRegion>
+					</WorkspaceControlsSection>
 
 					<ResultsHeader>
 						<ResultsTitleGroup>
