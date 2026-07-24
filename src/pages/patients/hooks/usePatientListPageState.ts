@@ -31,6 +31,31 @@ import {
 } from '../PatientsPage.utils';
 
 const PATIENTS_PAGE_SIZE = 20;
+const PATIENT_QUEUE_STORAGE_KEY = '_psy_pq';
+const PATIENT_WORKSPACE_QUEUES = [
+	'all',
+	'billing',
+	'contact',
+	'duplicate',
+	'needs-attention',
+	'recovery',
+] as const satisfies readonly PatientWorkspaceQueue[];
+
+const isPatientWorkspaceQueue = (
+	value: string
+): value is PatientWorkspaceQueue =>
+	PATIENT_WORKSPACE_QUEUES.some((queue) => queue === value);
+
+const getInitialPatientQueue = (): PatientWorkspaceQueue => {
+	try {
+		const storedQueue = localStorage.getItem(PATIENT_QUEUE_STORAGE_KEY);
+		return storedQueue && isPatientWorkspaceQueue(storedQueue)
+			? storedQueue
+			: 'needs-attention';
+	} catch {
+		return 'needs-attention';
+	}
+};
 
 export const usePatientListPageState = () => {
 	const navigate = useNavigate();
@@ -43,13 +68,21 @@ export const usePatientListPageState = () => {
 	const [searchQuery, setSearchQuery] = useState('');
 	const [debouncedSearch, setDebouncedSearch] = useState('');
 	const [queue, setQueue] =
-		useState<PatientWorkspaceQueue>('needs-attention');
+		useState<PatientWorkspaceQueue>(getInitialPatientQueue);
 	const [sortDirection, setSortDirection] = useState<PatientListSortDirection>(
 		getPatientListSortDefaultDirection('name')
 	);
 	const [sortField, setSortField] = useState<PatientListSortField>('name');
 	const [statusFilter, setStatusFilter] =
 		useState<PatientListStatusFilter>('all');
+
+	useEffect(() => {
+		try {
+			localStorage.setItem(PATIENT_QUEUE_STORAGE_KEY, queue);
+		} catch {
+			// The queue remains functional when storage is unavailable.
+		}
+	}, [queue]);
 
 	// Debounce the search box so we don't fire a request per keystroke.
 	useEffect(() => {

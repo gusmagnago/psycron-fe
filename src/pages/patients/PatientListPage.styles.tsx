@@ -217,7 +217,7 @@ export const QueueIcon = styled('span')`
 		width: 20px;
 	}
 
-	[data-queue='recovery'] & {
+	[data-queue='needs-attention'] & {
 		background: ${palette.error.surface.light};
 		color: ${palette.error.dark};
 	}
@@ -228,8 +228,13 @@ export const QueueIcon = styled('span')`
 	}
 
 	[data-queue='duplicate'] & {
-		background: ${palette.primary.light};
-		color: ${palette.primary.dark};
+		background: ${palette.secondary.light};
+		color: ${palette.secondary.dark};
+	}
+
+	[data-queue='contact'] & {
+		background: ${palette.info.surface.light};
+		color: ${palette.info.dark};
 	}
 
 	[data-state='clear'] & {
@@ -679,6 +684,10 @@ export const PatientCell = styled('td')`
 	padding: ${spacing.small};
 	vertical-align: middle;
 
+	&[data-column='contact'] {
+		text-align: left;
+	}
+
 	${isSmallerThanTabletMedia} {
 		border: 0;
 		padding: 0;
@@ -791,9 +800,12 @@ export const ContactValue = styled('span')`
 	align-items: center;
 	border-radius: 50%;
 	display: inline-flex;
+	font-weight: 700;
 	gap: ${spacing.xs};
+	justify-content: flex-start;
 	max-width: 100%;
 	min-width: 0;
+	text-align: left;
 
 	&[data-missing='true'] {
 		color: ${palette.error.dark};
@@ -918,6 +930,10 @@ export const BillingSummary = styled('span')`
 	gap: ${spacing.space};
 	max-width: 100%;
 	min-width: 0;
+
+	&[data-configured='false'] {
+		color: ${palette.text.disabled};
+	}
 `;
 
 export const BillingTooltipContent = styled(Box)`

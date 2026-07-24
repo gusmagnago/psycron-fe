@@ -11,14 +11,9 @@ import {
 	ChevronDown,
 	ChevronRight,
 	ChevronUp,
-	Copy,
 	Filter,
-	Mail,
-	Notifications,
-	Patients,
 	Phone,
 	Search,
-	Wallet,
 } from '@psycron/components/icons';
 import {
 	QueueFilterChip,
@@ -34,7 +29,15 @@ import {
 	formatTimezoneLabel,
 } from '@psycron/utils/date/date.utils';
 import { getPatientBillingViewModel } from '@psycron/utils/patient/patient.utils';
-import { ArrowUpDown, Columns3Cog } from 'lucide-react';
+import {
+	ArrowUpDown,
+	BookUser,
+	Columns3Cog,
+	Copy,
+	FileExclamationPoint,
+	ReceiptText,
+	ScanEye,
+} from 'lucide-react';
 
 import { usePatientListPageState } from './hooks/usePatientListPageState';
 import { PatientWorkflowDrawer } from './patient-workflow-drawer/PatientWorkflowDrawer';
@@ -266,7 +269,7 @@ export const PatientListPage = () => {
 						'patients.list.queues.missing-contact-clear-description',
 					count: getQueueCount('contact'),
 					descriptionKey: 'patients.list.queues.missing-contact-description',
-					icon: <Mail />,
+					icon: <BookUser />,
 					id: 'patients-queue-missing-contact',
 					labelKey: 'patients.list.queues.missing-contact',
 					queue: 'contact',
@@ -287,7 +290,7 @@ export const PatientListPage = () => {
 				'patients.list.queues.needs-attention-clear-description',
 			count: getQueueCount('needs-attention'),
 			descriptionKey: 'patients.list.queues.needs-attention-description',
-			icon: <Patients />,
+			icon: <FileExclamationPoint />,
 			id: 'patients-queue-needs-attention',
 			labelKey: 'patients.list.queues.needs-attention',
 			queue: 'needs-attention',
@@ -297,7 +300,7 @@ export const PatientListPage = () => {
 				'patients.list.queues.recovery-clear-description',
 			count: getQueueCount('recovery'),
 			descriptionKey: 'patients.list.queues.recovery-description',
-			icon: <Notifications />,
+			icon: <ScanEye />,
 			id: 'patients-queue-recovery',
 			labelKey: 'patients.list.queues.recovery',
 			queue: 'recovery',
@@ -307,7 +310,7 @@ export const PatientListPage = () => {
 				'patients.list.queues.billing-clear-description',
 			count: getQueueCount('billing'),
 			descriptionKey: 'patients.list.queues.billing-description',
-			icon: <Wallet />,
+			icon: <ReceiptText />,
 			id: 'patients-queue-billing',
 			labelKey: 'patients.list.queues.billing',
 			queue: 'billing',
@@ -599,7 +602,7 @@ export const PatientListPage = () => {
 
 		return (
 			<Tooltip arrow placement='top' title={tooltipContent}>
-				<BillingSummary>
+				<BillingSummary data-configured={billingViewModel.isConfigured}>
 					<SimpleValue>{billingViewModel.summaryPrimary}</SimpleValue>
 					{billingViewModel.summarySecondary ? (
 						<SecondaryValue>{billingViewModel.summarySecondary}</SecondaryValue>
