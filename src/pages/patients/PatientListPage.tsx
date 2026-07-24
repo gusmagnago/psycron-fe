@@ -29,12 +29,14 @@ import {
 	formatTimezoneLabel,
 } from '@psycron/utils/date/date.utils';
 import { getPatientBillingViewModel } from '@psycron/utils/patient/patient.utils';
+import { useReducedMotion } from 'framer-motion';
 import {
 	ArrowUpDown,
 	BookUser,
 	Columns3Cog,
 	Copy,
 	FileExclamationPoint,
+	Funnel,
 	Minus,
 	Plus,
 	ReceiptText,
@@ -43,6 +45,10 @@ import {
 
 import { usePatientListPageState } from './hooks/usePatientListPageState';
 import { PatientWorkflowDrawer } from './patient-workflow-drawer/PatientWorkflowDrawer';
+import {
+	patientCardScrollVariants,
+	patientCardScrollViewport,
+} from './PatientListPage.motion';
 import {
 	ActionPill,
 	AddPatientAction,
@@ -67,7 +73,6 @@ import {
 	FieldLabel,
 	FloatingQueuesPanel,
 	FloatingQueuesTrigger,
-	FloatingQueuesTriggerCount,
 	FloatingQueuesTriggerIcon,
 	HeaderControl,
 	HeaderFilterButton,
@@ -211,6 +216,7 @@ export const PatientListPage = () => {
 		filteredPatients,
 		hasNextPage,
 		isDesktopTable,
+		isMobile,
 		isFetchingNextPage,
 		isLoading,
 		isRefreshingResults,
@@ -228,6 +234,8 @@ export const PatientListPage = () => {
 		totalPatients,
 		workspaceSummary,
 	} = usePatientListPageState();
+	const prefersReducedMotion = useReducedMotion();
+	const shouldAnimatePatientCards = isMobile && !prefersReducedMotion;
 
 	useEffect(() => {
 		localStorage.setItem(
@@ -1270,7 +1278,7 @@ export const PatientListPage = () => {
 									</tr>
 								</thead>
 								<tbody data-testid='patients-workspace-table-body'>
-									{workspacePatients.map((patient) => {
+									{workspacePatients.map((patient, patientIndex) => {
 										const rowTestId = `patients-workspace-row-${patient.uiRowKey}`;
 										const contactValue =
 											patient.contacts?.phone ||
@@ -1288,9 +1296,14 @@ export const PatientListPage = () => {
 												aria-label={t('patients.list.open-workflow', {
 													patient: patient.fullName,
 												})}
+												custom={patientIndex}
 												data-testid={rowTestId}
 												id={rowTestId}
+												initial={
+													shouldAnimatePatientCards ? 'hidden' : false
+												}
 												key={patient._id}
+												layout={shouldAnimatePatientCards ? 'position' : false}
 												data-selected={
 													selectedPatient?._id === patient._id
 												}
@@ -1299,6 +1312,11 @@ export const PatientListPage = () => {
 													handleRowKeyDown(event, patient)
 												}
 												tabIndex={0}
+												variants={patientCardScrollVariants}
+												viewport={patientCardScrollViewport}
+												whileInView={
+													shouldAnimatePatientCards ? 'visible' : undefined
+												}
 											>
 												<PatientCell
 													data-column='patient'
@@ -1558,17 +1576,8 @@ export const PatientListPage = () => {
 							data-testid='patients-work-queues-floating-trigger-icon'
 							id='patients-work-queues-floating-trigger-icon'
 						>
-							<Filter />
+							<Funnel />
 						</FloatingQueuesTriggerIcon>
-						{t('patients.list.queues.floating-trigger')}
-						{activeFilterCount ? (
-							<FloatingQueuesTriggerCount
-								data-testid='patients-work-queues-floating-trigger-count'
-								id='patients-work-queues-floating-trigger-count'
-							>
-								{totalPatients}
-							</FloatingQueuesTriggerCount>
-						) : null}
 					</FloatingQueuesTrigger>
 				) : null}
 

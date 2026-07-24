@@ -60,7 +60,7 @@ const getInitialPatientQueue = (): PatientWorkspaceQueue => {
 export const usePatientListPageState = () => {
 	const navigate = useNavigate();
 	const { locale } = useParams<{ locale: string }>();
-	const { isSmallerThanTablet } = useViewport();
+	const { isMobile, isSmallerThanTablet } = useViewport();
 	const { isUserDetailsLoading, therapistId } = useUserDetails();
 	const { showAlert } = useAlert();
 	const queryClient = useQueryClient();
@@ -199,6 +199,7 @@ export const usePatientListPageState = () => {
 		hasNextPage,
 		hasPatients: totalPatients > 0,
 		isDesktopTable: !isSmallerThanTablet,
+		isMobile,
 		isFetchingNextPage,
 		isLoading: isUserDetailsLoading || (isPatientsLoading && !data),
 		isRefreshingResults:

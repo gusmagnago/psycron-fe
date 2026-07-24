@@ -16,6 +16,7 @@ import {
 } from '@psycron/theme/shadow/shadow.theme';
 import { spacing } from '@psycron/theme/spacing/spacing.theme';
 import { zIndexHover, zIndexSticky } from '@psycron/theme/zIndex';
+import { motion } from 'framer-motion';
 
 const attentionPulse = keyframes`
 	0%, 100% { opacity: 0.35; transform: scale(0.82); }
@@ -185,6 +186,8 @@ export const FloatingQueuesTrigger = styled(Button)`
 	box-shadow: ${shadowMedium};
 	inset-inline-end: 0;
 	min-height: 48px;
+	min-width: 48px;
+	padding: 0;
 	position: fixed;
 	top: 50%;
 	transform: translateY(-50%);
@@ -194,38 +197,23 @@ export const FloatingQueuesTrigger = styled(Button)`
 		transform: translateY(-50%);
 	}
 
-	${isMobileMedia} {
-		bottom: calc(${spacing.xl} + env(safe-area-inset-bottom));
-		top: auto;
-		transform: none;
-
-		&:hover {
-			transform: none;
-		}
+	&:hover svg,
+	&:active svg,
+	&:focus svg,
+	&:focus-visible svg,
+	&[aria-expanded='true'] svg {
+		color: ${palette.white};
+		stroke: ${palette.white};
 	}
-`;
-
-export const FloatingQueuesTriggerCount = styled('span')`
-	align-items: center;
-	background: ${palette.white};
-	border-radius: ${spacing.medium};
-	color: ${palette.black};
-	display: inline-flex;
-	font-size: 0.75rem;
-	font-variant-numeric: tabular-nums;
-	font-weight: 800;
-	justify-content: center;
-	min-height: ${spacing.mediumSmall};
-	min-width: ${spacing.mediumSmall};
-	padding: 0 ${spacing.space};
 `;
 
 export const FloatingQueuesTriggerIcon = styled('span')`
 	align-items: center;
 	display: inline-flex;
 
-	svg {
+	&& svg {
 		height: ${spacing.mediumSmall};
+		stroke-width: 2px;
 		width: ${spacing.mediumSmall};
 	}
 `;
@@ -792,7 +780,7 @@ export const ColumnFilterLabel = styled('label')`
 	text-transform: uppercase;
 `;
 
-export const PatientTableRow = styled('tr')`
+export const PatientTableRow = styled(motion.tr)`
 	border-bottom: 1px solid ${hexToRgba(palette.gray['04'], 0.12)};
 	cursor: pointer;
 	touch-action: manipulation;
@@ -826,6 +814,10 @@ export const PatientTableRow = styled('tr')`
 		overflow: hidden;
 		padding: ${spacing.small};
 		position: relative;
+	}
+
+	${isMobileMedia} {
+		grid-template-columns: repeat(9, minmax(0, 1fr));
 	}
 `;
 
@@ -918,6 +910,37 @@ export const PatientCell = styled('td')`
 
 			&::before {
 				display: none;
+			}
+		}
+	}
+
+	${isMobileMedia} {
+		&[data-column='contact'] {
+			grid-column: 1 / 5;
+		}
+
+		&[data-column='next-action'] {
+			grid-column: 5 / 10;
+		}
+
+		&[data-column='next-session'],
+		&[data-column='billing'],
+		&[data-column='sessions'] {
+			align-items: center;
+			display: flex;
+			gap: ${spacing.small};
+			grid-column: 1 / 10;
+			justify-content: space-between;
+			text-align: left;
+
+			&::before {
+				margin-bottom: 0;
+				text-align: left;
+			}
+
+			& > * {
+				min-width: 0;
+				text-align: left;
 			}
 		}
 	}
