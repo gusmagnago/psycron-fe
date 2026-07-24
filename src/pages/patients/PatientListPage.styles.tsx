@@ -643,6 +643,11 @@ export const PatientTableRow = styled('tr')`
 	touch-action: manipulation;
 	transition: background 180ms ease;
 
+	&[data-selected='true'] {
+		background: ${palette.tertiary.surface.light};
+		box-shadow: inset ${spacing.space} 0 0 ${palette.brand.purple};
+	}
+
 	&:hover {
 		background: ${palette.tertiary.surface.light};
 	}

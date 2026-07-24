@@ -213,6 +213,16 @@
 			},
 			"open": "Open",
 			"open-workflow": "Open {{patient}} workflow",
+			"drawer": {
+				"approval": "Júpiter may prepare administrative copy, but you approve anything patient-facing before it is sent.",
+				"aria-label": "{{patient}} administrative workflow",
+				"contact-ready": "Preferred channel ready",
+				"guidance": "Complete the next administrative action to keep contact, sessions, and billing ready.",
+				"guidance-ready": "No administrative action is needed right now. Contact, sessions, and billing are ready.",
+				"open-profile": "Open patient profile",
+				"recommended-step": "Recommended next step",
+				"subtitle": "Administrative workflow summary"
+			},
 			"contact-missing": "Contact missing",
 			"contact-missing-aria": "Contact information missing",
 			"queues": {

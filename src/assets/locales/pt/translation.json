@@ -213,6 +213,16 @@
 			},
 			"open": "Abrir",
 			"open-workflow": "Abrir fluxo de {{patient}}",
+			"drawer": {
+				"approval": "A Júpiter pode preparar mensagens administrativas, mas você aprova qualquer conteúdo destinado ao paciente antes do envio.",
+				"aria-label": "Fluxo administrativo de {{patient}}",
+				"contact-ready": "Canal preferencial disponível",
+				"guidance": "Conclua a próxima ação administrativa para manter contatos, sessões e cobranças em dia.",
+				"guidance-ready": "Nenhuma ação administrativa é necessária agora. Contato, sessões e cobranças estão em dia.",
+				"open-profile": "Abrir perfil do paciente",
+				"recommended-step": "Próxima etapa recomendada",
+				"subtitle": "Resumo do fluxo administrativo"
+			},
 			"contact-missing": "Contato não informado",
 			"contact-missing-aria": "Informações de contato não informadas",
 			"queues": {

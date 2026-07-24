@@ -37,6 +37,7 @@ import { getPatientBillingViewModel } from '@psycron/utils/patient/patient.utils
 import { ArrowUpDown, Columns3Cog } from 'lucide-react';
 
 import { usePatientListPageState } from './hooks/usePatientListPageState';
+import { PatientWorkflowDrawer } from './patient-workflow-drawer/PatientWorkflowDrawer';
 import {
 	ActionPill,
 	AddPatientAction,
@@ -175,6 +176,8 @@ export const PatientListPage = () => {
 		useState<PatientWorkspaceFilterableColumn | null>(null);
 	const [isFloatingQueuesOpen, setIsFloatingQueuesOpen] = useState(false);
 	const [isWorkQueuesVisible, setIsWorkQueuesVisible] = useState(true);
+	const [selectedPatient, setSelectedPatient] =
+		useState<PatientWorkspaceRow | null>(null);
 	const [workspaceSort, setWorkspaceSort] =
 		useState<PatientWorkspaceSortState>({
 			column: 'patient',
@@ -347,6 +350,26 @@ export const PatientListPage = () => {
 	const goToConflicts = (event: MouseEvent<HTMLElement>) => {
 		event.stopPropagation();
 		navigate(`/${locale}/${CONFLICTS}?type=PATIENT_DUPLICATE`);
+	};
+	const closePatientWorkflow = (): void => {
+		setSelectedPatient(null);
+	};
+	const openPatientWorkflow = (patient: PatientWorkspaceRow): void => {
+		setSelectedPatient(patient);
+	};
+	const openSelectedPatientProfile = (patientId: string): void => {
+		closePatientWorkflow();
+		openPatientProfile(patientId);
+	};
+	const completePatientNextAction = (
+		patient: PatientWorkspaceRow
+	): void => {
+		closePatientWorkflow();
+		if (patient.nextAction === 'review-duplicate') {
+			navigate(`/${locale}/${CONFLICTS}?type=PATIENT_DUPLICATE`);
+			return;
+		}
+		openPatientProfile(patient._id);
 	};
 
 	const activeColumnFilterCount = Object.values(columnFilters).filter(
@@ -532,11 +555,12 @@ export const PatientListPage = () => {
 
 	const handleRowKeyDown = (
 		event: KeyboardEvent<HTMLTableRowElement>,
-		patientId: string
+		patient: PatientWorkspaceRow
 	) => {
+		if (event.target !== event.currentTarget) return;
 		if (event.key === 'Enter' || event.key === ' ') {
 			event.preventDefault();
-			openPatientProfile(patientId);
+			openPatientWorkflow(patient);
 		}
 	};
 
@@ -1111,9 +1135,12 @@ export const PatientListPage = () => {
 												data-testid={rowTestId}
 												id={rowTestId}
 												key={patient._id}
-												onClick={() => openPatientProfile(patient._id)}
+												data-selected={
+													selectedPatient?._id === patient._id
+												}
+												onClick={() => openPatientWorkflow(patient)}
 												onKeyDown={(event) =>
-													handleRowKeyDown(event, patient._id)
+													handleRowKeyDown(event, patient)
 												}
 												tabIndex={0}
 											>
@@ -1190,7 +1217,7 @@ export const PatientListPage = () => {
 																event.stopPropagation();
 																if (patient.nextAction === 'review-duplicate')
 																	goToConflicts(event);
-																else openPatientProfile(patient._id);
+																else openPatientWorkflow(patient);
 															}}
 															type='button'
 														>
@@ -1239,7 +1266,7 @@ export const PatientListPage = () => {
 														id={`${rowTestId}-open-action`}
 														onClick={(event) => {
 															event.stopPropagation();
-															openPatientProfile(patient._id);
+															openPatientWorkflow(patient);
 														}}
 														type='button'
 													>
@@ -1346,6 +1373,15 @@ export const PatientListPage = () => {
 						</LoadMoreRow>
 					) : null}
 				</Workspace>
+
+				{selectedPatient ? (
+					<PatientWorkflowDrawer
+						onClose={closePatientWorkflow}
+						onCompleteNextAction={completePatientNextAction}
+						onOpenProfile={openSelectedPatientProfile}
+						patient={selectedPatient}
+					/>
+				) : null}
 
 				{!isWorkQueuesVisible ? (
 					<FloatingQueuesTrigger
