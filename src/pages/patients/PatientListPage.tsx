@@ -44,6 +44,7 @@ import {
 } from 'lucide-react';
 
 import { usePatientListPageState } from './hooks/usePatientListPageState';
+import { usePatientListUiPreferences } from './hooks/usePatientListUiPreferences';
 import { PatientWorkflowDrawer } from './patient-workflow-drawer/PatientWorkflowDrawer';
 import {
 	patientCardScrollVariants,
@@ -196,9 +197,6 @@ export const PatientListPage = () => {
 	const [filterColumn, setFilterColumn] =
 		useState<PatientWorkspaceFilterableColumn | null>(null);
 	const [isFloatingQueuesOpen, setIsFloatingQueuesOpen] = useState(false);
-	const [isWorkspaceControlsExpanded, setIsWorkspaceControlsExpanded] =
-		useState(true);
-	const [isWorkQueuesExpanded, setIsWorkQueuesExpanded] = useState(true);
 	const [isWorkQueuesVisible, setIsWorkQueuesVisible] = useState(true);
 	const [selectedPatient, setSelectedPatient] =
 		useState<PatientWorkspaceRow | null>(null);
@@ -234,6 +232,12 @@ export const PatientListPage = () => {
 		totalPatients,
 		workspaceSummary,
 	} = usePatientListPageState();
+	const {
+		isWorkspaceControlsExpanded,
+		isWorkQueuesExpanded,
+		setIsWorkspaceControlsExpanded,
+		setIsWorkQueuesExpanded,
+	} = usePatientListUiPreferences({ isDesktopTable });
 	const prefersReducedMotion = useReducedMotion();
 	const shouldAnimatePatientCards = isMobile && !prefersReducedMotion;
 
