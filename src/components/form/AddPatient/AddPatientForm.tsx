@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import { Button, Grid, IconButton } from '@mui/material';
+import { Button as MuiButton, Grid } from '@mui/material';
+import { Button } from '@psycron/components/button/Button';
 import { AddPatient } from '@psycron/components/icons/user/patient/AddPatient';
 import { useAlert } from '@psycron/context/alert/AlertContext';
 import { usePatient } from '@psycron/context/patient/PatientContext';
@@ -64,15 +65,18 @@ export const AddPatientForm = ({
 	return (
 		<>
 			{shortButton ? (
-				<IconButton
+				<Button
+					aria-label={t('components.form.add-patient.name')}
 					id={buttonId}
 					data-testid={buttonTestId}
 					onClick={() => setOpen(true)}
+					tertiary
+					type='button'
 				>
 					<AddPatient />
-				</IconButton>
+				</Button>
 			) : (
-				<Button
+				<MuiButton
 					id={buttonId}
 					data-testid={buttonTestId}
 					onClick={() => setOpen(true)}
@@ -81,7 +85,7 @@ export const AddPatientForm = ({
 					variant='contained'
 				>
 					{t('components.form.add-patient.name')}
-				</Button>
+				</MuiButton>
 			)}
 			<FormWrapper
 				formDescription='add-patient-inputs'

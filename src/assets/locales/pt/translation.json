@@ -205,6 +205,12 @@
 			"results-hint": "Selecione um paciente para abrir o resumo do fluxo",
 			"updating-results": "Atualizando resultados de pacientes",
 			"columns-control": "Colunas",
+			"columns-visible": "Colunas visíveis",
+			"column-filter": {
+				"all-values": "Todos os valores",
+				"label": "Filtrar {{column}}",
+				"open": "Filtrar coluna {{column}}"
+			},
 			"open": "Abrir",
 			"open-workflow": "Abrir fluxo de {{patient}}",
 			"contact-missing": "Contato não informado",
@@ -256,7 +262,7 @@
 				"soon": "Em {{minutes}} min · {{time}}"
 			},
 			"search-label": "Busca",
-			"search-placeholder": "Buscar por nome, email ou telefone",
+			"search-placeholder": "Buscar por nome, email ou telefone…",
 			"status-label": "Status",
 			"status-all": "Todos os pacientes",
 			"status-active": "Ativo",
@@ -288,6 +294,7 @@
 				"filtered-body": "Tente ajustar a busca ou os filtros para encontrar o paciente que você procura."
 			},
 			"clear-search": "Limpar busca",
+			"clear-filters": "Limpar filtros",
 			"load-more": "Carregar mais",
 			"billing": {
 				"none": "Não definido",

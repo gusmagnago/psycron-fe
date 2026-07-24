@@ -2,7 +2,7 @@ import type { KeyboardEvent, MouseEvent } from 'react';
 import { cloneElement, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams } from 'react-router-dom';
-import { Tooltip } from '@mui/material';
+import { InputAdornment, Tooltip } from '@mui/material';
 import { Button } from '@psycron/components/button/Button';
 import { AddPatientForm } from '@psycron/components/form/AddPatient/AddPatientForm';
 import {
@@ -17,7 +17,7 @@ import {
 	Notifications,
 	Patients,
 	Phone,
-	Settings,
+	Search,
 	Wallet,
 } from '@psycron/components/icons';
 import {
@@ -34,6 +34,7 @@ import {
 	formatTimezoneLabel,
 } from '@psycron/utils/date/date.utils';
 import { getPatientBillingViewModel } from '@psycron/utils/patient/patient.utils';
+import { ArrowUpDown, Columns3Cog } from 'lucide-react';
 
 import { usePatientListPageState } from './hooks/usePatientListPageState';
 import {
@@ -42,8 +43,12 @@ import {
 	BillingSummary,
 	BillingTooltipContent,
 	BillingTooltipRow,
+	ColumnFilterContent,
+	ColumnFilterLabel,
+	ColumnFilterPopover,
 	ColumnOption,
 	ColumnsPanel,
+	ColumnsPanelTitle,
 	ColumnsWrapper,
 	ContactIcon,
 	ContactValue,
@@ -58,6 +63,8 @@ import {
 	FloatingQueuesTrigger,
 	FloatingQueuesTriggerCount,
 	FloatingQueuesTriggerIcon,
+	HeaderControl,
+	HeaderFilterButton,
 	LoadMoreRow,
 	MetaLabel,
 	NextSessionValue,
@@ -101,16 +108,17 @@ import {
 } from './PatientListPage.utils';
 import type {
 	PatientListSortDirection,
-	PatientListSortField,
 	PatientWorkQueueCard,
 	PatientWorkspaceColumn,
+	PatientWorkspaceColumnFilterOption,
+	PatientWorkspaceFilterableColumn,
 	PatientWorkspaceQueue,
 	PatientWorkspaceRow,
+	PatientWorkspaceSortState,
 } from './PatientsPage.types';
 import {
 	decodePatientListSortValue,
 	encodePatientListSortValue,
-	getPatientListSortDefaultDirection,
 	getPreferredContactLabelKey,
 	PATIENT_LIST_SORT_OPTIONS,
 } from './PatientsPage.utils';
@@ -158,8 +166,20 @@ export const PatientListPage = () => {
 	const navigate = useNavigate();
 	const { locale } = useParams<{ locale: string }>();
 	const [columnsOpen, setColumnsOpen] = useState(false);
+	const [columnFilterAnchor, setColumnFilterAnchor] =
+		useState<HTMLButtonElement | null>(null);
+	const [columnFilters, setColumnFilters] = useState<
+		Partial<Record<PatientWorkspaceFilterableColumn, string>>
+	>({});
+	const [filterColumn, setFilterColumn] =
+		useState<PatientWorkspaceFilterableColumn | null>(null);
 	const [isFloatingQueuesOpen, setIsFloatingQueuesOpen] = useState(false);
 	const [isWorkQueuesVisible, setIsWorkQueuesVisible] = useState(true);
+	const [workspaceSort, setWorkspaceSort] =
+		useState<PatientWorkspaceSortState>({
+			column: 'patient',
+			direction: 'asc',
+		});
 	const workQueuesRef = useRef<HTMLElement | null>(null);
 	const [visibleColumns, setVisibleColumns] = useState<
 		PatientWorkspaceColumn[]
@@ -307,6 +327,7 @@ export const PatientListPage = () => {
 		setQueue('all');
 		setSearchQuery('');
 		setStatusFilter('all');
+		setColumnFilters({});
 	};
 	const toggleQueue = (queueKey: PatientWorkQueueCard['queue']): void => {
 		if (queue === queueKey) {
@@ -328,7 +349,13 @@ export const PatientListPage = () => {
 		navigate(`/${locale}/${CONFLICTS}?type=PATIENT_DUPLICATE`);
 	};
 
-	const isFiltering = Boolean(searchQuery) || statusFilter !== 'all';
+	const activeColumnFilterCount = Object.values(columnFilters).filter(
+		Boolean
+	).length;
+	const isFiltering =
+		Boolean(searchQuery) ||
+		statusFilter !== 'all' ||
+		activeColumnFilterCount > 0;
 	const emptyTitle = isFiltering
 		? t('patients.list.empty.filtered-title')
 		: t('patients.list.empty.initial-title');
@@ -337,16 +364,170 @@ export const PatientListPage = () => {
 		: t('patients.list.empty.initial-body');
 	const sortValue = encodePatientListSortValue(sortField, sortDirection);
 
-	const handleSortChange = (field: PatientListSortField) => {
-		if (sortField === field) {
-			setSortDirection((current: PatientListSortDirection) =>
-				current === 'asc' ? 'desc' : 'asc'
-			);
-			return;
+	const getColumnFilterOption = (
+		patient: PatientWorkspaceRow,
+		column: PatientWorkspaceColumn
+	): PatientWorkspaceColumnFilterOption => {
+		switch (column) {
+			case 'billing': {
+				const billing = getPatientBillingViewModel(
+					patient.billing,
+					i18n.language,
+					t
+				);
+				const label = [billing.summaryPrimary, billing.summarySecondary]
+					.filter(Boolean)
+					.join(' ');
+				return { label, value: label.toLocaleLowerCase(i18n.language) };
+			}
+			case 'contact': {
+				const contact =
+					patient.contacts?.phone ||
+					patient.contacts?.email ||
+					patient.contacts?.whatsapp ||
+					t('patients.list.contact-missing');
+				return {
+					label: contact,
+					value: contact.toLocaleLowerCase(i18n.language),
+				};
+			}
+			case 'next-action':
+				return {
+					label: t(`patients.list.next-actions.${patient.nextAction}`),
+					value: patient.nextAction,
+				};
+			case 'next-session': {
+				const label = patient.nextSessionDate
+					? formatLocalizedDate(
+							patient.nextSessionDate,
+							t('patients.list.next-session.none'),
+							i18n.language,
+							'PPp'
+						)
+					: t('patients.list.next-session.none');
+				return {
+					label,
+					value: patient.nextSessionDate ?? 'none',
+				};
+			}
+			case 'sessions':
+				return {
+					label: String(patient.totalSessions),
+					value: String(patient.totalSessions),
+				};
+			case 'patient':
+			default:
+				return {
+					label: patient.fullName,
+					value: patient.fullName.toLocaleLowerCase(i18n.language),
+				};
 		}
+	};
 
-		setSortField(field);
-		setSortDirection(getPatientListSortDefaultDirection(field));
+	const getColumnSortValue = (
+		patient: PatientWorkspaceRow,
+		column: PatientWorkspaceColumn
+	): number | string => {
+		if (column === 'sessions') return patient.totalSessions;
+		if (column === 'next-session') {
+			return patient.nextSessionDate
+				? new Date(patient.nextSessionDate).getTime()
+				: Number.MAX_SAFE_INTEGER;
+		}
+		return getColumnFilterOption(patient, column).label;
+	};
+
+	const workspacePatients = filteredPatients
+		.filter((patient) =>
+			DEFAULT_VISIBLE_COLUMNS.every((column) => {
+				if (column === 'sessions') return true;
+				const selectedValue = columnFilters[column];
+				return (
+					!selectedValue ||
+					getColumnFilterOption(patient, column).value === selectedValue
+				);
+			})
+		)
+		.sort((firstPatient, secondPatient) => {
+			const firstValue = getColumnSortValue(
+				firstPatient,
+				workspaceSort.column
+			);
+			const secondValue = getColumnSortValue(
+				secondPatient,
+				workspaceSort.column
+			);
+			const comparison =
+				typeof firstValue === 'number' && typeof secondValue === 'number'
+					? firstValue - secondValue
+					: String(firstValue).localeCompare(String(secondValue), i18n.language, {
+							numeric: true,
+							sensitivity: 'base',
+						});
+			return workspaceSort.direction === 'asc' ? comparison : -comparison;
+		});
+
+	const columnFilterOptions: PatientWorkspaceColumnFilterOption[] =
+		filterColumn
+			? Array.from(
+					new Map(
+						filteredPatients.map((patient) => {
+							const option = getColumnFilterOption(patient, filterColumn);
+							return [option.value, option] as const;
+						})
+					).values()
+				).sort((firstOption, secondOption) =>
+					firstOption.label.localeCompare(
+						secondOption.label,
+						i18n.language,
+						{
+							numeric: true,
+							sensitivity: 'base',
+						}
+					)
+				)
+			: [];
+
+	const handleWorkspaceSortChange = (
+		column: PatientWorkspaceColumn
+	): void => {
+		const direction: PatientListSortDirection =
+			workspaceSort.column === column && workspaceSort.direction === 'asc'
+				? 'desc'
+				: 'asc';
+		setWorkspaceSort({ column, direction });
+
+		if (column === 'patient') {
+			setSortField('name');
+			setSortDirection(direction);
+		}
+		if (column === 'sessions') {
+			setSortField('total-sessions');
+			setSortDirection(direction);
+		}
+	};
+
+	const openColumnFilter = (
+		event: MouseEvent<HTMLButtonElement>,
+		column: PatientWorkspaceFilterableColumn
+	): void => {
+		event.stopPropagation();
+		setColumnFilterAnchor(event.currentTarget);
+		setFilterColumn(column);
+	};
+
+	const closeColumnFilter = (): void => {
+		setColumnFilterAnchor(null);
+		setFilterColumn(null);
+	};
+
+	const updateColumnFilter = (value: string): void => {
+		if (!filterColumn) return;
+		setColumnFilters((current) => ({
+			...current,
+			[filterColumn]: value || undefined,
+		}));
+		closeColumnFilter();
 	};
 
 	const handleRowKeyDown = (
@@ -446,6 +627,18 @@ export const PatientListPage = () => {
 
 	return (
 		<PageLayout
+			actions={
+				<AddPatientAction
+					id='patients-page-actions'
+					data-testid='patients-page-actions'
+				>
+					<AddPatientForm
+						buttonId='patients-add-action'
+						buttonTestId='patients-add-action'
+						shortButton
+					/>
+				</AddPatientAction>
+			}
 			title={t('patients.list.title')}
 			subTitle={t('patients.list.subtitle')}
 			isLoading={isLoading}
@@ -560,16 +753,42 @@ export const PatientListPage = () => {
 					data-testid='patients-workspace'
 					id='patients-workspace'
 				>
-					<ControlsBar id='patients-workspace-controls'>
-						<FieldGroup>
-							<FieldLabel htmlFor='patients-workspace-search'>
+					<ControlsBar
+						id='patients-workspace-controls'
+						data-testid='patients-controls'
+					>
+						<FieldGroup
+							id='patients-workspace-search-field'
+							data-testid='patients-workspace-search-field'
+						>
+							<FieldLabel
+								htmlFor='patients-workspace-search'
+								id='patients-workspace-search-label'
+								data-testid='patients-workspace-search-label'
+							>
 								{t('patients.list.search-label')}
 							</FieldLabel>
 							<ControlField
 								fullWidth
 								id='patients-workspace-search'
 								data-testid='patients-workspace-search'
-								inputProps={{ autoComplete: 'off' }}
+								inputProps={{
+									autoComplete: 'off',
+									'data-testid': 'patients-workspace-search-input',
+									name: 'patients-search',
+								}}
+								InputProps={{
+									startAdornment: (
+										<InputAdornment
+											aria-hidden='true'
+											id='patients-workspace-search-icon'
+											data-testid='patients-workspace-search-icon'
+											position='start'
+										>
+											<Search />
+										</InputAdornment>
+									),
+								}}
 								placeholder={t('patients.list.search-placeholder')}
 								type='search'
 								value={searchQuery}
@@ -577,8 +796,15 @@ export const PatientListPage = () => {
 							/>
 						</FieldGroup>
 
-						<FieldGroup>
-							<FieldLabel htmlFor='patients-workspace-status-filter'>
+						<FieldGroup
+							id='patients-workspace-status-field'
+							data-testid='patients-workspace-status-field'
+						>
+							<FieldLabel
+								htmlFor='patients-workspace-status-filter'
+								id='patients-workspace-status-label'
+								data-testid='patients-workspace-status-label'
+							>
 								{t('patients.list.status-label')}
 							</FieldLabel>
 							<ControlField
@@ -586,6 +812,10 @@ export const PatientListPage = () => {
 								fullWidth
 								id='patients-workspace-status-filter'
 								data-testid='patients-workspace-status-filter'
+								inputProps={{
+									'data-testid': 'patients-workspace-status-input',
+									name: 'patients-status',
+								}}
 								value={statusFilter}
 								onChange={(event) =>
 									setStatusFilter(
@@ -614,8 +844,15 @@ export const PatientListPage = () => {
 							</ControlField>
 						</FieldGroup>
 
-						<FieldGroup>
-							<FieldLabel htmlFor='patients-workspace-sort'>
+						<FieldGroup
+							id='patients-workspace-sort-field'
+							data-testid='patients-workspace-sort-field'
+						>
+							<FieldLabel
+								htmlFor='patients-workspace-sort'
+								id='patients-workspace-sort-label'
+								data-testid='patients-workspace-sort-label'
+							>
 								{t('patients.list.sort-label')}
 							</FieldLabel>
 							<ControlField
@@ -623,6 +860,10 @@ export const PatientListPage = () => {
 								fullWidth
 								id='patients-workspace-sort'
 								data-testid='patients-workspace-sort'
+								inputProps={{
+									'data-testid': 'patients-workspace-sort-input',
+									name: 'patients-sort',
+								}}
 								value={sortValue}
 								onChange={(event) => {
 									const { direction, field } = decodePatientListSortValue(
@@ -630,6 +871,11 @@ export const PatientListPage = () => {
 									);
 									setSortField(field);
 									setSortDirection(direction);
+									if (field === 'name') {
+										setWorkspaceSort({ column: 'patient', direction });
+									} else if (field === 'total-sessions') {
+										setWorkspaceSort({ column: 'sessions', direction });
+									}
 								}}
 							>
 								{PATIENT_LIST_SORT_OPTIONS.map((option, index) => {
@@ -650,10 +896,15 @@ export const PatientListPage = () => {
 							</ControlField>
 						</FieldGroup>
 
-						<ColumnsWrapper>
+						<ColumnsWrapper
+							id='patients-workspace-columns'
+							data-testid='patients-workspace-columns'
+						>
 							<Button
 								aria-controls='patients-workspace-columns-panel'
 								aria-expanded={columnsOpen}
+								aria-label={t('patients.list.columns-control')}
+								data-action='toggle-columns'
 								id='patients-workspace-columns-trigger'
 								data-testid='patients-workspace-columns-trigger'
 								onClick={() => setColumnsOpen((current) => !current)}
@@ -661,18 +912,46 @@ export const PatientListPage = () => {
 								type='button'
 								variant='outlined'
 							>
-								<Settings /> {t('patients.list.columns-control')}
+								<Columns3Cog />
 							</Button>
 							{columnsOpen ? (
 								<ColumnsPanel
 									id='patients-workspace-columns-panel'
 									data-testid='patients-workspace-columns-panel'
 								>
+									<ColumnsPanelTitle
+										id='patients-workspace-columns-title'
+										data-testid='patients-workspace-columns-title'
+									>
+										{t('patients.list.columns-visible')}
+									</ColumnsPanelTitle>
+									<ColumnOption
+										data-disabled='true'
+										id='patients-workspace-column-option-patient'
+										data-testid='patients-workspace-column-option-patient'
+									>
+										<input
+											checked
+											disabled
+											id='patients-workspace-column-toggle-patient'
+											data-testid='patients-workspace-column-toggle-patient'
+											name='patients-visible-columns'
+											readOnly
+											type='checkbox'
+										/>
+										{t('patients.list.columns.patient')}
+									</ColumnOption>
 									{OPTIONAL_COLUMNS.map((column) => (
-										<ColumnOption key={column}>
+										<ColumnOption
+											id={`patients-workspace-column-option-${column}`}
+											data-testid={`patients-workspace-column-option-${column}`}
+											key={column}
+										>
 											<input
 												checked={visibleColumnSet.has(column)}
+												id={`patients-workspace-column-toggle-${column}`}
 												data-testid={`patients-workspace-column-toggle-${column}`}
+												name='patients-visible-columns'
 												onChange={() => toggleColumn(column)}
 												type='checkbox'
 											/>
@@ -682,14 +961,6 @@ export const PatientListPage = () => {
 								</ColumnsPanel>
 							) : null}
 						</ColumnsWrapper>
-
-						<AddPatientAction>
-							<AddPatientForm
-								buttonId='patients-add-action'
-								buttonTestId='patients-add-action'
-								shortButton={false}
-							/>
-						</AddPatientAction>
 					</ControlsBar>
 
 					<ResultsHeader>
@@ -698,7 +969,9 @@ export const PatientListPage = () => {
 								{t(activeQueueLabel)}
 							</ResultsTitle>
 							<ResultsCount data-testid='patients-workspace-results-count'>
-								{totalPatients}
+								{activeColumnFilterCount
+									? workspacePatients.length
+									: totalPatients}
 							</ResultsCount>
 						</ResultsTitleGroup>
 						<ResultsHint>{t('patients.list.results-hint')}</ResultsHint>
@@ -715,7 +988,7 @@ export const PatientListPage = () => {
 						id='patients-workspace-results'
 						data-testid='patients-workspace-results'
 					>
-						{filteredPatients.length ? (
+						{workspacePatients.length ? (
 							<PatientTable
 								aria-labelledby='patients-workspace-results-title'
 								id='patients-workspace-table'
@@ -723,96 +996,113 @@ export const PatientListPage = () => {
 							>
 								<thead>
 									<tr>
-										<PatientHeaderCell
-											aria-sort={
-												sortField === 'name'
-													? sortDirection === 'asc'
-														? 'ascending'
-														: 'descending'
-													: 'none'
-											}
-											data-testid='patients-workspace-column-patient'
-										>
-											<SortableHeaderButton
-												id='patients-workspace-sort-patient'
-												data-testid='patients-workspace-sort-patient'
-												onClick={() => handleSortChange('name')}
-												type='button'
-											>
-												{t('patients.list.columns.patient')}
-												{sortField === 'name' ? (
-													<SortIndicator>
-														{sortDirection === 'asc' ? (
-															<ChevronUp />
-														) : (
-															<ChevronDown />
-														)}
-													</SortIndicator>
-												) : null}
-											</SortableHeaderButton>
-										</PatientHeaderCell>
-										{visibleColumnSet.has('contact') ? (
-											<PatientHeaderCell data-testid='patients-workspace-column-contact'>
-												{t('patients.list.columns.contact')}
-											</PatientHeaderCell>
-										) : null}
-										{visibleColumnSet.has('next-action') ? (
-											<PatientHeaderCell data-testid='patients-workspace-column-next-action'>
-												{t('patients.list.columns.next-action')}
-											</PatientHeaderCell>
-										) : null}
-										{visibleColumnSet.has('next-session') ? (
-											<PatientHeaderCell data-testid='patients-workspace-column-next-session'>
-												{t('patients.list.columns.next-session')}
-											</PatientHeaderCell>
-										) : null}
-										{visibleColumnSet.has('billing') ? (
-											<PatientHeaderCell data-testid='patients-workspace-column-billing'>
-												{t('patients.list.columns.billing')}
-											</PatientHeaderCell>
-										) : null}
-										{visibleColumnSet.has('sessions') ? (
-											<PatientHeaderCell
-												aria-sort={
-													sortField === 'total-sessions'
-														? sortDirection === 'asc'
-															? 'ascending'
-															: 'descending'
-														: 'none'
-												}
-												data-testid='patients-workspace-column-sessions'
-											>
-												<SortableHeaderButton
-													id='patients-workspace-sort-sessions'
-													data-testid='patients-workspace-sort-sessions'
-													onClick={() => handleSortChange('total-sessions')}
-													type='button'
+										{DEFAULT_VISIBLE_COLUMNS.filter((column) =>
+											visibleColumnSet.has(column)
+										).map((column) => {
+											const isActiveSort = workspaceSort.column === column;
+											const isFilterable = column !== 'sessions';
+											const activeFilter = isFilterable
+												? Boolean(columnFilters[column])
+												: false;
+
+											return (
+												<PatientHeaderCell
+													aria-sort={
+														isActiveSort
+															? workspaceSort.direction === 'asc'
+																? 'ascending'
+																: 'descending'
+															: 'none'
+													}
+													data-testid={`patients-workspace-column-${column}`}
+													id={`patients-workspace-column-${column}`}
+													key={column}
+													scope='col'
 												>
-													{t('patients.list.columns.sessions')}
-													{sortField === 'total-sessions' ? (
-														<SortIndicator>
-															{sortDirection === 'asc' ? (
-																<ChevronUp />
-															) : (
-																<ChevronDown />
-															)}
-														</SortIndicator>
-													) : null}
-												</SortableHeaderButton>
-											</PatientHeaderCell>
-										) : null}
-										<PatientHeaderCell data-testid='patients-workspace-column-open'>
+													<HeaderControl
+														data-testid={`patients-workspace-column-${column}-controls`}
+														id={`patients-workspace-column-${column}-controls`}
+													>
+														<SortableHeaderButton
+															data-sort-column={column}
+															id={`patients-workspace-sort-${column}`}
+															data-testid={`patients-workspace-sort-${column}`}
+															onClick={() =>
+																handleWorkspaceSortChange(column)
+															}
+															type='button'
+														>
+															{t(`patients.list.columns.${column}`)}
+															<SortIndicator
+																aria-hidden='true'
+																id={`patients-workspace-sort-${column}-indicator`}
+																data-testid={`patients-workspace-sort-${column}-indicator`}
+															>
+																{isActiveSort ? (
+																	workspaceSort.direction === 'asc' ? (
+																		<ChevronUp />
+																	) : (
+																		<ChevronDown />
+																	)
+																) : (
+																	<ArrowUpDown />
+																)}
+															</SortIndicator>
+														</SortableHeaderButton>
+														{isFilterable ? (
+															<HeaderFilterButton
+																aria-controls='patients-workspace-column-filter-popover'
+																aria-expanded={
+																	filterColumn === column &&
+																	Boolean(columnFilterAnchor)
+																}
+																aria-label={t(
+																	'patients.list.column-filter.open',
+																	{
+																		column: t(
+																			`patients.list.columns.${column}`
+																		),
+																	}
+																)}
+																data-active={activeFilter}
+																data-filter-column={column}
+																id={`patients-workspace-filter-${column}`}
+																data-testid={`patients-workspace-filter-${column}`}
+																onClick={(event) =>
+																	openColumnFilter(event, column)
+																}
+																type='button'
+															>
+																<Filter />
+															</HeaderFilterButton>
+														) : null}
+													</HeaderControl>
+												</PatientHeaderCell>
+											);
+										})}
+										<PatientHeaderCell
+											data-testid='patients-workspace-column-open'
+											id='patients-workspace-column-open'
+											scope='col'
+										>
 											<VisuallyHidden>{t('patients.list.open')}</VisuallyHidden>
 										</PatientHeaderCell>
 									</tr>
 								</thead>
 								<tbody data-testid='patients-workspace-table-body'>
-									{filteredPatients.map((patient) => {
+									{workspacePatients.map((patient) => {
 										const rowTestId = `patients-workspace-row-${patient.uiRowKey}`;
 										const contactValue =
 											patient.contacts?.phone ||
 											patient.contacts?.email ||
 											patient.contacts?.whatsapp;
+										const contactIconType = patient.contacts?.phone
+											? 'phone'
+											: patient.contacts?.email
+												? 'email'
+												: patient.contacts?.whatsapp
+													? 'whatsapp'
+													: patient.preferredContactType;
 										return (
 											<PatientTableRow
 												aria-label={t('patients.list.open-workflow', {
@@ -867,10 +1157,13 @@ export const PatientListPage = () => {
 																	: undefined
 															}
 														>
-															<ContactIcon>
+															<ContactIcon
+																id={`${rowTestId}-contact-icon`}
+																data-testid={`${rowTestId}-contact-icon`}
+															>
 																{patient.hasContact ? (
 																	getPreferredContactIcon(
-																		patient.preferredContactType
+																		contactIconType
 																	)
 																) : (
 																	<Phone />
@@ -966,29 +1259,89 @@ export const PatientListPage = () => {
 									id='patients-workspace-clear-search'
 									data-testid='patients-workspace-clear-search'
 									disabled={!isFiltering}
-									onClick={() => setSearchQuery('')}
+									onClick={() => {
+										setSearchQuery('');
+										setColumnFilters({});
+									}}
 									tertiary
 									type='button'
 									variant='outlined'
 								>
-									{t('patients.list.clear-search')}
+									{t('patients.list.clear-filters')}
 								</Button>
 							</EmptyState>
 						)}
 					</PatientTableSurface>
 
-					{filteredPatients.length && hasNextPage ? (
+					<ColumnFilterPopover
+						anchorEl={columnFilterAnchor}
+						anchorOrigin={{ horizontal: 'left', vertical: 'bottom' }}
+						id='patients-workspace-column-filter-popover'
+						data-testid='patients-workspace-column-filter-popover'
+						open={Boolean(columnFilterAnchor && filterColumn)}
+						onClose={closeColumnFilter}
+						transformOrigin={{ horizontal: 'left', vertical: 'top' }}
+					>
+						{filterColumn ? (
+							<ColumnFilterContent
+								id='patients-workspace-column-filter-content'
+								data-testid='patients-workspace-column-filter-content'
+							>
+								<ColumnFilterLabel
+									htmlFor='patients-workspace-column-filter-select'
+									id='patients-workspace-column-filter-label'
+									data-testid='patients-workspace-column-filter-label'
+								>
+									{t('patients.list.column-filter.label', {
+										column: t(`patients.list.columns.${filterColumn}`),
+									})}
+								</ColumnFilterLabel>
+								<ControlField
+									select
+									fullWidth
+									id='patients-workspace-column-filter-select'
+									data-testid='patients-workspace-column-filter-select'
+									inputProps={{
+										name: 'patients-column-filter',
+									}}
+									value={columnFilters[filterColumn] ?? ''}
+									onChange={(event) =>
+										updateColumnFilter(event.target.value)
+									}
+								>
+									<StyledMenuItem
+										data-testid='patients-workspace-column-filter-option-all'
+										value=''
+									>
+										{t('patients.list.column-filter.all-values')}
+									</StyledMenuItem>
+									{columnFilterOptions.map((option, index) => (
+										<StyledMenuItem
+											data-testid={`patients-workspace-column-filter-option-${index + 1}`}
+											key={option.value}
+											value={option.value}
+										>
+											{option.label}
+										</StyledMenuItem>
+									))}
+								</ControlField>
+							</ColumnFilterContent>
+						) : null}
+					</ColumnFilterPopover>
+
+					{hasNextPage ? (
 						<LoadMoreRow>
 							<Button
+								aria-label={t('patients.list.load-more')}
 								id='patients-workspace-load-more'
 								data-testid='patients-workspace-load-more'
 								loading={isFetchingNextPage}
 								onClick={() => fetchNextPage()}
-								secondary
+								tertiary
 								type='button'
 								variant='outlined'
 							>
-								{t('patients.list.load-more')}
+								<ChevronDown />
 							</Button>
 						</LoadMoreRow>
 					) : null}

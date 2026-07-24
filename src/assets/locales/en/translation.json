@@ -205,6 +205,12 @@
 			"results-hint": "Select a patient to open their workflow summary",
 			"updating-results": "Updating patient results",
 			"columns-control": "Columns",
+			"columns-visible": "Visible columns",
+			"column-filter": {
+				"all-values": "All values",
+				"label": "Filter {{column}}",
+				"open": "Filter {{column}} column"
+			},
 			"open": "Open",
 			"open-workflow": "Open {{patient}} workflow",
 			"contact-missing": "Contact missing",
@@ -256,7 +262,7 @@
 				"soon": "In {{minutes}} min · {{time}}"
 			},
 			"search-label": "Search",
-			"search-placeholder": "Search by name, email, or phone",
+			"search-placeholder": "Search by name, email, or phone…",
 			"status-label": "Status",
 			"status-all": "All patients",
 			"status-active": "Active",
@@ -288,6 +294,7 @@
 				"filtered-body": "Try adjusting your search or filters to find the patient you are looking for."
 			},
 			"clear-search": "Clear search",
+			"clear-filters": "Clear filters",
 			"load-more": "Load more",
 			"billing": {
 				"none": "Not set",

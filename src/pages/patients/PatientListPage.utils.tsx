@@ -2,7 +2,7 @@ import type {
 	IPatientWorkspaceSummary,
 	PatientWorkspaceQueueFilter,
 } from '@psycron/api/patient/index.types';
-import { Google, Mail, Phone, WhatsApp } from '@psycron/components/icons';
+import { Mail, Phone } from '@psycron/components/icons';
 
 export const getPatientWorkspaceQueueCount = (
 	summary: IPatientWorkspaceSummary,
@@ -25,13 +25,8 @@ export const getPatientWorkspaceQueueCount = (
 export const getPreferredContactIcon = (type: string | undefined) => {
 	switch (type) {
 		case 'phone':
-			return <Phone />;
 		case 'whatsapp':
-			return <WhatsApp />;
-		case 'google_meet':
-			return <Google />;
-		case 'zoom':
-			return <Mail />;
+			return <Phone />;
 		default:
 			return <Mail />;
 	}

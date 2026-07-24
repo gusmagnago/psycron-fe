@@ -20,8 +20,32 @@ export const PageLayoutWrapper = styled(Box)`
 `;
 
 export const PageTitleWrapper = styled(Box)`
+	align-items: flex-start;
+	display: flex;
 	flex-shrink: 0;
 	height: auto;
+	justify-content: space-between;
+	gap: ${spacing.medium};
+
+	${isMobileMedia} {
+		align-items: stretch;
+		flex-direction: column;
+		gap: ${spacing.small};
+	}
+`;
+
+export const PageTitleContent = styled(Box)`
+	min-width: 0;
+`;
+
+export const PageTitleActions = styled(Box)`
+	align-items: center;
+	display: flex;
+	flex-shrink: 0;
+
+	${isMobileMedia} {
+		width: 100%;
+	}
 `;
 
 export const PageTitle = styled(Text)`

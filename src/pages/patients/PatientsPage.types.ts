@@ -61,6 +61,21 @@ export type PatientWorkspaceColumn =
 	| 'patient'
 	| 'sessions';
 
+export type PatientWorkspaceFilterableColumn = Exclude<
+	PatientWorkspaceColumn,
+	'sessions'
+>;
+
+export interface PatientWorkspaceColumnFilterOption {
+	label: string;
+	value: string;
+}
+
+export interface PatientWorkspaceSortState {
+	column: PatientWorkspaceColumn;
+	direction: PatientListSortDirection;
+}
+
 export type PatientWorkspaceSummary = IPatientWorkspaceSummary;
 
 export interface PatientListSortOption {

@@ -10,11 +10,14 @@ import {
 	PageLoaderWrapper,
 	PageSubTitle,
 	PageTitle,
+	PageTitleActions,
+	PageTitleContent,
 	PageTitleWrapper,
 } from './PageLayout.styles';
 import type { IPageLayout } from './PageLayout.types';
 
 export const PageLayout = ({
+	actions,
 	title,
 	children,
 	isLoading,
@@ -28,14 +31,17 @@ export const PageLayout = ({
 		<PageLayoutWrapper>
 			{title ? (
 				<PageTitleWrapper>
-					<PageTitle>{title}</PageTitle>
-					{subTitle ? (
-						<Box pt={spacing.xs}>
-							<PageSubTitle>{subTitle}</PageSubTitle>
-						</Box>
-					) : null}
-					{backButton ? <NavigateLink isBack to={backTo} /> : null}
-					{String(link) ? <Link to={link}>{linkName}</Link> : null}
+					<PageTitleContent>
+						<PageTitle>{title}</PageTitle>
+						{subTitle ? (
+							<Box pt={spacing.xs}>
+								<PageSubTitle>{subTitle}</PageSubTitle>
+							</Box>
+						) : null}
+						{backButton ? <NavigateLink isBack to={backTo} /> : null}
+						{String(link) ? <Link to={link}>{linkName}</Link> : null}
+					</PageTitleContent>
+					{actions ? <PageTitleActions>{actions}</PageTitleActions> : null}
 				</PageTitleWrapper>
 			) : null}
 			{isLoading ? (

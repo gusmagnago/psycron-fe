@@ -1,6 +1,6 @@
 import { keyframes } from '@emotion/react';
 import styled from '@emotion/styled';
-import { Box, MenuItem, TextField } from '@mui/material';
+import { Box, MenuItem, Popover, TextField } from '@mui/material';
 import { Button } from '@psycron/components/button/Button';
 import { Text } from '@psycron/components/text/Text';
 import {
@@ -291,7 +291,9 @@ export const ControlsBar = styled(Box)`
 	align-items: flex-end;
 	display: grid;
 	gap: ${spacing.small};
-	grid-template-columns: minmax(0, 1.6fr) repeat(2, minmax(11rem, 0.8fr)) auto;
+	grid-template-columns:
+		minmax(16.25rem, 1.6fr) minmax(11.25rem, 0.7fr)
+		minmax(11.875rem, 0.8fr) auto;
 
 	${isSmallerThanTabletMedia} {
 		grid-template-columns: 1fr 1fr auto;
@@ -321,13 +323,11 @@ export const AddPatientAction = styled(Box)`
 		white-space: nowrap;
 	}
 
-	${isMobileMedia} {
-		width: 100%;
-
-		& > button,
-		& .MuiButton-root {
-			width: 100%;
-		}
+	& #patients-add-action {
+		border-radius: 50%;
+		min-width: 44px;
+		padding: 0;
+		width: 44px;
 	}
 `;
 
@@ -342,6 +342,7 @@ export const FieldLabel = styled('label')`
 	font-size: 0.75rem;
 	font-weight: 700;
 	letter-spacing: 0.04em;
+	text-align: left;
 	text-transform: uppercase;
 `;
 
@@ -351,6 +352,29 @@ export const ControlField = styled(TextField)`
 		border-radius: ${spacing.medium};
 		min-height: 48px;
 	}
+
+	.MuiOutlinedInput-root {
+		.MuiOutlinedInput-notchedOutline,
+		&:hover .MuiOutlinedInput-notchedOutline {
+			border-color: transparent;
+		}
+
+		&.Mui-focused .MuiOutlinedInput-notchedOutline {
+			border-color: ${palette.brand.purple};
+		}
+
+		&.Mui-error .MuiOutlinedInput-notchedOutline {
+			border-color: ${palette.error.main};
+		}
+	}
+
+	.MuiInputAdornment-root {
+		color: ${palette.gray['06']};
+	}
+
+	&[id^='patients-workspace-'][id$='-filter'] .MuiSelect-select {
+		text-align: left;
+	}
 `;
 
 export const StyledMenuItem = styled(MenuItem)`
@@ -359,6 +383,19 @@ export const StyledMenuItem = styled(MenuItem)`
 
 export const ColumnsWrapper = styled(Box)`
 	position: relative;
+
+	& #patients-workspace-columns-trigger {
+		border-radius: 50%;
+		min-height: 44px;
+		min-width: 44px;
+		padding: 0;
+		width: 44px;
+	}
+
+	& #patients-workspace-columns-trigger svg {
+		height: 18px;
+		width: 18px;
+	}
 `;
 
 export const ColumnsPanel = styled(Box)`
@@ -372,7 +409,7 @@ export const ColumnsPanel = styled(Box)`
 	position: absolute;
 	right: 0;
 	top: calc(100% + ${spacing.xs});
-	width: 15rem;
+	width: 14.375rem;
 	z-index: ${zIndexHover};
 
 	${isMobileMedia} {
@@ -380,6 +417,13 @@ export const ColumnsPanel = styled(Box)`
 		right: auto;
 		width: 100%;
 	}
+`;
+
+export const ColumnsPanelTitle = styled(Text)`
+	color: ${palette.text.primary};
+	font-size: 0.8rem;
+	font-weight: 800;
+	padding: ${spacing.space} ${spacing.xs} ${spacing.xs};
 `;
 
 export const ColumnOption = styled('label')`
@@ -400,6 +444,10 @@ export const ColumnOption = styled('label')`
 		accent-color: ${palette.brand.purple};
 		height: 18px;
 		width: 18px;
+	}
+
+	&[data-disabled='true'] {
+		cursor: default;
 	}
 `;
 
@@ -498,6 +546,13 @@ export const PatientHeaderCell = styled('th')`
 	}
 `;
 
+export const HeaderControl = styled('span')`
+	align-items: center;
+	display: inline-flex;
+	gap: ${spacing.space};
+	white-space: nowrap;
+`;
+
 export const SortableHeaderButton = styled('button')`
 	align-items: center;
 	background: transparent;
@@ -519,14 +574,67 @@ export const SortableHeaderButton = styled('button')`
 	}
 `;
 
+export const HeaderFilterButton = styled('button')`
+	align-items: center;
+	background: transparent;
+	border: 0;
+	border-radius: ${spacing.xs};
+	color: inherit;
+	cursor: pointer;
+	display: inline-flex;
+	height: 36px;
+	justify-content: center;
+	padding: 0;
+	width: 34px;
+
+	&:hover,
+	&:focus-visible,
+	&[data-active='true'],
+	&[aria-expanded='true'] {
+		background: ${palette.brand.light};
+		color: ${palette.brand.dark};
+	}
+
+	svg {
+		height: 15px;
+		width: 15px;
+	}
+`;
+
 export const SortIndicator = styled('span')`
 	align-items: center;
+	color: ${palette.brand.purple};
 	display: inline-flex;
 
 	svg {
 		height: 15px;
 		width: 15px;
 	}
+`;
+
+export const ColumnFilterPopover = styled(Popover)`
+	.MuiPaper-root {
+		background: ${palette.white};
+		border-radius: ${spacing.medium};
+		box-shadow: ${shadowMedium};
+		width: 15rem;
+	}
+`;
+
+export const ColumnFilterContent = styled(Box)`
+	display: flex;
+	flex-direction: column;
+	gap: ${spacing.xs};
+	padding: ${spacing.small};
+`;
+
+export const ColumnFilterLabel = styled('label')`
+	color: ${palette.gray['08']};
+	font-size: 0.75rem;
+	font-weight: 800;
+	letter-spacing: 0.04em;
+	text-align: left;
+	text-transform: uppercase;
 `;
 
 export const PatientTableRow = styled('tr')`
@@ -676,6 +784,7 @@ export const SimpleValue = styled(Text)`
 
 export const ContactValue = styled('span')`
 	align-items: center;
+	border-radius: 50%;
 	display: inline-flex;
 	gap: ${spacing.xs};
 	max-width: 100%;
@@ -689,9 +798,9 @@ export const ContactValue = styled('span')`
 
 export const ContactIcon = styled('span')`
 	align-items: center;
-	background: ${palette.secondary.light};
-	border-radius: ${spacing.xs};
-	color: ${palette.secondary.dark};
+	background: ${palette.primary.main};
+	border-radius: 50%;
+	color: ${palette.primary.dark};
 	display: inline-flex;
 	flex: 0 0 auto;
 	height: 32px;
@@ -876,6 +985,14 @@ export const LoadMoreRow = styled(Box)`
 	display: flex;
 	justify-content: center;
 	padding: ${spacing.small} 0;
+
+	& #patients-workspace-load-more {
+		border-radius: 50%;
+		min-height: 44px;
+		min-width: 44px;
+		padding: 0;
+		width: 44px;
+	}
 `;
 
 export const VisuallyHidden = styled('span')`
