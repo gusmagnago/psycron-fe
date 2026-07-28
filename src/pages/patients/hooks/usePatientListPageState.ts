@@ -93,7 +93,9 @@ export const usePatientListPageState = () => {
 	const scanMutation = useMutation({
 		mutationFn: () => scanPatientDuplicates(therapistId),
 		// The scan may open, refresh, or auto-dismiss duplicate conflicts. Refetch
-		// both conflict detail and the authoritative workspace membership/counts.
+		// both conflict detail and the authoritative workspace membership/counts,
+		// so the list pills and the open-count badge reflect the post-scan state
+		// instead of the snapshot read on mount.
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: ['conflicts'] });
 			queryClient.invalidateQueries({
