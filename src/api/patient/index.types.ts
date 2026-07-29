@@ -37,15 +37,32 @@ export interface IGetPatientsParams {
 	limit?: number;
 	page?: number;
 	q?: string;
+	queue?: PatientWorkspaceQueueFilter;
 	sort?: PatientsSortField;
 	status?: PatientsStatusFilter;
 }
+
+export type PatientWorkspaceQueueFilter =
+	| 'billing'
+	| 'contact'
+	| 'duplicate'
+	| 'needs-attention'
+	| 'recovery';
 
 export interface IGetPatientsResponse {
 	limit: number;
 	page: number;
 	patients: IPatient[];
 	total: number;
+	workspaceSummary: IPatientWorkspaceSummary;
+}
+
+export interface IPatientWorkspaceSummary {
+	billing: number;
+	duplicate: number;
+	missingContact: number;
+	needsAttention: number;
+	recovery: number;
 }
 
 export interface PatientFormData {

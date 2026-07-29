@@ -12,6 +12,7 @@ import { useUserDetails } from '@psycron/context/user/details/UserDetailsContext
 import useViewport from '@psycron/hooks/useViewport';
 import { PATIENTS } from '@psycron/pages/urls';
 import {
+	keepPreviousData,
 	useInfiniteQuery,
 	useMutation,
 	useQuery,
@@ -22,30 +23,66 @@ import type {
 	PatientListSortDirection,
 	PatientListSortField,
 	PatientListStatusFilter,
+	PatientWorkspaceQueue,
 } from '../PatientsPage.types';
 import {
 	getPatientListSortDefaultDirection,
-	mapPatientToListItem,
+	mapPatientToWorkspaceRow,
 } from '../PatientsPage.utils';
 
 const PATIENTS_PAGE_SIZE = 20;
+const PATIENT_QUEUE_STORAGE_KEY = '_psy_pq';
+const PATIENT_WORKSPACE_QUEUES = [
+	'all',
+	'billing',
+	'contact',
+	'duplicate',
+	'needs-attention',
+	'recovery',
+] as const satisfies readonly PatientWorkspaceQueue[];
+
+const isPatientWorkspaceQueue = (
+	value: string
+): value is PatientWorkspaceQueue =>
+	PATIENT_WORKSPACE_QUEUES.some((queue) => queue === value);
+
+const getInitialPatientQueue = (): PatientWorkspaceQueue => {
+	try {
+		const storedQueue = localStorage.getItem(PATIENT_QUEUE_STORAGE_KEY);
+		return storedQueue && isPatientWorkspaceQueue(storedQueue)
+			? storedQueue
+			: 'needs-attention';
+	} catch {
+		return 'needs-attention';
+	}
+};
 
 export const usePatientListPageState = () => {
 	const navigate = useNavigate();
 	const { locale } = useParams<{ locale: string }>();
-	const { isSmallerThanTablet } = useViewport();
+	const { isMobile, isSmallerThanTablet } = useViewport();
 	const { isUserDetailsLoading, therapistId } = useUserDetails();
 	const { showAlert } = useAlert();
 	const queryClient = useQueryClient();
 
 	const [searchQuery, setSearchQuery] = useState('');
 	const [debouncedSearch, setDebouncedSearch] = useState('');
+	const [queue, setQueue] =
+		useState<PatientWorkspaceQueue>(getInitialPatientQueue);
 	const [sortDirection, setSortDirection] = useState<PatientListSortDirection>(
 		getPatientListSortDefaultDirection('name')
 	);
 	const [sortField, setSortField] = useState<PatientListSortField>('name');
 	const [statusFilter, setStatusFilter] =
 		useState<PatientListStatusFilter>('all');
+
+	useEffect(() => {
+		try {
+			localStorage.setItem(PATIENT_QUEUE_STORAGE_KEY, queue);
+		} catch {
+			// The queue remains functional when storage is unavailable.
+		}
+	}, [queue]);
 
 	// Debounce the search box so we don't fire a request per keystroke.
 	useEffect(() => {
@@ -56,10 +93,14 @@ export const usePatientListPageState = () => {
 	const scanMutation = useMutation({
 		mutationFn: () => scanPatientDuplicates(therapistId),
 		// The scan may open, refresh, or auto-dismiss duplicate conflicts. Refetch
-		// the conflict queries so the list pills (and the open-count badge) reflect
-		// the post-scan state instead of the snapshot read on mount.
+		// both conflict detail and the authoritative workspace membership/counts,
+		// so the list pills and the open-count badge reflect the post-scan state
+		// instead of the snapshot read on mount.
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: ['conflicts'] });
+			queryClient.invalidateQueries({
+				queryKey: ['patientsList', therapistId],
+			});
 		},
 		onError: (error: CustomError) => {
 			showAlert({ message: error.message, severity: 'error' });
@@ -100,6 +141,7 @@ export const usePatientListPageState = () => {
 		fetchNextPage,
 		hasNextPage,
 		isFetchingNextPage,
+		isFetching: isPatientsFetching,
 		isLoading: isPatientsLoading,
 	} = useInfiniteQuery({
 		enabled: Boolean(therapistId),
@@ -110,6 +152,7 @@ export const usePatientListPageState = () => {
 			sortField,
 			sortDirection,
 			statusFilter,
+			queue,
 		],
 		queryFn: ({ pageParam }) =>
 			getPatients(therapistId, {
@@ -119,8 +162,10 @@ export const usePatientListPageState = () => {
 				sort: sortField,
 				dir: sortDirection,
 				status: statusFilter,
+				queue: queue === 'all' ? undefined : queue,
 			}),
 		initialPageParam: 1,
+		placeholderData: keepPreviousData,
 		getNextPageParam: (lastPage) =>
 			lastPage.page * lastPage.limit < lastPage.total
 				? lastPage.page + 1
@@ -131,13 +176,19 @@ export const usePatientListPageState = () => {
 	// Server already paginates, searches and sorts — just flatten + map for display.
 	const filteredPatients = useMemo(
 		() =>
-			(data?.pages ?? [])
-				.flatMap((pageResult) => pageResult.patients)
-				.map((patient) => mapPatientToListItem(patient)),
-		[data]
+			(data?.pages ?? []).flatMap((pageResult) =>
+				pageResult.patients.map((patient, patientIndex) =>
+					mapPatientToWorkspaceRow(patient, {
+						isPossibleDuplicate: duplicatePatientIds.has(patient._id),
+						uiRowKey: `page-${pageResult.page}-row-${patientIndex + 1}`,
+					})
+				)
+			),
+		[data, duplicatePatientIds]
 	);
 
 	const totalPatients = data?.pages?.[0]?.total ?? 0;
+	const workspaceSummary = data?.pages?.[0]?.workspaceSummary;
 
 	const openPatientProfile = (patientId: string): void => {
 		navigate(`/${locale}/${PATIENTS}/${patientId}`);
@@ -150,10 +201,15 @@ export const usePatientListPageState = () => {
 		hasNextPage,
 		hasPatients: totalPatients > 0,
 		isDesktopTable: !isSmallerThanTablet,
+		isMobile,
 		isFetchingNextPage,
-		isLoading: isUserDetailsLoading || isPatientsLoading,
+		isLoading: isUserDetailsLoading || (isPatientsLoading && !data),
+		isRefreshingResults:
+			isPatientsFetching && !isPatientsLoading && !isFetchingNextPage,
 		openPatientProfile,
 		searchQuery,
+		queue,
+		setQueue,
 		setSearchQuery,
 		setSortDirection,
 		setSortField,
@@ -162,5 +218,6 @@ export const usePatientListPageState = () => {
 		sortField,
 		statusFilter,
 		totalPatients,
+		workspaceSummary,
 	};
 };

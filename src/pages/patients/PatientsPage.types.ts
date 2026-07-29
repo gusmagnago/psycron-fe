@@ -1,3 +1,8 @@
+import type { ReactElement } from 'react';
+import type {
+	IPatientWorkspaceSummary,
+	PatientWorkspaceQueueFilter,
+} from '@psycron/api/patient/index.types';
 import type {
 	IPatient,
 	ISlot,
@@ -17,6 +22,62 @@ export type PatientListSortField =
 	| 'total-sessions';
 export type PatientListSortDirection = 'asc' | 'desc';
 
+export type PatientWorkspaceQueue = 'all' | PatientWorkspaceQueueFilter;
+
+export interface PatientWorkQueueCard {
+	clearDescriptionKey: string;
+	count?: number;
+	descriptionKey: string;
+	icon: ReactElement<{
+		'data-testid'?: string;
+		id?: string;
+	}>;
+	id: string;
+	labelKey: string;
+	queue: PatientWorkspaceQueueFilter;
+}
+
+export type PatientNextAction =
+	| 'add-contact'
+	| 'add-contact-and-billing'
+	| 'ready'
+	| 'review-duplicate'
+	| 'review-scheduling'
+	| 'send-follow-up'
+	| 'set-billing';
+
+export type PatientNextSessionState =
+	| 'approaching'
+	| 'imminent'
+	| 'none'
+	| 'normal'
+	| 'now';
+
+export type PatientWorkspaceColumn =
+	| 'billing'
+	| 'contact'
+	| 'next-action'
+	| 'next-session'
+	| 'patient'
+	| 'sessions';
+
+export type PatientWorkspaceFilterableColumn = Exclude<
+	PatientWorkspaceColumn,
+	'sessions'
+>;
+
+export interface PatientWorkspaceColumnFilterOption {
+	label: string;
+	value: string;
+}
+
+export interface PatientWorkspaceSortState {
+	column: PatientWorkspaceColumn;
+	direction: PatientListSortDirection;
+}
+
+export type PatientWorkspaceSummary = IPatientWorkspaceSummary;
+
 export interface PatientListSortOption {
 	defaultDirection: PatientListSortDirection;
 	direction: PatientListSortDirection;
@@ -33,6 +94,15 @@ export interface PatientListItem extends IPatient {
 	searchableText: string;
 	totalSessions: number;
 	unresolvedCancelledSessions: number;
+}
+
+export interface PatientWorkspaceRow extends PatientListItem {
+	billingConfigured: boolean;
+	hasContact: boolean;
+	nextAction: PatientNextAction;
+	nextSessionDate: string | null;
+	nextSessionState: PatientNextSessionState;
+	uiRowKey: string;
 }
 
 export interface PatientSessionRow {

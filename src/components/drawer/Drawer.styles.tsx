@@ -53,6 +53,13 @@ export const DrawerHeader = styled(Box)`
 	justify-content: space-between;
 	padding: ${spacing.mediumLarge} ${spacing.mediumLarge} ${spacing.medium};
 
+	&& > button {
+		height: 44px;
+		min-height: 44px;
+		min-width: 44px;
+		width: 44px;
+	}
+
 	${isMobileMedia} {
 		padding: ${spacing.small} ${spacing.small} ${spacing.xs};
 	}

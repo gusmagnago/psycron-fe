@@ -1,4 +1,6 @@
 export interface AddPatientProps {
+	buttonId?: string;
+	buttonTestId?: string;
 	shortButton: boolean;
 }
 

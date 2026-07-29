@@ -3,7 +3,10 @@ import type {
 	IPatient,
 } from '@psycron/context/user/auth/UserAuthenticationContext.types';
 import { isCanceledSlot } from '@psycron/utils/availability/availability.utils';
-import { getPatientFullName } from '@psycron/utils/patient/patient.utils';
+import {
+	getPatientFullName,
+	isPatientBillingConfigured,
+} from '@psycron/utils/patient/patient.utils';
 import { isPast } from 'date-fns';
 
 import type {
@@ -11,8 +14,11 @@ import type {
 	PatientListSortDirection,
 	PatientListSortField,
 	PatientListSortOption,
+	PatientNextAction,
+	PatientNextSessionState,
 	PatientSessionRow,
 	PatientStats,
+	PatientWorkspaceRow,
 } from './PatientsPage.types';
 
 export const PATIENT_LIST_SORT_OPTIONS: PatientListSortOption[] = [
@@ -315,6 +321,91 @@ export const mapPatientToListItem = (patient: IPatient): PatientListItem => {
 		searchableText,
 		totalSessions: stats.totalSessions,
 		unresolvedCancelledSessions: getPatientUnresolvedCancellationCount(patient),
+	};
+};
+
+const MINUTE_IN_MS = 60 * 1000;
+const SESSION_DURATION_FALLBACK_IN_MS = 60 * MINUTE_IN_MS;
+
+export const getPatientNextSessionState = (
+	nextSessionDate: string | null,
+	now: Date = new Date()
+): PatientNextSessionState => {
+	if (!nextSessionDate) return 'none';
+
+	const startsAt = new Date(nextSessionDate).getTime();
+	const difference = startsAt - now.getTime();
+
+	if (difference <= 0 && difference > -SESSION_DURATION_FALLBACK_IN_MS) {
+		return 'now';
+	}
+
+	if (difference > 0 && difference < 15 * MINUTE_IN_MS) return 'imminent';
+	if (difference >= 15 * MINUTE_IN_MS && difference <= 120 * MINUTE_IN_MS) {
+		return 'approaching';
+	}
+
+	return 'normal';
+};
+
+export const getPatientNextAction = ({
+	billingConfigured,
+	hasContact,
+	hasFutureSession,
+	isPossibleDuplicate,
+	unresolvedCancelledSessions,
+}: {
+	billingConfigured: boolean;
+	hasContact: boolean;
+	hasFutureSession: boolean;
+	isPossibleDuplicate: boolean;
+	unresolvedCancelledSessions: number;
+}): PatientNextAction => {
+	if (isPossibleDuplicate) return 'review-duplicate';
+	if (unresolvedCancelledSessions > 0) return 'send-follow-up';
+	if (!hasContact && !billingConfigured) return 'add-contact-and-billing';
+	if (!hasContact) return 'add-contact';
+	if (!billingConfigured) return 'set-billing';
+	if (!hasFutureSession) return 'review-scheduling';
+
+	return 'ready';
+};
+
+export const mapPatientToWorkspaceRow = (
+	patient: IPatient,
+	options: {
+		isPossibleDuplicate: boolean;
+		now?: Date;
+		uiRowKey: string;
+	}
+): PatientWorkspaceRow => {
+	const listItem = mapPatientToListItem(patient);
+	const nextSession = getNextSession(getPatientSessions(patient));
+	const nextSessionDate = nextSession?.startsAt.toISOString() ?? null;
+	const hasContact = Boolean(
+		patient.contacts?.email ||
+			patient.contacts?.phone ||
+			patient.contacts?.whatsapp
+	);
+	const billingConfigured = isPatientBillingConfigured(patient.billing);
+
+	return {
+		...listItem,
+		billingConfigured,
+		hasContact,
+		nextAction: getPatientNextAction({
+			billingConfigured,
+			hasContact,
+			hasFutureSession: Boolean(nextSession),
+			isPossibleDuplicate: options.isPossibleDuplicate,
+			unresolvedCancelledSessions: listItem.unresolvedCancelledSessions,
+		}),
+		nextSessionDate,
+		nextSessionState: getPatientNextSessionState(
+			nextSessionDate,
+			options.now
+		),
+		uiRowKey: options.uiRowKey,
 	};
 };
 

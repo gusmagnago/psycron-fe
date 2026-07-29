@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import { Button, Grid, IconButton } from '@mui/material';
+import { Button as MuiButton, Grid } from '@mui/material';
+import { Button } from '@psycron/components/button/Button';
 import { AddPatient } from '@psycron/components/icons/user/patient/AddPatient';
 import { useAlert } from '@psycron/context/alert/AlertContext';
 import { usePatient } from '@psycron/context/patient/PatientContext';
@@ -13,7 +14,11 @@ import { FormWrapper } from '../FormWrapper/FormWrapper';
 
 import type { AddPatientFormData, AddPatientProps } from './AddPatientForm.types';
 
-export const AddPatientForm = ({ shortButton }: AddPatientProps) => {
+export const AddPatientForm = ({
+	buttonId,
+	buttonTestId,
+	shortButton,
+}: AddPatientProps) => {
 	const { t } = useTranslation();
 	const { showAlert } = useAlert();
 	const { therapistId } = useUserDetails();
@@ -60,18 +65,27 @@ export const AddPatientForm = ({ shortButton }: AddPatientProps) => {
 	return (
 		<>
 			{shortButton ? (
-				<IconButton onClick={() => setOpen(true)}>
-					<AddPatient />
-				</IconButton>
-			) : (
 				<Button
+					aria-label={t('components.form.add-patient.name')}
+					id={buttonId}
+					data-testid={buttonTestId}
+					onClick={() => setOpen(true)}
+					tertiary
+					type='button'
+				>
+					<AddPatient />
+				</Button>
+			) : (
+				<MuiButton
+					id={buttonId}
+					data-testid={buttonTestId}
 					onClick={() => setOpen(true)}
 					endIcon={<AddPatient />}
 					color='primary'
 					variant='contained'
 				>
 					{t('components.form.add-patient.name')}
-				</Button>
+				</MuiButton>
 			)}
 			<FormWrapper
 				formDescription='add-patient-inputs'
