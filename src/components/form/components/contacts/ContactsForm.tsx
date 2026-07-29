@@ -26,10 +26,16 @@ export const ContactsForm = <T extends FieldValues>({
 	labelEmail,
 	placeholderEmail,
 	required = false,
+	testId,
 	...textFieldProps
 }: ContactsFormProps<T>) => {
 	const { t } = useTranslation();
 	const { isSmallerThanTablet } = useViewport();
+
+	// Opt-in logging anchors: only stamped when a `testId` base is provided, so
+	// other usages of this shared form are unchanged.
+	const subId = (suffix: string): string | undefined =>
+		testId ? `${testId}-${suffix}` : undefined;
 
 	const { register, getFieldState, control, getValues, setValue } =
 		useFormContext<T>();
@@ -55,8 +61,11 @@ export const ContactsForm = <T extends FieldValues>({
 			: undefined;
 
 	return (
-		<ContactsFormWrapper>
-			<EmailPhoneWrapper>
+		<ContactsFormWrapper data-testid={testId} id={testId}>
+			<EmailPhoneWrapper
+				data-testid={subId('email-phone')}
+				id={subId('email-phone')}
+			>
 				<TextField
 					{...textFieldProps}
 					label={labelEmail ?? t('globals.email')}
@@ -91,7 +100,7 @@ export const ContactsForm = <T extends FieldValues>({
 				/>
 
 			{!hidePhone && (
-					<InputWrapper>
+					<InputWrapper data-testid={subId('phone')} id={subId('phone')}>
 						<PhoneInputComponent<T>
 							name={phonePath}
 							required={atLeastOneContact ? false : required}
@@ -117,7 +126,10 @@ export const ContactsForm = <T extends FieldValues>({
 				)}
 			</EmailPhoneWrapper>
 			{!hidePhone && (
-				<ContactsFormSwitchWrapper>
+				<ContactsFormSwitchWrapper
+					data-testid={subId('switches')}
+					id={subId('switches')}
+				>
 					<Switch
 						small={isSmallerThanTablet}
 						checked={hasWhatsApp}
@@ -176,14 +188,22 @@ export const ContactsForm = <T extends FieldValues>({
 			<input type='hidden' {...register(isPhoneWppPath)} />
 
 			{!hidePhone && hasWhatsApp && !isPhoneWpp ? (
-				<ContactsFormWhatsAppWrapper isFullWidth={fullWidth}>
-					<InputWrapper>
+				<ContactsFormWhatsAppWrapper
+					data-testid={subId('whatsapp')}
+					id={subId('whatsapp')}
+					isFullWidth={fullWidth}
+				>
+					<InputWrapper
+						data-testid={subId('whatsapp-input')}
+						id={subId('whatsapp-input')}
+					>
 						<PhoneInputComponent<T>
 							name={whatsappPath}
 							required={hasWhatsApp && !isPhoneWpp}
 							disabled={disabled}
 							defaultValue={defaultValues?.whatsapp ?? ''}
 							labelKey='globals.whatsapp'
+							testId={subId('whatsapp-phone')}
 						/>
 					</InputWrapper>
 				</ContactsFormWhatsAppWrapper>

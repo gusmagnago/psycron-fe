@@ -28,7 +28,14 @@ export interface IPatientByIdResponse {
 	patient: IPatient;
 }
 
-export type PatientsSortField = 'name' | 'total-sessions' | 'last-appointment';
+export type PatientsSortField =
+	| 'billing'
+	| 'contact'
+	| 'last-appointment'
+	| 'name'
+	| 'next-action'
+	| 'next-session'
+	| 'total-sessions';
 export type PatientsSortDirection = 'asc' | 'desc';
 export type PatientsStatusFilter = 'all' | 'active' | 'inactive';
 
@@ -54,7 +61,12 @@ export interface IGetPatientsResponse {
 	page: number;
 	patients: IPatient[];
 	total: number;
-	workspaceSummary: IPatientWorkspaceSummary;
+	/**
+	 * Absent until psycron-be #120 is deployed, and absent on any cached page
+	 * fetched before it. The workspace guards every read — the type has to
+	 * agree, or the guards look like dead code.
+	 */
+	workspaceSummary?: IPatientWorkspaceSummary;
 }
 
 export interface IPatientWorkspaceSummary {

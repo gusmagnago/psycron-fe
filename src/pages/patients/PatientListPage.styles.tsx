@@ -630,6 +630,16 @@ export const ResultsHint = styled(Text)`
 	}
 `;
 
+/**
+ * Explains that column filters only cover the loaded window. Unlike
+ * ResultsHint this stays visible on mobile — the count is most ambiguous
+ * exactly where the least data is loaded.
+ */
+export const ResultsScopeNote = styled(Text)`
+	color: ${palette.text.secondary};
+	font-size: 0.78rem;
+`;
+
 export const PatientTableSurface = styled(Box)`
 	border-radius: ${spacing.medium};
 	overflow-x: auto;

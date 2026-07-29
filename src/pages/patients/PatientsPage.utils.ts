@@ -3,11 +3,14 @@ import type {
 	IPatient,
 } from '@psycron/context/user/auth/UserAuthenticationContext.types';
 import { isCanceledSlot } from '@psycron/utils/availability/availability.utils';
+import { formatLocalizedDate } from '@psycron/utils/date/date.utils';
 import {
+	getPatientBillingViewModel,
 	getPatientFullName,
 	isPatientBillingConfigured,
 } from '@psycron/utils/patient/patient.utils';
 import { isPast } from 'date-fns';
+import type { TFunction } from 'i18next';
 
 import type {
 	PatientListItem,
@@ -18,6 +21,8 @@ import type {
 	PatientNextSessionState,
 	PatientSessionRow,
 	PatientStats,
+	PatientWorkspaceColumn,
+	PatientWorkspaceColumnFilterOption,
 	PatientWorkspaceRow,
 } from './PatientsPage.types';
 
@@ -375,7 +380,6 @@ export const mapPatientToWorkspaceRow = (
 	patient: IPatient,
 	options: {
 		isPossibleDuplicate: boolean;
-		now?: Date;
 		uiRowKey: string;
 	}
 ): PatientWorkspaceRow => {
@@ -401,10 +405,8 @@ export const mapPatientToWorkspaceRow = (
 			unresolvedCancelledSessions: listItem.unresolvedCancelledSessions,
 		}),
 		nextSessionDate,
-		nextSessionState: getPatientNextSessionState(
-			nextSessionDate,
-			options.now
-		),
+		// No nextSessionState here on purpose: urgency is time-relative and would
+		// rot until the next refetch. NextSessionCell derives it at render.
 		uiRowKey: options.uiRowKey,
 	};
 };
@@ -439,4 +441,60 @@ export const sortPatientListItems = (
 				);
 		}
 	});
+};
+
+/**
+ * Display label + comparable value for a workspace column. Used by the column
+ * filter dropdown and by client-side sorting/filtering of the loaded rows.
+ */
+export const getPatientColumnFilterOption = (
+	patient: PatientWorkspaceRow,
+	column: PatientWorkspaceColumn,
+	language: string,
+	t: TFunction
+): PatientWorkspaceColumnFilterOption => {
+	switch (column) {
+		case 'billing': {
+			const billing = getPatientBillingViewModel(patient.billing, language, t);
+			const label = [billing.summaryPrimary, billing.summarySecondary]
+				.filter(Boolean)
+				.join(' ');
+			return { label, value: label.toLocaleLowerCase(language) };
+		}
+		case 'contact': {
+			const contact =
+				patient.contacts?.phone ||
+				patient.contacts?.email ||
+				patient.contacts?.whatsapp ||
+				t('patients.list.contact-missing');
+			return { label: contact, value: contact.toLocaleLowerCase(language) };
+		}
+		case 'next-action':
+			return {
+				label: t(`patients.list.next-actions.${patient.nextAction}`),
+				value: patient.nextAction,
+			};
+		case 'next-session': {
+			const label = patient.nextSessionDate
+				? formatLocalizedDate(
+						patient.nextSessionDate,
+						t('patients.list.next-session.none'),
+						language,
+						'PPp'
+					)
+				: t('patients.list.next-session.none');
+			return { label, value: patient.nextSessionDate ?? 'none' };
+		}
+		case 'sessions':
+			return {
+				label: String(patient.totalSessions),
+				value: String(patient.totalSessions),
+			};
+		case 'patient':
+		default:
+			return {
+				label: patient.fullName,
+				value: patient.fullName.toLocaleLowerCase(language),
+			};
+	}
 };

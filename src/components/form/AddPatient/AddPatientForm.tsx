@@ -1,17 +1,22 @@
 import { useState } from 'react';
-import { useForm } from 'react-hook-form';
+import { FormProvider, useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import { Button as MuiButton, Grid } from '@mui/material';
+import { capture } from '@psycron/analytics/posthog/events';
+import { PostHogEvent } from '@psycron/analytics/posthog/types';
 import { Button } from '@psycron/components/button/Button';
+import { Drawer } from '@psycron/components/drawer/Drawer';
 import { AddPatient } from '@psycron/components/icons/user/patient/AddPatient';
-import { useAlert } from '@psycron/context/alert/AlertContext';
 import { usePatient } from '@psycron/context/patient/PatientContext';
 import { useUserDetails } from '@psycron/context/user/details/UserDetailsContext';
 
 import { ContactsForm } from '../components/contacts/ContactsForm';
 import { NameForm } from '../components/name/NameForm';
-import { FormWrapper } from '../FormWrapper/FormWrapper';
 
+import {
+	AddPatientFormActions,
+	AddPatientFormElement,
+	AddPatientFormFields,
+} from './AddPatientForm.styles';
 import type { AddPatientFormData, AddPatientProps } from './AddPatientForm.types';
 
 export const AddPatientForm = ({
@@ -20,31 +25,28 @@ export const AddPatientForm = ({
 	shortButton,
 }: AddPatientProps) => {
 	const { t } = useTranslation();
-	const { showAlert } = useAlert();
 	const { therapistId } = useUserDetails();
 	const { createManualPatientMttn } = usePatient();
 
-	const {
-		register,
-		handleSubmit,
-		getValues,
-		setValue,
-		reset,
-		formState: { errors },
-	} = useForm<AddPatientFormData>();
+	const methods = useForm<AddPatientFormData>();
+	const { handleSubmit, reset } = methods;
 
 	const [open, setOpen] = useState<boolean>(false);
 
-	const onSubmit = (data: AddPatientFormData) => {
-		const { email, phone } = data.contacts ?? {};
+	const handleOpen = () => {
+		capture(PostHogEvent.PatientCenterCreateOpened);
+		setOpen(true);
+	};
 
-		if (!email && !phone) {
-			showAlert({
-				message: t('components.form.add-patient.contacts-required'),
-				severity: 'error',
-			});
-			return;
-		}
+	const handleClose = () => {
+		reset();
+		setOpen(false);
+	};
+
+	const onSubmit = (data: AddPatientFormData) => {
+		// At-least-one-contact is enforced by the ContactsForm `atLeastOneContact`
+		// validation, so onSubmit only runs once email or phone is present.
+		const { email, phone } = data.contacts ?? {};
 
 		createManualPatientMttn({
 			therapistId,
@@ -69,45 +71,70 @@ export const AddPatientForm = ({
 					aria-label={t('components.form.add-patient.name')}
 					id={buttonId}
 					data-testid={buttonTestId}
-					onClick={() => setOpen(true)}
+					onClick={handleOpen}
 					tertiary
 					type='button'
 				>
 					<AddPatient />
 				</Button>
 			) : (
-				<MuiButton
+				<Button
 					id={buttonId}
 					data-testid={buttonTestId}
-					onClick={() => setOpen(true)}
+					onClick={handleOpen}
 					endIcon={<AddPatient />}
-					color='primary'
-					variant='contained'
+					type='button'
 				>
 					{t('components.form.add-patient.name')}
-				</MuiButton>
+				</Button>
 			)}
-			<FormWrapper
-				formDescription='add-patient-inputs'
-				formTitle='add-patient'
-				handleSubmit={handleSubmit}
-				onSubmit={onSubmit}
-				submitButtonLabel={t('components.form.add-patient.name')}
-				open={open}
-				onClose={() => setOpen(false)}
-			>
-				<Grid container size={12}>
-					<NameForm register={register} errors={errors} required />
-					<ContactsForm
-						register={register}
-						errors={errors}
-						getPhoneValue={getValues}
-						setPhoneValue={setValue}
-						setValue={setValue}
-						required
-					/>
-				</Grid>
-			</FormWrapper>
+			{open ? (
+				<Drawer
+					ariaLabel={t('components.form.add-patient.name')}
+					closeButtonTestId='add-patient-drawer-close'
+					contentTestId='add-patient-drawer-content'
+					data-testid='add-patient-drawer'
+					id='add-patient-drawer'
+					onClose={handleClose}
+					title={t('components.form.add-patient.name')}
+				>
+					<FormProvider {...methods}>
+						<AddPatientFormElement
+							data-testid='add-patient-form'
+							id='add-patient-form'
+							onSubmit={handleSubmit(onSubmit)}
+						>
+							<AddPatientFormFields
+								data-testid='add-patient-form-fields'
+								id='add-patient-form-fields'
+							>
+								<NameForm<AddPatientFormData>
+									required
+									testId='add-patient-form-name'
+								/>
+								<ContactsForm<AddPatientFormData>
+									atLeastOneContact
+									fullWidth
+									testId='add-patient-form-contacts'
+								/>
+							</AddPatientFormFields>
+							<AddPatientFormActions
+								data-testid='add-patient-form-actions'
+								id='add-patient-form-actions'
+							>
+								<Button
+									data-testid='add-patient-drawer-submit'
+									fullWidth
+									id='add-patient-drawer-submit'
+									type='submit'
+								>
+									{t('components.form.add-patient.name')}
+								</Button>
+							</AddPatientFormActions>
+						</AddPatientFormElement>
+					</FormProvider>
+				</Drawer>
+			) : null}
 		</>
 	);
 };

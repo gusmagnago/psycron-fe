@@ -1,0 +1,26 @@
+{
+  "projectId": "6c0e237c-8390-4e08-becb-f831dd62d727",
+  "shape": "storybook",
+  "pkg": "psycron-fe",
+  "globalName": "PsycronFE",
+  "storybookStatic": ".design-sync/sb-reference",
+  "storybookConfigDir": ".design-sync/sb-config",
+  "tsconfig": "tsconfig.json",
+  "buildCmd": "npm run build:sitemap",
+  "readmeHeader": ".design-sync/conventions.md",
+  "guidelinesGlob": [],
+  "entry": ".design-sync/entry.ts",
+  "extraEntries": ["./.design-sync/entry.ts", "./.design-sync/providers.tsx"],
+  "provider": { "component": "DSProviders" },
+  "titleMap": {
+    "Switch": "SwitchGroup",
+    "Icons": null,
+    "CircularProgress": null,
+    "Link": null,
+    "RadioButton": null,
+    "Table": null,
+    "TableBody": null,
+    "TableHead": null,
+    "TableCell": null
+  }
+}

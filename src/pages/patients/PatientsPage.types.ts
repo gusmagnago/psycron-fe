@@ -17,8 +17,12 @@ export type PatientListStatusFilter = 'active' | 'all' | 'inactive';
 export type SessionTimelineFilter = 'all' | 'cancelled' | 'completed' | 'upcoming';
 
 export type PatientListSortField =
+	| 'billing'
+	| 'contact'
 	| 'last-appointment'
 	| 'name'
+	| 'next-action'
+	| 'next-session'
 	| 'total-sessions';
 export type PatientListSortDirection = 'asc' | 'desc';
 
@@ -72,7 +76,11 @@ export interface PatientWorkspaceColumnFilterOption {
 }
 
 export interface PatientWorkspaceSortState {
-	column: PatientWorkspaceColumn;
+	/**
+	 * `null` when the active sort field has no matching table column
+	 * (`last-appointment`), so no header claims `aria-sort`.
+	 */
+	column: PatientWorkspaceColumn | null;
 	direction: PatientListSortDirection;
 }
 
@@ -101,7 +109,6 @@ export interface PatientWorkspaceRow extends PatientListItem {
 	hasContact: boolean;
 	nextAction: PatientNextAction;
 	nextSessionDate: string | null;
-	nextSessionState: PatientNextSessionState;
 	uiRowKey: string;
 }
 

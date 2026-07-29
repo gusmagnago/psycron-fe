@@ -24,6 +24,7 @@ import { useSecureStorage } from '@psycron/hooks/useSecureStorage';
 import i18n from '@psycron/i18n';
 import { APPOINTMENTCONFIRMATION, APPOINTMENTS } from '@psycron/pages/urls';
 import { LATESTPATIENT_ID } from '@psycron/utils/tokens';
+import * as Sentry from '@sentry/react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
 import { useAlert } from '../alert/AlertContext';
@@ -148,12 +149,19 @@ export const PatientProvider = ({ children }: IPatientProviderProps) => {
 		mutationFn: createManualPatient,
 		onSuccess: (data) => {
 			queryClient.invalidateQueries({ queryKey: QUERY_KEYS.patientList() });
+			// The patients workspace query is keyed 'patientsList' (see
+			// usePatientListPageState); invalidate that prefix too so a newly
+			// created patient appears without a manual refresh.
+			queryClient.invalidateQueries({ queryKey: ['patientsList'] });
 			showAlert({
 				message: data.message,
 				severity: 'success',
 			});
 		},
 		onError: (error: CustomError) => {
+			Sentry.captureException(error, {
+				tags: { flow: 'patient-create-manual' },
+			});
 			showAlert({
 				message: error.message,
 				severity: 'error',

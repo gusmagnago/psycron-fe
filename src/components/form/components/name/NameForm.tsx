@@ -17,6 +17,7 @@ export const NameForm = <T extends FieldValues>({
 	labelFirstName,
 	labelLastName,
 	showDateOfBirth = false,
+	testId,
 }: NameFormProps<T>) => {
 	const { t } = useTranslation();
 
@@ -33,7 +34,7 @@ export const NameForm = <T extends FieldValues>({
 	const lastNameError = errors[lastNamePath];
 
 	return (
-		<NameFormWrapper>
+		<NameFormWrapper data-testid={testId} id={testId}>
 			<NameInputWrapper>
 				<TextField
 					label={labelFirstName ?? t('components.form.signup.first-name')}

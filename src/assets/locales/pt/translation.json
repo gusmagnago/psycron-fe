@@ -214,7 +214,10 @@
 			"column-filter": {
 				"all-values": "Todos os valores",
 				"label": "Filtrar {{column}}",
-				"open": "Filtrar coluna {{column}}"
+				"open": "Filtrar coluna {{column}}",
+				"scope-complete": "{{matches}} de {{loaded}} pacientes correspondem aos filtros de coluna.",
+				"scope-empty": "Nenhum dos {{loaded}} pacientes carregados até agora corresponde aos filtros de coluna. Carregue mais para continuar filtrando.",
+				"scope-partial": "Os filtros de coluna se aplicam aos {{loaded}} pacientes carregados até agora — {{matches}} correspondem. Carregue mais para filtrar o restante."
 			},
 			"open": "Abrir",
 			"open-workflow": "Abrir fluxo de {{patient}}",

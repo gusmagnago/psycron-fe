@@ -1,4 +1,4 @@
-import type { Variants, ViewportOptions } from 'framer-motion';
+import type { Variants } from 'framer-motion';
 
 const PATIENT_CARD_STAGGER_SECONDS = 0.045;
 const PATIENT_CARD_STAGGER_LIMIT = 6;
@@ -25,8 +25,8 @@ export const patientCardScrollVariants: Variants = {
 	}),
 };
 
-export const patientCardScrollViewport: ViewportOptions = {
+export const patientCardScrollViewport = {
 	amount: 0.18,
 	margin: '0px 0px -8% 0px',
 	once: true,
-};
+} as const;
