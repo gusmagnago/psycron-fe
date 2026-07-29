@@ -1,8 +1,7 @@
 import type { Dispatch, RefObject, SetStateAction } from 'react';
 import { cloneElement } from 'react';
 import { useTranslation } from 'react-i18next';
-import { CheckSuccess } from '@psycron/components/icons';
-import { Minus, Plus } from 'lucide-react';
+import { CheckSuccess, Minus, Plus } from '@psycron/components/icons';
 
 import {
 	QueueCard,

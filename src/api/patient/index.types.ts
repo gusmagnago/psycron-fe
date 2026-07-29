@@ -61,7 +61,12 @@ export interface IGetPatientsResponse {
 	page: number;
 	patients: IPatient[];
 	total: number;
-	workspaceSummary: IPatientWorkspaceSummary;
+	/**
+	 * Absent until psycron-be #120 is deployed, and absent on any cached page
+	 * fetched before it. The workspace guards every read — the type has to
+	 * agree, or the guards look like dead code.
+	 */
+	workspaceSummary?: IPatientWorkspaceSummary;
 }
 
 export interface IPatientWorkspaceSummary {

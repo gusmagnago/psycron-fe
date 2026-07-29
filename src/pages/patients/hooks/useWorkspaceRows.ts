@@ -2,15 +2,12 @@ import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import type {
+	PatientWorkspaceColumn,
 	PatientWorkspaceColumnFilterOption,
 	PatientWorkspaceFilterableColumn,
 	PatientWorkspaceRow,
-	PatientWorkspaceSortState,
 } from '../PatientsPage.types';
-import {
-	getPatientColumnFilterOption,
-	getPatientColumnSortValue,
-} from '../PatientsPage.utils';
+import { getPatientColumnFilterOption } from '../PatientsPage.utils';
 
 const FILTERABLE_COLUMNS: PatientWorkspaceFilterableColumn[] = [
 	'patient',
@@ -23,14 +20,12 @@ const FILTERABLE_COLUMNS: PatientWorkspaceFilterableColumn[] = [
 interface UseWorkspaceRowsOptions {
 	columnFilters: Partial<Record<PatientWorkspaceFilterableColumn, string>>;
 	filterColumn: PatientWorkspaceFilterableColumn | null;
-	/**
-	 * When the active sort column is server-authoritative, the query already
-	 * returns globally-correct order — skip the client re-sort so the loaded
-	 * window isn't reordered out of sync with the server.
-	 */
-	isServerSorted: boolean;
 	patients: PatientWorkspaceRow[];
-	workspaceSort: PatientWorkspaceSortState;
+	/**
+	 * Only on-screen columns may filter. A hidden column's filter has no header
+	 * left to clear it from, so honouring it would exclude rows invisibly.
+	 */
+	visibleColumnSet: Set<PatientWorkspaceColumn>;
 }
 
 interface UseWorkspaceRowsResult {
@@ -39,64 +34,40 @@ interface UseWorkspaceRowsResult {
 }
 
 /**
- * Applies the active column filters and client-side sort to the loaded patient
- * rows, and derives the distinct-value options for the open column filter.
- * Memoized so drawer/control toggles don't re-run the filter+sort+localeCompare
- * work on every render.
+ * Applies the active column filters to the loaded patient rows and derives the
+ * distinct-value options for the open column filter. Memoized so drawer/control
+ * toggles don't re-run the filter+localeCompare work on every render.
  *
- * Note: this refines the currently-loaded pages. Global ordering/membership is
- * server-authoritative (see the patient workspace sort/filter decision); server
- * sort keys are wired separately in PatientListPage.
+ * Row *order* is never touched here: every column maps to a server sort key
+ * (see COLUMN_SORT_FIELDS in PatientListPage), so the query returns globally
+ * correct order and a client re-sort would only scramble the loaded window.
+ *
+ * Filtering, by contrast, still refines the currently-loaded pages only.
  */
 export const useWorkspaceRows = ({
 	columnFilters,
 	filterColumn,
-	isServerSorted,
 	patients,
-	workspaceSort,
+	visibleColumnSet,
 }: UseWorkspaceRowsOptions): UseWorkspaceRowsResult => {
 	const { i18n, t } = useTranslation();
 	const { language } = i18n;
 
-	const rows = useMemo(() => {
-		const filtered = patients.filter((patient) =>
-			FILTERABLE_COLUMNS.every((column) => {
-				const selectedValue = columnFilters[column];
-				return (
-					!selectedValue ||
-					getPatientColumnFilterOption(patient, column, language, t).value ===
-						selectedValue
-				);
-			})
-		);
-
-		// Server order is authoritative for server-sortable columns; only the
-		// loaded-window-only columns still get a client sort.
-		if (isServerSorted) return filtered;
-
-		return filtered.sort((firstPatient, secondPatient) => {
-			const firstValue = getPatientColumnSortValue(
-				firstPatient,
-				workspaceSort.column,
-				language,
-				t
-			);
-			const secondValue = getPatientColumnSortValue(
-				secondPatient,
-				workspaceSort.column,
-				language,
-				t
-			);
-			const comparison =
-				typeof firstValue === 'number' && typeof secondValue === 'number'
-					? firstValue - secondValue
-					: String(firstValue).localeCompare(String(secondValue), language, {
-							numeric: true,
-							sensitivity: 'base',
-						});
-			return workspaceSort.direction === 'asc' ? comparison : -comparison;
-		});
-	}, [columnFilters, isServerSorted, language, patients, t, workspaceSort]);
+	const rows = useMemo(
+		() =>
+			patients.filter((patient) =>
+				FILTERABLE_COLUMNS.every((column) => {
+					const selectedValue = columnFilters[column];
+					return (
+						!selectedValue ||
+						!visibleColumnSet.has(column) ||
+						getPatientColumnFilterOption(patient, column, language, t).value ===
+							selectedValue
+					);
+				})
+			),
+		[columnFilters, language, patients, t, visibleColumnSet]
+	);
 
 	const columnFilterOptions = useMemo<PatientWorkspaceColumnFilterOption[]>(
 		() =>

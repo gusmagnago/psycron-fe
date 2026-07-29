@@ -1,17 +1,11 @@
 import type { IPatientWorkspaceSummary } from '@psycron/api/patient/index.types';
-import type { TFunction } from 'i18next';
 import { describe, expect, it } from 'vitest';
 
 import { getPatientWorkspaceQueueCount } from './PatientListPage.utils';
-import type { PatientWorkspaceRow } from './PatientsPage.types';
 import {
-	getPatientColumnSortValue,
 	getPatientNextAction,
 	getPatientNextSessionState,
 } from './PatientsPage.utils';
-
-// Minimal identity mock — these helpers only key i18n strings, never format.
-const t = ((key: string) => key) as unknown as TFunction;
 
 describe('getPatientNextAction', () => {
 	const base = {
@@ -119,44 +113,5 @@ describe('getPatientWorkspaceQueueCount', () => {
 		expect(getPatientWorkspaceQueueCount(summary, 'duplicate')).toBe(1);
 		expect(getPatientWorkspaceQueueCount(summary, 'needs-attention')).toBe(9);
 		expect(getPatientWorkspaceQueueCount(summary, 'recovery')).toBe(2);
-	});
-});
-
-describe('getPatientColumnSortValue', () => {
-	const row = (overrides: Partial<PatientWorkspaceRow>): PatientWorkspaceRow =>
-		({
-			fullName: 'Ana',
-			nextSessionDate: null,
-			totalSessions: 0,
-			...overrides,
-		}) as PatientWorkspaceRow;
-
-	it('sorts sessions numerically', () => {
-		expect(getPatientColumnSortValue(row({ totalSessions: 12 }), 'sessions', 'en', t)).toBe(
-			12
-		);
-	});
-
-	it('sorts next-session by timestamp, missing sessions last', () => {
-		const withDate = getPatientColumnSortValue(
-			row({ nextSessionDate: '2026-07-24T10:00:00.000Z' }),
-			'next-session',
-			'en',
-			t
-		);
-		const withoutDate = getPatientColumnSortValue(
-			row({ nextSessionDate: null }),
-			'next-session',
-			'en',
-			t
-		);
-		expect(withDate).toBeLessThan(withoutDate as number);
-		expect(withoutDate).toBe(Number.MAX_SAFE_INTEGER);
-	});
-
-	it('sorts patient column by name label', () => {
-		expect(
-			getPatientColumnSortValue(row({ fullName: 'Bruno' }), 'patient', 'en', t)
-		).toBe('Bruno');
 	});
 });

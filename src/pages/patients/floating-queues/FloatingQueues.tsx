@@ -1,4 +1,5 @@
 import { useTranslation } from 'react-i18next';
+import { Funnel } from '@psycron/components/icons';
 import {
 	QueueFilterChip,
 	QueueFiltersDrawer,
@@ -6,7 +7,6 @@ import {
 	QueueFiltersRow,
 	QueueFiltersSection,
 } from '@psycron/components/queue-panel';
-import { Funnel } from 'lucide-react';
 
 import {
 	FloatingQueuesPanel,

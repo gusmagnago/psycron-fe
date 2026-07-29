@@ -214,7 +214,10 @@
 			"column-filter": {
 				"all-values": "All values",
 				"label": "Filter {{column}}",
-				"open": "Filter {{column}} column"
+				"open": "Filter {{column}} column",
+				"scope-complete": "{{matches}} of {{loaded}} patients match your column filters.",
+				"scope-empty": "None of the {{loaded}} patients loaded so far match your column filters. Load more to keep filtering.",
+				"scope-partial": "Column filters apply to the {{loaded}} patients loaded so far — {{matches}} match. Load more to filter the rest."
 			},
 			"open": "Open",
 			"open-workflow": "Open {{patient}} workflow",

@@ -1,4 +1,4 @@
-import type { KeyboardEvent, MouseEvent } from 'react';
+import type { MouseEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ChevronRight, Phone } from '@psycron/components/icons';
 import { formatTimezoneLabel } from '@psycron/utils/date/date.utils';
@@ -32,10 +32,6 @@ interface PatientRowProps {
 	isSelected: boolean;
 	onGoToConflicts: (event: MouseEvent<HTMLElement>) => void;
 	onOpenWorkflow: (patient: PatientWorkspaceRow) => void;
-	onRowKeyDown: (
-		event: KeyboardEvent<HTMLTableRowElement>,
-		patient: PatientWorkspaceRow
-	) => void;
 	patient: PatientWorkspaceRow;
 	patientIndex: number;
 	shouldAnimate: boolean;
@@ -46,7 +42,6 @@ export const PatientRow = ({
 	isSelected,
 	onGoToConflicts,
 	onOpenWorkflow,
-	onRowKeyDown,
 	patient,
 	patientIndex,
 	shouldAnimate,
@@ -66,11 +61,13 @@ export const PatientRow = ({
 				? 'whatsapp'
 				: patient.preferredContactType;
 
+	// The row click is a pointer-only affordance on purpose. The row keeps its
+	// implicit `row` role and stays out of the tab order; keyboard and screen
+	// reader users open the workflow through the real OpenAction button in the
+	// last cell, which carries the accessible name. A focusable <tr> wrapping
+	// two buttons was a nested-interactive trap that announced as "row".
 	return (
 		<PatientTableRow
-			aria-label={t('patients.list.open-workflow', {
-				patient: patient.fullName,
-			})}
 			custom={patientIndex}
 			data-testid={rowTestId}
 			id={rowTestId}
@@ -78,8 +75,6 @@ export const PatientRow = ({
 			layout={shouldAnimate ? 'position' : false}
 			data-selected={isSelected}
 			onClick={() => onOpenWorkflow(patient)}
-			onKeyDown={(event) => onRowKeyDown(event, patient)}
-			tabIndex={0}
 			variants={patientCardScrollVariants}
 			viewport={patientCardScrollViewport}
 			whileInView={shouldAnimate ? 'visible' : undefined}

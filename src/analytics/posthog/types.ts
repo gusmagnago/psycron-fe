@@ -349,7 +349,6 @@ export type PostHogEventProps = {
 	[PostHogEvent.PatientCenterColumnSortChanged]: {
 		column: string;
 		direction: 'asc' | 'desc';
-		scope: 'client' | 'server';
 	};
 	[PostHogEvent.PatientCenterCreateOpened]: never;
 	[PostHogEvent.PatientCenterOpened]: {

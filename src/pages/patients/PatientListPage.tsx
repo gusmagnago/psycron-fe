@@ -1,20 +1,20 @@
-import type { KeyboardEvent, MouseEvent } from 'react';
-import { useEffect, useRef, useState } from 'react';
+import type { MouseEvent } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams } from 'react-router-dom';
 import { capture } from '@psycron/analytics/posthog/events';
 import { PostHogEvent } from '@psycron/analytics/posthog/types';
 import { AddPatientForm } from '@psycron/components/form/AddPatient/AddPatientForm';
-import { PageLayout } from '@psycron/layouts/app/pages-layout/PageLayout';
-import { CONFLICTS } from '@psycron/pages/urls';
-import { useReducedMotion } from 'framer-motion';
 import {
 	BookUser,
 	Copy,
 	FileExclamationPoint,
 	ReceiptText,
 	ScanEye,
-} from 'lucide-react';
+} from '@psycron/components/icons';
+import { PageLayout } from '@psycron/layouts/app/pages-layout/PageLayout';
+import { CONFLICTS } from '@psycron/pages/urls';
+import { useReducedMotion } from 'framer-motion';
 
 import { FloatingQueues } from './floating-queues/FloatingQueues';
 import { usePatientListPageState } from './hooks/usePatientListPageState';
@@ -49,17 +49,34 @@ import {
 	encodePatientListSortValue,
 } from './PatientsPage.utils';
 
-// Columns the backend can order authoritatively across all pages. Others sort
-// only the loaded rows (see the patient workspace sort/filter decision).
-const SERVER_SORTABLE_COLUMNS: Partial<
-	Record<PatientWorkspaceColumn, PatientListSortField>
+// Every column maps to a server sort key, so ordering is always
+// server-authoritative across all pages and there is no client-side sort.
+// Total (non-Partial) on purpose: adding a column without a server key is a
+// compile error rather than a silently page-scoped sort.
+const COLUMN_SORT_FIELDS: Record<PatientWorkspaceColumn, PatientListSortField> =
+	{
+		billing: 'billing',
+		contact: 'contact',
+		'next-action': 'next-action',
+		'next-session': 'next-session',
+		patient: 'name',
+		sessions: 'total-sessions',
+	};
+
+// Inverse of COLUMN_SORT_FIELDS, so the table header and the sort Select read
+// from one source of truth. `last-appointment` is Select-only — it has no
+// column, hence no header highlight.
+const SORT_FIELD_COLUMNS: Record<
+	PatientListSortField,
+	PatientWorkspaceColumn | null
 > = {
 	billing: 'billing',
 	contact: 'contact',
+	'last-appointment': null,
+	name: 'patient',
 	'next-action': 'next-action',
 	'next-session': 'next-session',
-	patient: 'name',
-	sessions: 'total-sessions',
+	'total-sessions': 'sessions',
 };
 
 export const PatientListPage = () => {
@@ -78,12 +95,6 @@ export const PatientListPage = () => {
 	const [isWorkQueuesVisible, setIsWorkQueuesVisible] = useState(true);
 	const [selectedPatient, setSelectedPatient] =
 		useState<PatientWorkspaceRow | null>(null);
-	const [workspaceSort, setWorkspaceSort] = useState<PatientWorkspaceSortState>(
-		{
-			column: 'patient',
-			direction: 'asc',
-		}
-	);
 	const workQueueSectionRef = useRef<HTMLElement | null>(null);
 	const { toggleColumn, visibleColumnSet } = usePatientWorkspaceColumns();
 	const {
@@ -155,65 +166,74 @@ export const PatientListPage = () => {
 
 	const hasAuthoritativeQueues = Boolean(workspaceSummary);
 	const isAllClear = workspaceSummary?.needsAttention === 0;
-	const getQueueCount = (
-		queueKey: Exclude<PatientWorkspaceQueue, 'all'>
-	): number | undefined =>
-		workspaceSummary
-			? getPatientWorkspaceQueueCount(workspaceSummary, queueKey)
-			: undefined;
-	const fallbackQueueCard: PatientWorkQueueCard =
-		workspaceSummary?.duplicate === 0
-			? {
-					clearDescriptionKey:
-						'patients.list.queues.missing-contact-clear-description',
-					count: getQueueCount('contact'),
-					descriptionKey: 'patients.list.queues.missing-contact-description',
-					icon: <BookUser />,
-					id: 'patients-queue-missing-contact',
-					labelKey: 'patients.list.queues.missing-contact',
-					queue: 'contact',
-				}
-			: {
-					clearDescriptionKey:
-						'patients.list.queues.duplicate-clear-description',
-					count: getQueueCount('duplicate'),
-					descriptionKey: 'patients.list.queues.duplicate-description',
-					icon: <Copy />,
-					id: 'patients-queue-duplicates',
-					labelKey: 'patients.list.queues.duplicate',
-					queue: 'duplicate',
-				};
-	const queues: PatientWorkQueueCard[] = [
-		{
-			clearDescriptionKey:
-				'patients.list.queues.needs-attention-clear-description',
-			count: getQueueCount('needs-attention'),
-			descriptionKey: 'patients.list.queues.needs-attention-description',
-			icon: <FileExclamationPoint />,
-			id: 'patients-queue-needs-attention',
-			labelKey: 'patients.list.queues.needs-attention',
-			queue: 'needs-attention',
-		},
-		{
-			clearDescriptionKey: 'patients.list.queues.recovery-clear-description',
-			count: getQueueCount('recovery'),
-			descriptionKey: 'patients.list.queues.recovery-description',
-			icon: <ScanEye />,
-			id: 'patients-queue-recovery',
-			labelKey: 'patients.list.queues.recovery',
-			queue: 'recovery',
-		},
-		{
-			clearDescriptionKey: 'patients.list.queues.billing-clear-description',
-			count: getQueueCount('billing'),
-			descriptionKey: 'patients.list.queues.billing-description',
-			icon: <ReceiptText />,
-			id: 'patients-queue-billing',
-			labelKey: 'patients.list.queues.billing',
-			queue: 'billing',
-		},
-		fallbackQueueCard,
-	];
+
+	// Rebuilt only when the counts actually change. These carry JSX icons, so an
+	// unmemoized array handed a fresh identity to every queue card on every
+	// keystroke in the search box.
+	const queues = useMemo<PatientWorkQueueCard[]>(() => {
+		const getQueueCount = (
+			queueKey: Exclude<PatientWorkspaceQueue, 'all'>
+		): number | undefined =>
+			workspaceSummary
+				? getPatientWorkspaceQueueCount(workspaceSummary, queueKey)
+				: undefined;
+
+		const fallbackQueueCard: PatientWorkQueueCard =
+			workspaceSummary?.duplicate === 0
+				? {
+						clearDescriptionKey:
+							'patients.list.queues.missing-contact-clear-description',
+						count: getQueueCount('contact'),
+						descriptionKey: 'patients.list.queues.missing-contact-description',
+						icon: <BookUser />,
+						id: 'patients-queue-missing-contact',
+						labelKey: 'patients.list.queues.missing-contact',
+						queue: 'contact',
+					}
+				: {
+						clearDescriptionKey:
+							'patients.list.queues.duplicate-clear-description',
+						count: getQueueCount('duplicate'),
+						descriptionKey: 'patients.list.queues.duplicate-description',
+						icon: <Copy />,
+						id: 'patients-queue-duplicates',
+						labelKey: 'patients.list.queues.duplicate',
+						queue: 'duplicate',
+					};
+
+		return [
+			{
+				clearDescriptionKey:
+					'patients.list.queues.needs-attention-clear-description',
+				count: getQueueCount('needs-attention'),
+				descriptionKey: 'patients.list.queues.needs-attention-description',
+				icon: <FileExclamationPoint />,
+				id: 'patients-queue-needs-attention',
+				labelKey: 'patients.list.queues.needs-attention',
+				queue: 'needs-attention',
+			},
+			{
+				clearDescriptionKey: 'patients.list.queues.recovery-clear-description',
+				count: getQueueCount('recovery'),
+				descriptionKey: 'patients.list.queues.recovery-description',
+				icon: <ScanEye />,
+				id: 'patients-queue-recovery',
+				labelKey: 'patients.list.queues.recovery',
+				queue: 'recovery',
+			},
+			{
+				clearDescriptionKey: 'patients.list.queues.billing-clear-description',
+				count: getQueueCount('billing'),
+				descriptionKey: 'patients.list.queues.billing-description',
+				icon: <ReceiptText />,
+				id: 'patients-queue-billing',
+				labelKey: 'patients.list.queues.billing',
+				queue: 'billing',
+			},
+			fallbackQueueCard,
+		];
+	}, [workspaceSummary]);
+
 	const activeQueueLabel =
 		queues.find((queueItem) => queueItem.queue === queue)?.labelKey ??
 		'patients.list.results-title';
@@ -298,30 +318,24 @@ export const PatientListPage = () => {
 		: t('patients.list.empty.initial-body');
 	const sortValue = encodePatientListSortValue(sortField, sortDirection);
 
-	// When the active column has a server-authoritative sort key the query already
-	// returns globally-correct order; re-sorting the loaded window client-side
-	// would fight (and scramble) it, so we preserve server order in that case.
-	const isServerSorted = Boolean(SERVER_SORTABLE_COLUMNS[workspaceSort.column]);
+	// The query is the single source of truth for ordering; the header state is
+	// derived from it so the Select and the column headers can never disagree.
+	const workspaceSort: PatientWorkspaceSortState = {
+		column: SORT_FIELD_COLUMNS[sortField],
+		direction: sortDirection,
+	};
 
 	const { columnFilterOptions, rows: workspacePatients } = useWorkspaceRows({
 		columnFilters,
 		filterColumn,
-		isServerSorted,
 		patients: filteredPatients,
-		workspaceSort,
+		visibleColumnSet,
 	});
 
 	const handleSortSelectChange = (value: string): void => {
 		const { direction, field } = decodePatientListSortValue(value);
 		setSortField(field);
 		setSortDirection(direction);
-		if (field === 'name') {
-			setWorkspaceSort({ column: 'patient', direction });
-		} else if (field === 'total-sessions') {
-			setWorkspaceSort({ column: 'sessions', direction });
-		} else if (field === 'next-session') {
-			setWorkspaceSort({ column: 'next-session', direction });
-		}
 	};
 
 	const handleWorkspaceSortChange = (column: PatientWorkspaceColumn): void => {
@@ -329,20 +343,26 @@ export const PatientListPage = () => {
 			workspaceSort.column === column && workspaceSort.direction === 'asc'
 				? 'desc'
 				: 'asc';
-		setWorkspaceSort({ column, direction });
-
-		// Columns with a server-authoritative sort key drive the query so
-		// ordering holds across pages; the rest refine the loaded rows only.
-		const serverSortField = SERVER_SORTABLE_COLUMNS[column];
-		if (serverSortField) {
-			setSortField(serverSortField);
-			setSortDirection(direction);
-		}
+		setSortField(COLUMN_SORT_FIELDS[column]);
+		setSortDirection(direction);
 		capture(PostHogEvent.PatientCenterColumnSortChanged, {
 			column,
 			direction,
-			scope: serverSortField ? 'server' : 'client',
 		});
+	};
+
+	// Hiding a column drops its filter too. Otherwise the filter keeps silently
+	// excluding rows while its header — the only way to clear it — is gone.
+	const handleToggleColumn = (column: PatientWorkspaceColumn): void => {
+		if (visibleColumnSet.has(column) && column !== 'sessions') {
+			setColumnFilters((current) => {
+				if (!current[column as PatientWorkspaceFilterableColumn]) return current;
+				const next = { ...current };
+				delete next[column as PatientWorkspaceFilterableColumn];
+				return next;
+			});
+		}
+		toggleColumn(column);
 	};
 
 	const openColumnFilter = (
@@ -372,17 +392,6 @@ export const PatientListPage = () => {
 			if (current) setColumnsOpen(false);
 			return !current;
 		});
-	};
-
-	const handleRowKeyDown = (
-		event: KeyboardEvent<HTMLTableRowElement>,
-		patient: PatientWorkspaceRow
-	) => {
-		if (event.target !== event.currentTarget) return;
-		if (event.key === 'Enter' || event.key === ' ') {
-			event.preventDefault();
-			openPatientWorkflow(patient);
-		}
 	};
 
 	return (
@@ -427,7 +436,7 @@ export const PatientListPage = () => {
 						onSearchChange={setSearchQuery}
 						onSortChange={handleSortSelectChange}
 						onStatusChange={setStatusFilter}
-						onToggleColumn={toggleColumn}
+						onToggleColumn={handleToggleColumn}
 						onToggleColumns={() => setColumnsOpen((current) => !current)}
 						onToggleControls={toggleWorkspaceControls}
 						searchQuery={searchQuery}
@@ -463,9 +472,9 @@ export const PatientListPage = () => {
 						onLoadMore={() => fetchNextPage()}
 						onOpenColumnFilter={openColumnFilter}
 						onOpenWorkflow={openPatientWorkflow}
-						onRowKeyDown={handleRowKeyDown}
 						onSortChange={handleWorkspaceSortChange}
 						onUpdateColumnFilter={updateColumnFilter}
+						loadedPatientCount={filteredPatients.length}
 						rows={workspacePatients}
 						selectedPatientId={selectedPatient?._id}
 						shouldAnimate={shouldAnimatePatientCards}

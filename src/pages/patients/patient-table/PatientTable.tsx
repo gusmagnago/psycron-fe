@@ -1,8 +1,12 @@
-import type { KeyboardEvent,MouseEvent } from 'react';
+import type { MouseEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@psycron/components/button/Button';
-import { ChevronDown, ChevronUp, Filter } from '@psycron/components/icons';
-import { ArrowUpDown } from 'lucide-react';
+import {
+	ArrowUpDown,
+	ChevronDown,
+	ChevronUp,
+	Filter,
+} from '@psycron/components/icons';
 
 import {
 	ColumnFilterContent,
@@ -21,6 +25,7 @@ import {
 	ResultsCount,
 	ResultsHeader,
 	ResultsHint,
+	ResultsScopeNote,
 	ResultsTitle,
 	ResultsTitleGroup,
 	SortableHeaderButton,
@@ -52,6 +57,11 @@ interface PatientTableProps {
 	isFetchingNextPage: boolean;
 	isFiltering: boolean;
 	isRefreshingResults: boolean;
+	/**
+	 * Rows loaded from the server so far, before column filters. Column filters
+	 * are applied client-side over this window only, so the UI has to say so.
+	 */
+	loadedPatientCount: number;
 	onClearFilters: () => void;
 	onCloseColumnFilter: () => void;
 	onGoToConflicts: (event: MouseEvent<HTMLElement>) => void;
@@ -61,10 +71,6 @@ interface PatientTableProps {
 		column: PatientWorkspaceFilterableColumn
 	) => void;
 	onOpenWorkflow: (patient: PatientWorkspaceRow) => void;
-	onRowKeyDown: (
-		event: KeyboardEvent<HTMLTableRowElement>,
-		patient: PatientWorkspaceRow
-	) => void;
 	onSortChange: (column: PatientWorkspaceColumn) => void;
 	onUpdateColumnFilter: (value: string) => void;
 	rows: PatientWorkspaceRow[];
@@ -89,13 +95,13 @@ export const PatientTable = ({
 	isFetchingNextPage,
 	isFiltering,
 	isRefreshingResults,
+	loadedPatientCount,
 	onClearFilters,
 	onCloseColumnFilter,
 	onGoToConflicts,
 	onLoadMore,
 	onOpenColumnFilter,
 	onOpenWorkflow,
-	onRowKeyDown,
 	onSortChange,
 	onUpdateColumnFilter,
 	rows,
@@ -114,11 +120,27 @@ export const PatientTable = ({
 					<ResultsTitle id='patients-workspace-results-title'>
 						{t(activeQueueLabel)}
 					</ResultsTitle>
+					{/* Always the server total, so this slot never silently switches
+					    meaning. The loaded-window caveat is spelled out below instead. */}
 					<ResultsCount data-testid='patients-workspace-results-count'>
-						{activeColumnFilterCount ? rows.length : totalPatients}
+						{totalPatients}
 					</ResultsCount>
 				</ResultsTitleGroup>
-				<ResultsHint>{t('patients.list.results-hint')}</ResultsHint>
+				{activeColumnFilterCount ? (
+					<ResultsScopeNote
+						data-testid='patients-workspace-filter-scope'
+						role='status'
+					>
+						{t(
+							hasNextPage
+								? 'patients.list.column-filter.scope-partial'
+								: 'patients.list.column-filter.scope-complete',
+							{ loaded: loadedPatientCount, matches: rows.length }
+						)}
+					</ResultsScopeNote>
+				) : (
+					<ResultsHint>{t('patients.list.results-hint')}</ResultsHint>
+				)}
 				{isRefreshingResults ? (
 					<VisuallyHidden aria-live='polite'>
 						{t('patients.list.updating-results')}
@@ -236,7 +258,6 @@ export const PatientTable = ({
 									key={patient._id}
 									onGoToConflicts={onGoToConflicts}
 									onOpenWorkflow={onOpenWorkflow}
-									onRowKeyDown={onRowKeyDown}
 									patient={patient}
 									patientIndex={patientIndex}
 									shouldAnimate={shouldAnimate}
@@ -248,7 +269,15 @@ export const PatientTable = ({
 				) : (
 					<EmptyState aria-live='polite'>
 						<EmptyTitle>{emptyTitle}</EmptyTitle>
-						<EmptyBody>{emptyBody}</EmptyBody>
+						{/* "No results" would be a lie while unloaded pages remain: the
+						    filter only saw the loaded window. Point at Load more. */}
+						<EmptyBody>
+							{activeColumnFilterCount && hasNextPage
+								? t('patients.list.column-filter.scope-empty', {
+										loaded: loadedPatientCount,
+									})
+								: emptyBody}
+						</EmptyBody>
 						<Button
 							id='patients-workspace-clear-search'
 							data-testid='patients-workspace-clear-search'

@@ -1,8 +1,12 @@
 import { useTranslation } from 'react-i18next';
 import { InputAdornment } from '@mui/material';
 import { Button } from '@psycron/components/button/Button';
-import { Search } from '@psycron/components/icons';
-import { Columns3Cog, Minus, Plus } from 'lucide-react';
+import {
+	Columns3Cog,
+	Minus,
+	Plus,
+	Search,
+} from '@psycron/components/icons';
 
 import { OPTIONAL_COLUMNS } from '../hooks/usePatientWorkspaceColumns';
 import {
@@ -23,29 +27,13 @@ import {
 	WorkspaceControlsSection,
 	WorkspaceControlsTitle,
 } from '../PatientListPage.styles';
-import type {
-	PatientListStatusFilter,
-	PatientWorkspaceColumn,
-} from '../PatientsPage.types';
+import type { PatientListStatusFilter } from '../PatientsPage.types';
 import {
 	encodePatientListSortValue,
 	PATIENT_LIST_SORT_OPTIONS,
 } from '../PatientsPage.utils';
 
-interface WorkspaceControlsProps {
-	columnsOpen: boolean;
-	isWorkspaceControlsExpanded: boolean;
-	onSearchChange: (value: string) => void;
-	onSortChange: (value: string) => void;
-	onStatusChange: (value: PatientListStatusFilter) => void;
-	onToggleColumn: (column: PatientWorkspaceColumn) => void;
-	onToggleColumns: () => void;
-	onToggleControls: () => void;
-	searchQuery: string;
-	sortValue: string;
-	statusFilter: PatientListStatusFilter;
-	visibleColumnSet: Set<PatientWorkspaceColumn>;
-}
+import type { WorkspaceControlsProps } from './WorkspaceControls.types';
 
 export const WorkspaceControls = ({
 	columnsOpen,

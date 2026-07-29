@@ -1,8 +1,10 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
 import type { PatientWorkspaceColumn } from '../PatientsPage.types';
-
-const PATIENT_COLUMNS_STORAGE_KEY = '_psy_pc_v1';
+import {
+	readPatientWorkspacePreferences,
+	writePatientWorkspacePreferences,
+} from '../patientWorkspaceStorage';
 
 export const DEFAULT_VISIBLE_COLUMNS: PatientWorkspaceColumn[] = [
 	'patient',
@@ -22,23 +24,17 @@ export const OPTIONAL_COLUMNS: Exclude<PatientWorkspaceColumn, 'patient'>[] = [
 ];
 
 const getInitialVisibleColumns = (): PatientWorkspaceColumn[] => {
-	try {
-		const storedValue = localStorage.getItem(PATIENT_COLUMNS_STORAGE_KEY);
-		if (!storedValue) return DEFAULT_VISIBLE_COLUMNS;
+	const { columns } = readPatientWorkspacePreferences();
+	if (!Array.isArray(columns)) return DEFAULT_VISIBLE_COLUMNS;
 
-		const parsedValue: unknown = JSON.parse(storedValue);
-		if (!Array.isArray(parsedValue)) return DEFAULT_VISIBLE_COLUMNS;
+	const validColumns = columns.filter(
+		(value): value is PatientWorkspaceColumn =>
+			typeof value === 'string' &&
+			DEFAULT_VISIBLE_COLUMNS.includes(value as PatientWorkspaceColumn)
+	);
 
-		const validColumns = parsedValue.filter(
-			(value): value is PatientWorkspaceColumn =>
-				typeof value === 'string' &&
-				DEFAULT_VISIBLE_COLUMNS.includes(value as PatientWorkspaceColumn)
-		);
-
-		return ['patient', ...validColumns.filter((value) => value !== 'patient')];
-	} catch {
-		return DEFAULT_VISIBLE_COLUMNS;
-	}
+	// 'patient' is not optional — always lead with it.
+	return ['patient', ...validColumns.filter((value) => value !== 'patient')];
 };
 
 interface UsePatientWorkspaceColumnsResult {
@@ -58,17 +54,15 @@ export const usePatientWorkspaceColumns =
 		>(getInitialVisibleColumns);
 
 		useEffect(() => {
-			try {
-				localStorage.setItem(
-					PATIENT_COLUMNS_STORAGE_KEY,
-					JSON.stringify(visibleColumns)
-				);
-			} catch {
-				// Column visibility stays functional when storage is unavailable.
-			}
+			writePatientWorkspacePreferences({ columns: visibleColumns });
 		}, [visibleColumns]);
 
-		const toggleColumn = (column: PatientWorkspaceColumn): void => {
+		const visibleColumnSet = useMemo(
+		() => new Set(visibleColumns),
+		[visibleColumns]
+	);
+
+	const toggleColumn = (column: PatientWorkspaceColumn): void => {
 			setVisibleColumns((current) =>
 				current.includes(column)
 					? current.filter((value) => value !== column)
@@ -78,7 +72,9 @@ export const usePatientWorkspaceColumns =
 
 		return {
 			toggleColumn,
-			visibleColumnSet: new Set(visibleColumns),
+			// Memoized: a fresh Set every render would bust every downstream
+			// useMemo that takes it as a dependency.
+			visibleColumnSet,
 			visibleColumns,
 		};
 	};

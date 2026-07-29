@@ -1,12 +1,15 @@
 import { useEffect, useState } from 'react';
 
+import {
+	readPatientWorkspacePreferences,
+	writePatientWorkspacePreferences,
+} from '../patientWorkspaceStorage';
+
 import type {
 	PatientListUiPreferences,
 	UsePatientListUiPreferencesOptions,
 	UsePatientListUiPreferencesResult,
 } from './usePatientListUiPreferences.types';
-
-const PATIENT_LIST_UI_PREFERENCES_STORAGE_KEY = '_psy_patients_ui_v1';
 
 const getDefaultPreferences = (
 	isDesktopTable: boolean
@@ -15,36 +18,22 @@ const getDefaultPreferences = (
 	isWorkQueuesExpanded: true,
 });
 
-const isPatientListUiPreferences = (
-	value: unknown
-): value is PatientListUiPreferences => {
-	if (!value || typeof value !== 'object') return false;
-
-	const preferences = value as Record<string, unknown>;
-	return (
-		typeof preferences.isWorkspaceControlsExpanded === 'boolean' &&
-		typeof preferences.isWorkQueuesExpanded === 'boolean'
-	);
-};
-
 const getInitialPreferences = (
 	isDesktopTable: boolean
 ): PatientListUiPreferences => {
 	const defaults = getDefaultPreferences(isDesktopTable);
+	const stored = readPatientWorkspacePreferences();
 
-	try {
-		const storedPreferences = localStorage.getItem(
-			PATIENT_LIST_UI_PREFERENCES_STORAGE_KEY
-		);
-		if (!storedPreferences) return defaults;
-
-		const parsedPreferences: unknown = JSON.parse(storedPreferences);
-		return isPatientListUiPreferences(parsedPreferences)
-			? parsedPreferences
-			: defaults;
-	} catch {
-		return defaults;
-	}
+	return {
+		isWorkspaceControlsExpanded:
+			typeof stored.isWorkspaceControlsExpanded === 'boolean'
+				? stored.isWorkspaceControlsExpanded
+				: defaults.isWorkspaceControlsExpanded,
+		isWorkQueuesExpanded:
+			typeof stored.isWorkQueuesExpanded === 'boolean'
+				? stored.isWorkQueuesExpanded
+				: defaults.isWorkQueuesExpanded,
+	};
 };
 
 export const usePatientListUiPreferences = ({
@@ -60,18 +49,10 @@ export const usePatientListUiPreferences = ({
 	);
 
 	useEffect(() => {
-		try {
-			const preferences: PatientListUiPreferences = {
-				isWorkspaceControlsExpanded,
-				isWorkQueuesExpanded,
-			};
-			localStorage.setItem(
-				PATIENT_LIST_UI_PREFERENCES_STORAGE_KEY,
-				JSON.stringify(preferences)
-			);
-		} catch {
-			// UI preferences remain functional when storage is unavailable.
-		}
+		writePatientWorkspacePreferences({
+			isWorkspaceControlsExpanded,
+			isWorkQueuesExpanded,
+		});
 	}, [isWorkspaceControlsExpanded, isWorkQueuesExpanded]);
 
 	return {

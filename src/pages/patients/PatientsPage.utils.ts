@@ -380,7 +380,6 @@ export const mapPatientToWorkspaceRow = (
 	patient: IPatient,
 	options: {
 		isPossibleDuplicate: boolean;
-		now?: Date;
 		uiRowKey: string;
 	}
 ): PatientWorkspaceRow => {
@@ -406,10 +405,8 @@ export const mapPatientToWorkspaceRow = (
 			unresolvedCancelledSessions: listItem.unresolvedCancelledSessions,
 		}),
 		nextSessionDate,
-		nextSessionState: getPatientNextSessionState(
-			nextSessionDate,
-			options.now
-		),
+		// No nextSessionState here on purpose: urgency is time-relative and would
+		// rot until the next refetch. NextSessionCell derives it at render.
 		uiRowKey: options.uiRowKey,
 	};
 };
@@ -500,20 +497,4 @@ export const getPatientColumnFilterOption = (
 				value: patient.fullName.toLocaleLowerCase(language),
 			};
 	}
-};
-
-/** Comparable value for client-side column sorting (numeric where possible). */
-export const getPatientColumnSortValue = (
-	patient: PatientWorkspaceRow,
-	column: PatientWorkspaceColumn,
-	language: string,
-	t: TFunction
-): number | string => {
-	if (column === 'sessions') return patient.totalSessions;
-	if (column === 'next-session') {
-		return patient.nextSessionDate
-			? new Date(patient.nextSessionDate).getTime()
-			: Number.MAX_SAFE_INTEGER;
-	}
-	return getPatientColumnFilterOption(patient, column, language, t).label;
 };

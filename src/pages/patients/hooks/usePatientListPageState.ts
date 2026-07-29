@@ -30,9 +30,12 @@ import {
 	getPatientListSortDefaultDirection,
 	mapPatientToWorkspaceRow,
 } from '../PatientsPage.utils';
+import {
+	readPatientWorkspacePreferences,
+	writePatientWorkspacePreferences,
+} from '../patientWorkspaceStorage';
 
 const PATIENTS_PAGE_SIZE = 20;
-const PATIENT_QUEUE_STORAGE_KEY = '_psy_pq_v1';
 const PATIENT_WORKSPACE_QUEUES = [
 	'all',
 	'billing',
@@ -48,14 +51,8 @@ const isPatientWorkspaceQueue = (
 	PATIENT_WORKSPACE_QUEUES.some((queue) => queue === value);
 
 const getInitialPatientQueue = (): PatientWorkspaceQueue => {
-	try {
-		const storedQueue = localStorage.getItem(PATIENT_QUEUE_STORAGE_KEY);
-		return storedQueue && isPatientWorkspaceQueue(storedQueue)
-			? storedQueue
-			: 'needs-attention';
-	} catch {
-		return 'needs-attention';
-	}
+	const { queue } = readPatientWorkspacePreferences();
+	return queue && isPatientWorkspaceQueue(queue) ? queue : 'needs-attention';
 };
 
 export const usePatientListPageState = () => {
@@ -78,11 +75,7 @@ export const usePatientListPageState = () => {
 		useState<PatientListStatusFilter>('all');
 
 	useEffect(() => {
-		try {
-			localStorage.setItem(PATIENT_QUEUE_STORAGE_KEY, queue);
-		} catch {
-			// The queue remains functional when storage is unavailable.
-		}
+		writePatientWorkspacePreferences({ queue });
 	}, [queue]);
 
 	// Debounce the search box so we don't fire a request per keystroke.
