@@ -17,8 +17,12 @@ export type PatientListStatusFilter = 'active' | 'all' | 'inactive';
 export type SessionTimelineFilter = 'all' | 'cancelled' | 'completed' | 'upcoming';
 
 export type PatientListSortField =
+	| 'billing'
+	| 'contact'
 	| 'last-appointment'
 	| 'name'
+	| 'next-action'
+	| 'next-session'
 	| 'total-sessions';
 export type PatientListSortDirection = 'asc' | 'desc';
 

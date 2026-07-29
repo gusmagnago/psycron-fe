@@ -75,12 +75,16 @@ export const enum PostHogEvent {
 	PatientCenterArchiveConfirmed = 'patient center archive confirmed',
 	PatientCenterArchiveFailed = 'patient center archive failed',
 	PatientCenterArchiveOpened = 'patient center archive opened',
+	PatientCenterColumnSortChanged = 'patient center column sort changed',
+	PatientCenterCreateOpened = 'patient center create opened',
 	PatientCenterOpened = 'patient center opened',
+	PatientCenterQueueSelected = 'patient center queue selected',
 	PatientCenterSessionCancelled = 'patient center session cancelled',
 	PatientCenterSessionDrawerOpened = 'patient center session drawer opened',
 	PatientCenterSessionNotified = 'patient center session notified',
 	PatientCenterSessionRescheduled = 'patient center session rescheduled',
 	PatientCenterTimelineFilterChanged = 'patient center timeline filter changed',
+	PatientCenterWorkflowOpened = 'patient center workflow opened',
 	PatientNotificationSettingsSaved = 'patient notification settings saved',
 	PublicBookAppointmentDaySelected = 'public book appointment day selected',
 	PublicBookAppointmentOpened = 'public book appointment opened',
@@ -342,8 +346,27 @@ export type PostHogEventProps = {
 		error_code: string;
 		target_user_id: string;
 	};
+	[PostHogEvent.PatientCenterColumnSortChanged]: {
+		column: string;
+		direction: 'asc' | 'desc';
+		scope: 'client' | 'server';
+	};
+	[PostHogEvent.PatientCenterCreateOpened]: never;
 	[PostHogEvent.PatientCenterOpened]: {
 		target_user_id: string;
+	};
+	[PostHogEvent.PatientCenterQueueSelected]: {
+		queue:
+			| 'all'
+			| 'billing'
+			| 'contact'
+			| 'duplicate'
+			| 'needs-attention'
+			| 'recovery';
+		source: 'floating' | 'queue-card';
+	};
+	[PostHogEvent.PatientCenterWorkflowOpened]: {
+		next_action: string;
 	};
 	[PostHogEvent.PatientCenterTimelineFilterChanged]: {
 		filter: 'all' | 'cancelled' | 'completed' | 'upcoming';

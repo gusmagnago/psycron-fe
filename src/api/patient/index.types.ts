@@ -28,7 +28,14 @@ export interface IPatientByIdResponse {
 	patient: IPatient;
 }
 
-export type PatientsSortField = 'name' | 'total-sessions' | 'last-appointment';
+export type PatientsSortField =
+	| 'billing'
+	| 'contact'
+	| 'last-appointment'
+	| 'name'
+	| 'next-action'
+	| 'next-session'
+	| 'total-sessions';
 export type PatientsSortDirection = 'asc' | 'desc';
 export type PatientsStatusFilter = 'all' | 'active' | 'inactive';
 

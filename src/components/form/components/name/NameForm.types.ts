@@ -26,4 +26,6 @@ export interface NameFormProps<T extends FieldValues> {
 	required?: boolean;
 	/** Opt-in: render an optional date-of-birth field (used on the edit page). */
 	showDateOfBirth?: boolean;
+	/** Opt-in: stamp id + data-testid on the root wrapper for analytics/logging. */
+	testId?: string;
 }

@@ -20,4 +20,6 @@ export type ContactsFormProps<T extends FieldValues> = {
 	labelEmail?: string;
 	placeholderEmail?: string;
 	required?: boolean;
+	/** Opt-in: stamp id + data-testid on the wrappers for analytics/logging. */
+	testId?: string;
 } & Omit<TextFieldProps, 'defaultValue' | 'required' | 'disabled'>;

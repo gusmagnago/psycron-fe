@@ -11,6 +11,7 @@ import { useAlert } from '@psycron/context/alert/AlertContext';
 import { useUserDetails } from '@psycron/context/user/details/UserDetailsContext';
 import useViewport from '@psycron/hooks/useViewport';
 import { PATIENTS } from '@psycron/pages/urls';
+import * as Sentry from '@sentry/react';
 import {
 	keepPreviousData,
 	useInfiniteQuery,
@@ -31,7 +32,7 @@ import {
 } from '../PatientsPage.utils';
 
 const PATIENTS_PAGE_SIZE = 20;
-const PATIENT_QUEUE_STORAGE_KEY = '_psy_pq';
+const PATIENT_QUEUE_STORAGE_KEY = '_psy_pq_v1';
 const PATIENT_WORKSPACE_QUEUES = [
 	'all',
 	'billing',
@@ -103,6 +104,9 @@ export const usePatientListPageState = () => {
 			});
 		},
 		onError: (error: CustomError) => {
+			Sentry.captureException(error, {
+				tags: { flow: 'patient-duplicate-scan' },
+			});
 			showAlert({ message: error.message, severity: 'error' });
 		},
 	});
