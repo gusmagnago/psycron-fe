@@ -65,12 +65,23 @@ export const PATIENTAPPOINTMENTSLIST = `${PATIENTID}/${APPOINTMENTS}`;
 
 export const ADDPATIENT = 'patient/create';
 
+// Website-level legal documents — govern the public psycron.app marketing site.
 export const PRIVACY_POLICY = 'privacy-policy';
 export const TERMS_OF_SERVICE = 'terms-of-use';
 export const MARKETING_COMMS = 'marketing-communications';
 
+// App-level legal documents — govern use of the Psycron application itself and
+// establish the practitioner as data controller with Psycron as processor
+// (LGPD Art. 39 / GDPR Art. 28). These are the documents users consent to in-app.
+export const APP_PRIVACY_POLICY = 'app/privacy';
+export const APP_TERMS_OF_SERVICE = 'app/terms';
+export const APP_DATA_PROCESSING_AGREEMENT = 'app/data-processing-agreement';
+
 export const externalUrls = (locale: string) => ({
-	PRIVACY: `${DOMAIN}/${locale}/${PRIVACY_POLICY}`,
-	TERMS: `${DOMAIN}/${locale}/${TERMS_OF_SERVICE}`,
+	PRIVACY: `${DOMAIN}/${locale}/${APP_PRIVACY_POLICY}`,
+	TERMS: `${DOMAIN}/${locale}/${APP_TERMS_OF_SERVICE}`,
+	DPA: `${DOMAIN}/${locale}/${APP_DATA_PROCESSING_AGREEMENT}`,
 	MARKETING: `${DOMAIN}/${locale}/${MARKETING_COMMS}`,
+	WEBSITE_PRIVACY: `${DOMAIN}/${locale}/${PRIVACY_POLICY}`,
+	WEBSITE_TERMS: `${DOMAIN}/${locale}/${TERMS_OF_SERVICE}`,
 });
